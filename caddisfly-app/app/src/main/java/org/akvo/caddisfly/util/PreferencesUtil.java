@@ -141,6 +141,13 @@ public final class PreferencesUtil {
         return getLong(context, key);
     }
 
+
+    @SuppressWarnings("WeakerAccess")
+    public static long getLong(Context context, @StringRes int keyId) {
+        return getLong(context, getKey(context, keyId));
+    }
+
+
     /**
      * Gets a long value from preferences
      *

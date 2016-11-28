@@ -20,9 +20,9 @@ package org.akvo.caddisfly.sensor.colorimetry.strip.util;
  * Created by linda on 9/3/15
  */
 public final class Constant {
-    public static final double MAX_LUM_LOWER = 200;
+    public static final double MAX_LUM_LOWER = 100;
     public static final double MAX_LUM_UPPER = 254;
-    public static final double MAX_SHADOW_PERCENTAGE = 10;
+    public static final double MAX_SHADOW_PERCENTAGE = 102;
     public static final double PERCENT_ILLUMINATION = 1.05;
     public static final double CROP_FINDER_PATTERN_FACTOR = 0.75;
     public static final float MAX_TILT_DIFF = 0.03f;

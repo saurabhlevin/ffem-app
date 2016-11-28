@@ -174,4 +174,14 @@ public final class ApiUtil {
         }
         return true;
     }
+
+    public static int getAppVersionCode(Context context) {
+        int versionCode = 0;
+        try {
+            versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
 }

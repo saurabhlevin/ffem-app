@@ -52,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void updateTheme() {
 
-        String theme = PreferencesUtil.getString(this, getString(R.string.selectedThemeKey), "Orange");
+        String theme = PreferencesUtil.getString(this, getString(R.string.selectedThemeKey), "Green");
 
         switch (theme) {
             case THEME_BLUE:
@@ -68,7 +68,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 setTheme(R.style.AppTheme_Flow);
                 break;
             default:
-                setTheme(R.style.AppTheme_Orange);
+                setTheme(R.style.AppTheme_Green);
                 break;
         }
 

@@ -57,8 +57,9 @@
     </style>
 
     <style name="AppTheme.Button.Green">
-        <item name="colorButtonNormal">#009900</item>
-        <item name="colorControlHighlight">#027602</item>
+        <item name="colorButtonNormal">#07763e</item>
+        <item name="colorControlHighlight">#04703a</item>
+        <item name="android:textColor">@color/gray_text</item>
     </style>
 
     <style name="AppTheme.Button.Orange">
@@ -123,5 +124,11 @@
     <style name="AppTheme.Orange.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.Orange.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
 </resources>

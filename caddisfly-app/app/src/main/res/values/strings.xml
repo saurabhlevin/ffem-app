@@ -200,4 +200,11 @@
     <string name="do_not_show_again">Do not show again</string>
     <string name="stop_test">Stop test</string>
 
+    <!--Update-->
+    <string name="updateAvailable">A new version of Akvo Caddisfly is available. Do you want to update now?</string>
+    <string name="remindLater">Later</string>
+    <string name="update">Update</string>
+    <string name="updateCheck">Check update</string>
+    <string name="updateSummary">Check if a new version is available</string>
+
 </resources>

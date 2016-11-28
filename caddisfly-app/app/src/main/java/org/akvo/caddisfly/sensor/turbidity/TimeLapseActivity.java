@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -50,6 +51,7 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.LiquidTimeLapsePreferenceFragment;
 import org.akvo.caddisfly.ui.BaseActivity;
+import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -256,13 +258,30 @@ public class TimeLapseActivity extends BaseActivity {
         String details = "";
         String testId = "";
         if (testInfo.getShortCode().equals("colif")) {
-            details = "_" + Build.MODEL.replace("_", "-") + "-" + PreferencesUtil.getString(this, getString(R.string.colif_PhoneIdKey), "") + "_"
-                    + PreferencesUtil.getString(this, getString(R.string.colif_chamberVersionKey), "") + "_"
-                    + PreferencesUtil.getString(this, getString(R.string.colif_brothMediumKey), "") + "_"
-                    + PreferencesUtil.getString(this, getString(R.string.colif_volumeKey), "") + "ml_"
-                    + PreferencesUtil.getString(this, getString(R.string.colif_testDescriptionKey), "");
 
-            testId = PreferencesUtil.getString(this, getString(R.string.colif_TestIdKey), "") + "_";
+            testId = PreferencesUtil.getString(this, getString(R.string.colif_TestIdKey), "");
+            String phoneNumber = PreferencesUtil.getString(this, getString(R.string.colif_PhoneIdKey), "");
+            String chamber = PreferencesUtil.getString(this, getString(R.string.colif_chamberVersionKey), "");
+            String media = PreferencesUtil.getString(this, getString(R.string.colif_brothMediumKey), "");
+            String volume = PreferencesUtil.getString(this, getString(R.string.colif_volumeKey), "");
+            String description = PreferencesUtil.getString(this, getString(R.string.colif_testDescriptionKey), "");
+
+            details = "_" + Build.MODEL.replace("_", "-") + "-"
+                    + phoneNumber + "_"
+                    + chamber + "_"
+                    + media + "_"
+                    + volume + "ml_"
+                    + description;
+
+            if (testId.isEmpty() || phoneNumber.isEmpty() || chamber.isEmpty() || media.isEmpty() || volume.isEmpty() || description.isEmpty()) {
+                AlertUtil.showAlert(this, R.string.required, "All fields must be filled", R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                }, null, null);
+                return;
+            }
         }
 
         File folder = FileHelper.getFilesDir(FileHelper.FileType.IMAGE, testInfo.getName());
@@ -271,7 +290,7 @@ public class TimeLapseActivity extends BaseActivity {
         }
 
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,
-                testInfo.getName() + File.separator + testId
+                testInfo.getName() + File.separator + testId + "_"
                         + new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(startDate.getTime()) + details);
 
         TurbidityConfig.setRepeatingAlarm(this, INITIAL_DELAY, testInfo.getCode());

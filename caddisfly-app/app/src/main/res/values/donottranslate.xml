@@ -100,4 +100,8 @@
     <string name="diagnosticsUser">Diagnostics in User Mode Also</string>
     <string name="ignoreStripTestDelay">Ignore strip test delay</string>
     <string name="experimental">Experimental</string>
+
+    <!--Update-->
+    <string name="lastUpdateCheckKey" translateable="false">lastUpdateCheck</string>
+    <string name="updateInfoDateKey" translateable="false">updateInfoDate</string>
 </resources>

@@ -41,8 +41,11 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Utility functions to file and folder manipulation
@@ -222,7 +225,31 @@ public final class FileUtil {
             File[] files = file.listFiles();
             if (files != null) {
                 for (File child : files) {
-                    deleteRecursive(child);
+                    if (child.isDirectory()) {
+                        String details[] = child.getName().split("_");
+
+                        Date date = new Date();
+
+                        if (details.length > 1) {
+                            String reportDate = details[1];
+                            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                            try {
+                                date = format.parse(reportDate);
+                            } catch (java.text.ParseException ignored) {
+                            }
+                        }else{
+                            deleteRecursive(child);
+                            continue;
+                        }
+
+                        long millisIn48Hours = 1000 * 60 * 60 * 72;
+                        Date hours48ago = new Date(new Date().getTime() - millisIn48Hours);
+                        if (date.before(hours48ago)) {
+                            deleteRecursive(child);
+                        }
+                    } else {
+                        deleteRecursive(child);
+                    }
                 }
             }
         }
@@ -292,6 +319,28 @@ public final class FileUtil {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
+
+//        File root = android.os.Environment.getExternalStorageDirectory();
+//        File dir = new File(root.getAbsolutePath() + FileHelper.ROOT_DIRECTORY + "/strip-test");
+//        File file = new File(dir, fileName);
+//
+//        // check if directory exists and if not, create it
+//        boolean success = true;
+//        if (!dir.exists()) {
+//            success = dir.mkdirs();
+//        }
+//
+//        try {
+//            FileOutputStream fos = new FileOutputStream(file.getPath());
+//            for (byte s : data) {
+//                fos.write(s);
+//            }
+//
+//            fos.close();
+//        } catch (java.io.IOException e) {
+//            Log.e("PictureDemo", "Exception in photoCallback", e);
+//        }
+
     }
 
     public static byte[] readByteArray(Context context, String fileName) throws IOException {
@@ -400,4 +449,38 @@ public final class FileUtil {
         bb.putInt(i);
         return bb.array();
     }
+
+    //http://stackoverflow.com/questions/13152736/how-to-generate-an-md5-checksum-for-a-file-in-android
+//    public static String getMD5Checksum(String filePath) {
+//        String returnVal = "";
+//        InputStream input = null;
+//        try {
+//            input = new FileInputStream(filePath);
+//            byte[] buffer = new byte[1024];
+//            MessageDigest md5Hash = MessageDigest.getInstance("MD5");
+//            int numRead = 0;
+//            while (numRead != 1) {
+//                numRead = input.read(buffer);
+//                if (numRead > 0) {
+//                    md5Hash.update(buffer, 0, numRead);
+//                }
+//            }
+//            input.close();
+//
+//            byte[] md5Bytes = md5Hash.digest();
+//            for (byte md5Byte : md5Bytes) {
+//                returnVal += Integer.toString((md5Byte & 0xff) + 0x100, 16).substring(1);
+//            }
+//        } catch (Exception e) {
+//            return null;
+//        } finally {
+//            if (input != null) {
+//                try {
+//                    input.close();
+//                } catch (Exception ignored) {
+//                }
+//            }
+//        }
+//        return returnVal.toUpperCase();
+//    }
 }

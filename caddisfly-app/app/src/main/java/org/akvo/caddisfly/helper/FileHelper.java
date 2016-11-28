@@ -20,6 +20,8 @@ import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.util.FileUtil;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class FileHelper {
 
@@ -27,11 +29,12 @@ public final class FileHelper {
      * The user created configuration file name
      */
     // Folders
-    public static final String ROOT_DIRECTORY = File.separator + "Akvo Caddisfly";
+    public static final String ROOT_DIRECTORY = File.separator + "Akvo Caddisfly Experiment";
     private static final String DIR_CALIBRATION = ROOT_DIRECTORY + File.separator + "calibration"; // Calibration files
     private static final String DIR_CONFIG = ROOT_DIRECTORY + File.separator + "custom-config"; // Calibration files
     private static final String DIR_IMAGE = ROOT_DIRECTORY + File.separator + "image"; // Calibration files
     private static final String DIR_CARD = ROOT_DIRECTORY + File.separator + "color-card"; // Calibration files
+    private static final String DIR_DOWNLOAD = "Download/Install";
 
     private FileHelper() {
     }
@@ -73,6 +76,9 @@ public final class FileHelper {
             case CARD:
                 path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false) + DIR_CARD;
                 break;
+            case DOWNLOAD:
+                path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), true) + File.separator + DIR_DOWNLOAD;
+                break;
             default:
                 path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), true);
         }
@@ -87,11 +93,48 @@ public final class FileHelper {
         return dir;
     }
 
+    public static void cleanInstallFolder(boolean keepLatest) {
+        File directory = FileHelper.getFilesDir(FileHelper.FileType.DOWNLOAD, "");
+        File[] files = directory.listFiles();
+
+        if (keepLatest) {
+            int latestVersion = 0;
+            int fileVersion;
+            File currentFile = null;
+            for (File file : files) {
+                Pattern pattern = Pattern.compile("(\\d+).apk");
+                Matcher matcher = pattern.matcher(file.getName());
+                if (matcher.find()) {
+                    fileVersion = Integer.parseInt(matcher.group(1));
+                    if (fileVersion > latestVersion) {
+                        latestVersion = fileVersion;
+                        if (currentFile != null) {
+                            //noinspection ResultOfMethodCallIgnored
+                            currentFile.delete();
+                        }
+                        currentFile = file;
+                    } else {
+                        //noinspection ResultOfMethodCallIgnored
+                        file.delete();
+                    }
+                } else {
+                    //noinspection ResultOfMethodCallIgnored
+                    file.delete();
+                }
+            }
+        } else {
+            for (File file : files) {
+                //noinspection ResultOfMethodCallIgnored
+                file.delete();
+            }
+        }
+    }
+
     /**
      * The different types of files
      */
     public enum FileType {
-        CALIBRATION, CONFIG, IMAGE, CARD
+        CALIBRATION, CONFIG, IMAGE, CARD, DOWNLOAD
     }
 
 }

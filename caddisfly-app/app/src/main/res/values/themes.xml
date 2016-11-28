@@ -18,32 +18,9 @@
 
     <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/launch_screen</item>
-        <item name="colorPrimaryDark">@color/orange_dark</item>
+        <item name="colorPrimaryDark">@color/akvo_dark_blue_dark</item>
     </style>
 
-    <style name="AppTheme.Orange" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/orange</item>
-        <item name="colorPrimaryDark">@color/orange_dark</item>
-        <item name="colorAccent">@color/cyan</item>
-        <item name="textColorPrimary">@color/white</item>
-        <item name="android:textColorPrimaryInverse">@color/white</item>
-        <item name="android:textColorSecondaryInverse">@color/white</item>
-        <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:windowBackground">@color/window_background</item>
-        <item name="cardBackgroundColor">@color/window_background</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="primaryButtonStyle">@style/AppTheme.Button.Cyan</item>
-        <item name="primaryButtonColor">@color/cyan</item>
-        <item name="secondaryButtonStyle">@style/AppTheme.Button.Cyan</item>
-        <item name="longButtonStyle">@style/AppTheme.Button.Blue</item>
-        <item name="longButtonText">@color/gray_text</item>
-        <item name="primaryBackgroundStyle">@color/blue</item>
-        <item name="toolbarHeight">@dimen/toolbar_height</item>
-        <item name="toolbarMargin">@dimen/toolbar_margin</item>
-        <item name="progressTint">@color/yellow</item>
-        <item name="progressTintInverse">@color/yellow</item>
-        <item name="listArrowRight">@drawable/arrow_right_light</item>
-    </style>
 
     <style name="AppTheme.OrangeBlue" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/akvo_orange</item>
@@ -108,6 +85,29 @@
         <item name="longButtonStyle">@style/AppTheme.Button.AkvoOrange</item>
         <item name="longButtonText">@color/orange_text</item>
         <item name="primaryBackgroundStyle">@color/akvo_orange</item>
+        <item name="toolbarHeight">@dimen/toolbar_height</item>
+        <item name="toolbarMargin">@dimen/toolbar_margin</item>
+        <item name="progressTint">@color/yellow</item>
+        <item name="listArrowRight">@drawable/arrow_right_dark</item>
+    </style>
+
+    <style name="AppTheme.Green" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/akvo_dark_blue</item>
+        <item name="colorPrimaryDark">@color/akvo_dark_blue_dark</item>
+        <item name="colorAccent">@color/dark_green</item>
+        <item name="textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <item name="android:textColorSecondaryInverse">@color/white</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:windowBackground">@color/orange_background</item>
+        <item name="cardBackgroundColor">@color/orange_card_background</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="primaryButtonColor">@color/dark_green</item>
+        <item name="primaryButtonStyle">@style/AppTheme.Button.Cyan</item>
+        <item name="secondaryButtonStyle">@style/AppTheme.Button.Cyan</item>
+        <item name="longButtonStyle">@style/AppTheme.Button.Green</item>
+        <item name="longButtonText">@color/gray_text</item>
+        <item name="primaryBackgroundStyle">@color/dark_green</item>
         <item name="toolbarHeight">@dimen/toolbar_height</item>
         <item name="toolbarMargin">@dimen/toolbar_margin</item>
         <item name="progressTint">@color/yellow</item>

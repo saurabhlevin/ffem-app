@@ -36,6 +36,8 @@ import org.akvo.caddisfly.preference.SettingsActivity;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.TestTypeListActivity;
 import org.akvo.caddisfly.sensor.ec.SensorActivity;
+import org.akvo.caddisfly.updater.UpdateCheckReceiver;
+import org.akvo.caddisfly.updater.UpdateHelper;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -48,6 +50,7 @@ public class MainActivity extends BaseActivity {
     private static final int AUTO_FINISH_DELAY_MILLIS = 4000;
     private final WeakRefHandler handler = new WeakRefHandler(this);
     private boolean mShouldClose = false;
+    private UpdateCheckReceiver updateCheckReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +114,20 @@ public class MainActivity extends BaseActivity {
         // TODO: remove upgrade code when obsolete
         upgradeFolder("FLUOR", SensorConstants.FLUORIDE_ID);
         upgradeFolder("CHLOR", SensorConstants.FREE_CHLORINE_ID);
+
+        // change the old name of custom config folder from config to custom-config
+        final File oldFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
+                + FileHelper.ROOT_DIRECTORY + File.separator + "config");
+        final File newFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
+                + FileHelper.ROOT_DIRECTORY + File.separator + "custom-config");
+
+        if (oldFolder.exists() && oldFolder.isDirectory()) {
+            //noinspection ResultOfMethodCallIgnored
+            oldFolder.renameTo(newFolder);
+        }
+
     }
+
 
     /**
      * Alert shown when a feature is not supported by the device
@@ -145,17 +161,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }
-
-        // change the old name of custom config folder from config to custom-config
-        final File oldFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
-                + FileHelper.ROOT_DIRECTORY + File.separator + "config");
-        final File newFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
-                + FileHelper.ROOT_DIRECTORY + File.separator + "custom-config");
-
-        if (oldFolder.exists() && oldFolder.isDirectory()) {
-            //noinspection ResultOfMethodCallIgnored
-            oldFolder.renameTo(newFolder);
-        }
     }
 
     @Override
@@ -179,6 +184,12 @@ public class MainActivity extends BaseActivity {
             PreferencesUtil.setBoolean(this, R.string.themeChangedKey, false);
             handler.sendEmptyMessage(0);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateCheckReceiver = UpdateHelper.checkUpdate(this, true);
     }
 
     /**
@@ -243,6 +254,17 @@ public class MainActivity extends BaseActivity {
         AlertUtil.showMessage(this, R.string.notFound, message);
     }
 
+    @Override
+    public void onDestroy() {
+        try {
+            if (updateCheckReceiver != null) {
+                unregisterReceiver(updateCheckReceiver);
+            }
+        } catch (Exception ignored) {
+        }
+        super.onDestroy();
+    }
+
     /**
      * Handler to restart the app after language has been changed
      */
@@ -261,6 +283,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
 
 }
 

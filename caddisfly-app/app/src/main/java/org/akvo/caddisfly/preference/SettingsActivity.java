@@ -85,15 +85,19 @@ public class SettingsActivity extends BaseActivity
                 .replace(R.id.layoutContent2, new OtherPreferenceFragment())
                 .commit();
 
+        getFragmentManager().beginTransaction()
+                .replace(R.id.layoutContent3, new TimelapsePreferenceFragment())
+                .commit();
+
         if (AppPreferences.isDiagnosticMode()) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.layoutContent3, new DiagnosticPreferenceFragment())
+                    .add(R.id.layoutContent4, new DiagnosticPreferenceFragment())
                     .commit();
         }
 
         if (AppPreferences.isDiagnosticMode()) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.layoutContent4, new DiagnosticUserPreferenceFragment())
+                    .add(R.id.layoutContent5, new DiagnosticUserPreferenceFragment())
                     .commit();
         }
 

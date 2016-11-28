@@ -28,11 +28,15 @@ import android.widget.ListView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.updater.UpdateCheckReceiver;
+import org.akvo.caddisfly.updater.UpdateHelper;
 import org.akvo.caddisfly.util.ListViewUtil;
+import org.akvo.caddisfly.util.PreferencesUtil;
 
 public class OtherPreferenceFragment extends PreferenceFragment {
 
     private ListView list;
+    private UpdateCheckReceiver updateCheckReceiver;
 
     public OtherPreferenceFragment() {
         // Required empty public constructor
@@ -53,6 +57,18 @@ public class OtherPreferenceFragment extends PreferenceFragment {
             aboutPreference.setSummary(CaddisflyApp.getAppVersion());
         }
 
+
+        Preference updatePreference = findPreference("checkUpdate");
+        if (updatePreference != null) {
+            updatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    PreferencesUtil.setLong(getActivity(), R.string.lastUpdateCheckKey, -1);
+                    updateCheckReceiver = UpdateHelper.checkUpdate(getActivity(), true);
+                    return true;
+                }
+            });
+        }
+
         return rootView;
     }
 
@@ -67,5 +83,17 @@ public class OtherPreferenceFragment extends PreferenceFragment {
         super.onActivityCreated(savedInstanceState);
         ListViewUtil.setListViewHeightBasedOnChildren(list, 0);
     }
+
+    @Override
+    public void onDestroy() {
+        try {
+            if (updateCheckReceiver != null) {
+                getActivity().unregisterReceiver(updateCheckReceiver);
+            }
+        } catch (Exception ignored) {
+        }
+        super.onDestroy();
+    }
+
 
 }

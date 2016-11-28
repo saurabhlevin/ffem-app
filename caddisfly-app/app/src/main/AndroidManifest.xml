@@ -21,6 +21,9 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_DOWNLOAD_COMPLETED_INTENTS" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -42,7 +45,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.Orange"
+        android:theme="@style/AppTheme.Green"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <activity
             android:name=".ui.MainActivity"
@@ -142,6 +145,16 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="nosensor" />
 
+        <activity
+            android:name=".sensor.turbidity.AnalyseActivity"
+            android:parentActivityName=".preference.SettingsActivity"
+            android:screenOrientation="nosensor" />
+
+        <activity
+            android:name=".updater.UpdateActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Translucent" />
+
         <!-- StripTest -->
         <activity
             android:name=".sensor.colorimetry.strip.ui.BrandInfoActivity"
@@ -165,6 +178,7 @@
             </intent-filter>
         </activity>
         <!-- end StripTest -->
+
         <service
             android:name=".usb.UsbService"
             android:enabled="true" />
@@ -173,6 +187,17 @@
             android:name=".sensor.turbidity.TurbidityStartReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <service android:name=".updater.UpdateIntentService" />
+
+        <receiver
+            android:name=".updater.DownloadReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

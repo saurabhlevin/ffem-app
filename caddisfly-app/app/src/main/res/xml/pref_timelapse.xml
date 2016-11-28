@@ -1,0 +1,38 @@
+<!--
+  ~ Copyright (C) Stichting Akvo (Akvo Foundation)
+  ~
+  ~ This file is part of Akvo Caddisfly
+  ~
+  ~ Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
+  ~ the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
+  ~ either version 3 of the License or any later version.
+  ~
+  ~ Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Affero General Public License included below for more details.
+  ~
+  ~ The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <org.akvo.caddisfly.preference.PreferenceCategoryCustom android:title="@string/coliforms">
+        <Preference
+            android:key="startTurbidityTest"
+            android:title="Coliform Test"
+            android:icon="@drawable/ic_bug_report_black_24dp">
+            <intent
+                android:data="df3d1009-2112-4d95-a6f9-fdc4b5633ec9"
+                android:targetClass="org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity"
+                android:targetPackage="org.akvo.caddisfly.experiment" />
+        </Preference>
+        <Preference
+            android:key="analyzeColiform"
+            android:title="View Coliform Report"
+            android:icon="@drawable/ic_insert_chart_black_24dp">
+            <intent
+                android:targetClass="org.akvo.caddisfly.sensor.turbidity.AnalyseActivity"
+                android:targetPackage="org.akvo.caddisfly.experiment" />
+        </Preference>
+
+    </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
+</PreferenceScreen>

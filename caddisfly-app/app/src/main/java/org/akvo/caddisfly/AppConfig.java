@@ -47,7 +47,19 @@ public final class AppConfig {
     /**
      * The sound volume for the beeps and other sound effects
      */
-    public static final float SOUND_EFFECTS_VOLUME = 0.99f;
+    public static final float SOUND_EFFECTS_VOLUME = 0.01f;
+
+    /**
+     * The url to check for update version
+     */
+    public static final String UPDATE_CHECK_URL
+            = "http://caddisfly.ternup.com/app/deviceapprest?action=getLatestVersion&deviceType=androidPhone&appCode=caddisflyapp";
+
+    /**
+     * Update check interval
+     */
+    public static final long UPDATE_CHECK_INTERVAL = 86400000; // 24 hours
+
 
     private AppConfig() {
     }
