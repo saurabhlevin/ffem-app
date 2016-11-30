@@ -94,6 +94,4 @@ public class OtherPreferenceFragment extends PreferenceFragment {
         }
         super.onDestroy();
     }
-
-
 }

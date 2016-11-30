@@ -91,6 +91,7 @@
                 android:minHeight="80dp"
                 android:paddingEnd="16dp"
                 android:paddingStart="22dp"
+                android:layout_marginBottom="-20dp"
                 android:text="@string/calibrate"
                 android:textAlignment="viewStart"
                 android:textColor="?longButtonText"

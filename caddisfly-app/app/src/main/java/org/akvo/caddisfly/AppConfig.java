@@ -47,7 +47,7 @@ public final class AppConfig {
     /**
      * The sound volume for the beeps and other sound effects
      */
-    public static final float SOUND_EFFECTS_VOLUME = 0.01f;
+    public static final float SOUND_EFFECTS_VOLUME = 0.99f;
 
     /**
      * The url to check for update version

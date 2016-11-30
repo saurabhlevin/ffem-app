@@ -255,6 +255,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            if (updateCheckReceiver != null) {
+                unregisterReceiver(updateCheckReceiver);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Override
     public void onDestroy() {
         try {
             if (updateCheckReceiver != null) {
@@ -283,7 +294,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
 
 }
 

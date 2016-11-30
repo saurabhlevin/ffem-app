@@ -29,7 +29,6 @@ import android.net.Uri;
 import org.akvo.caddisfly.AppConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.util.ApiUtil;
-import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
@@ -39,6 +38,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class UpdateHelper {
+
+    static UpdateCheckReceiver receiver;
 
     public static UpdateCheckReceiver checkUpdate(final Context context, boolean showMessage) {
 
@@ -138,7 +139,7 @@ public final class UpdateHelper {
         if (NetUtil.isNetworkAvailable(context)) {
             IntentFilter filter = new IntentFilter(UpdateCheckReceiver.PROCESS_RESPONSE);
             filter.addCategory(Intent.CATEGORY_DEFAULT);
-            UpdateCheckReceiver receiver = new UpdateCheckReceiver();
+            receiver = new UpdateCheckReceiver();
             context.registerReceiver(receiver, filter);
             context.startService(new Intent(context, UpdateIntentService.class));
             return receiver;
@@ -146,7 +147,7 @@ public final class UpdateHelper {
         return null;
     }
 
-    public static void installUpdate(final Context context, final File file) {
+    static void installUpdate(final Context context, final File file) {
 
         //long downloadReference = PreferencesUtil.getLong(context, "downloadReference");
         //if (downloadReference == referenceId) {
@@ -170,26 +171,26 @@ public final class UpdateHelper {
                     //String fileChecksum = FileUtil.getMD5Checksum(file.getPath());
                     //String checksum = PreferencesUtil.getString(context, "updateChecksum", "");
                     //if (fileChecksum == null || !fileChecksum.equalsIgnoreCase(checksum)) {
-                        //Delete the file if the checksum does not match
-                        // noinspection ResultOfMethodCallIgnored
-                      //  file.delete();
+                    //Delete the file if the checksum does not match
+                    // noinspection ResultOfMethodCallIgnored
+                    //  file.delete();
                     //} else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle(R.string.update);
-                        builder.setMessage(R.string.updateAvailable)
-                                .setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                                        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        context.startActivity(intent);
-                                    }
-                                })
-                                .setNegativeButton(R.string.remindLater, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                    }
-                                });
-                        builder.create().show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(R.string.update);
+                    builder.setMessage(R.string.updateAvailable)
+                            .setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton(R.string.remindLater, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    builder.create().show();
                     //}
                 } else {
                     //An older install file which can be deleted
@@ -199,5 +200,15 @@ public final class UpdateHelper {
             }
         }
         //}
+    }
+
+    public static void Pause(Context context) {
+        if (receiver != null) {
+            try {
+                context.unregisterReceiver(receiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

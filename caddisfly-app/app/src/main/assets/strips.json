@@ -330,7 +330,6 @@
       "length": 5.02,
       "height": 5.02,
       "unit": "mm",
-      "experimental": "true",
       "patches": [
         {
           "patchDesc":"Phosphorous",
@@ -375,7 +374,6 @@
       "length": 74,
       "height": 6,
       "unit": "mm",
-      "experimental": "true",
       "patches": [
         {
           "patchDesc":"Potassium",
@@ -412,45 +410,92 @@
     {
       "name": "Ammonia",
       "uuid": "2684f3f5-1c40-4cb2-a38d-0fa9b5de8829",
-      "calibration": "measured on __-__-2016 using X-Rite iPro2",
+      "calibration": "measured on 29-11-2016 using X-Rite iPro2",
       "brand": "HACH 2755325",
       "numPatch": 1,
       "groupingType":"INDIVIDUAL",
       "illuminant":"D65-2deg",
-      "length": 82.6,
-      "height": 5.2,
+      "length": 82.50,
+      "height": 5,
       "unit": "mm",
-      "experimental": "true",
       "patches": [
         {
           "patchDesc":"Ammonia",
-          "patchPos":3.3,
+          "patchPos":3.4,
           "patchWidth":6,
           "id":1,
           "colours":[
             {
               "value": 0,
-              "lab":[85.33,-1.37,67.40]
+              "lab":[79.42,-5.60,30.36]
             },
             {
               "value": 0.25,
-              "lab":[85.38,-15.02,70.58]
+              "lab":[79.34,-7.37,26.41]
             },
             {
               "value": 0.5,
-              "lab":[74.27,-20.22,60.02]
+              "lab":[75.87,-8.23,23.86]
             },
             {
               "value": 1,
-              "lab":[65.75,-28.92,48.58]
+              "lab":[74.98,-9.30,19.48]
             },
             {
               "value": 3,
-              "lab":[52.56,-36.84,42.93]
+              "lab":[72.02,-10.50,15.62]
             },
             {
               "value": 6,
-              "lab":[40.50,-36.91,28.32]
+              "lab":[71.71,-10.58,11.71]
+            }
+          ],
+          "timeLapse":0,
+          "unit": "ppm"
+        }
+      ]
+    },
+    {
+      "name": "Ammonia - Side B",
+      "uuid": "dda546bd-085d-440a-b043-4409bb477766",
+      "calibration": "measured on 29-11-2016 using X-Rite iPro2",
+      "brand": "HACH 2755325",
+      "numPatch": 1,
+      "groupingType":"INDIVIDUAL",
+      "illuminant":"D65-2deg",
+      "length": 82.50,
+      "height": 5,
+      "unit": "mm",
+      "patches": [
+        {
+          "patchDesc":"Ammonia - Side B",
+          "patchPos":3.4,
+          "patchWidth":6,
+          "id":1,
+          "colours":[
+            {
+              "value": 0,
+              "lab":[72.72,-4.86,36.95]
+            },
+            {
+              "value": 0.25,
+              "lab":[72.66,-5.31,37.20]
+            },
+            {
+              "value": 0.5,
+              "lab":[70.03,-7.08,31.62]
+            },
+            {
+              "value": 1,
+              "lab":[67.89,-8.74,27.69]
+            },
+            {
+              "value": 3,
+              "lab":[66.01,-10.08,23.05]
+            },
+            {
+              "value": 6,
+              "lab":[64.50,-10.84,19.44]
             }
           ],
           "timeLapse":0,

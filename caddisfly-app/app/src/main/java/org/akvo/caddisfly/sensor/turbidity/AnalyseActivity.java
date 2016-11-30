@@ -1,6 +1,7 @@
 package org.akvo.caddisfly.sensor.turbidity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.FileUtil;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -48,7 +52,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class AnalyseActivity extends BaseActivity {
 
-    private static final String TAG = "AnalyseActivity";
+//    private static final String TAG = "AnalyseActivity";
 
     private static final int PERMISSION_ALL = 1;
 
@@ -64,9 +68,68 @@ public class AnalyseActivity extends BaseActivity {
     private final List<Fragment> fragments = new ArrayList<>();
     String path;
     AnalyseActivity.PagerAdapter pagerAdapter;
-    private ViewPager mViewPager;
+    Activity mActivity;
+
+    private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS:
+
+                    String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+                    if (!ApiUtil.hasPermissions(getBaseContext(), permissions)) {
+                        ActivityCompat.requestPermissions(mActivity, permissions, PERMISSION_ALL);
+                    } else {
+                        startAnalysis();
+                    }
+
+                    break;
+                default:
+                    super.onManagerConnected(status);
+                    break;
+            }
+        }
+    };
 
     private static Integer getColor(String filename, Point centerPoint) throws IOException {
+//        File file = new File(filename);
+//        ImageInputStream is = ImageIO.createImageInputStream(file);
+//        Iterator iterator = ImageIO.getImageReaders(is);
+//
+//        if (!iterator.hasNext()) {
+//            System.out.println("Cannot load the specified file " + file);
+//            System.exit(1);
+//        }
+//        ImageReader imageReader = (ImageReader) iterator.next();
+//        imageReader.setInput(is);
+//
+//        BufferedImage image = imageReader.read(0);
+//        int x = (int) centerPoint.x;
+//        int y = (int) centerPoint.y;
+//
+//        BufferedImage croppedImage = image.getSubimage(x - 25, y - 25, 50, 50);
+//
+//        int height = croppedImage.getHeight();
+//        int width = croppedImage.getWidth();
+//
+//        Map<Integer, Integer> m = new HashMap<>();
+//        for (int i = 0; i < width; i++) {
+//            for (int j = 0; j < height; j++) {
+//                int rgb = croppedImage.getRGB(i, j);
+//                int[] rgbArr = getRGBArr(rgb);
+//                // Filter out grays....
+//                if (!isGray(rgbArr)) {
+//                    Integer counter = m.get(rgb);
+//                    if (counter == null)
+//                        counter = 0;
+//                    counter++;
+//                    m.put(rgb, counter);
+//                }
+//            }
+//        }
+//        //String colourHex =
+//        return getMostCommonColour(m);
         return 0;
     }
 
@@ -94,27 +157,6 @@ public class AnalyseActivity extends BaseActivity {
 
     }
 
-    private static int[] getRGBArr(int pixel) {
-        int alpha = (pixel >> 24) & 0xff;
-        int red = (pixel >> 16) & 0xff;
-        int green = (pixel >> 8) & 0xff;
-        int blue = (pixel) & 0xff;
-        return new int[]{red, green, blue};
-
-    }
-
-    private static boolean isGray(int[] rgbArr) {
-        int rgDiff = rgbArr[0] - rgbArr[1];
-        int rbDiff = rgbArr[0] - rgbArr[2];
-        // Filter out black, white and grays...... (tolerance within 10 pixels)
-        int tolerance = 3;
-        if (rgDiff > tolerance || rgDiff < -tolerance)
-            if (rbDiff > tolerance || rbDiff < -tolerance) {
-                return false;
-            }
-        return true;
-    }
-
     private static boolean isGreen(int color, int compareColor, String media) {
         float[] hsb = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsb);
@@ -136,6 +178,27 @@ public class AnalyseActivity extends BaseActivity {
         }
         return false;
     }
+
+//    private static int[] getRGBArr(int pixel) {
+//        int alpha = (pixel >> 24) & 0xff;
+//        int red = (pixel >> 16) & 0xff;
+//        int green = (pixel >> 8) & 0xff;
+//        int blue = (pixel) & 0xff;
+//        return new int[]{red, green, blue};
+//
+//    }
+//
+//    private static boolean isGray(int[] rgbArr) {
+//        int rgDiff = rgbArr[0] - rgbArr[1];
+//        int rbDiff = rgbArr[0] - rgbArr[2];
+//        // Filter out black, white and grays...... (tolerance within 10 pixels)
+//        int tolerance = 3;
+//        if (rgDiff > tolerance || rgDiff < -tolerance)
+//            if (rbDiff > tolerance || rbDiff < -tolerance) {
+//                return false;
+//            }
+//        return true;
+//    }
 
     public static void saveToFile(File folder, String name, String data) {
         if (!folder.exists()) {
@@ -168,9 +231,17 @@ public class AnalyseActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyse);
+
+        mActivity = this;
 
         setTitle("Coliform Result");
 
@@ -184,13 +255,6 @@ public class AnalyseActivity extends BaseActivity {
 //            @Override
 //            public void onClick(View view) {
 
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        if (!ApiUtil.hasPermissions(this, permissions)) {
-            ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
-        } else {
-            startAnalysis();
-        }
     }
 
     @Override
@@ -266,11 +330,12 @@ public class AnalyseActivity extends BaseActivity {
 
                 }
             } else {
+                Toast.makeText(this, "No files to analyze", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -287,12 +352,12 @@ public class AnalyseActivity extends BaseActivity {
         boolean colorChangeFound = false;
         int fileCount = 0;
         //int incubationTime = 0;
-        int confirmed = 0;
+        //int confirmed = 0;
 
         centerPoint = null;
 
-        int timeAtBlurriness = 0;
-        double maxDifference = 0;
+        int timeAtBlurriness;
+        //double maxDifference = 0;
 
         try {
             if (folder.exists()) {
@@ -304,7 +369,7 @@ public class AnalyseActivity extends BaseActivity {
 
                 int testNumber = Integer.valueOf(details[0]);
                 String reportDate = details[1];
-                String reportTime = details[2];
+                //String reportTime = details[2];
                 String phone = details[3];
                 String chamber = details[4];
                 String media = details[5];
@@ -337,8 +402,8 @@ public class AnalyseActivity extends BaseActivity {
 
                 List<ImageInfo> imageInfos = new ArrayList<>();
 
-                int previousResultValue = 0;
-                Mat destInitialMat = null;
+                //int previousResultValue = 0;
+                //Mat destInitialMat = null;
 
 
                 File mainFolder = new File(folder.getAbsolutePath() + File.separator + "input");
@@ -513,25 +578,25 @@ public class AnalyseActivity extends BaseActivity {
 
                         int hours = timeAtBlurriness / 60;
                         int minutes = timeAtBlurriness % 60;
-                        incubationHours = String.format("%d:%02d", hours, minutes);
+                        incubationHours = String.format(Locale.US, "%d:%02d", hours, minutes);
                     }
 
-                    double distance = 0;
-                    try {
-                        endColor = getColor(path + folder.getName() + File.separator + imageInfo.getImageName(), centerPoint);
-                        int compareColor = Color.rgb(97, 58, 1);
-                        // distance = getColorDistanceRgb(startColor, endColor);
-                        distance = getColorDistanceRgb(compareColor, endColor);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                    double distance = 0;
+//                    try {
+//                        endColor = getColor(path + folder.getName() + File.separator + imageInfo.getImageName(), centerPoint);
+//                        int compareColor = Color.rgb(97, 58, 1);
+//                        // distance = getColorDistanceRgb(startColor, endColor);
+//                        distance = getColorDistanceRgb(compareColor, endColor);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                     if (!colorChangeFound && ((found && isGreen(endColor, startColor, media) && isTurbid) || i == imageInfos.size() - 1)) {
 
                         colorChangeFound = true;
 
                         int hours = totalDiff / 60;
                         int minutes = totalDiff % 60;
-                        String colorChangeTime = String.format("%d:%02d", hours, minutes);
+                        String colorChangeTime = String.format(Locale.US, "%d:%02d", hours, minutes);
 
                         html2.append("<tr>");
                         html2.append("<td>").append(testNumber).append("</td>");
@@ -623,7 +688,7 @@ public class AnalyseActivity extends BaseActivity {
 
                     int hours = totalDiff / 60;
                     int minutes = totalDiff % 60;
-                    String totalDiffHours = String.format("%d:%02d", hours, minutes);
+                    String totalDiffHours = String.format(Locale.US, "%d:%02d", hours, minutes);
 
 
                     html.append("<tr>");
@@ -653,7 +718,7 @@ public class AnalyseActivity extends BaseActivity {
                 int hours = totalTime / 60;
                 int minutes = totalTime % 60;
 
-                html.append("<tfoot><tr><td>").append(String.format("%d:%02d", hours, minutes)).append("</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot>");
+                html.append("<tfoot><tr><td>").append(String.format(Locale.US, "%d:%02d", hours, minutes)).append("</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot>");
                 html.append("</table></body></html>");
 
                 saveToFile(folder, "report.html", scriptStart + data.toString() + scriptEnd + style + reportTitle + html.toString());
@@ -695,6 +760,12 @@ public class AnalyseActivity extends BaseActivity {
         return null;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
     private static class ImageInfo {
 
         private String imageName;
@@ -709,11 +780,11 @@ public class AnalyseActivity extends BaseActivity {
             this.count = count;
         }
 
-        public String getImageName() {
+        String getImageName() {
             return imageName;
         }
 
-        public void setImageName(String imageName) {
+        void setImageName(String imageName) {
             this.imageName = imageName;
         }
 
@@ -745,7 +816,7 @@ public class AnalyseActivity extends BaseActivity {
         }
     }
 
-    public class PagerAdapter extends FragmentStatePagerAdapter {
+    private class PagerAdapter extends FragmentStatePagerAdapter {
 
         PagerAdapter(FragmentManager fm) {
             super(fm);
