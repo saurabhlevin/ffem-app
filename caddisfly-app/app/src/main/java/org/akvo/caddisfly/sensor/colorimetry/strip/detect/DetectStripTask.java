@@ -18,7 +18,6 @@ package org.akvo.caddisfly.sensor.colorimetry.strip.detect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -37,7 +36,6 @@ import org.akvo.caddisfly.util.FileUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -45,7 +43,6 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * Created by linda on 11/18/15.
@@ -173,11 +170,11 @@ public class DetectStripTask extends AsyncTask<Intent, Void, Void> {
                         }
 
 //                        save warped image to external storage
-                        Mat rgb = new Mat();
-                        Imgproc.cvtColor(warpMat, rgb, Imgproc.COLOR_Lab2RGB);
-                        Bitmap bitmap = Bitmap.createBitmap(rgb.width(), rgb.height(), Bitmap.Config.ARGB_8888);
-                        Utils.matToBitmap(rgb, bitmap);
-                        FileUtil.writeBitmapToExternalStorage(bitmap, "/warp", UUID.randomUUID().toString() + ".png");
+//                        Mat rgb = new Mat();
+//                        Imgproc.cvtColor(warpMat, rgb, Imgproc.COLOR_Lab2RGB);
+//                        Bitmap bitmap = Bitmap.createBitmap(rgb.width(), rgb.height(), Bitmap.Config.ARGB_8888);
+//                        Utils.matToBitmap(rgb, bitmap);
+//                        FileUtil.writeBitmapToExternalStorage(bitmap, "/warp", UUID.randomUUID().toString() + ".png");
                         //Bitmap.createScaledBitmap(bitmap, BITMAP_SCALED_WIDTH, BITMAP_SCALED_HEIGHT, false);
 
                         //calibrate

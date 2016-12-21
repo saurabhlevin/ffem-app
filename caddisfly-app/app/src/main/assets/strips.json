@@ -227,45 +227,45 @@
     {
       "name": "pH",
       "uuid": "debbbf5e-fe0c-4b9c-be1f-6ed8142b6b07",
-      "calibration": "measured on 23-08-2016 using X-Rite iPro2",
+      "calibration": "measured on 16-12-2016 using X-Rite iPro2, Reagecon Buffer solutions Exp. Date: 28-06-2016",
       "brand": "HACH 27456",
       "numPatch": 1,
       "groupingType":"INDIVIDUAL",
       "illuminant":"D65-2deg",
-      "length": 82.6,
-      "height": 5.2,
+      "length": 82.7,
+      "height": 5,
       "unit": "mm",
       "background": "#60bbc2",
       "patches": [
         {
           "patchDesc":"pH",
-          "patchPos":3.3,
+          "patchPos":3.6,
           "patchWidth":6,
           "id":1,
           "colours":[
             {
               "value": 4,
-              "lab":[64.88,-7.18,41.55]
+              "lab":[65.86,-6.20,38.88]
             },
             {
               "value": 5,
-              "lab":[55.35,-17.85,20.86]
+              "lab":[58.43,-16.68,20.57]
             },
             {
               "value": 6,
-              "lab":[48.23,-19.95,-0.20]
+              "lab":[51.42,-18.74,1.80]
             },
             {
               "value": 7,
-              "lab":[43.87,-13.70,-10.12]
+              "lab":[45.94,-13.70,-8.27]
             },
             {
               "value": 8,
-              "lab":[38.71,5.99,-26.43]
+              "lab":[42.09,4.38,-23.57]
             },
             {
               "value": 9,
-              "lab":[35.62,17.78,-36.01]
+              "lab":[39.86,14.81,-32.57]
             }
           ],
           "timeLapse":15,
@@ -364,6 +364,54 @@
       ]
     },
     {
+      "name": "Phosphate",
+      "uuid": "39e7ea7e-9884-407d-a99a-ac3b4d9c9599",
+      "calibration": "measured on 07-12-2016 using X-Rite iPro2",
+      "brand": "Quantofix 91320",
+      "numPatch": 1,
+      "groupingType":"INDIVIDUAL",
+      "illuminant":"D65-2deg",
+      "length": 95.2,
+      "height": 5.5,
+      "unit": "mm",
+      "patches": [
+        {
+          "patchDesc":"Phosphate",
+          "patchPos":5,
+          "patchWidth":6,
+          "id":1,
+          "colours":[
+            {
+              "value": 0,
+              "lab":[89.28,-4.67,1.61]
+            },
+            {
+              "value": 3,
+              "lab":[84.82,-11.54,-0.02]
+            },
+            {
+              "value": 10,
+              "lab":[79.03,-18.32,-4.59]
+            },
+            {
+              "value": 25,
+              "lab":[68.00,-25.37,-8.72]
+            },
+            {
+              "value": 50,
+              "lab":[59.41,-26.55,-10.43]
+            },
+            {
+              "value": 100,
+              "lab":[47.95,-26.89,-11.32]
+            }
+          ],
+          "timeLapse":0,
+          "unit": "ppm"
+        }
+      ]
+    },
+    {
       "name": "Potassium",
       "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
       "calibration": "measured on 18-11-2016 using X-Rite iPro2",
@@ -415,13 +463,14 @@
       "numPatch": 1,
       "groupingType":"INDIVIDUAL",
       "illuminant":"D65-2deg",
-      "length": 82.50,
+      "length": 5,
       "height": 5,
       "unit": "mm",
+      "isTransparent":"true",
       "patches": [
         {
           "patchDesc":"Ammonia",
-          "patchPos":3.4,
+          "patchPos":2.5,
           "patchWidth":6,
           "id":1,
           "colours":[
@@ -463,13 +512,14 @@
       "numPatch": 1,
       "groupingType":"INDIVIDUAL",
       "illuminant":"D65-2deg",
-      "length": 82.50,
+      "length": 5,
       "height": 5,
       "unit": "mm",
+      "isTransparent":"true",
       "patches": [
         {
           "patchDesc":"Ammonia - Side B",
-          "patchPos":3.4,
+          "patchPos":2.5,
           "patchWidth":6,
           "id":1,
           "colours":[

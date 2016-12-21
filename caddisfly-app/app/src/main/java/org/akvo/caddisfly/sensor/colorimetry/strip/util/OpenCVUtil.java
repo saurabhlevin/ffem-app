@@ -241,7 +241,7 @@ public final class OpenCVUtil {
             colCount[i] = colTotal;
         }
 
-        stripAreaRect = getStripRectangle(binaryStrip, colCount, brand.getStripLength(), ratioW);
+        stripAreaRect = getStripRectangle(binaryStrip, colCount, brand.getStripLength(), ratioW, brand.isTransparent());
 
         Mat resultStrip = colorStrip.submat(stripAreaRect).clone();
 
@@ -257,7 +257,8 @@ public final class OpenCVUtil {
         return resultStrip;
     }
 
-    private static Rect getStripRectangle(Mat binaryStrip, double[] colCount, double stripLength, double ratioW) {
+    private static Rect getStripRectangle(Mat binaryStrip, double[] colCount, double stripLength,
+                                          double ratioW, boolean isTransparent) {
         // threshold is that half of the rows in a column should be white
         int threshold = binaryStrip.rows() / 2;
 
@@ -275,23 +276,28 @@ public final class OpenCVUtil {
         //use known length of strip to determine right side
         double posRight = posLeft + (stripLength * ratioW);
 
-        found = false;
-        // moving from the right, determine the first point that crosses the threshold
-        int posRightTemp = binaryStrip.cols() - 1;
-        while (!found && posRightTemp > 0) {
-            if (colCount[posRightTemp] > threshold) {
-                found = true;
-            } else {
-                posRightTemp--;
-            }
-        }
+        // try finding the patch starting from right if it is not a transparent strip
+        if (!isTransparent) {
 
-        // if there is a big difference in the right position determined by the two above methods
-        // then ignore the first method above and determine the left position by second method only
-        if (Math.abs(posRightTemp - posRight) > 5) {
-            // use known length of strip to determine left side
-            posLeft = posRightTemp - (stripLength * ratioW);
-            posRight = posRightTemp;
+            found = false;
+
+            // moving from the right, determine the first point that crosses the threshold
+            int posRightTemp = binaryStrip.cols() - 1;
+            while (!found && posRightTemp > 0) {
+                if (colCount[posRightTemp] > threshold) {
+                    found = true;
+                } else {
+                    posRightTemp--;
+                }
+            }
+
+            // if there is a big difference in the right position determined by the two above methods
+            // then ignore the first method above and determine the left position by second method only
+            if (Math.abs(posRightTemp - posRight) > 5) {
+                // use known length of strip to determine left side
+                posLeft = posRightTemp - (stripLength * ratioW);
+                posRight = posRightTemp;
+            }
         }
 
         // cut out final strip

@@ -1,0 +1,26 @@
+<!--
+  ~  Copyright (C) Stichting Akvo (Akvo Foundation)
+  ~
+  ~  This file is part of Akvo Caddisfly
+  ~
+  ~  Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
+  ~  the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
+  ~  either version 3 of the License or any later version.
+  ~
+  ~  Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~  See the GNU Affero General Public License included below for more details.
+  ~
+  ~  The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".sensor.colorimetry.strip.ui.BrandInfoActivity">
+    <item
+        android:id="@+id/actionColor"
+        android:icon="@drawable/ic_color_lens_black_24dp"
+        android:title="Test Color"
+        app:showAsAction="always" />
+</menu>

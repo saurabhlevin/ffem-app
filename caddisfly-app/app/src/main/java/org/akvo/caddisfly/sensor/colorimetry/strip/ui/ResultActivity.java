@@ -458,7 +458,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 colors = patches.get(patchNum).getColors();
 
                 try {
-                    resultValue = ResultUtil.calculateResultSingle(colorValueLab, colors, id);
+                    resultValue = ResultUtil.calculateResultSingle(colorValueLab, colors, id, false);
                 } catch (Exception e) {
                     resultValue = Double.NaN;
                 }

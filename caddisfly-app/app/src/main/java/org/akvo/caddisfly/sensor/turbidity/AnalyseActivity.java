@@ -531,7 +531,7 @@ public class AnalyseActivity extends BaseActivity {
                     if (i == 2) {
                         firstImageName = imageInfo.getImageName();
                         firstImageValue = imageInfo.getCount();
-                    } else if (i < 20 && firstImageValue < imageInfo.getCount()) {
+                    } else if (i < 15 && firstImageValue < imageInfo.getCount()) {
                         firstImageValue = imageInfo.getCount();
                     }
 
@@ -553,7 +553,7 @@ public class AnalyseActivity extends BaseActivity {
                     totalDiff += diff;
 
 
-                    boolean isTurbid = i > 20 && (firstImageValue < 50000 && (imageInfo.getCount() - firstImageValue) > 7700)
+                    boolean isTurbid = i > 15 && (firstImageValue < 50000 && (imageInfo.getCount() - firstImageValue) > 7700)
                             || (firstImageValue > 5000 && imageInfo.getCount() < 2000)
                             || (firstImageValue > 50000 && (imageInfo.getCount() - firstImageValue) > 6700)
                             || (firstImageValue > 10000 && firstImageValue < 50000 && imageInfo.getCount() < 4000)

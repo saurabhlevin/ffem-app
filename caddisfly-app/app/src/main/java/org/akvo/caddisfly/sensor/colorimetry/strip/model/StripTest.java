@@ -159,6 +159,7 @@ public class StripTest {
     public class Brand {
         private final List<Patch> patches = new ArrayList<>();
         private final String uuid;
+        private boolean isTransparent;
         //        private String background;
         private String name;
         private String brandDescription;
@@ -197,6 +198,7 @@ public class StripTest {
                                 image = strip.has(SensorConstants.IMAGE)
                                         ? strip.getString(SensorConstants.IMAGE) : brandDescription.replace(" ", "-");
                                 imageScale = strip.has("imageScale") ? strip.getString("imageScale") : "";
+                                isTransparent = strip.has("isTransparent") && strip.getBoolean("isTransparent");
 
                                 if (strip.has("instructions")) {
                                     instructions = strip.getJSONArray("instructions");
@@ -319,6 +321,10 @@ public class StripTest {
 
         public String getImageScale() {
             return imageScale;
+        }
+
+        public boolean isTransparent() {
+            return isTransparent;
         }
 
 //        public String getBackground() {
