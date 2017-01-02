@@ -64,6 +64,7 @@ public class TestInfo {
     private String shortCode;
     private int hueTrend;
     private double[] rangeValues;
+    private String deviceId;
 
     public TestInfo(HashMap names, TestType testType, String[] swatchArray,
                     String[] defaultColorsArray, String[] dilutionsArray,
@@ -335,6 +336,14 @@ public class TestInfo {
 
     public void setHueTrend(int hueTrend) {
         this.hueTrend = hueTrend;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public double[] getRangeValues() {
