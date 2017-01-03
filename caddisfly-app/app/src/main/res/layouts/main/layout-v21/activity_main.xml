@@ -69,7 +69,7 @@
                 android:theme="?longButtonStyle" />
 
             <Button
-                android:id="@+id/buttonEcSensor"
+                android:id="@+id/buttonSensors"
                 style="@style/Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
                 android:minHeight="80dp"
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
-                android:text="@string/electricalConductivity"
+                android:text="@string/sensors"
                 android:textAlignment="viewStart"
                 android:textColor="?longButtonText"
                 android:theme="?longButtonStyle" />

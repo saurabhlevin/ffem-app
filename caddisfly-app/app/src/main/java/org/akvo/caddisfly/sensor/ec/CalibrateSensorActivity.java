@@ -54,13 +54,14 @@ import java.util.Set;
 
 public class CalibrateSensorActivity extends BaseActivity implements EditSensorIdentity.OnFragmentInteractionListener {
 
-    private static final String TAG = "CalibrateSensorActivity";
-
     private static final String LINE_FEED = "\r\n";
+    private static final int IDENTIFY_DELAY_MILLIS = 500;
     private static final int INITIAL_DELAY_MILLIS = 2000;
     private static final int PROGRESS_MAX = 10;
     private static final int CALIBRATION_DELAY_MILLIS = 8000;
     private static final int SAVING_DELAY_MILLIS = 4000;
+
+    private final Handler handler = new Handler();
     // Notifications from UsbService will be received here.
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -83,7 +84,7 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
             }
         }
     };
-    private final WeakRefHandler progressHandler = new WeakRefHandler(this);
+    private TestInfo mCurrentTestInfo;
     private double[] calibrationPoints;
     private ProgressDialog progressDialog;
     private ViewAnimator viewAnimator;
@@ -118,6 +119,37 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
     @NonNull
     private String mReceivedData = "";
     private FloatingActionButton fabEdit;
+    private int deviceStatus = 0;
+    private final Runnable validateDeviceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Configuration config = getResources().getConfiguration();
+
+            String data = "device\r\n";
+            if (usbService != null && usbService.isUsbConnected()) {
+                // if UsbService was correctly bound, Send data
+                usbService.write(data.getBytes(StandardCharsets.UTF_8));
+            } else {
+                return;
+            }
+
+            switch (deviceStatus) {
+
+                case 0:
+                    handler.postDelayed(this, IDENTIFY_DELAY_MILLIS);
+                    break;
+                case 1:
+                    handler.postDelayed(runnable, 100);
+                    break;
+                default:
+                    Toast.makeText(getBaseContext(), getString(R.string.connectCorrectSensor,
+                            mCurrentTestInfo.getName(config.locale.getLanguage())),
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -163,6 +195,11 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
         }
         Intent bindingIntent = new Intent(this, service);
         bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        deviceStatus = 0;
+
+        handler.postDelayed(validateDeviceRunnable, 100);
+
     }
 
     @Override
@@ -172,6 +209,11 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
 
         mContext = this;
 
+        //final Intent intent = getIntent();
+        //String mUuid = intent.getStringExtra(Constant.UUID);
+        //CaddisflyApp.getApp().loadTestConfigurationByUuid(mUuid);
+        mCurrentTestInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
         mHandler = new UsbDataHandler(this);
 
         viewAnimator = (ViewAnimator) findViewById(R.id.viewAnimator);
@@ -180,19 +222,15 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
         Button buttonFinishCalibrate = (Button) findViewById(R.id.buttonFinishCalibrate);
         Button buttonNext = (Button) findViewById(R.id.buttonNext);
 
-        fabEdit =
-                (FloatingActionButton) findViewById(R.id.fabEdit);
-
+        fabEdit = (FloatingActionButton) findViewById(R.id.fabEdit);
 
         Configuration conf = getResources().getConfiguration();
-        TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
-        if (!testInfo.getName(conf.locale.getLanguage()).isEmpty()) {
+        if (!mCurrentTestInfo.getName(conf.locale.getLanguage()).isEmpty()) {
             ((TextView) findViewById(R.id.textTitle)).setText(
-                    testInfo.getName(conf.locale.getLanguage()));
+                    mCurrentTestInfo.getName(conf.locale.getLanguage()));
         }
 
-
-        calibrationPoints = testInfo.getRangeValues();
+        calibrationPoints = mCurrentTestInfo.getRangeValues();
         textHeading = (TextView) findViewById(R.id.textHeading);
         textSubtitle = (TextView) findViewById(R.id.textSubtitle);
         textInformation = (TextView) findViewById(R.id.textInformation);
@@ -300,20 +338,19 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.show();
 
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
+        final Handler progressHandler = new Handler();
+        Runnable progressRunnable = new Runnable() {
             public void run() {
                 progressDialog.incrementProgressBy(1);
-                //progressHandler.sendMessage(progressHandler.obtainMessage());
                 if (progressDialog.getProgress() == progressDialog.getMax()) {
                     progressDialog.dismiss();
                 } else {
-                    handler.postDelayed(this, 1000);
+                    progressHandler.postDelayed(this, 1000);
                 }
             }
         };
 
-        handler.postDelayed(runnable, 100);
+        progressHandler.postDelayed(progressRunnable, 100);
 
         new Handler().postDelayed(new Runnable() {
 
@@ -403,23 +440,22 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
 
     }
 
-    /**
-     * Handler to restart the app after language has been changed
-     */
-    private static class WeakRefHandler extends Handler {
-        @NonNull
-        private final WeakReference<CalibrateSensorActivity> ref;
+    private void displayResult(String result) {
 
-        WeakRefHandler(CalibrateSensorActivity ref) {
-            this.ref = new WeakReference<>(ref);
+        if (deviceStatus == 0) {
+            if (result.contains(" ")) {
+                Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+                if (result.startsWith(mCurrentTestInfo.getDeviceId())) {
+                    deviceStatus = 1;
+                } else {
+                    deviceStatus = 2;
+                }
+            }
+            return;
         }
 
-        @Override
-        public void handleMessage(Message msg) {
-            CalibrateSensorActivity f = ref.get();
-            if (f != null) {
-                f.progressDialog.incrementProgressBy(1);
-            }
+        if (!result.contains("OK")) {
+            displayId(result);
         }
     }
 
@@ -443,9 +479,9 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
                 if (sensorActivity != null) {
                     sensorActivity.mReceivedData += data;
                     if (sensorActivity.mReceivedData.contains(LINE_FEED)) {
-                        if (!sensorActivity.mReceivedData.contains("OK")) {
-                            sensorActivity.displayId(sensorActivity.mReceivedData);
-                        }
+
+                        sensorActivity.displayResult(sensorActivity.mReceivedData.trim());
+
                         sensorActivity.mReceivedData = "";
                     }
                 }

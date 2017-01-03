@@ -90,5 +90,6 @@
                 android:visibility="gone"
                 tools:text="d: 233  b: 233" />
         </LinearLayout>
+
     </TableRow>
 </TableLayout>
