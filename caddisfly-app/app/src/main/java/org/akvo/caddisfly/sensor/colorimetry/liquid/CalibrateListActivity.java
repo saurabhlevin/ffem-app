@@ -56,10 +56,10 @@ import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -364,7 +364,7 @@ public class CalibrateListActivity extends BaseActivity
                             public void onClick(DialogInterface dialog, int which) {
                                 String fileName = listFiles[which].getName();
                                 try {
-                                    final ArrayList<Swatch> swatchList = SwatchHelper.loadCalibrationFromFile(getBaseContext(), fileName);
+                                    final List<Swatch> swatchList = SwatchHelper.loadCalibrationFromFile(getBaseContext(), fileName);
 
                                     (new AsyncTask<Void, Void, Void>() {
                                         @Nullable

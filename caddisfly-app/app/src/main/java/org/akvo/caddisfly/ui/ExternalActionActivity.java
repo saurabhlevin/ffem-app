@@ -113,6 +113,12 @@ public class ExternalActionActivity extends BaseActivity {
             CaddisflyApp.getApp().setAppLanguage(mExternalAppLanguageCode, mIsExternalAppCall, handler);
             String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
+            if (AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())) {
+
+                // old version of survey does not expect image in result
+                mCallerExpectsImageInResult = false;
+            }
+
             if (mTestTypeUuid == null) {
 
                 //todo: remove when obsolete
@@ -121,6 +127,7 @@ public class ExternalActionActivity extends BaseActivity {
 
                 if (code.equalsIgnoreCase("strip")) {
                     final Intent colorimetricStripIntent = new Intent(this, TestTypeListActivity.class);
+                    colorimetricStripIntent.putExtra(Constant.SEND_IMAGE_IN_RESULT, mCallerExpectsImageInResult);
                     startActivityForResult(colorimetricStripIntent, REQUEST_TEST);
                     return;
                 }
@@ -132,8 +139,6 @@ public class ExternalActionActivity extends BaseActivity {
 
                 mTestTypeUuid = TestConfigHelper.getUuidFromShortCode(code);
 
-                // old version of survey does not expect image in result
-                mCallerExpectsImageInResult = false;
             }
 
             //Get the test config by uuid
