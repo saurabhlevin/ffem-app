@@ -379,7 +379,6 @@ public class TimeLapseActivity extends BaseActivity {
         handler.removeCallbacks(runnable);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         TurbidityConfig.stopRepeatingAlarm(this, mUuid);
-        overridePendingTransition(R.anim.slide_back_out, R.anim.slide_back_in);
     }
 
     @Override

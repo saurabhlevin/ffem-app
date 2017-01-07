@@ -401,12 +401,6 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.slide_back_out, R.anim.slide_back_in);
-    }
-
     private void displayId(String value) {
         value = value.replace(LINE_FEED, "");
         textId.setText(value);
