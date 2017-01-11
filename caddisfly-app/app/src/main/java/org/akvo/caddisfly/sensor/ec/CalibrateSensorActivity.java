@@ -269,7 +269,10 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
                     }, INITIAL_DELAY_MILLIS);
 
                 } else {
-                    AlertUtil.showMessage(mContext, R.string.sensorNotFound, R.string.deviceConnectSensor);
+                    Configuration config = getResources().getConfiguration();
+                    AlertUtil.showMessage(mContext, R.string.sensorNotFound,
+                            getString(R.string.connectCorrectSensor,
+                                    mCurrentTestInfo.getName(config.locale.getLanguage())));
                 }
             }
         });
@@ -296,7 +299,10 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
                     calibratePoint(calibrationPoints, calibrationIndex);
                     calibrationIndex++;
                 } else {
-                    AlertUtil.showMessage(mContext, R.string.sensorNotFound, R.string.deviceConnectSensor);
+                    Configuration config = getResources().getConfiguration();
+                    AlertUtil.showMessage(mContext, R.string.sensorNotFound,
+                            getString(R.string.connectCorrectSensor,
+                                    mCurrentTestInfo.getName(config.locale.getLanguage())));
                 }
             }
         });

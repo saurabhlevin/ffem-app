@@ -166,7 +166,7 @@ public class SensorActivity extends BaseActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        setTitle("Sensor");
+        setTitle(R.string.sensor);
     }
 
     @Override
