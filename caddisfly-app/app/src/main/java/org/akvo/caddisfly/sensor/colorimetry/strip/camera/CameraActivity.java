@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.camera;
@@ -19,19 +22,23 @@ package org.akvo.caddisfly.sensor.colorimetry.strip.camera;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.design.widget.Snackbar;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -59,17 +66,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
- * Created by linda on 7/7/15
+ * The activity that displays the camera preview.
  */
 @SuppressWarnings("deprecation")
 public class CameraActivity extends BaseActivity implements CameraViewListener {
 
-    private static final String TAG = "CameraActivity";
-
     private static final long CAMERA_PREVIEW_DELAY = 500;
     private static final int PROGRESS_FADE_DURATION_MILLIS = 4000;
     private static final int LONG_TIME = 35;
+    private static final float SNACK_BAR_LINE_SPACING = 1.4f;
     private final MyHandler handler = new MyHandler();
     private final Map<String, Integer> qualityCountMap = new LinkedHashMap<>(3); // <Type, count>
     private boolean torchModeOn = false;
@@ -151,12 +159,17 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
     };
     private TimerView timerCountdown;
     private boolean mCameraPaused;
+    private InstructionFragment instructionFragment;
+    private LinearLayout parentLayout;
+    private Snackbar snackbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_camera_view);
+
+        parentLayout = (LinearLayout) findViewById(R.id.activity_cameraMainLayout);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -213,7 +226,7 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "Could not start preview");
+                Timber.e(e);
             }
         }
     }
@@ -227,10 +240,11 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
                 ).commit();
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
     }
 
+    @Override
     public void onPause() {
         releaseResources();
         if (!isFinishing()) {
@@ -266,13 +280,14 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
         }
     }
 
+    @Override
     public void onResume() {
 
         uuid = getIntent().getStringExtra(Constant.UUID);
 
         if (uuid != null) {
             StripTest stripTest = new StripTest();
-            setTitle(stripTest.getBrand(this, uuid).getName());
+            setTitle(stripTest.getBrand(uuid).getName());
 
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
 
@@ -285,7 +300,9 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
         super.onResume();
     }
 
-    // Store previewLayout info in global properties for later use
+    /**
+     * Store previewLayout info in global properties for later use.
+     */
     public void setPreviewProperties() {
         if (mCamera != null && cameraPreview != null) {
             previewFormat = mCamera.getParameters().getPreviewFormat();
@@ -392,6 +409,25 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.layout_cameraPlaceholder, currentFragment)
                     .commit();
+        } else if (currentFragment instanceof CameraStartTestFragment) {
+
+            if (instructionFragment == null) {
+
+                instructionFragment = InstructionFragment.newInstance(uuid, 2);
+
+                getSupportFragmentManager().beginTransaction()
+                        .hide(currentFragment)
+                        .add(R.id.layout_instructionLayout, instructionFragment)
+                        .commit();
+            } else {
+
+                getSupportFragmentManager().beginTransaction()
+                        .remove(instructionFragment)
+                        .show(currentFragment)
+                        .commit();
+
+                currentFragment.onResume();
+            }
         }
     }
 
@@ -493,6 +529,9 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
 
         releaseResources();
 
+        finderPatternIndicatorView.clearPatterns();
+        finderPatternIndicatorView.invalidate();
+
         int title;
         switch (status) {
             case DETECTING_COLOR_CARD:
@@ -516,7 +555,7 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
+                        dialogInterface.dismiss();
                     }
                 }, null, null);
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -548,24 +587,46 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
                     if (value > LONG_TIME && !mCameraPaused) {
                         mCameraPaused = true;
                         if (cameraPreview != null) {
-                            finderPatternIndicatorView.clearPatterns();
-                            finderPatternIndicatorView.invalidate();
                             cameraPreview.setVisibility(View.INVISIBLE);
                         }
                         stopPreview();
+
+                        (new Handler()).postDelayed(new Runnable() {
+                            public void run() {
+                                finderPatternIndicatorView.clearPatterns();
+                                finderPatternIndicatorView.invalidate();
+                            }
+                        }, 100);
+
+                        snackbar = Snackbar
+                                .make(parentLayout, getString(R.string.you_can_set_phone_aside),
+                                        Snackbar.LENGTH_INDEFINITE);
+
+                        TypedValue typedValue = new TypedValue();
+                        getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
+
+                        snackbar.setActionTextColor(typedValue.data);
+                        View snackView = snackbar.getView();
+                        TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
+                        textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
+                        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        textView.setTextColor(Color.WHITE);
+                        snackbar.show();
                     }
 
                     // start the camera preview again in last few seconds
                     if (value <= Constant.GET_READY_SECONDS && mCameraPaused) {
                         mCameraPaused = false;
                         if (cameraPreview != null) {
+                            finderPatternIndicatorView.setVisibility(View.VISIBLE);
                             cameraPreview.setVisibility(View.VISIBLE);
                         }
                         mCamera.startPreview();
-                    }
 
-                    if (value == Constant.GET_READY_SECONDS && max > 60) {
-                        playSound();
+                        playReadySound();
+
+                        snackbar.dismiss();
                     }
                 }
 
@@ -596,6 +657,10 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
         handler.post(runnable);
     }
 
+    private void playReadySound() {
+        sound.playShortResource(R.raw.beep);
+    }
+
     private void showResults() {
         Intent resultIntent = new Intent(getIntent());
         resultIntent.setClass(this, ResultActivity.class);
@@ -609,10 +674,9 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

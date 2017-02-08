@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.ec;
@@ -61,8 +64,8 @@ public class SensorTypeListActivity extends BaseActivity {
                 continue;
             }
 
-            //Remove legacy items
-            if (mTests.get(i).getShortCode().equalsIgnoreCase("tempe")) {
+            //Remove deprecated items
+            if (mTests.get(i).getIsDeprecated()) {
                 mTests.remove(i);
             }
         }
@@ -76,7 +79,7 @@ public class SensorTypeListActivity extends BaseActivity {
         listTypes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startDetailActivity(mTests.get(i).getCode());
+                startDetailActivity(mTests.get(i).getId());
             }
         });
     }
@@ -153,7 +156,7 @@ public class SensorTypeListActivity extends BaseActivity {
             TestInfo testInfo = mTestInfoArray[position];
 
             if (testInfo != null) {
-                holder.textView.setText(testInfo.getName(context.getResources().getConfiguration().locale.getLanguage()));
+                holder.textView.setText(testInfo.getName());
             }
 
             return view;

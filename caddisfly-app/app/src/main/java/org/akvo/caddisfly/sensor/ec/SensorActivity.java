@@ -1,33 +1,40 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.ec;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.text.Spanned;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -46,36 +53,41 @@ import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.usb.UsbService;
+import org.akvo.caddisfly.util.StringUtil;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Set;
 
+import timber.log.Timber;
+
+/**
+ * The activity that displays the results for the connected sensor.
+ */
 public class SensorActivity extends BaseActivity {
 
-    private static final int REQUEST_DELAY_MILLIS = 2000;
-    private static final int IDENTIFY_DELAY_MILLIS = 500;
+    private static final String EMPTY_STRING = "";
+    private static final int REQUEST_DELAY_MILLIS = 1500;
+    private static final int IDENTIFY_DELAY_MILLIS = 300;
     private static final int ANIMATION_DURATION = 500;
     private static final int ANIMATION_DURATION_LONG = 1500;
-    private static final int FINISH_DELAY_MILLIS = 3000;
     private final StringBuilder mReadData = new StringBuilder();
     private final Handler handler = new Handler();
+    private final SparseArray<String> results = new SparseArray<>();
+    private AlertDialog alertDialog;
     private TestInfo mCurrentTestInfo;
     private Toast debugToast;
-    private String mEc25Value = "";
-    private String mTemperature = "";
     private boolean mIsInternal = false;
     private LinearLayout layoutResult;
     private ProgressBar progressWait;
     private TextView textResult;
-    private TextView textTemperature;
+    private TextView textResult2;
     private TextView textUnit;
+    private TextView textUnit2;
     private Button buttonAcceptResult;
     private TextView textSubtitle;
-    private String mReceivedData = "";
+    private String mReceivedData = EMPTY_STRING;
     private UsbService usbService;
     private MyHandler mHandler;
     private ImageView imageUsbConnection;
@@ -114,14 +126,7 @@ public class SensorActivity extends BaseActivity {
             }
         }
     };
-
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            requestResult();
-            handler.postDelayed(this, REQUEST_DELAY_MILLIS);
-        }
-    };
+    private int identityCheck = 0;
     private int deviceStatus = 0;
     private final Runnable validateDeviceRunnable = new Runnable() {
         @Override
@@ -140,15 +145,27 @@ public class SensorActivity extends BaseActivity {
                     handler.postDelayed(this, IDENTIFY_DELAY_MILLIS);
                     break;
                 case 1:
-                    handler.postDelayed(runnable, 100);
+                    handler.postDelayed(runnable, IDENTIFY_DELAY_MILLIS);
+                    alertDialog.dismiss();
                     break;
                 default:
-                    Configuration config = getResources().getConfiguration();
-                    Toast.makeText(getBaseContext(), getString(R.string.connectCorrectSensor,
-                            mCurrentTestInfo.getName(config.locale.getLanguage())),
-                            Toast.LENGTH_LONG).show();
-                    finish();
+                    progressWait.setVisibility(View.GONE);
+                    if (!alertDialog.isShowing()) {
+                        alertDialog.show();
+                    }
+                    handler.postDelayed(runnable, IDENTIFY_DELAY_MILLIS);
                     break;
+            }
+        }
+    };
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (deviceStatus == 1) {
+                requestResult();
+                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
+            } else {
+                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
             }
         }
     };
@@ -156,6 +173,10 @@ public class SensorActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        deviceStatus = 0;
+        identityCheck = 0;
+
         setFilters();  // Start listening notifications from UsbService
 
         // Start UsbService(if it was not started before) and Bind it
@@ -172,6 +193,8 @@ public class SensorActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
+        deviceStatus = 0;
+        identityCheck = 0;
         handler.removeCallbacks(runnable);
         handler.removeCallbacks(validateDeviceRunnable);
         unregisterReceiver(mUsbReceiver);
@@ -195,9 +218,9 @@ public class SensorActivity extends BaseActivity {
         Intent bindingIntent = new Intent(this, service);
         bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        deviceStatus = 0;
+        alertDialog.dismiss();
 
-        handler.postDelayed(validateDeviceRunnable, 100);
+        handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
     }
 
     private void requestResult() {
@@ -234,12 +257,12 @@ public class SensorActivity extends BaseActivity {
         mIsInternal = intent.getBooleanExtra("internal", false);
         mHandler = new MyHandler(this);
 
-        textResult = (TextView) findViewById(R.id.textResult);
-        textTemperature = (TextView) findViewById(R.id.textTemperature);
-        progressWait = (ProgressBar) findViewById(R.id.progressWait);
-        textUnit = (TextView) findViewById(R.id.textName);
-        TextView textUnit2 = (TextView) findViewById(R.id.textUnit2);
         textSubtitle = (TextView) findViewById(R.id.textSubtitle);
+        progressWait = (ProgressBar) findViewById(R.id.progressWait);
+        textResult = (TextView) findViewById(R.id.textResult);
+        textResult2 = (TextView) findViewById(R.id.textResult2);
+        textUnit = (TextView) findViewById(R.id.textUnit);
+        textUnit2 = (TextView) findViewById(R.id.textUnit2);
         imageUsbConnection = (ImageView) findViewById(R.id.imageUsbConnection);
 
         textSubtitle.setText(R.string.deviceConnectSensor);
@@ -255,20 +278,12 @@ public class SensorActivity extends BaseActivity {
 
                 Intent resultIntent = new Intent(intent);
 
-                ArrayList<String> results = new ArrayList<>();
-                results.add(mEc25Value);
-                results.add(mTemperature);
-
-                JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, -1, "");
+                JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, -1, EMPTY_STRING, null);
                 resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
 
                 // TODO: Remove this when obsolete
                 // Backward compatibility. Return plain text result
-                if (mCurrentTestInfo != null && mCurrentTestInfo.getShortCode().equalsIgnoreCase("TEMPE")) {
-                    resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, mTemperature);
-                } else {
-                    resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, mEc25Value);
-                }
+                resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
 
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
@@ -277,42 +292,52 @@ public class SensorActivity extends BaseActivity {
 
         layoutResult = (LinearLayout) findViewById(R.id.layoutResult);
 
-        Configuration config = getResources().getConfiguration();
-        if (mCurrentTestInfo != null && !mCurrentTestInfo.getName(config.locale.getLanguage()).isEmpty()) {
+        if (mCurrentTestInfo != null && !mCurrentTestInfo.getName().isEmpty()) {
             ((TextView) findViewById(R.id.textTitle)).setText(
-                    mCurrentTestInfo.getName(config.locale.getLanguage()));
-        }
+                    mCurrentTestInfo.getName());
 
-        if (mIsInternal) {
-            textTemperature.setVisibility(View.VISIBLE);
-            textUnit2.setVisibility(View.VISIBLE);
+            String message = String.format("%s<br/><br/>%s", getString(R.string.expectedDeviceNotFound),
+                    getString(R.string.connectCorrectSensor, mCurrentTestInfo.getName()));
+            Spanned spanned = StringUtil.fromHtml(message);
+
+            AlertDialog.Builder builder;
+            builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.incorrectDevice)
+                    .setMessage(spanned)
+                    .setCancelable(false);
+
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(@NonNull DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    finish();
+                }
+            });
+
+            alertDialog = builder.create();
         }
+        progressWait.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void displayNotConnectedView() {
-        mReadData.setLength(0);
-        progressWait.setVisibility(View.GONE);
-        layoutResult.animate().alpha(0f).setDuration(ANIMATION_DURATION);
-        imageUsbConnection.animate().alpha(1f).setDuration(ANIMATION_DURATION_LONG);
-        buttonAcceptResult.setVisibility(View.GONE);
-        textSubtitle.setText(R.string.deviceConnectSensor);
-
-        if (!mIsInternal) {
-            (new Handler()).postDelayed(new Runnable() {
-                public void run() {
-                    finish();
-                }
-            }, FINISH_DELAY_MILLIS);
+        if (!isFinishing()) {
+            mReadData.setLength(0);
+            progressWait.setVisibility(View.GONE);
+            layoutResult.animate().alpha(0f).setDuration(ANIMATION_DURATION);
+            imageUsbConnection.animate().alpha(1f).setDuration(ANIMATION_DURATION_LONG);
+            buttonAcceptResult.setVisibility(View.GONE);
+            textSubtitle.setText(R.string.deviceConnectSensor);
         }
     }
 
@@ -322,12 +347,12 @@ public class SensorActivity extends BaseActivity {
             Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
         }
 
+        // reject value if corrupt
         if (value.startsWith(".") || value.startsWith(",")) {
             return;
         }
 
-        Configuration config = getResources().getConfiguration();
-
+        // clean up data
         value = value.trim();
         if (value.contains("\r\n")) {
             String[] values = value.split("\r\n");
@@ -336,97 +361,111 @@ public class SensorActivity extends BaseActivity {
             }
         }
 
-        final String result = value.trim();
-        if (!result.isEmpty()) {
+        value = value.trim();
+        if (!value.isEmpty()) {
+
+            // if device not yet validated then check if device id is ok
             if (deviceStatus == 0) {
-                if (result.contains(" ")) {
-                    if (result.startsWith(mCurrentTestInfo.getDeviceId())) {
+                if (value.contains(" ")) {
+                    if (value.startsWith(mCurrentTestInfo.getDeviceId())) {
+                        progressWait.setVisibility(View.VISIBLE);
+                        hideNotConnectedView();
                         deviceStatus = 1;
                     } else {
-                        deviceStatus = 2;
+                        if (identityCheck > 1) {
+                            deviceStatus = 2;
+                        }
+                        identityCheck++;
                     }
                 }
                 return;
             }
 
-            String[] resultArray = result.split(",");
+            if (deviceStatus == 2) {
+                return;
+            } else {
+                alertDialog.dismiss();
+            }
+
+            String[] resultArray = value.split(",");
 
             if (AppPreferences.getShowDebugMessages()) {
+                final String finalValue = value;
                 runOnUiThread(new Runnable() {
                     public void run() {
                         if (debugToast == null) {
-                            debugToast = Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG);
+                            debugToast = Toast.makeText(getBaseContext(), finalValue, Toast.LENGTH_LONG);
                         }
-                        debugToast.setText(result);
+                        debugToast.setText(finalValue);
                         debugToast.show();
                     }
                 });
             }
 
-            if (resultArray.length > 1) {
+            if (resultArray.length == mCurrentTestInfo.getResponseFormat().split(",").length) {
+
+                // use the response format to display the results in test id order
+                String responseFormat = mCurrentTestInfo.getResponseFormat().replace("$", EMPTY_STRING)
+                        .replace(" ", EMPTY_STRING).replace(",", EMPTY_STRING).trim();
+                results.clear();
 
                 for (int i = 0; i < resultArray.length; i++) {
                     resultArray[i] = resultArray[i].trim();
-                }
+                    try {
 
-                double temperature;
-                long ec25Value;
+                        double result = Double.parseDouble(resultArray[i]);
 
-                try {
-                    temperature = Double.parseDouble(resultArray[0]);
-                    mTemperature = String.format(Locale.US, "%.1f", temperature);
-                } catch (NumberFormatException e) {
-                    mTemperature = "";
-                }
+                        results.put(Integer.parseInt(responseFormat.substring(i, i + 1)), String.valueOf(result));
 
-                try {
-                    ec25Value = Math.round(Double.parseDouble(resultArray[1]));
-                } catch (NumberFormatException e) {
-                    ec25Value = -1;
-                }
-
-                if (ec25Value > -1) {
-                    mEc25Value = Long.toString(ec25Value);
-                } else {
-                    mEc25Value = "";
-                }
-
-                if (mCurrentTestInfo != null && mCurrentTestInfo.getShortCode().equalsIgnoreCase("TEMPE")) {
-                    textSubtitle.setText(R.string.sensorConnected);
-                    textResult.setVisibility(View.GONE);
-                    textUnit.setVisibility(View.GONE);
-                    buttonAcceptResult.setVisibility(View.VISIBLE);
-                    progressWait.setVisibility(View.GONE);
-                } else {
-                    if (mEc25Value.isEmpty()) {
-                        textResult.setText("");
-                        progressWait.setVisibility(View.VISIBLE);
-                        if (mCurrentTestInfo != null && !mCurrentTestInfo.getName(config.locale.getLanguage()).isEmpty()) {
-                            textUnit.setText(mCurrentTestInfo.getUnit());
-                        }
-                        buttonAcceptResult.setVisibility(View.GONE);
-                        textSubtitle.setText(R.string.dipSensorInSample);
-                    } else {
-                        textResult.setText(String.format(Locale.US, "%d", ec25Value));
-                        progressWait.setVisibility(View.GONE);
-                        buttonAcceptResult.setVisibility(View.VISIBLE);
-                        textSubtitle.setText(R.string.sensorConnected);
-                        if (mCurrentTestInfo != null && !mCurrentTestInfo.getName(config.locale.getLanguage()).isEmpty()) {
-                            textUnit.setText(mCurrentTestInfo.getUnit());
-                        }
+                    } catch (Exception e) {
+                        Timber.e(e);
+                        return;
                     }
                 }
 
-                textTemperature.setText(mTemperature);
+                // display the results
+                if (mCurrentTestInfo.getSubTests().size() > 0 && results.size() > 0
+                        && !results.get(1).equals(EMPTY_STRING)) {
+                    textResult.setText(results.get(1));
+                    textUnit.setText(mCurrentTestInfo.getSubTests().get(0).getUnit());
+                    textResult.setVisibility(View.VISIBLE);
+                    textUnit.setVisibility(View.VISIBLE);
+                    progressWait.setVisibility(View.GONE);
+                    buttonAcceptResult.setVisibility(View.VISIBLE);
+                    textSubtitle.setText(R.string.sensorConnected);
+                } else {
+                    textResult.setText(EMPTY_STRING);
+                    textUnit.setText(EMPTY_STRING);
+                    textResult.setVisibility(View.INVISIBLE);
+                    textUnit.setVisibility(View.INVISIBLE);
+                    progressWait.setVisibility(View.VISIBLE);
+                    buttonAcceptResult.setVisibility(View.GONE);
+                    textSubtitle.setText(R.string.dipSensorInSample);
+                }
 
+                if (mCurrentTestInfo.getSubTests().size() > 1 && results.size() > 1) {
+                    textResult2.setText(results.get(2));
+                    textUnit2.setText(mCurrentTestInfo.getSubTests().get(1).getUnit());
+                    textResult2.setVisibility(View.VISIBLE);
+                    textUnit2.setVisibility(View.VISIBLE);
+                } else {
+                    textResult2.setVisibility(View.GONE);
+                    textUnit2.setVisibility(View.GONE);
+                }
+
+                // if test is not via survey then do not show the accept button
                 if (mIsInternal) {
                     buttonAcceptResult.setVisibility(View.GONE);
                 }
 
                 layoutResult.animate().alpha(1f).setDuration(ANIMATION_DURATION);
-                imageUsbConnection.animate().alpha(0f).setDuration(ANIMATION_DURATION);
+                hideNotConnectedView();
             }
         }
+    }
+
+    private void hideNotConnectedView() {
+        imageUsbConnection.animate().alpha(0f).setDuration(ANIMATION_DURATION);
     }
 
     /*
@@ -449,7 +488,7 @@ public class SensorActivity extends BaseActivity {
                     sensorActivity.mReceivedData += data;
                     if (sensorActivity.mReceivedData.contains("\r\n")) {
                         sensorActivity.displayResult(sensorActivity.mReceivedData);
-                        sensorActivity.mReceivedData = "";
+                        sensorActivity.mReceivedData = EMPTY_STRING;
                     }
                 }
             }

@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.instructions;
@@ -21,7 +24,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,13 +39,13 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /*
-This class assumes that there are .png images in res/drawable that have the same name
-as the String 'brand' in the JsonObject 'strip' in strips.json from assets
+This class assumes that there are .png images in res/drawable that have the same name as the brand
 */
 public class InstructionActivity extends BaseActivity {
 
-    private static final String TAG = "InstructionActivity";
     private final List<Fragment> fragments = new ArrayList<>();
     private ViewPager mViewPager;
 
@@ -52,9 +54,11 @@ public class InstructionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instruction);
 
-        final PageIndicatorView footerView = (PageIndicatorView) findViewById(R.id.pager_indicator);
+        final PageIndicatorView pageIndicatorView = (PageIndicatorView) findViewById(R.id.pager_indicator);
+        final ImageView imagePageLeft = (ImageView) findViewById(R.id.image_pageLeft);
+        final ImageView imagePageRight = (ImageView) findViewById(R.id.image_pageRight);
 
-        StripTest.Brand brand = (new StripTest()).getBrand(this, getIntent().getStringExtra(Constant.UUID));
+        StripTest.Brand brand = (new StripTest()).getBrand(getIntent().getStringExtra(Constant.UUID));
 
         setTitle(brand.getName());
 
@@ -62,21 +66,33 @@ public class InstructionActivity extends BaseActivity {
         if (instructions != null) {
             for (int i = 0; i < instructions.length(); i++) {
                 try {
+
+                    Object item = instructions.getJSONObject(i).get("text");
+                    JSONArray jsonArray;
+
+                    if (item instanceof JSONArray) {
+                        jsonArray = (JSONArray) item;
+                    } else {
+                        String text = (String) item;
+                        jsonArray = new JSONArray();
+                        jsonArray.put(text);
+                    }
+
                     fragments.add(InstructionDetailFragment.newInstance(
-                            instructions.getJSONObject(i).getString("text"),
+                            jsonArray,
                             instructions.getJSONObject(i).has("png")
                                     ? instructions.getJSONObject(i).getString("png") : ""));
                 } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    Timber.e(e);
                 }
             }
 
-            footerView.setPageCount(instructions.length());
+            pageIndicatorView.setPageCount(instructions.length());
         }
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
 
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(pagerAdapter);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -87,7 +103,17 @@ public class InstructionActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                footerView.setActiveIndex(position);
+                pageIndicatorView.setActiveIndex(position);
+                if (position < 1) {
+                    imagePageLeft.setVisibility(View.INVISIBLE);
+                } else {
+                    imagePageLeft.setVisibility(View.VISIBLE);
+                }
+                if (position > pagerAdapter.getCount() - 2) {
+                    imagePageRight.setVisibility(View.INVISIBLE);
+                } else {
+                    imagePageRight.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -95,9 +121,6 @@ public class InstructionActivity extends BaseActivity {
 
             }
         });
-
-        ImageView imagePageLeft = (ImageView) findViewById(R.id.image_pageLeft);
-        ImageView imagePageRight = (ImageView) findViewById(R.id.image_pageRight);
 
         imagePageLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,10 +145,9 @@ public class InstructionActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,26 +1,24 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.model;
 
-import android.content.Context;
-import android.support.annotation.StringRes;
-import android.util.Log;
-
-import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.SensorConstants;
@@ -36,34 +34,39 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
- * Created by linda on 8/19/15
+ * Holds information about the test.
  */
 public class StripTest {
 
-    private static final String TAG = "StripTest";
-
-    private static final String STRIPS = "strips";
+    private static final String TESTS = "tests";
 
     private static JSONArray stripTests = null;
 
     public StripTest() {
     }
 
-    private JSONArray getTestsFromJson(Context context) {
+    private static void clearStripTests() {
+        StripTest.stripTests = null;
+    }
+
+    private JSONArray getTestsFromJson() {
         if (stripTests == null || stripTests.length() == 0) {
 
             try {
-                JSONObject object = getJsonFromAssets(context, R.string.strips_json);
-                if (!object.isNull(STRIPS)) {
-                    stripTests = object.getJSONArray(STRIPS);
+                JSONObject object = new JSONObject(AssetsManager.getInstance().loadJSONFromAsset(SensorConstants.TESTS_META_FILENAME));
+                if (!object.isNull(TESTS)) {
+                    stripTests = object.getJSONArray(TESTS);
 
                     try {
-                        File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG), "strip-tests.json");
+                        File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG),
+                                SensorConstants.TESTS_META_FILENAME);
                         if (file.exists()) {
                             String jsonText = FileUtil.loadTextFromFile(file);
                             JSONObject customTests = new JSONObject(jsonText);
-                            JSONArray customTestsArray = customTests.getJSONArray(STRIPS);
+                            JSONArray customTestsArray = customTests.getJSONArray(TESTS);
 
                             boolean isUnique = true;
                             for (int i = 0; i < customTestsArray.length(); i++) {
@@ -89,6 +92,7 @@ public class StripTest {
                                     if (imageFile.exists()) {
                                         test.put(SensorConstants.IMAGE, imageFile.getPath());
                                     }
+                                    test.put("customTest", true);
                                     stripTests.put(test);
                                 }
                             }
@@ -97,10 +101,18 @@ public class StripTest {
                         // skip trying to load custom tests
                     }
 
+                    for (int i = stripTests.length() - 1; i >= 0; i--) {
+                        JSONObject strip = stripTests.getJSONObject(i);
+                        String subtype = strip.getString("subtype");
+                        if (!subtype.equals("striptest")) {
+                            stripTests.remove(i);
+                        }
+                    }
+
                     return stripTests;
                 }
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Timber.e(e);
             }
         } else {
             return stripTests;
@@ -109,13 +121,13 @@ public class StripTest {
         return null;
     }
 
-    public List<Brand> getBrandsAsList(Context context) {
+    public List<Brand> getBrandsAsList() {
 
-        stripTests = null;
+        StripTest.clearStripTests();
         List<Brand> brandNames = new ArrayList<>();
 
         try {
-            JSONArray stripsJson = getTestsFromJson(context);
+            JSONArray stripsJson = getTestsFromJson();
 
             JSONObject strip;
             if (stripsJson != null) {
@@ -128,7 +140,7 @@ public class StripTest {
                         continue;
                     }
 
-                    brandNames.add(getBrand(context, strip.getString(SensorConstants.UUID)));
+                    brandNames.add(getBrand(strip.getString(SensorConstants.UUID)));
                 }
             }
 
@@ -138,18 +150,12 @@ public class StripTest {
         return brandNames;
     }
 
-    public Brand getBrand(Context context, String uuid) {
-        return new Brand(context, uuid);
+    public Brand getBrand(String uuid) {
+        return new Brand(uuid);
     }
 
-    private JSONObject getJsonFromAssets(Context context, @StringRes int id) throws JSONException {
-        String filename = context.getString(id);
-        String jsonString = AssetsManager.getInstance().loadJSONFromAsset(filename);
-        return new JSONObject(jsonString);
-    }
-
-    public int getPatchCount(Context context, String uuid) {
-        return getBrand(context, uuid).getPatches().size();
+    public int getPatchCount(String uuid) {
+        return getBrand(uuid).getPatches().size();
     }
 
     public enum GroupType {
@@ -160,7 +166,6 @@ public class StripTest {
         private final List<Patch> patches = new ArrayList<>();
         private final String uuid;
         private boolean isTransparent;
-        //        private String background;
         private String name;
         private String brandDescription;
         private String image;
@@ -170,30 +175,32 @@ public class StripTest {
         private GroupType groupingType;
         private JSONArray instructions;
 
-        Brand(Context context, String uuid) {
+        Brand(String uuid) {
 
             this.uuid = uuid;
             try {
 
                 //add instructions
-                JSONArray stripsJson = getTestsFromJson(context);
+                JSONArray stripsJson = getTestsFromJson();
                 if (stripsJson != null) {
 
                     JSONObject strip;
 
-                    JSONObject instructionObj = getJsonFromAssets(context, R.string.strips_instruction_json);
-                    JSONArray instructionsJson = instructionObj.getJSONArray(STRIPS);
+                    JSONObject instructionObj = new JSONObject(AssetsManager.getInstance()
+                            .loadJSONFromAsset("strips-instruction.json"));
+                    JSONArray instructionsJson = instructionObj.getJSONArray(TESTS);
 
                     for (int i = 0; i < stripsJson.length(); i++) {
                         strip = stripsJson.getJSONObject(i);
-
                         if (strip.getString(SensorConstants.UUID).equalsIgnoreCase(uuid)) {
                             try {
                                 stripLength = strip.getDouble("length");
                                 //stripHeight = strip.getDouble("height");
                                 groupingType = strip.getString("groupingType")
                                         .equals(GroupType.GROUP.toString()) ? GroupType.GROUP : GroupType.INDIVIDUAL;
+
                                 name = strip.getString("name");
+
                                 brandDescription = strip.getString("brand");
                                 image = strip.has(SensorConstants.IMAGE)
                                         ? strip.getString(SensorConstants.IMAGE) : brandDescription.replace(" ", "-");
@@ -214,25 +221,23 @@ public class StripTest {
                                     }
                                 }
 
-                                JSONArray patchesArray = strip.getJSONArray("patches");
+                                JSONArray patchesArray = strip.getJSONArray("results");
                                 for (int ii = 0; ii < patchesArray.length(); ii++) {
 
                                     JSONObject patchObj = patchesArray.getJSONObject(ii);
 
-                                    String patchDesc = patchObj.getString("patchDesc");
-                                    double patchPos = patchObj.getDouble("patchPos");
                                     int id = patchObj.getInt("id");
-                                    int patchWidth = patchObj.getInt("patchWidth");
-                                    double timeLapse = patchObj.getDouble("timeLapse");
+                                    String patchName = patchObj.getString("name");
                                     String unit = patchObj.getString("unit");
-                                    JSONArray colors;
-                                    if (patchObj.has("colours")) {
-                                        colors = patchObj.getJSONArray("colours");
-                                    } else {
-                                        colors = patchObj.getJSONArray("colors");
-                                    }
+                                    String formula = patchObj.has("formula") ? patchObj.getString("formula") : "";
+                                    double patchPos = patchObj.has("patchPos") ? patchObj.getDouble("patchPos") : 0;
+                                    int patchWidth = patchObj.has("patchWidth") ? patchObj.getInt("patchWidth") : 0;
+                                    double timeLapse = patchObj.has("timeLapse") ? patchObj.getDouble("timeLapse") : 0;
+                                    JSONArray colors = patchObj.has("colors") ? patchObj.getJSONArray("colors") : new JSONArray();
+                                    int phase = patchObj.has("phase") ? patchObj.getInt("phase") : 1;
 
-                                    patches.add(new Patch(id, patchDesc, patchWidth, 0, patchPos, timeLapse, unit, colors));
+                                    patches.add(new Patch(id, patchName, patchWidth, 0, patchPos,
+                                            timeLapse, unit, formula, colors, phase));
                                 }
 
                                 switch (groupingType) {
@@ -247,6 +252,7 @@ public class StripTest {
                                         });
                                         break;
                                     case INDIVIDUAL:
+                                    default:
                                         // sort by time delay for analyzing each patch
                                         Collections.sort(patches, new Comparator<Patch>() {
                                             @Override
@@ -258,7 +264,7 @@ public class StripTest {
                                 }
 
                             } catch (JSONException e) {
-                                Log.e(TAG, e.getMessage(), e);
+                                Timber.e(e);
                             }
                             break;
                         }
@@ -266,7 +272,7 @@ public class StripTest {
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
+                Timber.e(e);
             }
         }
 
@@ -327,10 +333,6 @@ public class StripTest {
             return isTransparent;
         }
 
-//        public String getBackground() {
-//            return background;
-//        }
-
         public class Patch {
             private final int id;
             private final String desc;
@@ -342,10 +344,12 @@ public class StripTest {
             private final String unit;
 
             private final JSONArray colors;
+            private final int phase;
+            private final String formula;
 
             @SuppressWarnings("SameParameterValue")
             Patch(int id, String desc, double width, double height, double position,
-                  double timeLapse, String unit, JSONArray colors) {
+                  double timeLapse, String unit, String formula, JSONArray colors, int phase) {
                 this.id = id;
                 this.desc = desc;
                 this.width = width;
@@ -354,6 +358,8 @@ public class StripTest {
                 this.timeLapse = timeLapse;
                 this.unit = unit;
                 this.colors = colors;
+                this.phase = phase;
+                this.formula = formula;
             }
 
             public int getId() {
@@ -386,6 +392,14 @@ public class StripTest {
 
             public double getWidth() {
                 return width;
+            }
+
+            public int getPhase() {
+                return phase;
+            }
+
+            public String getFormula() {
+                return formula;
             }
         }
     }

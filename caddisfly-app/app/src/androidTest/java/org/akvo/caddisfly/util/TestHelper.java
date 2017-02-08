@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.util;
@@ -41,6 +44,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import timber.log.Timber;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -55,13 +61,14 @@ import static org.akvo.caddisfly.util.TestUtil.sleep;
 
 public final class TestHelper {
 
-    private static final HashMap<String, String> STRING_HASH_MAP_EN = new HashMap<>();
-    private static final HashMap<String, String> STRING_HASH_MAP_FR = new HashMap<>();
-    private static final HashMap<String, String> CALIBRATION_HASH_MAP = new HashMap<>();
+    private static final Map<String, String> STRING_HASH_MAP_EN = new HashMap<>();
+    private static final Map<String, String> STRING_HASH_MAP_FR = new HashMap<>();
+    private static final Map<String, String> CALIBRATION_HASH_MAP = new HashMap<>();
     private static final boolean TAKE_SCREENSHOTS = false;
-    public static HashMap<String, String> currentHashMap;
+    public static Map<String, String> currentHashMap;
     public static UiDevice mDevice;
     public static String mCurrentLanguage = "en";
+    @SuppressWarnings("FieldCanBeLocal")
     private static int mCounter;
 
     private TestHelper() {
@@ -93,16 +100,16 @@ public final class TestHelper {
         config.locale = new Locale(testLanguage);
         Resources res = new Resources(assets, metrics, config);
 
-        addString("language", "English", "Français");
+        addString(TestConstant.LANGUAGE, "English", "Français");
         addString("otherLanguage", "Français", "English");
-        addString("fluoride", "Fluoride", res.getString(R.string.fluoride));
-        addString("chlorine", "Free Chlorine", res.getString(R.string.freeChlorine));
+        addString(TestConstant.FLUORIDE, "Water - Fluoride", res.getString(R.string.fluoride));
+        addString("chlorine", "Water - Free Chlorine", res.getString(R.string.freeChlorine));
         addString("survey", "Survey", res.getString(R.string.survey));
         addString("sensors", "Sensors", res.getString(R.string.sensors));
-        addString("electricalConductivity", "Electrical Conductivity", res.getString(R.string.electricalConductivity));
+        addString("electricalConductivity", "Water - Electrical Conductivity", res.getString(R.string.electricalConductivity));
         addString("unnamedDataPoint", "Unnamed data point", res.getString(R.string.unnamedDataPoint));
         addString("createNewDataPoint", "Add Data Point", res.getString(R.string.addDataPoint));
-        addString("useExternalSource", "Use External Source", res.getString(R.string.useExternalSource));
+        addString(TestConstant.USE_EXTERNAL_SOURCE, "Go to test", res.getString(R.string.goToText));
         addString("next", "Next", res.getString(R.string.next));
 
         // Restore device-specific locale
@@ -154,12 +161,10 @@ public final class TestHelper {
     }
 
     public static void takeScreenshot() {
-        if (TAKE_SCREENSHOTS) {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                File path = new File(Environment.getExternalStorageDirectory().getPath()
-                        + "/Akvo Caddisfly/screenshots/screen-" + mCounter++ + "-" + mCurrentLanguage + ".png");
-                mDevice.takeScreenshot(path, 0.5f, 60);
-            }
+        if (TAKE_SCREENSHOTS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            File path = new File(Environment.getExternalStorageDirectory().getPath()
+                    + "/Akvo Caddisfly/screenshots/screen-" + mCounter++ + "-" + mCurrentLanguage + ".png");
+            mDevice.takeScreenshot(path, 0.5f, 60);
         }
     }
 
@@ -178,13 +183,13 @@ public final class TestHelper {
 
     public static void clickExternalSourceButton(int index) {
 
-        findButtonInScrollable("useExternalSource");
+        findButtonInScrollable(currentHashMap.get(TestConstant.USE_EXTERNAL_SOURCE));
 
-        List<UiObject2> buttons = mDevice.findObjects(By.text(currentHashMap.get("useExternalSource")));
+        List<UiObject2> buttons = mDevice.findObjects(By.text(currentHashMap.get(TestConstant.USE_EXTERNAL_SOURCE)));
         buttons.get(index).click();
 
         // New Android OS seems to popup a button for external app
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             sleep(1000);
             mDevice.findObject(By.text("Akvo Caddisfly")).click();
             sleep(1000);
@@ -203,7 +208,8 @@ public final class TestHelper {
             mDevice.findObject(new UiSelector().text(currentHashMap.get(buttonText))).click();
 
             // New Android OS seems to popup a button for external app
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && buttonText.equals("useExternalSource")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && buttonText.equals(TestConstant.USE_EXTERNAL_SOURCE)) {
                 sleep(1000);
                 mDevice.findObject(By.text("Akvo Caddisfly")).click();
                 sleep(1000);
@@ -212,7 +218,7 @@ public final class TestHelper {
             mDevice.waitForWindowUpdate("", 2000);
 
         } catch (UiObjectNotFoundException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 
@@ -233,11 +239,11 @@ public final class TestHelper {
                     addButton.click();
                 }
             } catch (UiObjectNotFoundException e) {
-                e.printStackTrace();
+                Timber.e(e);
             }
         }
 
-       // mDevice.findObject(By.text("Caddisfly Tests")).click();
+        // mDevice.findObject(By.text("Caddisfly Tests")).click();
     }
 
     public static void enterDiagnosticMode() {

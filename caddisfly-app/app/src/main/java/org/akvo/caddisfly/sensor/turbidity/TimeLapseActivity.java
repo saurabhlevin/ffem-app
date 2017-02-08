@@ -190,7 +190,7 @@ public class TimeLapseActivity extends BaseActivity {
         CaddisflyApp.getApp().loadTestConfigurationByUuid(mUuid);
         final TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
 
-        switch (testInfo.getCode()) {
+        switch (testInfo.getId()) {
             case SensorConstants.FLUORIDE_ID:
                 fragment = new LiquidTimeLapsePreferenceFragment();
                 break;
@@ -293,7 +293,7 @@ public class TimeLapseActivity extends BaseActivity {
                 testInfo.getName() + File.separator + testId + "_"
                         + new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(startDate.getTime()) + details);
 
-        TurbidityConfig.setRepeatingAlarm(this, INITIAL_DELAY, testInfo.getCode());
+        TurbidityConfig.setRepeatingAlarm(this, INITIAL_DELAY, testInfo.getId());
 
         String date = new SimpleDateFormat("dd MMM yyy HH:mm", Locale.US).format(startDate.getTime());
         ((TextView) findViewById(R.id.textSubtitle))

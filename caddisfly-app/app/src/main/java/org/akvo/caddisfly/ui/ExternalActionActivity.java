@@ -150,7 +150,7 @@ public class ExternalActionActivity extends BaseActivity {
             } else {
                 Configuration config = getResources().getConfiguration();
                 ((TextView) findViewById(R.id.textTitle)).setText(
-                        CaddisflyApp.getApp().getCurrentTestInfo().getName(config.locale.getLanguage()));
+                        CaddisflyApp.getApp().getCurrentTestInfo().getName());
 
                 String[] permissions = {};
                 if (CaddisflyApp.getApp().getCurrentTestInfo().requiresCameraFlash()) {
@@ -230,8 +230,7 @@ public class ExternalActionActivity extends BaseActivity {
         final Activity activity = this;
 
         String message = getString(R.string.errorCalibrationIncomplete,
-                CaddisflyApp.getApp().getCurrentTestInfo().getName(
-                        getResources().getConfiguration().locale.getLanguage()));
+                CaddisflyApp.getApp().getCurrentTestInfo().getName());
         message = String.format(MESSAGE_TWO_LINE_FORMAT, message,
                 getString(R.string.doYouWantToCalibrate));
 
@@ -301,7 +300,7 @@ public class ExternalActionActivity extends BaseActivity {
                 }
 
                 long milliseconds = PreferencesUtil.getLong(this,
-                        CaddisflyApp.getApp().getCurrentTestInfo().getCode(),
+                        CaddisflyApp.getApp().getCurrentTestInfo().getId(),
                         R.string.calibrationExpiryDateKey);
                 if (milliseconds != -1 && milliseconds <= new Date().getTime()) {
                     alertCalibrationExpired();

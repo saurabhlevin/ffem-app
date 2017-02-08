@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.camera;
@@ -35,8 +38,11 @@ import org.akvo.caddisfly.sensor.colorimetry.strip.widget.PercentageMeterView;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.detector.FinderPatternInfo;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Activities that contain this fragment must implement the
@@ -83,7 +89,7 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
             }
 
             if (getStatus() == TestStatus.QUALITY_CHECK_DONE) {
-                if (patchesCovered < patches.size() - 1) {
+                if (imagePatchArray.length() < patches.size()) {
                     if (mListener != null) {
                         int secondsLeft = (int) (Math.max(0, patches.get(patchesCovered + 1).getTimeLapse() - timeLapsed));
 
@@ -107,6 +113,7 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
     };
     private PercentageMeterView exposureView;
     private PercentageMeterView contrastView;
+    private boolean secondPhase;
 
     public CameraStartTestFragment() {
         // Required empty public constructor
@@ -188,7 +195,7 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
 
             StripTest stripTest = new StripTest();
             //get the patches ordered by time-lapse
-            patches = stripTest.getBrand(getContext(), uuid).getPatches();
+            patches = stripTest.getBrand(uuid).getPatches();
         }
 
         showBrightness(-1);
@@ -239,6 +246,14 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (secondPhase && mListener != null) {
+            mListener.takeNextPicture((long) 1000);
+        }
+    }
+
+    @Override
     void showBrightness(double value) {
 
         if (exposureView != null) {
@@ -257,7 +272,7 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
     /*
    * Keep track of the time.
    * We start a runnable (countdownRunnable) that update the partial_progress view (afterwards that takes care of itself)
-   * We know beforehand at what intervals the patches are due from the values in strips.json
+   * We know beforehand at what intervals the patches are due from the values in tests config json
    * so we can use a handler and runnable to post them at exactly that interval from start countdown
     */
     private void startCountdown() {
@@ -278,15 +293,11 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
             handler.post(countdownRunnable);
         }
 
-        //start the CameraPreviewCallback in preview mode (not taking pictures, but doing quality checks
-        //mListener.startNextPreview(0);
-
-        //Post the CameraPreviewCallback in take picture mode on time for each patch (the posting is done in the CameraActivity itself)
         uuid = getArguments().getString(Constant.UUID);
 
         StripTest stripTest = new StripTest();
 
-        patches = stripTest.getBrand(getContext(), uuid).getPatches();
+        patches = stripTest.getBrand(uuid).getPatches();
 
         for (int i = 0; i < patches.size(); i++) {
 
@@ -297,7 +308,7 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
 
             //tell CameraActivity when it is time to take the next picture
             //add 10 milliseconds to avoid it being on same time as preview if timeLapse is 0;
-            if (mListener != null) {
+            if (mListener != null && patches.get(i).getPhase() < 2) {
                 mListener.takeNextPicture((long) patches.get(i).getTimeLapse() * 1000 + 10);
             }
         }
@@ -322,19 +333,38 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
         // before this loop has run.
         //we need to add 1 to patchesCovered at the start of the for loop, because we use it to get an object from
         // the list of patches, which of course starts counting at 0.
-        for (int i = patchesCovered + 1; i < patches.size(); i++) {
+        for (int i = 0; i < patches.size(); i++) {
+
+            if (!secondPhase && patches.get(i).getPhase() > 1) {
+                continue;
+            }
 
             //in case the reading is done after the time lapse we want to save the data for all patches before the time-lapse...
             if (timeMillis > initTimeMillis + patches.get(i).getTimeLapse() * 1000) {
 
-                //keep track of which patches are 'done'
-                patchesCovered = i;
+                boolean found = false;
+                try {
+                    for (int j = 0; j < imagePatchArray.length(); j++) {
+                        JSONArray temp = (JSONArray) imagePatchArray.get(j);
+                        if (temp.getInt(1) == patches.get(i).getId()) {
+                            found = true;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Timber.e(e);
+                }
 
-                //keep track of which image belongs to which patch
-                JSONArray array = new JSONArray();
-                array.put(imageCount);
-                array.put(patches.get(i).getId());
-                imagePatchArray.put(array);
+                if (!found) {
+                    //keep track of which image belongs to which patch
+                    JSONArray array = new JSONArray();
+                    array.put(imageCount);
+                    array.put(patches.get(i).getId());
+                    imagePatchArray.put(array);
+
+                    //keep track of which patches are 'done'
+                    patchesCovered = imagePatchArray.length() - 1;
+                }
+
 
             }
         }
@@ -367,7 +397,7 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
     public boolean dataSent() {
 
         //check if we do have images for all patches
-        if (patchesCovered == patches.size() - 1) {
+        if (imagePatchArray.length() == patches.size()) {
             //stop the preview callback from repeating itself
             if (mListener != null) {
                 mListener.stopCallback();
@@ -378,6 +408,15 @@ public class CameraStartTestFragment extends CameraSharedFragmentBase {
                 //write image/patch info to internal storage
                 FileUtil.writeToInternalStorage(getActivity(), Constant.IMAGE_PATCH, imagePatchArray.toString());
                 return true;
+            }
+        } else if (imagePatchArray.length() == 3) {
+            if (handler != null) {
+                handler.removeCallbacks(countdownRunnable);
+            }
+
+            secondPhase = true;
+            if (mListener != null) {
+                mListener.nextFragment();
             }
         }
         return false;

@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.liquid;
@@ -40,6 +43,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.Surface;
@@ -317,7 +321,7 @@ public class ColorimetryLiquidExternalActivity extends BaseActivity
         requestQueue.add("STATUS\r\n");
 
         String rgb = PreferencesUtil.getString(this,
-                CaddisflyApp.getApp().getCurrentTestInfo().getCode(),
+                CaddisflyApp.getApp().getCurrentTestInfo().getId(),
                 R.string.ledRgbKey, "255,255,255");
 
         if (rgb.length() > 0) {
@@ -523,9 +527,9 @@ public class ColorimetryLiquidExternalActivity extends BaseActivity
         Configuration conf = getResources().getConfiguration();
 
         //set the title to the test contaminant name
-        ((TextView) findViewById(R.id.textTitle)).setText(testInfo.getName(conf.locale.getLanguage()));
+        ((TextView) findViewById(R.id.textTitle)).setText(testInfo.getName());
 
-        if (testInfo.getUuid().isEmpty()) {
+        if (testInfo.getId().isEmpty()) {
             alertCouldNotLoadConfig();
         } else if (!mTestCompleted) {
             initializeTest();
@@ -802,10 +806,10 @@ public class ColorimetryLiquidExternalActivity extends BaseActivity
             String resultImageUrl = UUID.randomUUID().toString() + ".png";
             String path = FileUtil.writeBitmapToExternalStorage(croppedBitmap, "/result-images", resultImageUrl);
 
-            ArrayList<String> results = new ArrayList<>();
-            results.add(resultText);
+            SparseArray<String> results = new SparseArray<>();
+            results.put(0, resultText);
 
-            JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, color, resultImageUrl);
+            JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, color, resultImageUrl, null);
 
             resultIntent.putExtra(SensorConstants.IMAGE, path);
             resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
@@ -872,8 +876,7 @@ public class ColorimetryLiquidExternalActivity extends BaseActivity
                                 PreferencesUtil.getInt(this, R.string.totalSuccessfulTestsKey, 0) + 1);
 
                     } else {
-                        String title = CaddisflyApp.getApp().getCurrentTestInfo().
-                                getName(getResources().getConfiguration().locale.getLanguage());
+                        String title = CaddisflyApp.getApp().getCurrentTestInfo().getName();
 
                         if (mHighLevelsFound && mDilutionLevel < 2) {
                             sound.playShortResource(R.raw.beep_long);
@@ -928,7 +931,7 @@ public class ColorimetryLiquidExternalActivity extends BaseActivity
         }
 
         String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.US).format(new Date());
-        ImageUtil.saveImage(data, CaddisflyApp.getApp().getCurrentTestInfo().getCode(), date + "_"
+        ImageUtil.saveImage(data, CaddisflyApp.getApp().getCurrentTestInfo().getId(), date + "_"
                 + (mIsCalibration ? "C" : "T") + "_" + result
                 + "_" + batteryPercent + "_" + ApiUtil.getInstallationId(this));
     }
@@ -1016,7 +1019,7 @@ public class ColorimetryLiquidExternalActivity extends BaseActivity
         if (mHighLevelsFound && !isCalibration) {
             mCameraFragment.dismiss();
             sound.playShortResource(R.raw.beep_long);
-            String title = CaddisflyApp.getApp().getCurrentTestInfo().getName(getResources().getConfiguration().locale.getLanguage());
+            String title = CaddisflyApp.getApp().getCurrentTestInfo().getName();
 
             String message;
             //todo: remove hard coding of dilution levels

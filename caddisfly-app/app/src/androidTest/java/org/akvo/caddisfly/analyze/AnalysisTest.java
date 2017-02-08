@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.analyze;
@@ -32,6 +35,7 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidConfig;
 import org.akvo.caddisfly.ui.MainActivity;
+import org.akvo.caddisfly.util.TestConstant;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -128,7 +132,7 @@ public class AnalysisTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
 
         onView(withId(R.id.menuLoad)).perform(click());
 
@@ -148,7 +152,7 @@ public class AnalysisTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -294,7 +298,7 @@ public class AnalysisTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
 
         onView(withId(R.id.menuLoad)).perform(click());
 
@@ -312,7 +316,7 @@ public class AnalysisTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 

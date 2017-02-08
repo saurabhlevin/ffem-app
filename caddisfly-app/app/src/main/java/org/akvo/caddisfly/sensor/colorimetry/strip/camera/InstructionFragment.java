@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.camera;
@@ -22,7 +25,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.text.Spanned;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +38,12 @@ import android.widget.TextView;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.sensor.colorimetry.strip.model.StripTest;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
+import org.akvo.caddisfly.util.StringUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import timber.log.Timber;
 
 import static android.graphics.Typeface.BOLD;
 
@@ -47,11 +54,9 @@ import static android.graphics.Typeface.BOLD;
  * Use the {@link InstructionFragment#newInstance} factory method to
  * create an instance of this fragment.
  * <p/>
- * This fragment shows instructions for a particular strip test. They are read from strips.json in assets
+ * This fragment shows instructions for a particular strip test.
  */
 public class InstructionFragment extends CameraSharedFragmentBase {
-
-    private static final String TAG = "InstructionFragment";
 
     private static final int BUTTON_ENABLE_DELAY = 4000;
     private static final int ANIMATION_DURATION_MILLIS = 2000;
@@ -63,12 +68,18 @@ public class InstructionFragment extends CameraSharedFragmentBase {
     }
 
     @NonNull
-    public static InstructionFragment newInstance(String uuid) {
+    public static InstructionFragment newInstance(String uuid, int phase) {
         InstructionFragment fragment = new InstructionFragment();
         Bundle args = new Bundle();
         args.putString(Constant.UUID, uuid);
+        args.putInt(Constant.PHASE, phase);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @NonNull
+    public static InstructionFragment newInstance(String uuid) {
+        return newInstance(uuid, 1);
     }
 
     @Override
@@ -89,21 +100,40 @@ public class InstructionFragment extends CameraSharedFragmentBase {
         if (getArguments() != null) {
 
             String uuid = getArguments().getString(Constant.UUID);
+            int phase = getArguments().getInt(Constant.PHASE);
 
             StripTest stripTest = new StripTest();
-            JSONArray instructions = stripTest.getBrand(getContext(), uuid).getInstructions();
+            JSONArray instructions = stripTest.getBrand(uuid).getInstructions();
 
-            showInstruction(linearLayout, getString(R.string.success_quality_checks), BOLD);
+            if (phase == 1) {
+                showInstruction(linearLayout, getString(R.string.success_quality_checks), BOLD);
+            }
 
             if (instructions != null) {
                 try {
                     for (int i = 0; i < instructions.length(); i++) {
-                        for (String instruction : instructions.getJSONObject(i).getString("text").split("<!")) {
-                            showInstruction(linearLayout, instruction, Typeface.NORMAL);
+
+                        JSONObject object = instructions.getJSONObject(i);
+                        Object item = instructions.getJSONObject(i).get("text");
+
+                        if ((object.has("phase") ? object.getInt("phase") : 1) == phase) {
+                            JSONArray jsonArray;
+
+                            if (item instanceof JSONArray) {
+                                jsonArray = (JSONArray) item;
+                            } else {
+                                String text = (String) item;
+                                jsonArray = new JSONArray();
+                                jsonArray.put(text);
+                            }
+
+                            for (int j = 0; j < jsonArray.length(); j++) {
+                                showInstruction(linearLayout, jsonArray.getString(j), Typeface.NORMAL);
+                            }
                         }
                     }
                 } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    Timber.e(e);
                 }
             }
 
@@ -135,11 +165,25 @@ public class InstructionFragment extends CameraSharedFragmentBase {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimension(R.dimen.mediumTextSize));
 
-        textView.setPadding(0, 0, 0,
+        textView.setPadding(
+                (int) getResources().getDimension(R.dimen.activity_vertical_margin),
+                0,
+                (int) getResources().getDimension(R.dimen.activity_vertical_margin),
                 (int) getResources().getDimension(R.dimen.activity_vertical_margin));
 
-        if (instruction.contains(">")) {
+        String text = instruction;
+        if (instruction.contains("<!>")) {
+            text = instruction.replaceAll("<!>", "");
             textView.setTextColor(Color.RED);
+        } else {
+            textView.setTextColor(Color.DKGRAY);
+        }
+
+        if (instruction.contains("<b>") || style == BOLD) {
+            text = text.replaceAll("<b>", "").replaceAll("</b>", "");
+            textView.setTypeface(null, Typeface.BOLD);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.titleTextSize));
         } else {
             textView.setTextColor(Color.DKGRAY);
         }
@@ -147,15 +191,9 @@ public class InstructionFragment extends CameraSharedFragmentBase {
         textView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,
                 getResources().getDisplayMetrics()), 1.0f);
 
-        textView.setTypeface(null, style);
-        if (style == BOLD) {
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimension(R.dimen.titleTextSize));
-        }
-
-        String text = instruction.replaceAll(">", "");
+        Spanned spanned = StringUtil.getStringResourceByName(getContext(), text);
         if (!text.isEmpty()) {
-            textView.append(text);
+            textView.append(spanned);
             linearLayout.addView(textView);
         }
     }

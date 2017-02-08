@@ -63,7 +63,7 @@ class TestTypesAdapter extends ArrayAdapter<TestInfo> {
         } else {
             rowView.findViewById(R.id.textGroup).setVisibility(View.GONE);
             ((TextView) rowView.findViewById(R.id.textName)).setText(
-                    testInfo.getName(mActivity.getResources().getConfiguration().locale.getLanguage()));
+                    testInfo.getName());
         }
 
         return rowView;

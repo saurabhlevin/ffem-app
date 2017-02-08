@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.liquid;
@@ -49,6 +52,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SaveCalibrationDialogFragment#newInstance} factory method to
@@ -83,7 +88,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        String testCode = CaddisflyApp.getApp().getCurrentTestInfo().getCode();
+        String testCode = CaddisflyApp.getApp().getCurrentTestInfo().getId();
         final Context context = getActivity();
 
         LayoutInflater i = getActivity().getLayoutInflater();
@@ -111,7 +116,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         editRgb = (EditText) view.findViewById(R.id.editRgb);
 
         long milliseconds = PreferencesUtil.getLong(getActivity(),
-                CaddisflyApp.getApp().getCurrentTestInfo().getCode(),
+                CaddisflyApp.getApp().getCurrentTestInfo().getId(),
                 R.string.calibrationExpiryDateKey);
         if (milliseconds > new Date().getTime()) {
 
@@ -218,7 +223,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                 public void onClick(View v) {
                     if (formEntryValid()) {
 
-                        final String testCode = CaddisflyApp.getApp().getCurrentTestInfo().getCode();
+                        final String testCode = CaddisflyApp.getApp().getCurrentTestInfo().getId();
 
                         if (!editName.getText().toString().trim().isEmpty()) {
 
@@ -292,7 +297,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     private void saveCalibrationDetails(File path) {
         final Context context = getContext();
 
-        final String testCode = CaddisflyApp.getApp().getCurrentTestInfo().getCode();
+        final String testCode = CaddisflyApp.getApp().getCurrentTestInfo().getId();
 
         final String calibrationDetails = SwatchHelper.generateCalibrationFile(context,
                 testCode, editBatchCode.getText().toString().trim(),
@@ -307,18 +312,22 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     }
 
     /**
-     * Hides the keyboard
+     * Hides the keyboard.
      *
      * @param input the EditText for which the keyboard is open
      */
     private void closeKeyboard(Context context, EditText input) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        try {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 

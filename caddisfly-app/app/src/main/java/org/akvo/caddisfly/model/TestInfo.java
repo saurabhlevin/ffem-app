@@ -1,24 +1,26 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.model;
 
 import android.graphics.Color;
 import android.support.annotation.StringRes;
-import android.util.Log;
 
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.json.JSONArray;
@@ -30,20 +32,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
- * Model to hold test configuration information
+ * Model to hold test configuration information.
  */
 public class TestInfo {
 
-    private static final String TAG = "TestInfo";
-
     private static final double RESULT_ERROR_MARGIN = 0.2;
-    private final HashMap names;
-    private final List<String> uuid;
+    private final String name;
+    private final String uuid;
     private final List<Swatch> swatches;
     private final TestType testType;
     private final List<Integer> dilutions;
@@ -65,13 +66,15 @@ public class TestInfo {
     private int hueTrend;
     private double[] rangeValues;
     private String deviceId;
+    private String responseFormat;
+    private boolean deprecated;
 
-    public TestInfo(HashMap names, TestType testType, String[] swatchArray,
+    public TestInfo(String name, TestType testType, String[] swatchArray,
                     String[] defaultColorsArray, String[] dilutionsArray,
-                    List<String> uuids, JSONArray resultsArray) {
-        this.names = names == null ? null : (HashMap) names.clone();
+                    String uuid, JSONArray resultsArray) {
+        this.name = name;
         this.testType = testType;
-        this.uuid = uuids;
+        this.uuid = uuid;
         swatches = new ArrayList<>();
         dilutions = new ArrayList<>();
 
@@ -125,9 +128,9 @@ public class TestInfo {
             for (int ii = 0; ii < resultsArray.length(); ii++) {
                 try {
                     JSONObject patchObj = resultsArray.getJSONObject(ii);
-                    subTests.add(new SubTest(patchObj.getInt("id"), patchObj.getString("description"), patchObj.getString("unit")));
+                    subTests.add(new SubTest(patchObj.getInt("id"), patchObj.getString("name"), patchObj.getString("unit")));
                 } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    Timber.e(e);
                 }
             }
         }
@@ -138,9 +141,9 @@ public class TestInfo {
     }
 
     public TestInfo() {
-        names = null;
+        name = null;
         testType = TestType.COLORIMETRIC_LIQUID;
-        this.uuid = new ArrayList<>();
+        this.uuid = "";
         this.unit = "";
         swatches = new ArrayList<>();
         dilutions = new ArrayList<>();
@@ -148,7 +151,7 @@ public class TestInfo {
     }
 
     /**
-     * Sort the swatches for this test by their result values
+     * Sort the swatches for this test by their result values.
      */
     private void sort() {
         Collections.sort(swatches, new Comparator<Swatch>() {
@@ -159,29 +162,14 @@ public class TestInfo {
     }
 
     public String getName() {
-        return getName("en");
-    }
-
-    public String getName(String languageCode) {
-        if (names != null) {
-            if (names.containsKey(languageCode)) {
-                return names.get(languageCode).toString();
-            } else if (names.containsKey("en")) {
-                return names.get("en").toString();
-            }
-        }
-        return "";
+        return name;
     }
 
     public TestType getType() {
         return testType;
     }
 
-    public String getCode() {
-        return uuid.size() > 0 ? uuid.get(0) : "";
-    }
-
-    public List<String> getUuid() {
+    public String getId() {
         return uuid;
     }
 
@@ -230,7 +218,7 @@ public class TestInfo {
     }
 
     /**
-     * Gets if this test type requires calibration
+     * Gets if this test type requires calibration.
      *
      * @return true if calibration required
      */
@@ -348,6 +336,22 @@ public class TestInfo {
 
     public double[] getRangeValues() {
         return rangeValues.clone();
+    }
+
+    public String getResponseFormat() {
+        return responseFormat;
+    }
+
+    public void setResponseFormat(String responseFormat) {
+        this.responseFormat = responseFormat;
+    }
+
+    public boolean getIsDeprecated() {
+        return deprecated;
+    }
+
+    public void setIsDeprecated(boolean value) {
+        this.deprecated = value;
     }
 
     public static class SubTest {

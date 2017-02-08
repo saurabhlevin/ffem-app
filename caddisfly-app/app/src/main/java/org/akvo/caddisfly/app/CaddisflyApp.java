@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.app;
@@ -26,6 +29,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.helper.TestConfigHelper;
@@ -39,18 +43,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 public class CaddisflyApp extends Application {
 
     private static CaddisflyApp app; // Singleton
     private TestInfo mCurrentTestInfo = new TestInfo();
 
     /**
-     * Gets the singleton app object
+     * Gets the singleton app object.
      *
      * @return the singleton app
      */
     public static CaddisflyApp getApp() {
         return app;
+    }
+
+    private static void setApp(CaddisflyApp value) {
+        app = value;
     }
 
     public static String getAppLanguage() {
@@ -59,7 +69,7 @@ public class CaddisflyApp extends Application {
     }
 
     /**
-     * Gets the app version
+     * Gets the app version.
      *
      * @return The version name and number
      */
@@ -83,7 +93,7 @@ public class CaddisflyApp extends Application {
     }
 
     /**
-     * Gets the current TestInfo
+     * Gets the current TestInfo.
      *
      * @return the current test info
      */
@@ -98,22 +108,26 @@ public class CaddisflyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        app = this;
+        setApp(this);
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     /**
-     * Initialize the current test by loading the configuration and calibration information
+     * Initialize the current test by loading the configuration and calibration information.
      */
     public void initializeCurrentTest() {
         if (mCurrentTestInfo == null || mCurrentTestInfo.getUnit().isEmpty()) {
             setDefaultTest();
         } else {
-            loadTestConfigurationByUuid(mCurrentTestInfo.getUuid().get(0));
+            loadTestConfigurationByUuid(mCurrentTestInfo.getId());
         }
     }
 
     /**
-     * Select the first test type in the configuration file as the current test
+     * Select the first test type in the configuration file as the current test.
      */
     public void setDefaultTest() {
 
@@ -128,7 +142,7 @@ public class CaddisflyApp extends Application {
     }
 
     /**
-     * Load the test configuration for the given uuid
+     * Load the test configuration for the given uuid.
      *
      * @param uuid the uuid of the test
      */
@@ -149,7 +163,7 @@ public class CaddisflyApp extends Application {
     }
 
     /**
-     * Load any user calibrated swatches
+     * Load any user calibrated swatches.
      *
      * @param testInfo The type of test
      */
@@ -157,7 +171,7 @@ public class CaddisflyApp extends Application {
 
         final Context context = getApplicationContext();
         for (Swatch swatch : testInfo.getSwatches()) {
-            String key = String.format(Locale.US, "%s-%.2f", testInfo.getCode(), swatch.getValue());
+            String key = String.format(Locale.US, "%s-%.2f", testInfo.getId(), swatch.getValue());
             swatch.setColor(PreferencesUtil.getInt(context, key, 0));
         }
     }
@@ -222,7 +236,7 @@ public class CaddisflyApp extends Application {
             res.updateConfiguration(config, dm);
 
             //if this session was launched from an external app then do not restart this app
-            if (!isExternal) {
+            if (!isExternal && handler != null) {
                 Message msg = handler.obtainMessage();
                 handler.sendMessage(msg);
             }

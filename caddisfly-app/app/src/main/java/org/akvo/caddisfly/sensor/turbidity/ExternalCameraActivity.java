@@ -25,7 +25,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrixColorFilter;
@@ -273,7 +272,7 @@ public class ExternalCameraActivity extends BaseActivity {
         requestQueue.add("STATUS\r\n");
 
         String rgb = PreferencesUtil.getString(this,
-                CaddisflyApp.getApp().getCurrentTestInfo().getCode(),
+                CaddisflyApp.getApp().getCurrentTestInfo().getId(),
                 R.string.ledRgbKey, "255,255,255");
 
         if (rgb.length() > 0) {
@@ -417,12 +416,10 @@ public class ExternalCameraActivity extends BaseActivity {
             );
         }
 
-        Configuration conf = getResources().getConfiguration();
-
         //set the title to the test contaminant name
-        ((TextView) findViewById(R.id.textTitle)).setText(testInfo.getName(conf.locale.getLanguage()));
+        ((TextView) findViewById(R.id.textTitle)).setText(testInfo.getName());
 
-        if (testInfo.getCode().isEmpty()) {
+        if (testInfo.getId().isEmpty()) {
             alertCouldNotLoadConfig();
         }
 
@@ -537,7 +534,9 @@ public class ExternalCameraActivity extends BaseActivity {
 
             try {
                 usbService.stopSelf();
-                unbindService(usbConnection);
+                if (usbConnection != null) {
+                    unbindService(usbConnection);
+                }
                 usbService = null;
             } catch (Exception ignored) {
 
@@ -609,7 +608,7 @@ public class ExternalCameraActivity extends BaseActivity {
         Bitmap bitmap = ImageUtil.getBitmap(data);
         bitmap = ImageUtil.rotateImage(bitmap, SensorConstants.DEGREES_90);
 
-        switch (testInfo.getCode().toLowerCase(Locale.US)) {
+        switch (testInfo.getId().toLowerCase(Locale.US)) {
             case SensorConstants.FLUORIDE_ID:
 
                 Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
@@ -679,7 +678,7 @@ public class ExternalCameraActivity extends BaseActivity {
 
         Intent intent = new Intent("custom-event-name");
         intent.putExtra("savePath", mSavePath);
-        intent.putExtra(SensorConstants.UUID, testInfo.getUuid().get(0));
+        intent.putExtra(SensorConstants.UUID, testInfo.getId());
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 

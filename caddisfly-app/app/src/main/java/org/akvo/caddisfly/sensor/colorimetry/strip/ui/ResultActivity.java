@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.ui;
@@ -25,7 +28,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +40,8 @@ import android.widget.TextView;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.FileHelper;
+import org.akvo.caddisfly.helper.TestConfigHelper;
+import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.strip.calibration.CalibrationCard;
@@ -48,6 +53,7 @@ import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.ResultUtil;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.FileUtil;
+import org.akvo.caddisfly.util.MathUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +62,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -67,23 +74,28 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import timber.log.Timber;
 
 import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 
+/**
+ * Activity that displays the results.
+ */
 public class ResultActivity extends BaseActivity implements DetectStripListener {
 
     private static final Scalar GREEN_COLOR = new Scalar(0, 255, 0);
-    private static final String TAG = "ResultActivity";
     private static final int MAX_RGB_INT_VALUE = 255;
     private static final double LAB_COLOR_NORMAL_DIVISOR = 2.55;
-    private final JSONObject resultJsonObj = new JSONObject();
-    private final JSONArray resultJsonArr = new JSONArray();
+    private final SparseArray<String> results = new SparseArray<>();
     private Button buttonSave;
     private Button buttonCancel;
     @Nullable
     private Mat resultImage = null;
     private String resultImageUrl;
-    private StripTest.Brand brand;
+    private TextView finalResultTextView;
+    private StripTest.Brand.Patch finalResultPatch;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,26 +110,30 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
             public void onClick(View v) {
                 Intent intent = new Intent(getIntent());
                 String path;
-                try {
 
-                    if (getIntent().getBooleanExtra(Constant.SEND_IMAGE_IN_RESULT, false) && resultImage != null) {
+                if (getIntent().getBooleanExtra(Constant.SEND_IMAGE_IN_RESULT, false) && resultImage != null) {
 
-                        // store image on sd card
-                        path = FileUtil.writeBitmapToExternalStorage(
-                                ResultUtil.makeBitmap(resultImage), "/result-images", resultImageUrl);
-                        intent.putExtra(SensorConstants.IMAGE, path);
+                    // store image on sd card
+                    path = FileUtil.writeBitmapToExternalStorage(
+                            ResultUtil.makeBitmap(resultImage), "/result-images", resultImageUrl);
+                    intent.putExtra(SensorConstants.IMAGE, path);
 
-                        if (path.length() > 0) {
-                            resultJsonObj.put(SensorConstants.IMAGE, resultImageUrl);
-                        }
+                    if (path.length() == 0) {
+                        resultImageUrl = "";
                     }
-
-                    resultJsonObj.put(SensorConstants.TYPE, SensorConstants.TYPE_NAME);
-                    resultJsonObj.put(SensorConstants.NAME, brand.getName());
-                    resultJsonObj.put(SensorConstants.UUID, brand.getUuid());
-                } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                } else {
+                    resultImageUrl = "";
                 }
+
+
+                TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
+                StripTest stripTest = new StripTest();
+                // get information on the strip test from JSON
+                StripTest.Brand brand = stripTest.getBrand(testInfo.getId());
+
+                JSONObject resultJsonObj = TestConfigHelper.getJsonResult(testInfo, results, -1,
+                        resultImageUrl, brand.getGroupingType());
 
                 intent.putExtra(SensorConstants.RESPONSE, resultJsonObj.toString());
                 setResult(RESULT_OK, intent);
@@ -145,19 +161,13 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
         }
     }
 
-    /*
-    * Create an Intent that holds information about the preview data:
-    * preview format
-    * preview width
-    * preview height
-    *
-    * and information about the strip test brand we are now handling
-    *
-    * It is used to
-    * a. start an Activity with this intent
-    * b. start an AsyncTask passing this intent as param
-    *
-    * in the method dataSent() above
+    /**
+     * Creates an Intent that holds information about the preview data.
+     *
+     * @param format the format
+     * @param width  the width
+     * @param height the height
+     * @return the intent
      */
     @NonNull
     private Intent createDetectStripIntent(int format, int width, int height) {
@@ -170,8 +180,6 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
         detectStripIntent.putExtra(Constant.FORMAT, format);
         detectStripIntent.putExtra(Constant.WIDTH, width);
         detectStripIntent.putExtra(Constant.HEIGHT, height);
-
-        //detectStripIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         return detectStripIntent;
     }
@@ -191,16 +199,6 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
     }
 
     @Override
-    public void showMessage() {
-
-    }
-
-    @Override
-    public void showError(String message) {
-
-    }
-
-    @Override
     public void showResults() {
         resultImageUrl = UUID.randomUUID().toString() + ".png";
         Intent intent = getIntent();
@@ -210,7 +208,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
         StripTest stripTest = new StripTest();
 
         // get information on the strip test from JSON
-        brand = stripTest.getBrand(this, uuid);
+        StripTest.Brand brand = stripTest.getBrand(uuid);
 
         // for display purposes sort the patches by position on the strip
         List<StripTest.Brand.Patch> patches = brand.getPatchesSortedByPosition();
@@ -224,57 +222,38 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
             }
 
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
 
         // cycle over the patches and interpret them
         if (imagePatchArray != null) {
             // if this strip is of type 'GROUP', take the first image and use that for all the patches
+            AtomicInteger workCounter;
             if (brand.getGroupingType() == StripTest.GroupType.GROUP) {
+                workCounter = new AtomicInteger(1);
                 // handle grouping case
-
-                // get the first patch image
-                JSONArray array;
-                try {
-                    // get strip image into Mat object
-                    array = imagePatchArray.getJSONArray(0);
-                    int imageNo = array.getInt(0);
-
-                    boolean isInvalidStrip = FileUtil.fileExists(this, Constant.STRIP + imageNo + Constant.ERROR);
-                    strip = ResultUtil.getMatFromFile(this, imageNo);
-                    if (strip != null) {
-                        // create empty mat to serve as a template
-                        resultImage = new Mat(0, strip.cols(), CvType.CV_8UC3,
-                                new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
-                        new BitmapTask(isInvalidStrip, strip, true, brand, patches, 0).execute(strip);
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                boolean isInvalidStrip = FileUtil.fileExists(this, Constant.STRIP + "0" + Constant.ERROR);
+                strip = ResultUtil.getMatFromFile(this, patches.get(0).getId());
+                if (strip != null) {
+                    // create empty mat to serve as a template
+                    resultImage = new Mat(0, strip.cols(), CvType.CV_8UC3,
+                            new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
+                    new BitmapTask(isInvalidStrip, strip, true, brand, patches, 0, workCounter).execute(strip);
                 }
             } else {
+                workCounter = new AtomicInteger(patches.size());
                 // if this strip is of type 'INDIVIDUAL' handle patch by patch
                 for (int i = 0; i < patches.size(); i++) { // handle patch
-                    JSONArray array;
-                    try {
-                        array = imagePatchArray.getJSONArray(i);
+                    // read strip from file
+                    strip = ResultUtil.getMatFromFile(this, patches.get(i).getId());
 
-                        // get the image number from the json array
-                        int imageNo = array.getInt(0);
-                        boolean isInvalidStrip = FileUtil.fileExists(this, Constant.STRIP + imageNo + Constant.ERROR);
-
-                        // read strip from file
-                        strip = ResultUtil.getMatFromFile(this, imageNo);
-
-                        if (strip != null) {
-                            if (i == 0) {
-                                // create empty mat to serve as a template
-                                resultImage = new Mat(0, strip.cols(), CvType.CV_8UC3,
-                                        new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
-                            }
-                            new BitmapTask(isInvalidStrip, strip, false, brand, patches, i).execute(strip);
+                    if (strip != null) {
+                        if (i == 0) {
+                            // create empty mat to serve as a template
+                            resultImage = new Mat(0, strip.cols(), CvType.CV_8UC3,
+                                    new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
                         }
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage(), e);
+                        new BitmapTask(false, strip, false, brand, patches, i, workCounter).execute(strip);
                     }
                 }
             }
@@ -300,7 +279,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 FileUtil.deleteFromInternalStorage(getBaseContext(), Constant.STRIP);
                 FileUtil.deleteFromInternalStorage(getBaseContext(), Constant.IMAGE_PATCH);
             } catch (IOException e) {
-                showError(e.getMessage());
+                Timber.e(e);
             }
 
             return null;
@@ -317,6 +296,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
         private final List<StripTest.Brand.Patch> patches;
         private final int patchNum;
         private final Mat strip;
+        private final AtomicInteger workCounter;
         private String unit;
         private int id;
         private String patchDescription;
@@ -330,13 +310,14 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
         private double resultValue = -1;
 
         BitmapTask(boolean invalid, Mat strip, Boolean grouped, StripTest.Brand brand,
-                   List<StripTest.Brand.Patch> patches, int patchNum) {
+                   List<StripTest.Brand.Patch> patches, int patchNum, AtomicInteger workCounter) {
             this.invalid = invalid;
             this.grouped = grouped;
             this.strip = strip;
             this.brand = brand;
             this.patches = patches;
             this.patchNum = patchNum;
+            this.workCounter = workCounter;
         }
 
         @Nullable
@@ -378,10 +359,27 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 double ratioW = strip.width() / brand.getStripLength();
                 colorsDetected = new ColorDetected[patches.size()];
                 double[][] colorsValueLab = new double[patches.size()][3];
+
+                Mat clonedMat = null;
+                if (AppPreferences.isDiagnosticMode()) {
+                    resultPatchAreas = new Mat(0, Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
+                            CvType.CV_8UC3, new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
+                    clonedMat = mat.clone();
+                    Imgproc.cvtColor(clonedMat, clonedMat, Imgproc.COLOR_Lab2RGB);
+                }
+
                 for (int p = 0; p < patches.size(); p++) {
                     double x = patches.get(p).getPosition() * ratioW;
                     double y = strip.height() / 2d;
                     patchCenter = new Point(x, y);
+
+                    if (AppPreferences.isDiagnosticMode()) {
+
+                        Imgproc.rectangle(clonedMat,
+                                new Point(patchCenter.x - subMatSize - 1, patchCenter.y - subMatSize - 1),
+                                new Point(patchCenter.x + subMatSize, patchCenter.y + subMatSize),
+                                GREEN_COLOR, 1, Imgproc.LINE_AA, 0);
+                    }
 
                     colorDetected = ResultUtil.getPatchColor(mat, patchCenter, subMatSize);
                     double[] colorValueLab = colorDetected.getLab().val;
@@ -390,27 +388,17 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                     colorsValueLab[p] = colorValueLab;
                 }
 
-//                resultPatchAreas = new Mat(0, Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
-//                        CvType.CV_8UC3, new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
-
-//                patchArea = ResultUtil.getPatch(mat, patchCenter, (strip.height() / 2) + 4);
-//                Imgproc.resize(patchArea, patchArea,
-//                        new Size(Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE) + MAT_SIZE_MULTIPLIER,
-//                                Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE)), 0, 0, INTER_CUBIC);
-//
-//                analyzedArea = ResultUtil.getPatch(mat, patchCenter, subMatSize);
-//                Imgproc.resize(analyzedArea, analyzedArea, new Size(Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
-//                        Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE)), 0, 0, INTER_CUBIC);
-
-//                Imgproc.cvtColor(analyzedArea, analyzedArea, Imgproc.COLOR_Lab2RGB);
-//                Imgproc.cvtColor(patchArea, patchArea, Imgproc.COLOR_Lab2RGB);
-//                resultPatchAreas = ResultUtil.concatenate(resultPatchAreas, patchArea);
-//                resultPatchAreas = ResultUtil.concatenateHorizontal(resultPatchAreas, analyzedArea);
+                if (AppPreferences.isDiagnosticMode() && clonedMat != null) {
+                    clonedMat = new Mat(clonedMat, new Rect(0, 0, clonedMat.cols() / 2, clonedMat.rows()));
+                    double ratio = (double) (resultMatWidth - 10) / (double) clonedMat.width();
+                    Imgproc.resize(clonedMat, clonedMat, new Size(clonedMat.width() * ratio, clonedMat.height() * ratio));
+                    resultPatchAreas = ResultUtil.concatenate(resultPatchAreas, clonedMat);
+                }
 
                 try {
                     resultValue = ResultUtil.calculateResultGroup(colorsValueLab, patches, id);
                 } catch (Exception e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    Timber.e(e);
                     resultValue = Double.NaN;
                 }
 
@@ -419,57 +407,69 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 colors = patches.get(0).getColors();
 
             } else {
+
+                //set the colors needed to calculate resultValue
+                colors = patches.get(patchNum).getColors();
+
+                if (colors.length() < 1) {
+                    return null;
+                }
+
                 double ratioW = strip.width() / brand.getStripLength();
                 double x = patches.get(patchNum).getPosition() * ratioW;
                 double y = strip.height() / 2d;
                 patchCenter = new Point(x, y);
 
                 if (AppPreferences.isDiagnosticMode()) {
-                    resultPatchAreas = new Mat(0, Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
-                            CvType.CV_8UC3, new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
-
-                    Mat clonedMat = mat.clone();
-                    Imgproc.cvtColor(clonedMat, clonedMat, Imgproc.COLOR_Lab2RGB);
-                    Imgproc.rectangle(clonedMat,
-                            new Point(patchCenter.x - subMatSize - 1, patchCenter.y - subMatSize - 1),
-                            new Point(patchCenter.x + subMatSize, patchCenter.y + subMatSize),
-                            GREEN_COLOR, 1, Imgproc.LINE_AA, 0);
-
-                    patchArea = ResultUtil.getPatch(clonedMat, patchCenter, (strip.height() / 2) + 4);
-
-                    Imgproc.resize(patchArea, patchArea,
-                            new Size(Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE) + MAT_SIZE_MULTIPLIER,
-                                    Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE)), 0, 0, INTER_CUBIC);
-
-                    analyzedArea = ResultUtil.getPatch(mat, patchCenter, subMatSize);
-                    Imgproc.resize(analyzedArea, analyzedArea, new Size(Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
-                            Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE)), 0, 0, INTER_CUBIC);
-
-                    Imgproc.cvtColor(analyzedArea, analyzedArea, Imgproc.COLOR_Lab2RGB);
-
-                    resultPatchAreas = ResultUtil.concatenate(resultPatchAreas, patchArea);
-                    resultPatchAreas = ResultUtil.concatenateHorizontal(resultPatchAreas, analyzedArea);
+                    PatchMat patchMat = new PatchMat(mat, subMatSize, patchCenter).invoke();
+                    analyzedArea = patchMat.getAnalyzedArea();
+                    patchArea = patchMat.getPatchArea();
                 }
 
                 colorDetected = ResultUtil.getPatchColor(mat, patchCenter, subMatSize);
                 double[] colorValueLab = colorDetected.getLab().val;
 
-                //set the colors needed to calculate resultValue
-                colors = patches.get(patchNum).getColors();
-
                 try {
-                    resultValue = ResultUtil.calculateResultSingle(colorValueLab, colors, id, false);
+                    resultValue = ResultUtil.calculateResultSingle(colorValueLab, colors, id);
                 } catch (Exception e) {
                     resultValue = Double.NaN;
                 }
             }
 
-            ////////////// Create Image ////////////////////
-
-            // create Mat to hold strip itself
             if (patchCenter == null) {
                 return null;
+            } else {
+                // Create the image that displays result with other color information
+                createResultImage(mat, colors, patchCenter, analyzedArea, patchArea, resultMatWidth);
             }
+
+            // Calculate the true value of results if formula exists
+            if (resultValue > -1) {
+
+                try {
+                    if (!patches.get(patchNum).getFormula().isEmpty() && !Double.isNaN(resultValue)) {
+                        resultValue = MathUtil.eval(String.format(patches.get(patchNum).getFormula(), resultValue));
+                    }
+                } catch (Exception e) {
+                    Timber.e(e);
+                }
+
+            } else {
+                invalid = true;
+            }
+
+            // Put the result into results list
+            results.put(patches.get(patchNum).getId(),
+                    Double.isNaN(resultValue) ? ""
+                            : String.valueOf(ResultUtil.roundSignificant(resultValue)));
+
+            return null;
+        }
+
+        private void createResultImage(Mat mat, JSONArray colors, Point patchCenter,
+                                       Mat analyzedArea, Mat patchArea, int resultMatWidth) {
+
+            // create Mat to hold strip itself
             mat = ResultUtil.createStripMat(mat, patchCenter, grouped, resultMatWidth);
 
             // Create Mat to hold patchDescription of patch
@@ -534,26 +534,6 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 resultImage = ResultUtil.concatenate(resultImage, combined);
             }
 
-            //put resultValue in resultJsonArr
-            if (!combined.empty()) {
-                try {
-                    JSONObject object = new JSONObject();
-                    object.put(SensorConstants.NAME, patchDescription);
-                    object.put(SensorConstants.VALUE, Double.isNaN(resultValue) ? "" : ResultUtil.roundSignificant(resultValue));
-                    object.put(SensorConstants.UNIT, unit);
-                    object.put(SensorConstants.ID, id);
-                    resultJsonArr.put(object);
-                    resultJsonObj.put(SensorConstants.RESULT, resultJsonArr);
-
-                    //TESTING write image string to external storage
-                    //FileUtil.writeLogToSDFile("base64.txt", img, false);
-//                    FileUtil.writeLogToSDFile("json.txt", resultJsonObj.toString(), false);
-
-                } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
-            }
-
             combined.release();
             mat.release();
             valueMeasuredMat.release();
@@ -568,14 +548,12 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 resultPatchAreas.release();
             }
             descMat.release();
-
-            return null;
         }
 
-        /*
-        * Puts the result on screen.
-        * data is taken from the globals stripBitmap, resultValue, colorDetected and unit variables
-        */
+        /**
+         * Puts the result on screen.
+         * data is taken from the globals stripBitmap, resultValue, colorDetected and unit variables
+         */
         protected void onPostExecute(Void result) {
             LayoutInflater inflater = (LayoutInflater) ResultActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -587,9 +565,10 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
 
             ImageView imageResult = (ImageView) itemResult.findViewById(R.id.image_result);
 
+            TextView textResult = (TextView) itemResult.findViewById(R.id.text_result);
+
             if (stripBitmap != null) {
                 imageResult.setImageBitmap(stripBitmap);
-                TextView textResult = (TextView) itemResult.findViewById(R.id.text_result);
 
                 if (!invalid) {
 
@@ -635,6 +614,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                     }
 
                     if (resultValue > -1) {
+
                         if (resultValue < 1.0) {
                             textResult.setText(String.format(Locale.getDefault(), "%.2f %s", resultValue, unit));
                         } else {
@@ -648,18 +628,116 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                     textResult.setText(R.string.no_result);
                 }
             } else {
-                textTitle.append("\n\n" + getResources().getString(R.string.no_data));
+                if (!patches.get(patchNum).getFormula().isEmpty()) {
+                    finalResultPatch = patches.get(patchNum);
+                    finalResultTextView = textResult;
+                } else {
+                    textTitle.append("\n\n" + getResources().getString(R.string.no_data));
+                }
                 invalid = true;
             }
-
-            boolean isInternal = getIntent().getBooleanExtra("internal", false);
-            buttonSave.setVisibility(isInternal || invalid ? View.GONE : View.VISIBLE);
-            buttonCancel.setVisibility(isInternal ? View.GONE : View.VISIBLE);
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.layout_results);
             layout.addView(itemResult);
 
-            new DeleteTask().execute();
+            // Job is done, decrement the work counter.
+            int tasksLeft = this.workCounter.decrementAndGet();
+            // If the count has reached zero, all async tasks have finished.
+            if (tasksLeft == 0) {
+
+                if (finalResultTextView != null) {
+                    try {
+                        // todo: fix the hardcoding of the result indexes
+                        if (!finalResultPatch.getFormula().isEmpty()) {
+
+                            resultValue = MathUtil.eval(String.format(finalResultPatch.getFormula(),
+                                    Double.parseDouble(results.get(2)), Double.parseDouble(results.get(3))));
+
+                            results.put(1, String.valueOf(ResultUtil.roundSignificant(resultValue)));
+
+                            finalResultTextView.setText(String.format(Locale.getDefault(), "%.2f %s",
+                                    resultValue, finalResultPatch.getUnit()));
+
+                        }
+                    } catch (Exception e) {
+                        // Set all values to null as this result should not be sent to server
+                        results.put(2, null);
+                        results.put(3, null);
+                        finalResultTextView.setText(R.string.no_result);
+                        Timber.e(e);
+                    }
+                }
+
+                boolean resultAvailable = false;
+                // check if at least one result was returned
+                for (int i = 0; i < results.size(); i++) {
+                    int key = results.keyAt(i);
+
+                    String value = results.get(key);
+                    resultAvailable = value != null && !value.isEmpty();
+                    if (resultAvailable) {
+                        break;
+                    }
+                }
+
+                boolean isInternal = getIntent().getBooleanExtra("internal", false);
+
+                // show the save button only if at least one result is available
+                buttonSave.setVisibility(isInternal || !resultAvailable ? View.GONE : View.VISIBLE);
+                buttonCancel.setVisibility(isInternal ? View.GONE : View.VISIBLE);
+
+                new DeleteTask().execute();
+            }
+        }
+
+        private class PatchMat {
+            private final Mat mat;
+            private final int subMatSize;
+            private final Point patchCenter;
+            private Mat analyzedArea;
+            private Mat patchArea;
+
+            PatchMat(Mat mat, int subMatSize, Point patchCenter) {
+                this.mat = mat;
+                this.subMatSize = subMatSize;
+                this.patchCenter = patchCenter;
+            }
+
+            Mat getAnalyzedArea() {
+                return analyzedArea;
+            }
+
+            Mat getPatchArea() {
+                return patchArea;
+            }
+
+            PatchMat invoke() {
+                resultPatchAreas = new Mat(0, Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
+                        CvType.CV_8UC3, new Scalar(MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE, MAX_RGB_INT_VALUE));
+
+                Mat clonedMat = mat.clone();
+                Imgproc.cvtColor(clonedMat, clonedMat, Imgproc.COLOR_Lab2RGB);
+                Imgproc.rectangle(clonedMat,
+                        new Point(patchCenter.x - subMatSize - 1, patchCenter.y - subMatSize - 1),
+                        new Point(patchCenter.x + subMatSize, patchCenter.y + subMatSize),
+                        GREEN_COLOR, 1, Imgproc.LINE_AA, 0);
+
+                patchArea = ResultUtil.getPatch(clonedMat, patchCenter, (strip.height() / 2) + 4);
+
+                Imgproc.resize(patchArea, patchArea,
+                        new Size(Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE) + MAT_SIZE_MULTIPLIER,
+                                Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE)), 0, 0, INTER_CUBIC);
+
+                analyzedArea = ResultUtil.getPatch(mat, patchCenter, subMatSize);
+                Imgproc.resize(analyzedArea, analyzedArea, new Size(Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE),
+                        Math.min(subMatSize * MAT_SIZE_MULTIPLIER, MAX_MAT_SIZE)), 0, 0, INTER_CUBIC);
+
+                Imgproc.cvtColor(analyzedArea, analyzedArea, Imgproc.COLOR_Lab2RGB);
+
+                resultPatchAreas = ResultUtil.concatenate(resultPatchAreas, patchArea);
+                resultPatchAreas = ResultUtil.concatenateHorizontal(resultPatchAreas, analyzedArea);
+                return this;
+            }
         }
     }
 }

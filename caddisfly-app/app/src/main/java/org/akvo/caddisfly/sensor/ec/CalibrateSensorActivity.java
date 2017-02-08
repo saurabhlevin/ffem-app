@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.ec;
@@ -143,7 +146,7 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
                     break;
                 default:
                     Toast.makeText(getBaseContext(), getString(R.string.connectCorrectSensor,
-                            mCurrentTestInfo.getName(config.locale.getLanguage())),
+                            mCurrentTestInfo.getName()),
                             Toast.LENGTH_LONG).show();
                     finish();
                     break;
@@ -225,9 +228,9 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
         fabEdit = (FloatingActionButton) findViewById(R.id.fabEdit);
 
         Configuration conf = getResources().getConfiguration();
-        if (!mCurrentTestInfo.getName(conf.locale.getLanguage()).isEmpty()) {
+        if (!mCurrentTestInfo.getName().isEmpty()) {
             ((TextView) findViewById(R.id.textTitle)).setText(
-                    mCurrentTestInfo.getName(conf.locale.getLanguage()));
+                    mCurrentTestInfo.getName());
         }
 
         calibrationPoints = mCurrentTestInfo.getRangeValues();
@@ -272,7 +275,7 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
                     Configuration config = getResources().getConfiguration();
                     AlertUtil.showMessage(mContext, R.string.sensorNotFound,
                             getString(R.string.connectCorrectSensor,
-                                    mCurrentTestInfo.getName(config.locale.getLanguage())));
+                                    mCurrentTestInfo.getName()));
                 }
             }
         });
@@ -302,7 +305,7 @@ public class CalibrateSensorActivity extends BaseActivity implements EditSensorI
                     Configuration config = getResources().getConfiguration();
                     AlertUtil.showMessage(mContext, R.string.sensorNotFound,
                             getString(R.string.connectCorrectSensor,
-                                    mCurrentTestInfo.getName(config.locale.getLanguage())));
+                                    mCurrentTestInfo.getName()));
                 }
             }
         });

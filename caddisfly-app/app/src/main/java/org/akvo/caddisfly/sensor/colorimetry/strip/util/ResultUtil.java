@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.util;
@@ -20,7 +23,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.preference.AppPreferences;
@@ -50,12 +52,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
- * Created by markwestra on 18/02/16
+ * Various methods for result calculation.
  */
 public final class ResultUtil {
-
-    private static final String TAG = "ResultUtil";
 
     private static final int BORDER_SIZE = 10;
     private static final int MEASURE_LINE_HEIGHT = 55;
@@ -86,9 +88,24 @@ public final class ResultUtil {
     private ResultUtil() {
     }
 
-    public static Mat getMatFromFile(Context context, int imageNo) {
+    public static Mat getMatFromFile(Context context, int patchId) {
 
-        String fileName = Constant.STRIP + imageNo;
+        String fileName = null;
+
+        try {
+            // Get the correct file from the patch id
+            String json = FileUtil.readFromInternalStorage(context, Constant.IMAGE_PATCH);
+            JSONArray imagePatchArray = new JSONArray(json);
+            for (int i = 0; i < imagePatchArray.length(); i++) {
+                JSONArray array = imagePatchArray.getJSONArray(i);
+                if (array.getInt(1) == patchId) {
+                    fileName = Constant.STRIP + array.getInt(0);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
 
         //if in DetectStripTask, no strip was found, an image was saved with the String Constant.ERROR
         if (FileUtil.fileExists(context, fileName + Constant.ERROR)) {
@@ -123,7 +140,7 @@ public final class ResultUtil {
                 return result;
             }
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
         return null;
     }
@@ -142,7 +159,7 @@ public final class ResultUtil {
             return Bitmap.createScaledBitmap(bitmap, mat.width(), mat.height(), false);
 
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
         return null;
     }
@@ -196,7 +213,7 @@ public final class ResultUtil {
     }
 
     /**
-     * Create Mat with swatches for the colors in the color chart range and also write the value
+     * Create Mat with swatches for the colors in the color chart range and also write the value.
      *
      * @param colors the colors to draw
      * @param width  the final width of the Mat
@@ -258,14 +275,14 @@ public final class ResultUtil {
                 }
 
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage(), e);
+                Timber.e(e);
             }
         }
         return colorRangeMat;
     }
 
     /**
-     * Create Mat to hold a rectangle for each color with the corresponding value
+     * Create Mat to hold a rectangle for each color with the corresponding value.
      *
      * @param patches the patches on the strip
      * @param width   the width of the Mat to be returned
@@ -311,7 +328,7 @@ public final class ResultUtil {
                     }
 
                 } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    Timber.e(e);
                 }
             }
             offset += xTranslate;
@@ -320,7 +337,7 @@ public final class ResultUtil {
     }
 
     /**
-     * Create a Mat to show the point at which the matched color occurs
+     * Create a Mat to show the point at which the matched color occurs.
      *
      * @param colors        the range of colors
      * @param result        the result
@@ -368,14 +385,14 @@ public final class ResultUtil {
                 }
             }
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
 
         return mat;
     }
 
     /**
-     * Create a Mat to show the point at which the matched color occurs for group patch test
+     * Create a Mat to show the point at which the matched color occurs for group patch test.
      *
      * @param colors         the range of colors
      * @param result         the result
@@ -435,7 +452,7 @@ public final class ResultUtil {
                 }
             }
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
 
         return valueMeasuredMat;
@@ -571,13 +588,13 @@ public final class ResultUtil {
                 interpolTable[count][2] = patchColorValues.getDouble(2);
                 interpolTable[count][3] = colors.getJSONObject(colors.length() - 1).getDouble(SensorConstants.VALUE);
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage(), e);
+                Timber.e(e);
             }
         }
         return interpolTable;
     }
 
-    public static double calculateResultSingle(@Nullable double[] colorValues, @NonNull JSONArray colors, int id, boolean isNormalised) {
+    public static double calculateResultSingle(@Nullable double[] colorValues, @NonNull JSONArray colors, int id) {
         double[][] interpolTable = createInterpolTable(colors);
 
         // determine closest value
@@ -586,14 +603,8 @@ public final class ResultUtil {
             throw new IllegalArgumentException("invalid color data.");
         }
 
-        double[] labPoint;
-        if (isNormalised){
-            labPoint = new double[]{colorValues[0], colorValues[1], colorValues[2]};
-
-        }else{
-            // normalise lab values to standard ranges L:0..100, a and b: -127 ... 128
-            labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR, colorValues[1] - 128, colorValues[2] - 128};
-        }
+        // normalise lab values to standard ranges L:0..100, a and b: -127 ... 128
+        double[] labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR, colorValues[1] - 128, colorValues[2] - 128};
 
         double distance;
         int index = 0;

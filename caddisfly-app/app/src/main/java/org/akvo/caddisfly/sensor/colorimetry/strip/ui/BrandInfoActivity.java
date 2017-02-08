@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.sensor.colorimetry.strip.ui;
@@ -20,7 +23,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -29,16 +31,13 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,9 +47,7 @@ import org.akvo.caddisfly.sensor.colorimetry.strip.camera.CameraActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.instructions.InstructionActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.model.StripTest;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
-import org.akvo.caddisfly.sensor.colorimetry.strip.util.ResultUtil;
 import org.akvo.caddisfly.ui.BaseActivity;
-import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.json.JSONArray;
@@ -58,14 +55,15 @@ import org.json.JSONArray;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
+
+import timber.log.Timber;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
+/**
+ * Displays the brand information for the test.
+ */
 public class BrandInfoActivity extends BaseActivity {
-
-    private static final String TAG = "BrandInfoActivity";
 
     private static final int PERMISSION_ALL = 1;
     private static final String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -113,7 +111,7 @@ public class BrandInfoActivity extends BaseActivity {
             StripTest stripTest = new StripTest();
 
             // Display the brand in title
-            setTitle(stripTest.getBrand(this, mUuid).getName());
+            setTitle(stripTest.getBrand(mUuid).getName());
 
 //            try {
 //                imageBrandLabel.setBackgroundColor(Color.parseColor(stripTest.getBrand(this, mUuid).getBackground()));
@@ -125,7 +123,7 @@ public class BrandInfoActivity extends BaseActivity {
             InputStream ims = null;
             try {
                 Drawable drawable;
-                String image = stripTest.getBrand(this, mUuid).getImage();
+                String image = stripTest.getBrand(mUuid).getImage();
 
                 if (image.contains(File.separator)) {
                     if (!image.contains(".")) {
@@ -139,33 +137,26 @@ public class BrandInfoActivity extends BaseActivity {
                 }
 
                 imageBrandLabel.setImageDrawable(drawable);
-                imageBrandLabel.setScaleType(stripTest.getBrand(this, mUuid).getImageScale().equals("centerCrop")
+                imageBrandLabel.setScaleType(stripTest.getBrand(mUuid).getImageScale().equals("centerCrop")
                         ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
             } catch (Exception ex) {
-                Log.e(TAG, ex.getMessage(), ex);
+                Timber.e(ex);
             } finally {
                 if (ims != null) {
                     try {
                         ims.close();
                     } catch (IOException e) {
-                        Log.e(TAG, e.getMessage(), e);
+                        Timber.e(e);
                     }
                 }
 
             }
 
-            JSONArray instructions = stripTest.getBrand(this, mUuid).getInstructions();
+            JSONArray instructions = stripTest.getBrand(mUuid).getInstructions();
             if (instructions == null || instructions.length() == 0) {
                 buttonInstruction.setVisibility(View.INVISIBLE);
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_brand, menu);
-        return true;
     }
 
     @Override
@@ -246,6 +237,7 @@ public class BrandInfoActivity extends BaseActivity {
                             })
                             .setNegativeButton(R.string.stop_test, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
                                     finish();
                                 }
                             }).show();
@@ -257,7 +249,7 @@ public class BrandInfoActivity extends BaseActivity {
                     startActivityForResult(intent, 100);
                 }
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
+                Timber.e(e);
             }
         } else {
             Intent intent = new Intent(getIntent());
@@ -286,83 +278,15 @@ public class BrandInfoActivity extends BaseActivity {
         super.onResume();
 
         StripTest stripTest = new StripTest();
-        setTitle(stripTest.getBrand(this, mUuid).getName());
+        setTitle(stripTest.getBrand(mUuid).getName());
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.id.actionColor:
-
-                final Activity activity = this;
-                final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-                final EditText edittext = new EditText(this);
-                alert.setMessage("Enter a Lab color");
-                alert.setTitle("Test color");
-
-                edittext.setRawInputType(Configuration.KEYBOARD_12KEY);
-                alert.setView(edittext);
-
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        dialog.dismiss();
-
-                        String resultMessage = "";
-                        String colorText = edittext.getText().toString();
-
-                        StripTest stripTest = new StripTest();
-
-                        StripTest.Brand brand = stripTest.getBrand(getBaseContext(), mUuid);
-
-                        List<StripTest.Brand.Patch> patches = brand.getPatchesSortedByPosition();
-
-                        double[] labColors = new double[3];
-                        if (colorText.length() > 0) {
-                            colorText = colorText.trim().replace(" ", ",").replace(" ", ",");
-                            String[] colors = colorText.split(",");
-
-                            labColors[0] = Double.parseDouble(colors[0]);
-                            labColors[1] = Double.parseDouble(colors[1]);
-                            labColors[2] = Double.parseDouble(colors[2]);
-                        }
-
-                        for (int i = 0; i < patches.size(); i++) { // handle patch
-                            try {
-                                resultMessage += String.format(Locale.US, "%s: %.2f\n",
-                                        patches.get(i).getDesc(),
-                                        ResultUtil.calculateResultSingle(labColors,
-                                                patches.get(i).getColors(), patches.get(i).getId(), true));
-                            } catch (Exception ignored) {
-                            }
-                        }
-
-                        AlertUtil.showAlert(activity, R.string.result, resultMessage,
-                                R.string.ok, null, null, null);
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // what ever you want to do with No option.
-                    }
-                });
-
-                alert.show();
-
-
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
-
-
 }
