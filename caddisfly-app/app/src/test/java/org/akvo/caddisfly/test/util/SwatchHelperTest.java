@@ -1,37 +1,49 @@
 /*
- *  Copyright (C) Stichting Akvo (Akvo Foundation)
+ * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- *  This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- *  Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- *  the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- *  either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *  See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.test.util;
 
 import android.graphics.Color;
 
-import junit.framework.TestCase;
-
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.ResultDetail;
+import org.junit.Before;
+import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-@SuppressWarnings("unused")
-public class SwatchHelperTest extends TestCase {
+import timber.log.Timber;
 
-    public void setUp() throws Exception {
-        super.setUp();
-        ClassUtil.assertUtilityClassWellDefined(SwatchHelper.class);
+import static org.junit.Assert.assertEquals;
+
+@SuppressWarnings("unused")
+public class SwatchHelperTest {
+
+    @Before
+    public void setUp() {
+        try {
+            ClassUtil.assertUtilityClassWellDefined(SwatchHelper.class);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            Timber.e(e);
+        }
     }
 
     private Result createNewResult(double value) {
@@ -44,7 +56,8 @@ public class SwatchHelperTest extends TestCase {
         return new Result(null, results);
     }
 
-    public void testGetAverageResult() throws Exception {
+    @Test
+    public void testGetAverageResult() {
 
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -63,6 +76,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-1, result, 0);
     }
 
+    @Test
     public void testAverage2() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -77,6 +91,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-1.0, result, 0);
     }
 
+    @Test
     public void testAverage3() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -87,6 +102,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-1, result, 0);
     }
 
+    @Test
     public void testAverage4() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -98,6 +114,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-1.0, result, 0);
     }
 
+    @Test
     public void testAverage5() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -123,6 +140,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-1, result, 0);
     }
 
+    @Test
     public void testAverage7() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -136,6 +154,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(1.63, result, 0);
     }
 
+    @Test
     public void testAverage8() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6));
@@ -150,6 +169,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(1.63, result, 0);
     }
 
+    @Test
     public void testGetAverageColor1() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6, Color.rgb(255, 255, 255)));
@@ -164,6 +184,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-16777216, color);
     }
 
+    @Test
     public void testGetAverageColor2() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6, Color.rgb(255, 255, 255)));
@@ -175,6 +196,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-16777216, color);
     }
 
+    @Test
     public void testGetAverageColor3() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6, Color.rgb(255, 255, 255)));
@@ -188,6 +210,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-16777216, color);
     }
 
+    @Test
     public void testGetAverageColor4() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6, Color.rgb(255, 255, 255)));
@@ -201,6 +224,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-16777216, color);
     }
 
+    @Test
     public void testGetAverageColor5() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6, Color.rgb(225, 1, 1)));
@@ -214,6 +238,7 @@ public class SwatchHelperTest extends TestCase {
         assertEquals(-16777216, color);
     }
 
+    @Test
     public void testGetAverageColor6() {
         ArrayList<Result> results = new ArrayList<>();
         results.add(createNewResult(1.6, Color.rgb(179, 128, 81)));

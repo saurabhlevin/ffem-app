@@ -1,17 +1,20 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.ui;
@@ -22,7 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,7 +63,6 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class ExternalActionActivity extends BaseActivity {
 
-    private static final int CODE_LENGTH = 7;
     private static final int REQUEST_TEST = 1;
     private static final int PERMISSION_ALL = 1;
     private static final String MESSAGE_TWO_LINE_FORMAT = "%s%n%n%s";
@@ -132,11 +133,6 @@ public class ExternalActionActivity extends BaseActivity {
                     return;
                 }
 
-                //Switch temperature to ec, since temperature is returned along with ec in json result
-                if (code.equalsIgnoreCase("tempe") && AppConfig.FLOW_ACTION_CADDISFLY.equals(intent.getAction())) {
-                    code = "econd";
-                }
-
                 mTestTypeUuid = TestConfigHelper.getUuidFromShortCode(code);
 
             }
@@ -148,7 +144,6 @@ public class ExternalActionActivity extends BaseActivity {
                 ((TextView) findViewById(R.id.textTitle)).setText(getTestName(questionTitle));
                 alertTestTypeNotSupported();
             } else {
-                Configuration config = getResources().getConfiguration();
                 ((TextView) findViewById(R.id.textTitle)).setText(
                         CaddisflyApp.getApp().getCurrentTestInfo().getName());
 
@@ -210,12 +205,14 @@ public class ExternalActionActivity extends BaseActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }, null,
                 new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }
@@ -223,7 +220,7 @@ public class ExternalActionActivity extends BaseActivity {
     }
 
     /**
-     * Alert message for calibration incomplete or invalid
+     * Alert message for calibration incomplete or invalid.
      */
     private void alertCalibrationIncomplete() {
 
@@ -242,12 +239,14 @@ public class ExternalActionActivity extends BaseActivity {
                         startActivity(intent);
 
                         activity.setResult(Activity.RESULT_CANCELED);
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         activity.setResult(Activity.RESULT_CANCELED);
+                        dialogInterface.dismiss();
                         finish();
                     }
                 },
@@ -255,6 +254,7 @@ public class ExternalActionActivity extends BaseActivity {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
                         activity.setResult(Activity.RESULT_CANCELED);
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }
@@ -269,7 +269,7 @@ public class ExternalActionActivity extends BaseActivity {
     }
 
     /**
-     * Start the appropriate test based on the current test type
+     * Start the appropriate test based on the current test type.
      */
     private void startTest(String uuid) {
         Context context = this;
@@ -283,6 +283,7 @@ public class ExternalActionActivity extends BaseActivity {
                         R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
                                 finish();
                             }
                         }
@@ -354,7 +355,7 @@ public class ExternalActionActivity extends BaseActivity {
     }
 
     /**
-     * Alert shown when a feature is not supported by the device
+     * Alert shown when a feature is not supported by the device.
      */
     private void alertFeatureNotSupported() {
         String message = String.format(ExternalActionActivity.MESSAGE_TWO_LINE_FORMAT, getString(R.string.phoneDoesNotSupport),
@@ -365,12 +366,14 @@ public class ExternalActionActivity extends BaseActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }, null,
                 new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }
@@ -408,7 +411,7 @@ public class ExternalActionActivity extends BaseActivity {
     }
 
     /**
-     * Alert displayed when an unsupported contaminant test type was requested
+     * Alert displayed when an unsupported contaminant test type was requested.
      */
     private void alertTestTypeNotSupported() {
 
@@ -420,12 +423,14 @@ public class ExternalActionActivity extends BaseActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }, null,
                 new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
+                        dialogInterface.dismiss();
                         finish();
                     }
                 }
@@ -436,20 +441,21 @@ public class ExternalActionActivity extends BaseActivity {
     @Deprecated
     private String getTestName(@NonNull String title) {
         //ensure we have short name to display as title
-        String itemName;
         if (title.length() > 0) {
             if (title.length() > 30) {
                 title = title.substring(0, 30);
             }
-            itemName = title.substring(0, Math.max(0, title.length() - CODE_LENGTH)).trim();
+            if (title.contains("-")) {
+                title = title.substring(0, title.indexOf("-")).trim();
+            }
         } else {
-            itemName = getString(R.string.error);
+            title = getString(R.string.error);
         }
-        return itemName;
+        return title;
     }
 
     /**
-     * Handler to restart the app after language has been changed
+     * Handler to restart the app after language has been changed.
      */
     private static class WeakRefHandler extends Handler {
         @NonNull

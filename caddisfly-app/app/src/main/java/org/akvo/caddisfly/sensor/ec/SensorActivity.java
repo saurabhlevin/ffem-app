@@ -368,9 +368,9 @@ public class SensorActivity extends BaseActivity {
             if (deviceStatus == 0) {
                 if (value.contains(" ")) {
                     if (value.startsWith(mCurrentTestInfo.getDeviceId())) {
-                        progressWait.setVisibility(View.VISIBLE);
-                        hideNotConnectedView();
-                        deviceStatus = 1;
+                            progressWait.setVisibility(View.VISIBLE);
+                            hideNotConnectedView();
+                            deviceStatus = 1;
                     } else {
                         if (identityCheck > 1) {
                             deviceStatus = 2;

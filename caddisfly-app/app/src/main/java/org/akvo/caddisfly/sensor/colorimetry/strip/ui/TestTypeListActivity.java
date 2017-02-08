@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.strip.model.StripTest;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
@@ -92,6 +93,7 @@ public class TestTypeListActivity extends BaseActivity {
     }
 
     private void startDetailActivity(String uuid) {
+        CaddisflyApp.getApp().loadTestConfigurationByUuid(uuid);
         Intent intent = new Intent(getIntent());
         intent.setClass(this, BrandInfoActivity.class);
         intent.putExtra(Constant.UUID, uuid);
@@ -117,10 +119,9 @@ public class TestTypeListActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -181,10 +182,11 @@ public class TestTypeListActivity extends BaseActivity {
                             if (ranges.length() > 0) {
                                 ranges.append(", ");
                             }
-                            ranges.append(String.format(Locale.US, "%.0f - %.0f",
-                                    patch.getColors().getJSONObject(0).getDouble(SensorConstants.VALUE),
-                                    patch.getColors().getJSONObject(valueCount - 1).getDouble(SensorConstants.VALUE)));
-
+                            if (patch.getColors().length() > 0) {
+                                ranges.append(String.format(Locale.US, "%.0f - %.0f",
+                                        patch.getColors().getJSONObject(0).getDouble(SensorConstants.VALUE),
+                                        patch.getColors().getJSONObject(valueCount - 1).getDouble(SensorConstants.VALUE)));
+                            }
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage(), e);
                         }
@@ -195,6 +197,11 @@ public class TestTypeListActivity extends BaseActivity {
 
                     holder.textView.setText(brand.getName());
                     holder.textSubtitle.setText(brand.getBrandDescription() + ", " + ranges.toString());
+//                    if (brand.isCustomTest()) {
+//                        holder.imageIcon.setVisibility(View.VISIBLE);
+//                    } else {
+//                        holder.imageIcon.setVisibility(View.INVISIBLE);
+//                    }
                 }
             }
             return view;
@@ -207,11 +214,14 @@ public class TestTypeListActivity extends BaseActivity {
             private final TextView textView;
             @NonNull
             private final TextView textSubtitle;
+//            @NonNull
+//            private final ImageView imageIcon;
 
             ViewHolder(@NonNull View v) {
 
                 textView = (TextView) v.findViewById(R.id.text_title);
                 textSubtitle = (TextView) v.findViewById(R.id.text_subtitle);
+//                imageIcon = (ImageView) v.findViewById(R.id.imageIcon);
             }
         }
     }

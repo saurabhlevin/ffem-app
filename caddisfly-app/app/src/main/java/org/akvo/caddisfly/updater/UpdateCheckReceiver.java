@@ -26,7 +26,7 @@ import android.os.Environment;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.util.ApiUtil;
+import org.akvo.caddisfly.util.ApkHelper;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +56,7 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
                     PreferencesUtil.setInt(context, "serverVersionCode", serverVersion);
                     PreferencesUtil.setLong(context, R.string.updateInfoDateKey, Calendar.getInstance().getTimeInMillis());
 
-                    if (!ApiUtil.isStoreVersion(context)) {
+                    if (!ApkHelper.isStoreVersion(context)) {
                         final String location = jsonMessage.getString("fileName");
                         String checksum = jsonMessage.getString("md5Checksum");
                         PreferencesUtil.setString(context, "updateChecksum", checksum);

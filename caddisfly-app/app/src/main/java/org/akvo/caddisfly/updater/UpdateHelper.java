@@ -29,6 +29,7 @@ import android.net.Uri;
 import org.akvo.caddisfly.AppConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.util.ApiUtil;
+import org.akvo.caddisfly.util.ApkHelper;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
@@ -50,7 +51,7 @@ public final class UpdateHelper {
         long updateLastCheck = PreferencesUtil.getLong(context, R.string.lastUpdateCheckKey);
         Calendar currentDate = Calendar.getInstance();
 
-        if (ApiUtil.isStoreVersion(context)) {
+        if (ApkHelper.isStoreVersion(context)) {
 
             if (currentDate.getTimeInMillis() - updateLastCheck > AppConfig.UPDATE_CHECK_INTERVAL) {
 

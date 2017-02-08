@@ -37,12 +37,11 @@ import java.util.Locale;
  */
 public final class ColorUtil {
 
-    private static final String TAG = "ColorUtil";
-
     /**
      * The default color model used for analysis
      */
     public static final ColorModel DEFAULT_COLOR_MODEL = ColorModel.RGB;
+    private static final String TAG = "ColorUtil";
     /**
      * The maximum color distance before the color is considered out of range
      */

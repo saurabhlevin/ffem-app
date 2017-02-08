@@ -19,10 +19,18 @@
 
 package org.akvo.caddisfly;
 
+import java.util.GregorianCalendar;
+
 /**
  * Global Configuration settings for the app
  */
 public final class AppConfig {
+
+    /**
+     * Date on which the app version will expire.
+     * This is to ensure that installs from apk meant for testing only cannot be used for too long.
+     */
+    public static final GregorianCalendar APP_EXPIRY_DATE = new GregorianCalendar(2017, 1, 10);
 
     /**
      * To launch Flow app

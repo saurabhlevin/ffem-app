@@ -1,51 +1,60 @@
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- * This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- * Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- * the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- * either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.test.util;
 
 import android.graphics.Color;
 
-import junit.framework.TestCase;
-
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.Swatch;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.util.ColorUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("unused")
-public class ColorUtilTest extends TestCase {
+public class ColorUtilTest {
 
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         ClassUtil.assertUtilityClassWellDefined(ColorUtil.class);
     }
 
-    public void testGetDistance() throws Exception {
+    @Test
+    public void testGetDistance() {
         double distance = ColorUtil.getColorDistance(Color.rgb(200, 200, 200), Color.rgb(100, 100, 100));
         assertEquals(173.20508075688772, distance, 0);
     }
 
-    public void testGetColorRgbString() throws Exception {
+    @Test
+    public void testGetColorRgbString() {
         String rgb = ColorUtil.getColorRgbString(-13850285);
         assertEquals("44  169  83", rgb);
     }
 
-    public void testAutoGenerateColors() throws Exception {
+    @Test
+    public void testAutoGenerateColors() {
         TestInfo testInfo = new TestInfo();
 
         for (int i = 0; i < 5; i++) {
@@ -58,19 +67,22 @@ public class ColorUtilTest extends TestCase {
         assertEquals(401, list.size());
 
         for (int i = 0; i < list.size(); i++) {
-            assertEquals(String.format("%.2f", i * 0.01), String.format("%.2f", list.get(i).getValue()));
+            assertEquals(String.format(Locale.US, "%.2f", i * 0.01),
+                    String.format(Locale.US, "%.2f", list.get(i).getValue()));
             assertEquals(true, list.get(i).getColor() == Color.BLACK ||
                     list.get(i).getColor() == Color.TRANSPARENT);
         }
     }
 
-    public void testGetColorFromRgb() throws Exception {
+    @Test
+    public void testGetColorFromRgb()  {
         int color = ColorUtil.getColorFromRgb("44  169  83");
         assertEquals(-13850285, color);
 
     }
 
-    public void testGetBrightness() throws Exception {
+    @Test
+    public void testGetBrightness() {
         int brightness = ColorUtil.getBrightness(Color.rgb(200, 255, 30));
         assertEquals(233, brightness);
     }

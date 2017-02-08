@@ -1,17 +1,20 @@
 /*
- *  Copyright (C) Stichting Akvo (Akvo Foundation)
+ * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
- *  This file is part of Akvo Caddisfly
+ * This file is part of Akvo Caddisfly.
  *
- *  Akvo Caddisfly is free software: you can redistribute it and modify it under the terms of
- *  the GNU Affero General Public License (AGPL) as published by the Free Software Foundation,
- *  either version 3 of the License or any later version.
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  Akvo Caddisfly is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *  See the GNU Affero General Public License included below for more details.
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  The full license text can also be seen at <http://www.gnu.org/licenses/agpl.html>.
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.akvo.caddisfly.test.util;
@@ -28,59 +31,59 @@ public class PreferencesUtilTest extends TestCase {
         ClassUtil.assertUtilityClassWellDefined(TestConfigHelper.class);
     }
 
-    public void testGetBoolean() throws Exception {
+    public void testGetBoolean() {
 
     }
 
-    public void testSetBoolean() throws Exception {
+    public void testSetBoolean() {
 
     }
 
-    public void testGetInt() throws Exception {
+    public void testGetInt() {
 
     }
 
-    public void testGetInt1() throws Exception {
+    public void testGetInt1() {
 
     }
 
-    public void testSetInt() throws Exception {
+    public void testSetInt() {
 
     }
 
-    public void testSetInt1() throws Exception {
+    public void testSetInt1() {
 
     }
 
-    public void testSetDouble() throws Exception {
+    public void testSetDouble() {
 
     }
 
-    public void testGetLong() throws Exception {
+    public void testGetLong() {
 
     }
 
-    public void testGetLong1() throws Exception {
+    public void testGetLong1() {
 
     }
 
-    public void testSetLong() throws Exception {
+    public void testSetLong() {
 
     }
 
-    public void testGetString() throws Exception {
+    public void testGetString() {
 
     }
 
-    public void testRemoveKey() throws Exception {
+    public void testRemoveKey() {
 
     }
 
-    public void testContains() throws Exception {
+    public void testContains() {
 
     }
 
-    public void testGetDouble() throws Exception {
+    public void testGetDouble() {
 
     }
 }
