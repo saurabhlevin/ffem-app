@@ -184,7 +184,6 @@ public class TimeLapseActivity extends BaseActivity {
         Fragment fragment;
         Bundle bundle = new Bundle();
 
-
         final TextView textTitle = (TextView) findViewById(R.id.textTitle);
 
         CaddisflyApp.getApp().loadTestConfigurationByUuid(mUuid);

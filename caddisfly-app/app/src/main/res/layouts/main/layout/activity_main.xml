@@ -17,9 +17,10 @@
   ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
@@ -111,7 +112,6 @@
         </LinearLayout>
     </LinearLayout>
 
-
     <RelativeLayout
         android:id="@+id/layoutDiagnostics"
         android:layout_width="match_parent"
@@ -125,12 +125,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:src="@android:drawable/ic_menu_revert"
             app:backgroundTint="@color/diagnostic"
             tools:ignore="RelativeOverlap" />
     </RelativeLayout>
-
-
-</merge>
+</android.support.design.widget.CoordinatorLayout>
 
