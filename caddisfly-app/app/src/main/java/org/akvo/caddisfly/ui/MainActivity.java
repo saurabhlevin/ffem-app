@@ -19,17 +19,15 @@
 
 package org.akvo.caddisfly.ui;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +43,6 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.TestTypeListActivity;
-import org.akvo.caddisfly.sensor.ec.SensorTypeListActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.FileUtil;
@@ -83,6 +80,9 @@ public class MainActivity extends BaseActivity {
         makeUpgrades();
     }
 
+    @BindView(R.id.fabDisableDiagnostics)
+    FloatingActionButton fabDisableDiagnostics;
+
     /**
      * Navigate to the survey
      */
@@ -105,39 +105,6 @@ public class MainActivity extends BaseActivity {
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-        }
-    }
-
-    /**
-     * Navigate to the strip tests
-     */
-    @OnClick(R.id.buttonStripTest)
-    void navigateToStripTest() {
-        File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG),
-                SensorConstants.TESTS_META_FILENAME);
-        if (file.exists()) {
-
-            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-            if (!ApiUtil.hasPermissions(getBaseContext(), permissions)) {
-                ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
-            } else {
-                startStripTest();
-            }
-        } else {
-            startStripTest();
-        }
-    }
-
-    @OnClick(R.id.buttonSensors)
-    public void navigateToSensors() {
-        boolean hasOtg = getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST);
-        if (hasOtg) {
-            final Intent intent = new Intent(getBaseContext(), SensorTypeListActivity.class);
-            intent.putExtra("internal", true);
-            startActivity(intent);
-        } else {
-            alertFeatureNotSupported();
         }
     }
 
@@ -196,9 +163,9 @@ public class MainActivity extends BaseActivity {
      */
     private void switchLayoutForDiagnosticOrUserMode() {
         if (AppPreferences.isDiagnosticMode()) {
-            layoutDiagnostics.setVisibility(View.VISIBLE);
+            fabDisableDiagnostics.setVisibility(View.VISIBLE);
         } else {
-            layoutDiagnostics.setVisibility(View.GONE);
+            fabDisableDiagnostics.setVisibility(View.GONE);
         }
     }
 

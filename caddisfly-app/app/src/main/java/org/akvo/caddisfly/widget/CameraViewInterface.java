@@ -17,33 +17,17 @@
  * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.akvo.caddisfly.sensor;
+package org.akvo.caddisfly.widget;
 
-import android.app.DialogFragment;
+import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface CameraViewInterface extends AspectRatioViewInterface {
+    SurfaceTexture getSurfaceTexture();
 
-public abstract class CameraDialog extends DialogFragment {
+    @SuppressWarnings("unused")
+    boolean hasSurface();
 
-    protected  final List<PictureTaken> pictureTakenObservers = new ArrayList<>();
+    Bitmap captureStillImage();
 
-    public abstract void takePictureSingle();
-
-    @SuppressWarnings("SameParameterValue")
-    public abstract void takePictures(int count, long delay);
-
-    public void setPictureTakenObserver(PictureTaken observer) {
-        pictureTakenObservers.add(observer);
-    }
-
-    public abstract void stopCamera();
-
-    public interface Cancelled {
-        void dialogCancelled();
-    }
-
-    public interface PictureTaken {
-        void onPictureTaken(byte[] bytes, boolean completed);
-    }
 }

@@ -77,7 +77,8 @@ public final class AppPreferences {
 
     //Diagnostic in user mode
     public static boolean getNoBackdropDetection() {
-        return PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.noBackdropDetectionKey, false);
+        return true;
+        //return PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.noBackdropDetectionKey, false);
     }
 
     //Diagnostic in user mode
@@ -86,7 +87,8 @@ public final class AppPreferences {
     }
 
     public static boolean useExternalCamera() {
-        return PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.useExternalCameraKey, false);
+        return true;
+        //return PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.useExternalCameraKey, false);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -99,5 +101,11 @@ public final class AppPreferences {
         return isDiagnosticMode()
                 && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.ignoreStripTestDelayKey, false);
     }
+
+    //Diagnostic in user mode
+    public static boolean getExternalCameraMultiDeviceMode() {
+        return PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.externalCameraMultiDeviceModeKey, false);
+    }
+
 
 }

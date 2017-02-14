@@ -79,7 +79,7 @@ public class SelectDilutionActivity extends BaseActivity {
 
     private void startTest(int dilution) {
         final Intent intent = new Intent(getIntent());
-        intent.setClass(getBaseContext(), ColorimetryLiquidActivity.class);
+        intent.setClass(getBaseContext(), ColorimetryLiquidExternalActivity.class);
         intent.putExtra("dilution", dilution);
         startActivityForResult(intent, REQUEST_TEST);
     }

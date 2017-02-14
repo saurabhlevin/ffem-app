@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) Stichting Akvo (Akvo Foundation)
   ~
   ~ This file is part of Akvo Caddisfly.
@@ -17,14 +17,19 @@
   ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <org.akvo.caddisfly.preference.PreferenceCategoryCustom android:title="@string/other">
-        <Preference
-            android:key="about"
-            android:title="@string/about">
-            <intent
-                android:targetClass="org.akvo.caddisfly.ui.AboutActivity"
-                android:targetPackage="org.akvo.caddisfly.external_camera" />
-        </Preference>
-    </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
-</PreferenceScreen>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.akvo.caddisfly.widget.UVCCameraTextureView
+        android:id="@+id/uvcCameraView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+    <!--android:foreground="@android:color/holo_blue_bright" -->
+
+    <org.akvo.caddisfly.widget.CircleView
+        android:id="@+id/circleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

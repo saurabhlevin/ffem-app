@@ -26,7 +26,7 @@
 
     <style name="AppTheme.Orange" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/akvo_orange</item>
-        <item name="colorPrimaryDark">@color/akvo_orange_dark</item>
+        <item name="colorPrimaryDark">@android:color/holo_red_dark</item>
         <item name="colorAccent">@color/cyan</item>
         <item name="textColorPrimary">@color/white</item>
         <item name="android:textColorPrimaryInverse">@color/white</item>
