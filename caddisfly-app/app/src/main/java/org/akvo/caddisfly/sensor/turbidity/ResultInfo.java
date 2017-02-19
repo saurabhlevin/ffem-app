@@ -19,5 +19,6 @@ public class ResultInfo implements Serializable {
     public String turbidTime;
     public String totalTime;
     public String result;
+    public int version;
 
 }

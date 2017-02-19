@@ -69,7 +69,6 @@ public class AnalyseActivity extends BaseActivity {
     String path;
     AnalyseActivity.PagerAdapter pagerAdapter;
     Activity mActivity;
-
     private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -91,6 +90,7 @@ public class AnalyseActivity extends BaseActivity {
             }
         }
     };
+    boolean isTurbid;
 
     private static Integer getColor(String filename, Point centerPoint) throws IOException {
 //        File file = new File(filename);
@@ -325,7 +325,12 @@ public class AnalyseActivity extends BaseActivity {
 
                         //resultInfo = analyzeFiles();
                     } else {
-                        fragments.add(AnalyseDetailFragment.newInstance(resultInfo));
+
+                        if (resultInfo.version < ApiUtil.getAppVersionCode(this)) {
+                            new AnalyzeTask(imageFolder).execute();
+                        } else {
+                            fragments.add(AnalyseDetailFragment.newInstance(resultInfo));
+                        }
                     }
 
                 }
@@ -553,11 +558,13 @@ public class AnalyseActivity extends BaseActivity {
                     totalDiff += diff;
 
 
-                    boolean isTurbid = i > 15 && (firstImageValue < 50000 && (imageInfo.getCount() - firstImageValue) > 7700)
-                            || (firstImageValue > 5000 && imageInfo.getCount() < 2000)
-                            || (firstImageValue > 50000 && (imageInfo.getCount() - firstImageValue) > 6700)
-                            || (firstImageValue > 10000 && firstImageValue < 50000 && imageInfo.getCount() < 4000)
-                            || (firstImageValue < 5000 && firstImageValue > 3000 && imageInfo.getCount() < 3000);
+                    if (!isTurbid) {
+                        isTurbid = i > 15 && (firstImageValue < 50000 && (imageInfo.getCount() - firstImageValue) > 7700)
+                                || (firstImageValue > 5000 && imageInfo.getCount() < 2000)
+                                || (firstImageValue > 50000 && (imageInfo.getCount() - firstImageValue) > 6700)
+                                || (firstImageValue > 10000 && firstImageValue < 50000 && imageInfo.getCount() < 4000)
+                                || (firstImageValue < 5000 && firstImageValue > 3000 && imageInfo.getCount() < 3000);
+                    }
 
 
                     if (!found && (isTurbid || i == imageInfos.size() - 1)) {
@@ -664,6 +671,7 @@ public class AnalyseActivity extends BaseActivity {
                         }
                         html2.append("</tr>");
 
+                        resultInfo.version = ApiUtil.getAppVersionCode(this);
                         resultInfo.testNumber = testNumber;
                         resultInfo.date = reportDate;
                         resultInfo.phone = phone;

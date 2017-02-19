@@ -104,10 +104,11 @@ public final class UpdateHelper {
                         if (context.getString(R.string.appName).equals(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)))) {
                             int downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
 
+                            final String filePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                            final File file = new File(filePath);
+
                             switch (downloadStatus) {
                                 case DownloadManager.STATUS_SUCCESSFUL:
-                                    final String filePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                                    final File file = new File(filePath);
 
                                     if (file.exists() && !found) {
                                         found = true;
@@ -119,8 +120,15 @@ public final class UpdateHelper {
                                     }
                                     break;
                                 case DownloadManager.STATUS_FAILED:
+                                    if (file.exists()) {
+                                        file.delete();
+                                    }
                                     downloadManager.remove(cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_ID)));
                                     break;
+                                default:
+                                    if (file.exists()) {
+                                        file.delete();
+                                    }
                             }
                         }
                     }
@@ -191,6 +199,7 @@ public final class UpdateHelper {
                                 public void onClick(DialogInterface dialog, int id) {
                                 }
                             });
+                    builder.setCancelable(false);
                     builder.create().show();
                     //}
                 } else {
