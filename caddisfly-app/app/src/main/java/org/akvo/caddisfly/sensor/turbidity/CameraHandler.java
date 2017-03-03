@@ -193,13 +193,17 @@ class CameraHandler implements Camera.PictureCallback {
             parameters.setMeteringAreas(meteringAreas);
         }
 
-        if (mSupportedFlashModes != null) {
-            if (!AppPreferences.useFlashMode()
-                    && mSupportedFlashModes.contains(Camera.Parameters.FLASH_MODE_TORCH)) {
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            } else if (mSupportedFlashModes.contains(Camera.Parameters.FLASH_MODE_ON)) {
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+        if (!AppPreferences.isFlashOff()) {
+            if (mSupportedFlashModes != null) {
+                if (!AppPreferences.useFlashMode()
+                        && mSupportedFlashModes.contains(Camera.Parameters.FLASH_MODE_TORCH)) {
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                } else if (mSupportedFlashModes.contains(Camera.Parameters.FLASH_MODE_ON)) {
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+                }
             }
+        } else {
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         }
 
         parameters.setExposureCompensation(EXPOSURE_COMPENSATION);

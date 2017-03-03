@@ -65,6 +65,7 @@
     <string name="diagnosticModeKey">diagnosticMode</string>
     <string name="showDebugMessagesKey">showDebugMessages</string>
     <string name="noSoundKey">noSound</string>
+    <string name="noFlashKey">noFlash</string>
     <string name="noBackdropDetectionKey">noBackdropDetection</string>
     <string name="colorDistanceToleranceKey">colorDistanceTolerance</string>
     <string name="samplingsTimeKey">samplingTimes</string>
@@ -110,6 +111,7 @@
     <string name="debuggingOn">Show debug messages</string>
     <string name="useFlashMode">Use flash mode</string>
     <string name="noSound">Turn sound off</string>
+    <string name="noFlash">Turn flash off</string>
     <string name="diagnosticsUser">Diagnostics in User Mode Also</string>
     <string name="ignoreStripTestDelay">Ignore strip test delay</string>
     <string name="experimental">Experimental</string>

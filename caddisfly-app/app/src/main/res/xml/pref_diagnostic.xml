@@ -39,6 +39,9 @@
                 android:targetPackage="org.akvo.caddisfly.experiment" />
         </Preference>
         <CheckBoxPreference
+            android:key="@string/noFlashKey"
+            android:title="@string/noFlash" />
+        <CheckBoxPreference
             android:key="@string/useFlashModeKey"
             android:title="@string/useFlashMode" />
         <CheckBoxPreference
