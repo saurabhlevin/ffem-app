@@ -51,6 +51,14 @@
             tools:text="Contaminant" />
 
         <TextView
+            android:id="@+id/textSubtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#d6f6fdf6"
+            android:textSize="16sp"
+            tools:text="Sensor Id: " />
+
+        <TextView
             android:id="@+id/textSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

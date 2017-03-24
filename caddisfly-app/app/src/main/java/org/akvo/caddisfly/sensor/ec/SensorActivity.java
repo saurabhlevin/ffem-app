@@ -59,6 +59,8 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -67,11 +69,13 @@ import timber.log.Timber;
  */
 public class SensorActivity extends BaseActivity {
 
-    private static final String EMPTY_STRING = "";
     private static final int REQUEST_DELAY_MILLIS = 1500;
     private static final int IDENTIFY_DELAY_MILLIS = 300;
     private static final int ANIMATION_DURATION = 500;
     private static final int ANIMATION_DURATION_LONG = 1500;
+    private static final String LINE_FEED = "\r\n";
+    private static final String EMPTY_STRING = "";
+
     private final StringBuilder mReadData = new StringBuilder();
     private final Handler handler = new Handler();
     private final SparseArray<String> results = new SparseArray<>();
@@ -97,7 +101,7 @@ public class SensorActivity extends BaseActivity {
             usbService = ((UsbService.UsbBinder) arg1).getService();
             usbService.setHandler(mHandler);
             if (usbService.isUsbConnected()) {
-                textSubtitle.setText(R.string.sensorConnected);
+//                textSubtitle.setText(R.string.sensorConnected);
                 imageUsbConnection.animate().alpha(0f).setDuration(ANIMATION_DURATION);
                 progressWait.setVisibility(View.VISIBLE);
             }
@@ -108,6 +112,7 @@ public class SensorActivity extends BaseActivity {
             usbService = null;
         }
     };
+    private TextView textSubtitle2;
     // Notifications from UsbService will be received here.
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -128,6 +133,17 @@ public class SensorActivity extends BaseActivity {
     };
     private int identityCheck = 0;
     private int deviceStatus = 0;
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (deviceStatus == 1) {
+                requestResult();
+                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
+            } else {
+                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
+            }
+        }
+    };
     private final Runnable validateDeviceRunnable = new Runnable() {
         @Override
         public void run() {
@@ -155,17 +171,6 @@ public class SensorActivity extends BaseActivity {
                     }
                     handler.postDelayed(runnable, IDENTIFY_DELAY_MILLIS);
                     break;
-            }
-        }
-    };
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (deviceStatus == 1) {
-                requestResult();
-                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
-            } else {
-                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
             }
         }
     };
@@ -258,6 +263,7 @@ public class SensorActivity extends BaseActivity {
         mHandler = new MyHandler(this);
 
         textSubtitle = (TextView) findViewById(R.id.textSubtitle);
+        textSubtitle2 = (TextView) findViewById(R.id.textSubtitle2);
         progressWait = (ProgressBar) findViewById(R.id.progressWait);
         textResult = (TextView) findViewById(R.id.textResult);
         textResult2 = (TextView) findViewById(R.id.textResult2);
@@ -265,7 +271,8 @@ public class SensorActivity extends BaseActivity {
         textUnit2 = (TextView) findViewById(R.id.textUnit2);
         imageUsbConnection = (ImageView) findViewById(R.id.imageUsbConnection);
 
-        textSubtitle.setText(R.string.deviceConnectSensor);
+        textSubtitle2.setText(R.string.deviceConnectSensor);
+        textSubtitle.setText("");
 
         buttonAcceptResult = (Button) findViewById(R.id.buttonAcceptResult);
         buttonAcceptResult.setVisibility(View.INVISIBLE);
@@ -337,7 +344,8 @@ public class SensorActivity extends BaseActivity {
             layoutResult.animate().alpha(0f).setDuration(ANIMATION_DURATION);
             imageUsbConnection.animate().alpha(1f).setDuration(ANIMATION_DURATION_LONG);
             buttonAcceptResult.setVisibility(View.GONE);
-            textSubtitle.setText(R.string.deviceConnectSensor);
+            textSubtitle2.setText(R.string.deviceConnectSensor);
+            textSubtitle.setText("");
         }
     }
 
@@ -362,15 +370,25 @@ public class SensorActivity extends BaseActivity {
         }
 
         value = value.trim();
+
         if (!value.isEmpty()) {
 
             // if device not yet validated then check if device id is ok
             if (deviceStatus == 0) {
                 if (value.contains(" ")) {
                     if (value.startsWith(mCurrentTestInfo.getDeviceId())) {
-                            progressWait.setVisibility(View.VISIBLE);
-                            hideNotConnectedView();
-                            deviceStatus = 1;
+
+                        Pattern p = Pattern.compile(".*\\s(\\d+)");
+                        Matcher m = p.matcher(value);
+                        if (m.matches()) {
+                            textSubtitle2.setText(String.format("Sensor ID: %s", m.group(1)));
+                        } else {
+                            textSubtitle2.setText(value);
+                        }
+
+                        progressWait.setVisibility(View.VISIBLE);
+                        hideNotConnectedView();
+                        deviceStatus = 1;
                     } else {
                         if (identityCheck > 1) {
                             deviceStatus = 2;
@@ -432,7 +450,7 @@ public class SensorActivity extends BaseActivity {
                     textUnit.setVisibility(View.VISIBLE);
                     progressWait.setVisibility(View.GONE);
                     buttonAcceptResult.setVisibility(View.VISIBLE);
-                    textSubtitle.setText(R.string.sensorConnected);
+                    //textSubtitle.setText(R.string.sensorConnected);
                 } else {
                     textResult.setText(EMPTY_STRING);
                     textUnit.setText(EMPTY_STRING);
