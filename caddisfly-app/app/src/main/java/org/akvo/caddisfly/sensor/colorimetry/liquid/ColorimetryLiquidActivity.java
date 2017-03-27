@@ -535,6 +535,8 @@ public class ColorimetryLiquidActivity extends BaseActivity
 
                 acquireWakeLock();
 
+                final TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
                 delayRunnable = new Runnable() {
                     @Override
                     public void run() {
@@ -546,8 +548,14 @@ public class ColorimetryLiquidActivity extends BaseActivity
                         ft.addToBackStack(null);
                         try {
                             mCameraFragment.show(ft, "cameraDialog");
-                            mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
-                                    ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
+
+                            if (testInfo.getSubTests().get(0).getTimeDelay() > 0) {
+                                // test has time delay so take the pictures quickly with short delay
+                                mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), 400);
+                            } else {
+                                mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
+                                        ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
+                            }
                         } catch (Exception e) {
                             Timber.e(e);
                             finish();
@@ -555,7 +563,14 @@ public class ColorimetryLiquidActivity extends BaseActivity
                     }
                 };
 
-                delayHandler.postDelayed(delayRunnable, ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
+                int timeDelay = ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING;
+                // If the test has a time delay config then use that otherwise use standard delay
+                if (testInfo.getSubTests().get(0).getTimeDelay() > 0) {
+                    sound.playShortResource(R.raw.beep);
+                    timeDelay = testInfo.getSubTests().get(0).getTimeDelay();
+                }
+
+                delayHandler.postDelayed(delayRunnable, timeDelay);
 
             }
         }).execute();

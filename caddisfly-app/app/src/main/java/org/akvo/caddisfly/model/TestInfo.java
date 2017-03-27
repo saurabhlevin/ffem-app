@@ -128,7 +128,9 @@ public class TestInfo {
             for (int ii = 0; ii < resultsArray.length(); ii++) {
                 try {
                     JSONObject patchObj = resultsArray.getJSONObject(ii);
-                    subTests.add(new SubTest(patchObj.getInt("id"), patchObj.getString("name"), patchObj.getString("unit")));
+                    subTests.add(new SubTest(patchObj.getInt("id"), patchObj.getString("name"),
+                            patchObj.getString("unit"),
+                            patchObj.has("timeDelay") ? patchObj.getInt("timeDelay") : 0));
                 } catch (JSONException e) {
                     Timber.e(e);
                 }
@@ -358,11 +360,13 @@ public class TestInfo {
         private final int id;
         private final String desc;
         private final String unit;
+        private final int timeDelay;
 
-        SubTest(int id, String desc, String unit) {
+        SubTest(int id, String desc, String unit, int timeDelay) {
             this.id = id;
             this.desc = desc;
             this.unit = unit;
+            this.timeDelay = timeDelay * 1000;
         }
 
         public int getId() {
@@ -377,5 +381,8 @@ public class TestInfo {
             return unit;
         }
 
+        public int getTimeDelay() {
+            return timeDelay;
+        }
     }
 }
