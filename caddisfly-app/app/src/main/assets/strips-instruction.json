@@ -447,6 +447,39 @@
     },
     {
       "name": "Water - Potassium",
+      "uuid": "d49ab2d8-445f-4210-be6c-15075d2dabe3",
+      "instructions": [
+        {
+          "text": "collect_water_sample",
+          "png": "instruction_collect_sample"
+        },
+        {
+          "text": "Place the test tube into the cavity of the thermoformed mold. Add 10 drops potassium-1 (0.7 % nitric acid)."
+        },
+        {
+          "text": "Dip the test strip into the neutral sample for 1 second."
+        },
+        {
+          "text": "Shake off excess liquid."
+        },
+        {
+          "text": "Place the test strip into the test tube and wait 60 seconds."
+        },
+        {
+          "text": "Shake off excess liquid."
+        },
+        {
+          "text": "place_strip_in_black_area",
+          "png": "instruction_place_strip"
+        },
+        {
+          "text": "press_start_button",
+          "png": ""
+        }
+      ]
+    },
+    {
+      "name": "Water - Potassium",
       "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
       "instructions": [
         {
