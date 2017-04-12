@@ -29,8 +29,8 @@ android {
         applicationId "org.akvo.caddisfly.experiment"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 173
-        versionName "1.0.0 Alpha 8.3"
+        versionCode 174
+        versionName "1.0.0 Alpha 8.4"
         resConfigs "en", "en_US", "fr", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         applicationVariants.all { variant ->
@@ -40,24 +40,24 @@ android {
         }
     }
 
-//    signingConfigs {
-//        caddisflyRelease {
-//            storeFile file(CADDISFLY_RELEASE_STORE_FILE)
-//            storePassword CADDISFLY_RELEASE_STORE_PASSWORD
-//            keyAlias CADDISFLY_RELEASE_KEY_ALIAS
-//            keyPassword CADDISFLY_RELEASE_KEY_PASSWORD
-//        }
-//    }
-//
-//    buildTypes {
-//        release {
-//            signingConfig signingConfigs.caddisflyRelease
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            zipAlignEnabled true
-//        }
-//    }
+    signingConfigs {
+        caddisflyRelease {
+            storeFile file(CADDISFLY_RELEASE_STORE_FILE)
+            storePassword CADDISFLY_RELEASE_STORE_PASSWORD
+            keyAlias CADDISFLY_RELEASE_KEY_ALIAS
+            keyPassword CADDISFLY_RELEASE_KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.caddisflyRelease
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+        }
+    }
 
     sourceSets {
         main {
@@ -103,7 +103,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.github.felHR85:UsbSerial:4.5.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'

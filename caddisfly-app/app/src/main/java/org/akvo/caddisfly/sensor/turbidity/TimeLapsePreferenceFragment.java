@@ -36,7 +36,7 @@ import java.util.Arrays;
 public class TimeLapsePreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int MAX_SAMPLE_NUMBER = 50;
+    private static final int MAX_SAMPLE_NUMBER = 100;
     private ListView list;
 
     public TimeLapsePreferenceFragment() {

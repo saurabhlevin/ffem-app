@@ -240,12 +240,12 @@ public final class FileUtil {
                                 date = format.parse(reportDate);
                             } catch (java.text.ParseException ignored) {
                             }
-                        }else{
+                        } else {
                             deleteRecursive(child);
                             continue;
                         }
 
-                        long millisIn48Hours = 1000 * 60 * 60 * 72;
+                        long millisIn48Hours = 1000 * 60 * 60 * 720;
                         Date hours48ago = new Date(new Date().getTime() - millisIn48Hours);
                         if (date.before(hours48ago)) {
                             deleteRecursive(child);
