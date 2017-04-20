@@ -17,22 +17,6 @@
       ]
     },
     {
-      "name": "Chromium",
-      "subtype": "liquid-chamber",
-      "uuid": "082ec36a-71af-49d5-add8-5c03fc1c2f0b",
-      "calibrate": "true",
-      "ranges": "0,25,50,75,100",
-      "monthsValid": "6",
-      "results": [
-        {
-          "id": 1,
-          "name": "Chromium",
-          "unit": "ppb",
-          "timeDelay": 300
-        }
-      ]
-    },
-    {
       "name": "Coliforms",
       "subtype": "coliform",
       "uuid": "df3d1009-2112-4d95-a6f9-fdc4b5633ec9",

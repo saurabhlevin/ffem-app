@@ -137,7 +137,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
     private boolean mIgnoreShake;
     //reference to last dialog opened so it can be dismissed on activity getting destroyed
     private AlertDialog alertDialogToBeDestroyed;
-    private boolean mIsFirstResult;
+    private int mResultNumber;
 
     @Override
     protected void onResume() {
@@ -448,7 +448,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
         mResults = new ArrayList<>();
 
         mWaitingForStillness = false;
-        mIsFirstResult = true;
+        mResultNumber = 0;
 
         mShakeDetector.setMinShakeAcceleration(1);
         mShakeDetector.setMaxShakeDuration(MAX_SHAKE_DURATION_2);
@@ -511,7 +511,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
                         }
 
                         //Ignore the first result as camera may not have focused correctly
-                        if (!mIsFirstResult) {
+                        if (mResultNumber > 1) {
                             if (croppedBitmap != null) {
                                 getAnalyzedResult(croppedBitmap);
                             } else {
@@ -522,7 +522,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
                                 return;
                             }
                         }
-                        mIsFirstResult = false;
+                        mResultNumber++;
 
                         if (completed) {
                             analyzeFinalResult(bytes, croppedBitmap);
@@ -549,9 +549,10 @@ public class ColorimetryLiquidActivity extends BaseActivity
                         try {
                             mCameraFragment.show(ft, "cameraDialog");
 
-                            if (testInfo.getSubTests().get(0).getTimeDelay() > 0) {
+                            if (testInfo.getSubTests().get(0).getTimeDelay() > 0
+                                    ) {
                                 // test has time delay so take the pictures quickly with short delay
-                                mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), 400);
+                                mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), 600);
                             } else {
                                 mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
                                         ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
@@ -565,9 +566,10 @@ public class ColorimetryLiquidActivity extends BaseActivity
 
                 int timeDelay = ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING;
                 // If the test has a time delay config then use that otherwise use standard delay
-                if (testInfo.getSubTests().get(0).getTimeDelay() > 0) {
+                if (testInfo.getSubTests().get(0).getTimeDelay() > 0
+                        && !AppPreferences.ignoreTimeDelays()) {
                     sound.playShortResource(R.raw.beep);
-                    timeDelay = testInfo.getSubTests().get(0).getTimeDelay();
+                    timeDelay = Math.max(500, testInfo.getSubTests().get(0).getTimeDelay());
                 }
 
                 delayHandler.postDelayed(delayRunnable, timeDelay);

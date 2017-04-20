@@ -100,7 +100,7 @@
     <string name="colif_brothMediumKey">colif_brothMedium</string>
     <string name="colif_volumeKey">colif_volume</string>
     <string name="colif_testDescriptionKey">colif_testDescription</string>
-    <string name="ignoreStripTestDelayKey">ignoreStripTestDelay</string>
+    <string name="ignoreTimeDelaysKey">ignoreTimeDelays</string>
     <string name="cameraMegaPixelsKey">cameraMegaPixels</string>
     <string name="showMinMegaPixelDialogKey">showMinMegaPixelDialog</string>
 
@@ -113,7 +113,7 @@
     <string name="noSound">Turn sound off</string>
     <string name="noFlash">Turn flash off</string>
     <string name="diagnosticsUser">Diagnostics in User Mode Also</string>
-    <string name="ignoreStripTestDelay">Ignore strip test delay</string>
+    <string name="ignoreTimeDelays">Ignore time delays</string>
     <string name="experimental">Experimental</string>
     <string name="diagnosticModeEnabled">Diagnostic mode enabled</string>
     <string name="diagnosticModeDisabled">Diagnostic mode disabled</string>

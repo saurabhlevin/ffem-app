@@ -52,8 +52,8 @@ public final class AppPreferences {
         } else {
             samplingTimes = ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT;
         }
-        //Add 1 because first sample is always discarded during analysis
-        return samplingTimes + 1;
+        //Add 1 because first two samples are always discarded during analysis
+        return samplingTimes + 2;
     }
 
     public static int getColorDistanceTolerance() {
@@ -105,9 +105,9 @@ public final class AppPreferences {
                 && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.noFlashKey, false);
     }
 
-    public static boolean ignoreStripTestDelay() {
+    public static boolean ignoreTimeDelays() {
         return isDiagnosticMode()
-                && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.ignoreStripTestDelayKey, false);
+                && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.ignoreTimeDelaysKey, false);
     }
 
 }

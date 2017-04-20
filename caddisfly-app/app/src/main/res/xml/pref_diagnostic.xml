@@ -45,8 +45,8 @@
             android:key="@string/useFlashModeKey"
             android:title="@string/useFlashMode" />
         <CheckBoxPreference
-            android:key="@string/ignoreStripTestDelayKey"
-            android:title="@string/ignoreStripTestDelay" />
+            android:key="@string/ignoreTimeDelaysKey"
+            android:title="@string/ignoreTimeDelays" />
         <CheckBoxPreference
             android:key="@string/showDebugMessagesKey"
             android:title="@string/debuggingOn" />

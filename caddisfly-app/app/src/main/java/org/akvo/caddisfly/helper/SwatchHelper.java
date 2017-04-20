@@ -21,7 +21,6 @@ package org.akvo.caddisfly.helper;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -55,14 +54,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class SwatchHelper {
+import timber.log.Timber;
 
-    private static final String TAG = "SwatchHelper";
+public final class SwatchHelper {
 
     private static final int MAX_DISTANCE = 999;
     private static final int MAX_DIFFERENCE = 150;
     private static final double MAX_DIFF_FOR_AVG_CALC = 0.21;
-    private static final double INCREMENT = 0.01;
     private static final int HSV_CROSSOVER_DIFFERENCE = 200;
 
     private SwatchHelper() {
@@ -87,7 +85,7 @@ public final class SwatchHelper {
 
         ColorCompareInfo colorCompareInfo;
 
-        List<Swatch> gradientSwatches = SwatchHelper.generateGradient(swatches, colorModel, INCREMENT);
+        List<Swatch> gradientSwatches = SwatchHelper.generateGradient(swatches, colorModel);
 
         //Find the color within the generated gradient that matches the photoColor
         colorCompareInfo = getNearestColorFromSwatches(photoColor.getColor(),
@@ -412,7 +410,7 @@ public final class SwatchHelper {
                     swatches.add(clonedSwatch);
                 }
             } catch (CloneNotSupportedException e) {
-                Log.e(TAG, e.getMessage(), e);
+                Timber.e(e);
             }
 
         }
@@ -588,7 +586,7 @@ public final class SwatchHelper {
      */
     @SuppressWarnings("SameParameterValue")
     public static List<Swatch> generateGradient(
-            List<Swatch> swatches, ColorUtil.ColorModel colorModel, double increment) {
+            List<Swatch> swatches, ColorUtil.ColorModel colorModel) {
 
         List<Swatch> list = new ArrayList<>();
 
@@ -597,7 +595,9 @@ public final class SwatchHelper {
             int startColor = swatches.get(i).getColor();
             int endColor = swatches.get(i + 1).getColor();
             double startValue = swatches.get(i).getValue();
-            int steps = (int) ((swatches.get(i + 1).getValue() - startValue) / increment);
+            double endValue = swatches.get(i + 1).getValue();
+            double increment = (endValue - startValue) / 250;
+            int steps = (int) ((endValue - startValue) / increment);
 
             for (int j = 0; j < steps; j++) {
                 int color = 0;
@@ -648,7 +648,7 @@ public final class SwatchHelper {
         try {
             return nf.parse(text).doubleValue();
         } catch (ParseException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
             return 0.0;
         }
     }
