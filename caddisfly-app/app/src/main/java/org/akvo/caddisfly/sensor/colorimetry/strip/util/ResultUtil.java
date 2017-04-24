@@ -594,7 +594,7 @@ public final class ResultUtil {
         return interpolTable;
     }
 
-    public static double calculateResultSingle(@Nullable double[] colorValues, @NonNull JSONArray colors, int id) {
+    public static double calculateResultSingle(@Nullable double[] colorValues, @NonNull JSONArray colors, int id, boolean isNormalised) {
         double[][] interpolTable = createInterpolTable(colors);
 
         // determine closest value
@@ -603,8 +603,14 @@ public final class ResultUtil {
             throw new IllegalArgumentException("invalid color data.");
         }
 
-        // normalise lab values to standard ranges L:0..100, a and b: -127 ... 128
-        double[] labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR, colorValues[1] - 128, colorValues[2] - 128};
+        double[] labPoint;
+        if (isNormalised) {
+            labPoint = new double[]{colorValues[0], colorValues[1], colorValues[2]};
+
+        } else {
+            // normalise lab values to standard ranges L:0..100, a and b: -127 ... 128
+            labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR, colorValues[1] - 128, colorValues[2] - 128};
+        }
 
         double distance;
         int index = 0;

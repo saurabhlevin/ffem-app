@@ -430,7 +430,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 double[] colorValueLab = colorDetected.getLab().val;
 
                 try {
-                    resultValue = ResultUtil.calculateResultSingle(colorValueLab, colors, id);
+                    resultValue = ResultUtil.calculateResultSingle(colorValueLab, colors, id, false);
                 } catch (Exception e) {
                     resultValue = Double.NaN;
                 }

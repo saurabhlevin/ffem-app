@@ -81,8 +81,7 @@ public final class ApkHelper {
         try {
             String installer = context.getPackageManager()
                     .getInstallerPackageName(context.getPackageName());
-            //result = !TextUtils.isEmpty(installer);
-            result = !TextUtils.isEmpty(installer) || !TextUtils.equals(installer, INSTALLER_ADB);
+            result = installer != null && !TextUtils.isEmpty(installer);
         } catch (Exception ignored) {
         }
 
