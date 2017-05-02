@@ -21,6 +21,7 @@ package org.akvo.caddisfly.sensor.colorimetry.liquid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -304,6 +305,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
             ft.remove(prev);
         }
         mResultFragment.setCancelable(false);
+        mResultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
         mResultFragment.show(ft, "gridDialog");
     }
 
