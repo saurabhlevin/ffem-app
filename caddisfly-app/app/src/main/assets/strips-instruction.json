@@ -300,6 +300,32 @@
     },
     {
       "name": "Water - Nitrate - N & Nitrite - N",
+      "uuid": "bf2a16a8-93ef-488e-9842-84d1eaa4853b",
+      "instructions": [
+        {
+          "text": "collect_water_sample",
+          "png": "instruction_collect_sample"
+        },
+        {
+          "text": "dip_strip_into_water_1_second",
+          "png": "instruction_dip"
+        },
+        {
+          "text": "shake_excess_water",
+          "png": ""
+        },
+        {
+          "text": "place_strip_in_black_area",
+          "png": "instruction_place_strip"
+        },
+        {
+          "text": "press_start_button",
+          "png": ""
+        }
+      ]
+    },
+    {
+      "name": "Water - Nitrate - N & Nitrite - N",
       "uuid": "c801b70c-39e4-493a-b20e-6843158b47b4",
       "instructions": [
         {

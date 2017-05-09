@@ -513,7 +513,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
                         }
 
                         //Ignore the first result as camera may not have focused correctly
-                        if (mResultNumber > 1) {
+                        if (mResultNumber >= ColorimetryLiquidConfig.SKIP_SAMPLING_COUNT) {
                             if (croppedBitmap != null) {
                                 getAnalyzedResult(croppedBitmap);
                             } else {

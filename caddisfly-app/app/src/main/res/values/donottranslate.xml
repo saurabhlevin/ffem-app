@@ -67,8 +67,8 @@
     <string name="noSoundKey">noSound</string>
     <string name="noFlashKey">noFlash</string>
     <string name="noBackdropDetectionKey">noBackdropDetection</string>
-    <string name="colorDistanceToleranceKey">colorDistanceTolerance</string>
-    <string name="samplingsTimeKey">samplingTimes</string>
+    <string name="colorDistanceToleranceKey">maxColorDistanceTolerance</string>
+    <string name="samplingsTimeKey">numberOfSamples</string>
     <string name="hasCameraFlashKey">hasCameraFlash</string>
     <string name="calibrationDateKey">calibrationDateTime</string>
     <string name="calibrationExpiryDateKey">calibrationExpiryDate</string>

@@ -15,8 +15,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.akvo.caddisfly">
@@ -151,12 +150,10 @@
             android:name=".sensor.turbidity.ExternalCameraActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="nosensor" />
-
         <activity
             android:name=".sensor.turbidity.AnalyseActivity"
             android:parentActivityName=".preference.SettingsActivity"
             android:screenOrientation="nosensor" />
-
         <activity
             android:name=".updater.UpdateActivity"
             android:screenOrientation="nosensor"
@@ -184,6 +181,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".sensor.colorimetry.strip.ui.DiagnosticActivity"
+            android:screenOrientation="nosensor" />
         <!-- end StripTest -->
 
         <service

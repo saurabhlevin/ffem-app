@@ -665,6 +665,7 @@
       "name": "Water - Chromium",
       "subtype": "liquid-chamber",
       "uuid": "082ec36a-71af-49d5-add8-5c03fc1c2f0b",
+      "shortCode": "chrom",
       "calibrate": "true",
       "ranges": "0,25,50,75,100,5000,10000,25000",
       "monthsValid": "6",
@@ -900,6 +901,157 @@
             {
               "value": 8.4,
               "lab":[48.03,62.81,25.06]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Water - Nitrate - N & Nitrite - N",
+      "description": "Measures nitrate and nitrite in water. Nitrate 0 - 500 ppm, Nitrite 0 - 80 ppm",
+      "subtype": "striptest",
+      "tags": [
+        "water quality"
+      ],
+      "uuid": "bf2a16a8-93ef-488e-9842-84d1eaa4853b",
+      "calibration": "04 May 2017 using X-Rite i1Pro 2, Nitrate Standards are prepared by diluting 1000 ppm Nitrate stock solution. 1000 ppm Stock solution is prepared by dissolving 1.6306 gm of dried KNO3 in 1000 ml of distilled water. Preserve with 2 ml of CHCl3/L of solution. Nitrite Standards are prepared by diluting 500 ppm Nitrite stock solution. 1000 ppm Stock solution is prepared by dissolving 0.7499 gm of dried NaNO2 in 1000 ml of distilled water. Preserve with 2 ml of CHCl3/L of solution.",
+      "brand": "Quantofix 91313",
+      "groupingType": "INDIVIDUAL",
+      "illuminant": "D65-2deg",
+      "length": 85.2,
+      "height": 5.5,
+      "unit": "mm",
+      "hasImage": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "Nitrate Nitrogen",
+          "unit": "ppm",
+          "patchPos": 4.5,
+          "patchWidth": 6,
+          "timeDelay": 60,
+          "colors": [
+            {
+              "value": 0,
+              "lab": [
+                87.84,
+                1.18,
+                0.36
+              ]
+            },
+            {
+              "value": 10,
+              "lab": [
+                86.00,
+                3.46,
+                -0.96
+              ]
+            },
+            {
+              "value": 25,
+              "lab": [
+                83.64,
+                7.84,
+                -2.91
+              ]
+            },
+            {
+              "value": 50,
+              "lab": [
+                82.37,
+                11.95,
+                -4.37
+              ]
+            },
+            {
+              "value": 100,
+              "lab": [
+                77.65,
+                20.14,
+                -7.43
+              ]
+            },
+            {
+              "value": 250,
+              "lab": [
+                72.23,
+                25.72,
+                -9.10
+              ]
+            },
+            {
+              "value": 500,
+              "lab": [
+                67.95,
+                30.36,
+                -9.91
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Nitrite Nitrogen",
+          "unit": "ppm",
+          "patchPos": 13.5,
+          "patchWidth": 6,
+          "timeDelay": 60,
+          "colors": [
+            {
+              "value": 0,
+              "lab": [
+                85.95,
+                -0.77,
+                1.57
+              ]
+            },
+            {
+              "value": 1,
+              "lab": [
+                84.29,
+                3.59,
+                -0.73
+              ]
+            },
+            {
+              "value": 5,
+              "lab": [
+                75.71,
+                20.36,
+                -8.93
+              ]
+            },
+            {
+              "value": 10,
+              "lab": [
+                70.79,
+                31.84,
+                -13.84
+              ]
+            },
+            {
+              "value": 20,
+              "lab": [
+                62.51,
+                46.51,
+                -19.06
+              ]
+            },
+            {
+              "value": 40,
+              "lab": [
+                53.84,
+                59.20,
+                -20.42
+              ]
+            },
+            {
+              "value": 80,
+              "lab": [
+                46.97,
+                66.71,
+                -19.44
+              ]
             }
           ]
         }
