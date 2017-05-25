@@ -107,7 +107,11 @@ public class TypeListFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(mTests.get(position));
+
+            TestInfo testInfo = mTests.get(position);
+            if (!testInfo.getId().isEmpty()) {
+                mListener.onFragmentInteraction(testInfo);
+            }
         }
     }
 

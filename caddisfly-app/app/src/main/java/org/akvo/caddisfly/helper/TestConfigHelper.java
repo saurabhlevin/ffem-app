@@ -48,7 +48,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-import static org.akvo.caddisfly.sensor.SensorConstants.DEPRECATED_TESTS_FILENAME;
+import static org.akvo.caddisfly.sensor.SensorConstants.EXPERIMENTAL_TESTS_FILENAME;
 
 /**
  * Utility functions to parse a text config json text.
@@ -84,7 +84,7 @@ public final class TestConfigHelper {
                         break;
                     case 2:
                         // Load any experimental tests if app is in diagnostic mode
-                        jsonText = AssetsManager.getInstance().loadJSONFromAsset(DEPRECATED_TESTS_FILENAME);
+                        jsonText = AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME);
                         break;
                     default:
                         // Load the pre-configured tests from the app
@@ -122,7 +122,7 @@ public final class TestConfigHelper {
         // Load the pre-configured tests from the app
         loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(SensorConstants.TESTS_META_FILENAME), -1);
 
-        loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(DEPRECATED_TESTS_FILENAME), -1);
+        loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME), R.string.experimental);
 
         // Load any custom tests from the custom test config file
         File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG), SensorConstants.TESTS_META_FILENAME);
@@ -394,7 +394,7 @@ public final class TestConfigHelper {
         if (!shortCode.isEmpty()) {
             String uuid = getUuidByShortCode(shortCode, SensorConstants.TESTS_META_FILENAME);
             if (uuid == null) {
-                uuid = getUuidByShortCode(shortCode, DEPRECATED_TESTS_FILENAME);
+                uuid = getUuidByShortCode(shortCode, EXPERIMENTAL_TESTS_FILENAME);
             }
             return uuid;
         }

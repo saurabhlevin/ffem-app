@@ -31,6 +31,8 @@ import android.widget.TextView;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.model.TestInfo;
 
+import java.util.Locale;
+
 /**
  * Adapter to list the various contaminant test types
  */
@@ -62,10 +64,21 @@ class TestTypesAdapter extends ArrayAdapter<TestInfo> {
         if (testInfo.isGroup()) {
             rowView.findViewById(R.id.textGroup).setVisibility(View.VISIBLE);
             ((TextView) rowView.findViewById(R.id.textGroup)).setText(mActivity.getString(testInfo.getGroupName()));
-            rowView.findViewById(R.id.typeLayout).setVisibility(View.GONE);
+            rowView.findViewById(R.id.layoutDetails).setVisibility(View.GONE);
         } else {
             rowView.findViewById(R.id.textGroup).setVisibility(View.GONE);
             ((TextView) rowView.findViewById(R.id.textName)).setText(testInfo.getName());
+
+            double endValue = testInfo.getRangeValues()[testInfo.getRangeValues().length - 1];
+
+            String format = "%.0f - %.0f";
+            if (endValue < 1) {
+                format = "%.0f - %.2f";
+            }
+            ((TextView) rowView.findViewById(R.id.text_subtitle))
+                    .setText(String.format(Locale.US, format,
+                            testInfo.getRangeValues()[0], endValue));
+
         }
 
         return rowView;

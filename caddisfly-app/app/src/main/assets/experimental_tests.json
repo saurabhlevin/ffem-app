@@ -1,18 +1,117 @@
 {
   "tests": [
     {
-      "name": "Turbidity",
+      "name": "Arsenic - 1",
       "subtype": "liquid-chamber",
-      "uuid": "a81f5663-b512-4dad-a4c3-651caf7f567a",
+      "uuid": "0ca9a961-213e-48dd-a7f1-d37d05157047",
       "calibrate": "true",
-      "ranges": "0,5,10,15,20",
-      "monthsValid": "6",
-      "grayScale": "true",
+      "ranges": "0,25,50,75,100,200,300",
+      "monthsValid": "12",
       "results": [
         {
           "id": 1,
-          "name": "Turbidity",
-          "unit": "NTU"
+          "name": "Arsenic",
+          "unit": "ppb",
+          "timeDelay": 1
+        }
+      ]
+    },
+    {
+      "name": "Arsenic - 2",
+      "subtype": "liquid-chamber",
+      "uuid": "9fe91d2f-9ab1-4215-b7dd-98b6ab890a99",
+      "calibrate": "true",
+      "ranges": "0,25,50,75,100,250,500,1000",
+      "monthsValid": "12",
+      "results": [
+        {
+          "id": 1,
+          "name": "Arsenic",
+          "unit": "ppb",
+          "timeDelay": 1
+        }
+      ]
+    },
+    {
+      "name": "Arsenic - 3",
+      "subtype": "liquid-chamber",
+      "uuid": "2b774723-5a15-49b4-a25f-5c9c034a3cc8",
+      "calibrate": "true",
+      "ranges": "0,0.1,0.2,0.3,0.4,0.5",
+      "monthsValid": "12",
+      "results": [
+        {
+          "id": 1,
+          "name": "Arsenic",
+          "unit": "ppm",
+          "timeDelay": 1
+        }
+      ]
+    },
+    {
+      "name": "Arsenic - 4",
+      "subtype": "liquid-chamber",
+      "uuid": "5c4837d4-bd21-4d1b-808b-6b06bc22507f",
+      "calibrate": "true",
+      "ranges": "0,0.05,0.1,0.2,0.3,0.5",
+      "monthsValid": "12",
+      "results": [
+        {
+          "id": 1,
+          "name": "Arsenic",
+          "unit": "ppm",
+          "timeDelay": 1
+        }
+      ]
+    },
+    {
+      "name": "Chromium 1",
+      "subtype": "liquid-chamber",
+      "uuid": "082ec36a-71af-49d5-add8-5c03fc1c2f0b",
+      "shortCode": "chro1",
+      "calibrate": true,
+      "ranges": "0,25,50,75,100,5000,10000,25000",
+      "monthsValid": 3,
+      "results": [
+        {
+          "id": 1,
+          "name": "Chromium",
+          "unit": "ppb",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Chromium 2",
+      "subtype": "liquid-chamber",
+      "uuid": "4970bfed-d289-429c-b4c0-5645ec6fd5af",
+      "shortCode": "chro2",
+      "calibrate": true,
+      "ranges": " 0,0.025,0.050,0.075,0.100,0.5,1.0",
+      "monthsValid": 3,
+      "results": [
+        {
+          "id": 1,
+          "name": "Chromium",
+          "unit": "ppm",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Chromium 3",
+      "subtype": "liquid-chamber",
+      "uuid": "e0730417-b475-4484-b9e0-a5e2b2b65e8c",
+      "shortCode": "chro3",
+      "calibrate": true,
+      "ranges": "0,1,5,15,25",
+      "monthsValid": 3,
+      "results": [
+        {
+          "id": 1,
+          "name": "Chromium",
+          "unit": "ppm",
+          "timeDelay": 300
         }
       ]
     },
@@ -21,12 +120,65 @@
       "subtype": "coliform",
       "uuid": "df3d1009-2112-4d95-a6f9-fdc4b5633ec9",
       "shortCode": "colif",
-      "calibrate": "false",
+      "calibrate": false,
       "results": [
         {
           "id": 1,
           "name": "Coliforms",
           "unit": "ppm"
+        }
+      ]
+    },
+    {
+      "name": "pH",
+      "subtype": "liquid-chamber",
+      "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
+      "shortCode": "phydr",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "unit": ""
+        }
+      ]
+    },
+    {
+      "name": "Phosphate",
+      "description": "Measures Phosphate in water. 0 - 20 ppm",
+      "subtype": "liquid-chamber",
+      "tags": ["water quality"],
+      "uuid": "f0262ede-5e91-4d65-9e0b-f51cae947294",
+      "brand": "Akvo Caddisfly",
+      "calibrate": true,
+      "ranges": "0,5,10,15,20",
+      "dilutions": "0,50,20",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphate",
+          "id": 1,
+          "unit": "ppm"
+        }
+      ]
+    },
+    {
+      "name": "Turbidity",
+      "subtype": "liquid-chamber",
+      "uuid": "a81f5663-b512-4dad-a4c3-651caf7f567a",
+      "calibrate": "true",
+      "ranges": "0,5,10,15,20",
+      "monthsValid": 6,
+      "grayScale": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "Turbidity",
+          "unit": "NTU"
         }
       ]
     }
