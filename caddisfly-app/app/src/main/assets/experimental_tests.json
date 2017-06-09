@@ -142,7 +142,8 @@
         {
           "id": 1,
           "name": "pH",
-          "unit": ""
+          "unit": "",
+          "timeDelay": 45
         }
       ]
     },
@@ -154,7 +155,7 @@
       "uuid": "f0262ede-5e91-4d65-9e0b-f51cae947294",
       "brand": "Akvo Caddisfly",
       "calibrate": true,
-      "ranges": "0,5,10,15,20",
+      "ranges": "0,3,6,9,12,15",
       "dilutions": "0,50,20",
       "monthsValid": 12,
       "hasImage": true,
@@ -162,7 +163,8 @@
         {
           "name": "Phosphate",
           "id": 1,
-          "unit": "ppm"
+          "unit": "ppm",
+          "timeDelay": 45
         }
       ]
     },

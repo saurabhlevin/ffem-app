@@ -615,7 +615,9 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
 
                     if (resultValue > -1) {
 
-                        if (resultValue < 1.0) {
+                        if (resultValue < 0.1) {
+                            textResult.setText(String.format(Locale.getDefault(), "%.3f %s", resultValue, unit));
+                        } else if (resultValue < 1.0) {
                             textResult.setText(String.format(Locale.getDefault(), "%.2f %s", resultValue, unit));
                         } else {
                             textResult.setText(String.format(Locale.getDefault(), "%.1f %s", resultValue, unit));

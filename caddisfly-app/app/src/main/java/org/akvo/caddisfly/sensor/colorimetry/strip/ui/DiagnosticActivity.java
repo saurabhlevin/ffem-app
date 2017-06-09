@@ -149,7 +149,7 @@ public class DiagnosticActivity extends BaseActivity {
 
                     for (int i = 0; i < patches.size(); i++) { // handle patch
                         try {
-                            resultMessage += String.format(Locale.US, "%s: %.2f\n",
+                            resultMessage += String.format(Locale.US, "%s: %.3f\n",
                                     patches.get(i).getDesc(),
                                     ResultUtil.calculateResultSingle(labColors,
                                             patches.get(i).getColors(), patches.get(i).getId(), true));
