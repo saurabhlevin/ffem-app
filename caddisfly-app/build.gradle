@@ -24,14 +24,17 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha4'
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.0'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.14.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
     }
 }
 
 allprojects {
     repositories {
+        maven {
+            url 'https://dl.google.com/dl/android/maven2/'
+        }
         jcenter()
         maven { url "https://jitpack.io" }
     }
