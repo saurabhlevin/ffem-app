@@ -2,6 +2,210 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests":[
     {
+      "name":  "Phosphate in Mehlich (Quantofix)",
+      "description": "",
+      "subtype": "striptest",
+      "tags": ["soil quality"],
+      "uuid": "a1b2df81-ab74-447e-b999-c28bf5a130b0",
+      "calibration": "Standards are prepared by diluting 100 ppm phosphate stock solution with Mehlich solution. 100 ppm Stock solution is prepared by dissolving 0.1454 gm of Anhydrous KH2PO4 in 1000 ml of distilled water.",
+      "brand": "Quantofix 91320",
+      "groupingType": "INDIVIDUAL",
+      "illuminant": "D65-2deg",
+      "length": 95,
+      "height": 5.5,
+      "unit": "mm",
+      "hasImage": true,
+      "results": [
+        {
+          "id":1,
+          "name":"Phosphate in Mehlich",
+          "unit": "ppm",
+          "patchPos":4.5,
+          "patchWidth":6,
+          "timeDelay": 60,
+          "colors":[
+            {
+              "value": 0,
+              "lab":[74.71,-20.57,-4.38]
+            },
+            {
+              "value": 3,
+              "lab":[71.23,-23.00,-5.53]
+            },
+            {
+              "value": 10,
+              "lab":[66.84,-25.71,-7.51]
+            },
+            {
+              "value": 25,
+              "lab":[60.84,-28.04,-9.24]
+            },
+            {
+              "value": 50,
+              "lab":[54.84,-28.63,-10.56]
+            },
+            {
+              "value": 100,
+              "lab":[47.26,-27.97,-10.45]
+            }
+          ]
+        }
+      ],
+      "instructions": [
+        {
+          "text": "collect_5ml_mehlich_sample",
+          "png": ""
+        },
+        {
+          "text": [
+            "add_5_drops_reagent_1",
+            "swirl_to_mix_reagent"
+          ],
+          "png": ""
+        },
+        {
+          "text": [
+            "put_6_drops_of_reagent_in_another_container",
+            "place_tube_in_provided_rack"
+          ],
+          "png": ""
+        },
+        {
+          "text": [
+            "dip_strip_15_seconds_and_remove",
+            "shake_excess_water"
+          ],
+          "png": ""
+        },
+        {
+          "text": [
+            "dip_strip_15_seconds_in_reagent_and_remove",
+            "shake_excess_water"
+          ],
+          "png": ""
+        },
+        {
+          "text": "place_strip_in_black_area",
+          "png": "instruction_place_strip"
+        },
+        {
+          "text": "press_start_button",
+          "png": ""
+        }
+      ]
+    },
+    {
+      "name": "Nitrate-N and Nitrite-N in Mehlich (Hach)",
+      "description": "",
+      "subtype": "striptest",
+      "tags": ["water quality"],
+      "uuid": "1d101d66-5955-44fa-aaee-e8e48eaedb3d",
+      "calibration": "Standards are prepared by diluting 100 ppm Nitrate-N stock solution With Mehlich solution. 100 ppm Stock solution is prepared by dissolving 0.7218 gm of dried KNO3 in 1000 ml of distilled water. Preserve with 2 ml of CHCl3/L of solution.",
+      "brand": "HACH 27454",
+      "groupingType": "INDIVIDUAL",
+      "illuminant": "D65-2deg",
+      "length": 82.7,
+      "height": 5.2,
+      "unit": "mm",
+      "hasImage": true,
+      "results": [
+        {
+          "id":1,
+          "name":"Nitrate Nitrogen",
+          "unit": "ppm",
+          "patchPos":3.25,
+          "patchWidth":6,
+          "timeDelay": 60,
+          "colors":[
+            {
+              "value": 0,
+              "lab":[79.43,0.46,10.28]
+            },
+            {
+              "value": 1,
+              "lab":[76.68,7.72,7.66]
+            },
+            {
+              "value": 2,
+              "lab":[74.04,14.06,3.74]
+            },
+            {
+              "value": 5,
+              "lab":[66.45,28.98,-2.89]
+            },
+            {
+              "value": 10,
+              "lab":[60.17,42.42,-7.46]
+            },
+            {
+              "value": 20,
+              "lab":[49.76,58.55,-13.24]
+            },
+            {
+              "value": 50,
+              "lab":[38.81,67.60,-12.42]
+            }
+          ]
+        },
+        {
+          "id":2,
+          "name":"Nitrite Nitrogen",
+          "unit": "ppm",
+          "patchPos": 17.2,
+          "patchWidth":6,
+          "timeDelay": 30,
+          "colors":[
+            {
+              "value": 0,
+              "lab":[85.98,-1.45,5.94]
+            },
+            {
+              "value": 0.15,
+              "lab":[84.03,4.44,2.44]
+            },
+            {
+              "value": 0.3,
+              "lab":[81.95,8.35,1.52]
+            },
+            {
+              "value": 1.0,
+              "lab":[78.14,17.31,-2.60]
+            },
+            {
+              "value": 1.5,
+              "lab":[75.74,22.39,-5.02]
+            },
+            {
+              "value": 3.0,
+              "lab":[74.15,24.49,-5.51]
+            }
+          ]
+        }
+      ],
+      "instructions": [
+        {
+          "text": "collect_mehlich_extraction_sample",
+          "png": "instruction_collect_sample"
+        },
+        {
+          "text": "dip_strip_into_water_and_remove",
+          "png": "instruction_dip"
+        },
+        {
+          "text": "<!>do_not_shake_excess_water<!>",
+          "png": ""
+        },
+        {
+          "text": "place_strip_in_black_area",
+          "png": "instruction_place_strip"
+        },
+        {
+          "text": "press_start_button",
+          "png": ""
+        }
+      ]
+    },
+    {
       "name": "Soil - Available Nitrogen",
       "description": "Measures nitrate and nitrite in water. Nitrate 0 - 50 ppm, Nitrite 0 - 3.0 ppm",
       "subtype": "striptest",
@@ -215,7 +419,6 @@
           "id":1,
           "name":"pH",
           "unit": "",
-          "formula": "(%1$f * 115) / 100",
           "patchPos":3.6,
           "patchWidth":6,
           "timeDelay": 15,
@@ -1475,6 +1678,27 @@
               "lab":[42.20,42.52,-17.43]
             }
           ]
+        }
+      ],
+      "instructions": [
+        {
+          "text": "collect_water_sample",
+          "png": "instruction_collect_sample"
+        },
+        {
+          "text": "dip_strip_in_water_2_seconds",
+          "png": "instruction_dip"
+        },
+        {
+          "text": "shake_excess_water"
+        },
+        {
+          "text": "place_strip_in_black_area",
+          "png": "instruction_place_strip"
+        },
+        {
+          "text": "press_start_button",
+          "png": ""
         }
       ]
     },
