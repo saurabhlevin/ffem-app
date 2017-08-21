@@ -31,6 +31,7 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.BaseActivity;
+import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.util.Locale;
 
@@ -53,11 +54,11 @@ public class SelectDilutionActivity extends BaseActivity implements EditCustomDi
         percentButton1.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 2));
         percentButton2.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 5));
 
-        noDilutionButton.setOnClickListener(view -> startTest(0));
+        noDilutionButton.setOnClickListener(view -> startTest(1));
 
-        percentButton1.setOnClickListener(view -> startTest(1));
+        percentButton1.setOnClickListener(view -> startTest(2));
 
-        percentButton2.setOnClickListener(view -> startTest(2));
+        percentButton2.setOnClickListener(view -> startTest(5));
 
         buttonCustomDilution.setOnClickListener(view -> showCustomDilutionDialog());
 
@@ -108,7 +109,8 @@ public class SelectDilutionActivity extends BaseActivity implements EditCustomDi
     }
 
     @Override
-    public void onFragmentInteraction(String value) {
-
+    public void onFragmentInteraction(Integer value) {
+        PreferencesUtil.setInt(this, R.string.customDilutionKey, value);
+        startTest(value);
     }
 }

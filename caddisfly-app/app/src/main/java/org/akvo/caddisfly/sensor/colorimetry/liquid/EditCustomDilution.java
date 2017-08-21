@@ -115,7 +115,7 @@ public class EditCustomDilution extends DialogFragment {
                 public void onClick(View v) {
                     if (formEntryValid() && !editDilutionFactor.getText().toString().trim().isEmpty()) {
                         if (mListener != null) {
-                            mListener.onFragmentInteraction(editDilutionFactor.getText().toString().trim());
+                            mListener.onFragmentInteraction(Integer.parseInt(editDilutionFactor.getText().toString()));
                         }
                         closeKeyboard(context, editDilutionFactor);
                         dismiss();
@@ -165,7 +165,7 @@ public class EditCustomDilution extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String value);
+        void onFragmentInteraction(Integer value);
     }
 
 }

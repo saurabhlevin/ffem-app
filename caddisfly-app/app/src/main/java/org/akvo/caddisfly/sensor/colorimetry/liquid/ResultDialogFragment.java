@@ -70,20 +70,14 @@ public class ResultDialogFragment extends DialogFragment {
 
         final View view = inflater.inflate(R.layout.fragment_result, container, false);
 
-        view.findViewById(R.id.buttonOk).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ResultDialogListener listener = (ResultDialogListener) getActivity();
-                listener.onSuccessFinishDialog(true);
-            }
+        view.findViewById(R.id.buttonOk).setOnClickListener(view12 -> {
+            ResultDialogListener listener = (ResultDialogListener) getActivity();
+            listener.onSuccessFinishDialog(true);
         });
 
-        view.findViewById(R.id.buttonDilutionTest).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ResultDialogListener listener = (ResultDialogListener) getActivity();
-                listener.onSuccessFinishDialog(false);
-            }
+        view.findViewById(R.id.buttonDilutionTest).setOnClickListener(view1 -> {
+            ResultDialogListener listener = (ResultDialogListener) getActivity();
+            listener.onSuccessFinishDialog(false);
         });
 
         //display the title
@@ -121,19 +115,14 @@ public class ResultDialogFragment extends DialogFragment {
 
         textDilution.setVisibility(View.VISIBLE);
 
-        //todo: remove hard coding of dilution levels
+//        textDilution.setVisibility(View.GONE);
+
         switch (dilutionLevel) {
-            case 0:
+            case 1:
                 textDilution.setText(R.string.noDilution);
                 break;
-            case 1:
-                textDilution.setText(String.format(getString(R.string.timesDilution), 2));
-                break;
-            case 2:
-                textDilution.setText(String.format(getString(R.string.timesDilution), 5));
-                break;
             default:
-                textDilution.setVisibility(View.GONE);
+                textDilution.setText(String.format(getString(R.string.timesDilution), dilutionLevel));
                 break;
         }
 

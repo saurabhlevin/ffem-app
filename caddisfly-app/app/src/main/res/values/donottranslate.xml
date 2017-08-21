@@ -65,6 +65,7 @@
     <string name="totalSuccessfulTestsKey">totalSuccessfulTests</string>
     <string name="totalFailedTestsKey">totalFailedTests</string>
     <string name="refreshKey">refresh</string>
+    <string name="customDilutionKey">customDilution</string>
 
     <string name="ledRgbKey">ledRgb</string>
     <string name="useExternalCameraKey">useExternalCamera</string>

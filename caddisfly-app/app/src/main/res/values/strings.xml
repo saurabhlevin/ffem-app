@@ -170,7 +170,7 @@
 
     <!--Result Screen-->
     <string name="highLevelsFound">High level of contamination</string>
-    <string name="tryWithDilutedSample" tools:ignore="PluralsCandidate">Try again with %1$d times dilution</string>
+    <string name="tryIncreasingDilution">Try again by increasing the dilution</string>
 
     <!--EC Sensor Calibration-->
     <string name="incorrectCalibrationCanAffect">Incorrect calibration can affect the proper functioning of the sensor</string>

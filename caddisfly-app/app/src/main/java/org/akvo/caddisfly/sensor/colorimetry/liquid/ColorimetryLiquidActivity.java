@@ -25,7 +25,6 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -121,7 +120,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
     private Bitmap mCroppedBitmap;
     private boolean mIsCalibration;
     private double mSwatchValue;
-    private int mDilutionLevel = 0;
+    private int mDilutionLevel = 1;
     private DiagnosticResultDialog mResultFragment;
     private TextView textDilution;
     private SoundPoolPlayer sound;
@@ -177,32 +176,27 @@ public class ColorimetryLiquidActivity extends BaseActivity
 
         //Set up the shake detector
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (mSensorManager != null) {
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
 
-        mShakeDetector = new ShakeDetector(new ShakeDetector.OnShakeListener() {
-
-            @Override
-            public void onShake() {
-                if ((mIgnoreShake) || mWaitingForStillness || mCameraFragment == null) {
-                    return;
-                }
-
-                if (isDestroyed()) {
-                    return;
-                }
-
-                mWaitingForStillness = true;
-
-                showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestInterrupted),
-                        getString(R.string.doNotMoveDeviceDuringTest)), null);
+        mShakeDetector = new ShakeDetector(() -> {
+            if ((mIgnoreShake) || mWaitingForStillness || mCameraFragment == null) {
+                return;
             }
-        }, new ShakeDetector.OnNoShakeListener() {
-            @Override
-            public void onNoShake() {
-                if (mWaitingForStillness) {
-                    mWaitingForStillness = false;
-                    dismissShakeAndStartTest();
-                }
+
+            if (isDestroyed()) {
+                return;
+            }
+
+            mWaitingForStillness = true;
+
+            showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestInterrupted),
+                    getString(R.string.doNotMoveDeviceDuringTest)), null);
+        }, () -> {
+            if (mWaitingForStillness) {
+                mWaitingForStillness = false;
+                dismissShakeAndStartTest();
             }
         });
 
@@ -241,11 +235,13 @@ public class ColorimetryLiquidActivity extends BaseActivity
         if (wakeLock == null || !wakeLock.isHeld()) {
             PowerManager pm = (PowerManager) getApplicationContext()
                     .getSystemService(Context.POWER_SERVICE);
-            //noinspection deprecation
-            wakeLock = pm
-                    .newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP
-                            | PowerManager.ON_AFTER_RELEASE, "CameraSensorWakeLock");
-            wakeLock.acquire();
+            if (pm != null) {
+                //noinspection deprecation
+                wakeLock = pm
+                        .newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                                | PowerManager.ON_AFTER_RELEASE, "CameraSensorWakeLock");
+                wakeLock.acquire();
+            }
         }
     }
 
@@ -271,20 +267,12 @@ public class ColorimetryLiquidActivity extends BaseActivity
         sound.playShortResource(R.raw.err);
 
         alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        initializeTest();
-                    }
-                },
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        releaseResources();
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }
+                (dialogInterface, i) -> initializeTest(),
+                (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    releaseResources();
+                    setResult(Activity.RESULT_CANCELED);
+                    finish();
                 }, null
         );
     }
@@ -315,17 +303,14 @@ public class ColorimetryLiquidActivity extends BaseActivity
         super.onStart();
         mIsCalibration = getIntent().getBooleanExtra("isCalibration", false);
         mSwatchValue = getIntent().getDoubleExtra("swatchValue", 0);
-        mDilutionLevel = getIntent().getIntExtra("dilution", 0);
+        mDilutionLevel = getIntent().getIntExtra("dilution", 1);
 
         switch (mDilutionLevel) {
             case 1:
-                textDilution.setText(String.format(getString(R.string.timesDilution), 2));
-                break;
-            case 2:
-                textDilution.setText(String.format(getString(R.string.timesDilution), 5));
+                textDilution.setText(R.string.noDilution);
                 break;
             default:
-                textDilution.setText(R.string.noDilution);
+                textDilution.setText(String.format(getString(R.string.timesDilution), mDilutionLevel));
                 break;
         }
 
@@ -369,12 +354,9 @@ public class ColorimetryLiquidActivity extends BaseActivity
                 getString(R.string.errorLoadingConfiguration),
                 getString(R.string.pleaseContactSupport));
         AlertUtil.showError(this, R.string.error, message, null, R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        finish();
-                    }
+                (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    finish();
                 }, null, null);
     }
 
@@ -473,67 +455,64 @@ public class ColorimetryLiquidActivity extends BaseActivity
 
                 mCameraFragment = CameraDialogFragment.newInstance();
 
-                mCameraFragment.setPictureTakenObserver(new CameraDialogFragment.PictureTaken() {
-                    @Override
-                    public void onPictureTaken(@NonNull byte[] bytes, boolean completed) {
-                        Bitmap bitmap = ImageUtil.getBitmap(bytes);
+                mCameraFragment.setPictureTakenObserver((bytes, completed) -> {
+                    Bitmap bitmap = ImageUtil.getBitmap(bytes);
 
-                        Display display = getWindowManager().getDefaultDisplay();
-                        int rotation;
-                        switch (display.getRotation()) {
-                            case Surface.ROTATION_0:
-                                rotation = DEGREES_90;
-                                break;
-                            case Surface.ROTATION_180:
-                                rotation = DEGREES_270;
-                                break;
-                            case Surface.ROTATION_270:
-                                rotation = DEGREES_180;
-                                break;
-                            case Surface.ROTATION_90:
-                            default:
-                                rotation = 0;
-                                break;
+                    Display display = getWindowManager().getDefaultDisplay();
+                    int rotation;
+                    switch (display.getRotation()) {
+                        case Surface.ROTATION_0:
+                            rotation = DEGREES_90;
+                            break;
+                        case Surface.ROTATION_180:
+                            rotation = DEGREES_270;
+                            break;
+                        case Surface.ROTATION_270:
+                            rotation = DEGREES_180;
+                            break;
+                        case Surface.ROTATION_90:
+                        default:
+                            rotation = 0;
+                            break;
+                    }
+
+                    bitmap = ImageUtil.rotateImage(bitmap, rotation);
+
+                    TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
+                    Bitmap croppedBitmap;
+
+                    if (testInfo.isUseGrayScale()) {
+                        croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
+                                ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, false);
+
+                        if (croppedBitmap != null) {
+                            croppedBitmap = ImageUtil.getGrayscale(croppedBitmap);
                         }
+                    } else {
+                        croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
+                                ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, true);
+                    }
 
-                        bitmap = ImageUtil.rotateImage(bitmap, rotation);
-
-                        TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
-
-                        Bitmap croppedBitmap;
-
-                        if (testInfo.isUseGrayScale()) {
-                            croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
-                                    ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, false);
-
-                            if (croppedBitmap != null) {
-                                croppedBitmap = ImageUtil.getGrayscale(croppedBitmap);
-                            }
+                    //Ignore the first result as camera may not have focused correctly
+                    if (mResultNumber >= ColorimetryLiquidConfig.SKIP_SAMPLING_COUNT) {
+                        if (croppedBitmap != null) {
+                            getAnalyzedResult(croppedBitmap);
                         } else {
-                            croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
-                                    ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, true);
-                        }
-
-                        //Ignore the first result as camera may not have focused correctly
-                        if (mResultNumber >= ColorimetryLiquidConfig.SKIP_SAMPLING_COUNT) {
-                            if (croppedBitmap != null) {
-                                getAnalyzedResult(croppedBitmap);
-                            } else {
-                                showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.chamberNotFound),
-                                        getString(R.string.checkChamberPlacement)), ImageUtil.getBitmap(bytes));
-                                mCameraFragment.stopCamera();
-                                mCameraFragment.dismiss();
-                                return;
-                            }
-                        }
-                        mResultNumber++;
-
-                        if (completed) {
-                            analyzeFinalResult(bytes, croppedBitmap);
+                            showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.chamberNotFound),
+                                    getString(R.string.checkChamberPlacement)), ImageUtil.getBitmap(bytes));
+                            mCameraFragment.stopCamera();
                             mCameraFragment.dismiss();
-                        } else {
-                            sound.playShortResource(R.raw.beep);
+                            return;
                         }
+                    }
+                    mResultNumber++;
+
+                    if (completed) {
+                        analyzeFinalResult(bytes, croppedBitmap);
+                        mCameraFragment.dismiss();
+                    } else {
+                        sound.playShortResource(R.raw.beep);
                     }
                 });
 
@@ -541,30 +520,27 @@ public class ColorimetryLiquidActivity extends BaseActivity
 
                 final TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
 
-                delayRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        Fragment prev = getFragmentManager().findFragmentByTag("cameraDialog");
-                        if (prev != null) {
-                            ft.remove(prev);
-                        }
-                        ft.addToBackStack(null);
-                        try {
-                            mCameraFragment.show(ft, "cameraDialog");
+                delayRunnable = () -> {
+                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    Fragment prev = getFragmentManager().findFragmentByTag("cameraDialog");
+                    if (prev != null) {
+                        ft.remove(prev);
+                    }
+                    ft.addToBackStack(null);
+                    try {
+                        mCameraFragment.show(ft, "cameraDialog");
 
-                            if (testInfo.getSubTests().get(0).getTimeDelay() > 0
-                                    ) {
-                                // test has time delay so take the pictures quickly with short delay
-                                mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), SHORT_DELAY);
-                            } else {
-                                mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
-                                        ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
-                            }
-                        } catch (Exception e) {
-                            Timber.e(e);
-                            finish();
+                        if (testInfo.getSubTests().get(0).getTimeDelay() > 0
+                                ) {
+                            // test has time delay so take the pictures quickly with short delay
+                            mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), SHORT_DELAY);
+                        } else {
+                            mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
+                                    ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
                         }
+                    } catch (Exception e) {
+                        Timber.e(e);
+                        finish();
                     }
                 };
 
@@ -613,16 +589,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
             }
 
             // Calculate final result based on dilution
-            switch (mDilutionLevel) {
-                case 1:
-                    mResult = mResult * 2;
-                    break;
-                case 2:
-                    mResult = mResult * 5;
-                    break;
-                default:
-                    break;
-            }
+            mResult = mResult * mDilutionLevel;
 
             // Format the result
             String resultText = String.format(Locale.getDefault(), "%.2f", mResult);
@@ -660,11 +627,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
             if (AppPreferences.isDiagnosticMode()) {
                 showDiagnosticResultDialog(false, resultText, color, true);
             } else {
-                (new Handler()).postDelayed(new Runnable() {
-                    public void run() {
-                        finish();
-                    }
-                }, DELAY_MILLIS);
+                (new Handler()).postDelayed(this::finish, DELAY_MILLIS);
             }
         } else {
 
@@ -712,19 +675,9 @@ public class ColorimetryLiquidActivity extends BaseActivity
                     String title = CaddisflyApp.getApp().getCurrentTestInfo().getName();
 
                     String message = EMPTY_STRING;
-                    if (mHighLevelsFound && mDilutionLevel < 2) {
+                    if (mHighLevelsFound && mDilutionLevel < 99) {
                         sound.playShortResource(R.raw.beep_long);
-                        switch (mDilutionLevel) {
-                            case 0:
-                                message = String.format(getString(R.string.tryWithDilutedSample), 2);
-                                break;
-                            case 1:
-                                message = String.format(getString(R.string.tryWithDilutedSample), 5);
-                                break;
-                            default:
-                                message = EMPTY_STRING;
-                                break;
-                        }
+                        message = getString(R.string.tryIncreasingDilution);
                     } else {
                         sound.playShortResource(R.raw.done);
                     }
@@ -876,18 +829,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
             String title = CaddisflyApp.getApp().getCurrentTestInfo().getName();
 
             String message;
-            //todo: remove hard coding of dilution levels
-            switch (mDilutionLevel) {
-                case 0:
-                    message = String.format(getString(R.string.tryWithDilutedSample), 2);
-                    break;
-                case 1:
-                    message = String.format(getString(R.string.tryWithDilutedSample), 5);
-                    break;
-                default:
-                    message = EMPTY_STRING;
-                    break;
-            }
+            message = getString(R.string.tryIncreasingDilution);
 
             ResultDialogFragment mResultDialogFragment = ResultDialogFragment.newInstance(title, result,
                     mDilutionLevel, message, CaddisflyApp.getApp().getCurrentTestInfo().getUnit());
