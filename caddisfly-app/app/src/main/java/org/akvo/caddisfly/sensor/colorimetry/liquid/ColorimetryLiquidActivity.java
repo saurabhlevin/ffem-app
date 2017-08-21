@@ -31,7 +31,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -240,7 +239,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
                 wakeLock = pm
                         .newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP
                                 | PowerManager.ON_AFTER_RELEASE, "CameraSensorWakeLock");
-                wakeLock.acquire();
+                wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
             }
         }
     }
@@ -441,121 +440,107 @@ public class ColorimetryLiquidActivity extends BaseActivity
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,
                 SensorManager.SENSOR_DELAY_UI);
 
-        (new AsyncTask<Void, Void, Void>() {
+        mCameraFragment = CameraDialogFragment.newInstance();
 
-            @Nullable
-            @Override
-            protected Void doInBackground(Void... params) {
-                return null;
+        mCameraFragment.setPictureTakenObserver((bytes, completed) -> {
+            Bitmap bitmap = ImageUtil.getBitmap(bytes);
+
+            Display display = getWindowManager().getDefaultDisplay();
+            int rotation;
+            switch (display.getRotation()) {
+                case Surface.ROTATION_0:
+                    rotation = DEGREES_90;
+                    break;
+                case Surface.ROTATION_180:
+                    rotation = DEGREES_270;
+                    break;
+                case Surface.ROTATION_270:
+                    rotation = DEGREES_180;
+                    break;
+                case Surface.ROTATION_90:
+                default:
+                    rotation = 0;
+                    break;
             }
 
-            @Override
-            protected void onPostExecute(Void result) {
-                super.onPostExecute(result);
+            bitmap = ImageUtil.rotateImage(bitmap, rotation);
 
-                mCameraFragment = CameraDialogFragment.newInstance();
+            TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
 
-                mCameraFragment.setPictureTakenObserver((bytes, completed) -> {
-                    Bitmap bitmap = ImageUtil.getBitmap(bytes);
+            Bitmap croppedBitmap;
 
-                    Display display = getWindowManager().getDefaultDisplay();
-                    int rotation;
-                    switch (display.getRotation()) {
-                        case Surface.ROTATION_0:
-                            rotation = DEGREES_90;
-                            break;
-                        case Surface.ROTATION_180:
-                            rotation = DEGREES_270;
-                            break;
-                        case Surface.ROTATION_270:
-                            rotation = DEGREES_180;
-                            break;
-                        case Surface.ROTATION_90:
-                        default:
-                            rotation = 0;
-                            break;
-                    }
+            if (testInfo.isUseGrayScale()) {
+                croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
+                        ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, false);
 
-                    bitmap = ImageUtil.rotateImage(bitmap, rotation);
-
-                    TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
-
-                    Bitmap croppedBitmap;
-
-                    if (testInfo.isUseGrayScale()) {
-                        croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
-                                ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, false);
-
-                        if (croppedBitmap != null) {
-                            croppedBitmap = ImageUtil.getGrayscale(croppedBitmap);
-                        }
-                    } else {
-                        croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
-                                ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, true);
-                    }
-
-                    //Ignore the first result as camera may not have focused correctly
-                    if (mResultNumber >= ColorimetryLiquidConfig.SKIP_SAMPLING_COUNT) {
-                        if (croppedBitmap != null) {
-                            getAnalyzedResult(croppedBitmap);
-                        } else {
-                            showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.chamberNotFound),
-                                    getString(R.string.checkChamberPlacement)), ImageUtil.getBitmap(bytes));
-                            mCameraFragment.stopCamera();
-                            mCameraFragment.dismiss();
-                            return;
-                        }
-                    }
-                    mResultNumber++;
-
-                    if (completed) {
-                        analyzeFinalResult(bytes, croppedBitmap);
-                        mCameraFragment.dismiss();
-                    } else {
-                        sound.playShortResource(R.raw.beep);
-                    }
-                });
-
-                acquireWakeLock();
-
-                final TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
-
-                delayRunnable = () -> {
-                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("cameraDialog");
-                    if (prev != null) {
-                        ft.remove(prev);
-                    }
-                    ft.addToBackStack(null);
-                    try {
-                        mCameraFragment.show(ft, "cameraDialog");
-
-                        if (testInfo.getSubTests().get(0).getTimeDelay() > 0
-                                ) {
-                            // test has time delay so take the pictures quickly with short delay
-                            mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), SHORT_DELAY);
-                        } else {
-                            mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
-                                    ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
-                        }
-                    } catch (Exception e) {
-                        Timber.e(e);
-                        finish();
-                    }
-                };
-
-                int timeDelay = ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING;
-                // If the test has a time delay config then use that otherwise use standard delay
-                if (testInfo.getSubTests().get(0).getTimeDelay() > 0
-                        && !AppPreferences.ignoreTimeDelays()) {
-                    sound.playShortResource(R.raw.beep);
-                    timeDelay = Math.max(SHORT_DELAY, testInfo.getSubTests().get(0).getTimeDelay());
+                if (croppedBitmap != null) {
+                    croppedBitmap = ImageUtil.getGrayscale(croppedBitmap);
                 }
-
-                delayHandler.postDelayed(delayRunnable, timeDelay);
-
+            } else {
+                croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
+                        ColorimetryLiquidConfig.SAMPLE_CROP_LENGTH_DEFAULT, true);
             }
-        }).execute();
+
+            //Ignore the first result as camera may not have focused correctly
+            if (mResultNumber >= ColorimetryLiquidConfig.SKIP_SAMPLING_COUNT) {
+                if (croppedBitmap != null) {
+                    getAnalyzedResult(croppedBitmap);
+                } else {
+                    showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.chamberNotFound),
+                            getString(R.string.checkChamberPlacement)), ImageUtil.getBitmap(bytes));
+                    mCameraFragment.stopCamera();
+                    mCameraFragment.dismiss();
+                    return;
+                }
+            }
+            mResultNumber++;
+
+            if (completed) {
+                analyzeFinalResult(bytes, croppedBitmap);
+                mCameraFragment.dismiss();
+            } else {
+                sound.playShortResource(R.raw.beep);
+            }
+        });
+
+        acquireWakeLock();
+
+        final TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
+        delayRunnable = () -> {
+            final FragmentTransaction ft = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag("cameraDialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+            try {
+                mCameraFragment.show(ft, "cameraDialog");
+
+                if (testInfo.getSubTests().get(0).getTimeDelay() > 0
+                        ) {
+                    // test has time delay so take the pictures quickly with short delay
+                    mCameraFragment.takePictures(AppPreferences.getSamplingTimes(), SHORT_DELAY);
+                } else {
+                    mCameraFragment.takePictures(AppPreferences.getSamplingTimes(),
+                            ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING);
+                }
+            } catch (Exception e) {
+                Timber.e(e);
+                finish();
+            }
+        };
+
+        int timeDelay = ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING;
+        // If the test has a time delay config then use that otherwise use standard delay
+        if (testInfo.getSubTests().get(0).getTimeDelay() > 0
+                && !AppPreferences.ignoreTimeDelays()) {
+            sound.playShortResource(R.raw.beep);
+            timeDelay = Math.max(SHORT_DELAY, testInfo.getSubTests().get(0).getTimeDelay());
+        }
+
+        delayHandler.postDelayed(delayRunnable, timeDelay);
+
     }
 
     /**

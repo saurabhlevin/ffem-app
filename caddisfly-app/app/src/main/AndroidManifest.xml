@@ -93,7 +93,6 @@
         <activity
             android:name=".sensor.colorimetry.liquid.ColorimetryLiquidActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:parentActivityName=".sensor.colorimetry.liquid.CalibrateListActivity"
             android:screenOrientation="nosensor" />
         <activity
             android:name=".sensor.colorimetry.liquid.CalibrateListActivity"

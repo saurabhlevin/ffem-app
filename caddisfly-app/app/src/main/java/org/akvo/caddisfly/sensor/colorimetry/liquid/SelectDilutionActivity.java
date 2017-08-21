@@ -37,6 +37,7 @@ import java.util.Locale;
 
 public class SelectDilutionActivity extends BaseActivity implements EditCustomDilution.OnFragmentInteractionListener {
     private static final int REQUEST_TEST = 1;
+    EditCustomDilution editCustomDilution;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class SelectDilutionActivity extends BaseActivity implements EditCustomDi
 
     private void showCustomDilutionDialog() {
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        EditCustomDilution editCustomDilution = EditCustomDilution.newInstance();
+        editCustomDilution = EditCustomDilution.newInstance();
         editCustomDilution.show(ft, "editCustomDilution");
     }
 
@@ -89,8 +90,6 @@ public class SelectDilutionActivity extends BaseActivity implements EditCustomDi
                 if (resultCode == Activity.RESULT_OK) {
                     Intent intent = new Intent(data);
                     this.setResult(Activity.RESULT_OK, intent);
-                    finish();
-                } else if (resultCode == Activity.RESULT_CANCELED) {
                     finish();
                 }
                 break;

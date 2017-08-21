@@ -76,12 +76,6 @@ public class EditCustomDilution extends DialogFragment {
 
         editDilutionFactor.requestFocus();
 
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.customDilution)
                 .setPositiveButton(R.string.ok,
@@ -149,6 +143,19 @@ public class EditCustomDilution extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        editDilutionFactor.post(() -> {
+            editDilutionFactor.requestFocus();
+            InputMethodManager imm =
+                    (InputMethodManager) editDilutionFactor.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.showSoftInput(editDilutionFactor, InputMethodManager.SHOW_IMPLICIT);
+        });
     }
 
     /**
