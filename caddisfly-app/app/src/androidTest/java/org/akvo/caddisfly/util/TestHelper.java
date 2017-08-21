@@ -38,7 +38,6 @@ import android.util.DisplayMetrics;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.sensor.SensorConstants;
 import org.hamcrest.Matchers;
 
 import java.io.File;
@@ -116,6 +115,7 @@ public final class TestHelper {
         addString(TestConstant.LANGUAGE, "English", "Français");
         addString("otherLanguage", "Français", "English");
         addString(TestConstant.FLUORIDE, "Water - Fluoride", res.getString(R.string.fluoride));
+        addString(TestConstant.CHROMIUM, "Water - Chromium", res.getString(R.string.chromium));
         addString("chlorine", "Water - Free Chlorine", res.getString(R.string.freeChlorine));
         addString("survey", "Survey", res.getString(R.string.survey));
         addString("sensors", "Sensors", res.getString(R.string.sensors));
@@ -128,6 +128,14 @@ public final class TestHelper {
 
         // Restore device-specific locale
         new Resources(assets, metrics, currentResources.getConfiguration());
+
+        addCalibration("ChromiumTestValid", "0.00=169  147  89\n"
+                + "0.50=253  22  153\n"
+                + "1.00=251  26  106\n"
+                + "2.00=248  32  53\n"
+                + "3.00=242  24  38\n"
+                + "4.00=242  25  34\n"
+                + "5.00=235  17  41\n");
 
         addCalibration("TestValid", "0.0=255  38  186\n"
                 + "0.5=255  51  129\n"
@@ -255,8 +263,8 @@ public final class TestHelper {
         }
     }
 
-    public static void saveCalibration(String name) {
-        File path = FileHelper.getFilesDir(FileHelper.FileType.CALIBRATION, SensorConstants.FLUORIDE_ID);
+    public static void saveCalibration(String name, String id) {
+        File path = FileHelper.getFilesDir(FileHelper.FileType.CALIBRATION, id);
 
         FileUtil.saveToFile(path, name, CALIBRATION_HASH_MAP.get(name));
     }
