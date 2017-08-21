@@ -72,7 +72,8 @@
                 android:text="@string/stripTest"
                 android:textAlignment="viewStart"
                 android:textColor="?longButtonText"
-                android:theme="?longButtonStyle" />
+                android:theme="?longButtonStyle"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/buttonSensors"
@@ -89,7 +90,8 @@
                 android:text="@string/sensors"
                 android:textAlignment="viewStart"
                 android:textColor="?longButtonText"
-                android:theme="?longButtonStyle" />
+                android:theme="?longButtonStyle"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/buttonCalibrate"
