@@ -22,7 +22,6 @@ package org.akvo.caddisfly.ui;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,12 +40,14 @@ import org.akvo.caddisfly.AppConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.ApkHelper;
+import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
 import org.akvo.caddisfly.sensor.SensorConstants;
+import org.akvo.caddisfly.sensor.colorimetry.liquid.CalibrateListActivity;
+import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.TestTypeListActivity;
-import org.akvo.caddisfly.sensor.ec.SensorTypeListActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.FileUtil;
@@ -151,12 +152,7 @@ public class MainActivity extends BaseActivity {
             alertDependantAppNotFound();
         } else {
 
-            finishRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            };
+            finishRunnable = this::finish;
 
             finishOnSurveyOpenedHandler.postDelayed(finishRunnable, AUTO_FINISH_DELAY_MILLIS);
 
@@ -165,44 +161,42 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Navigate to the strip tests
-     */
-    @OnClick(R.id.buttonStripTest)
-    void navigateToStripTest() {
-        File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG),
-                SensorConstants.TESTS_META_FILENAME);
-        if (file.exists()) {
-
-            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-            if (!ApiUtil.hasPermissions(getBaseContext(), permissions)) {
-                ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
-            } else {
-                startStripTest();
-            }
-        } else {
-            startStripTest();
-        }
-    }
-
-    @OnClick(R.id.buttonSensors)
-    public void navigateToSensors() {
-        boolean hasOtg = getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST);
-        if (hasOtg) {
-            final Intent intent = new Intent(getBaseContext(), SensorTypeListActivity.class);
-            intent.putExtra("internal", true);
-            startActivity(intent);
-        } else {
-            alertFeatureNotSupported();
-        }
-    }
-
     @OnClick(R.id.buttonCalibrate)
     public void navigateToCalibrate() {
-        final Intent intent = new Intent(getBaseContext(), TypeListActivity.class);
-        startActivity(intent);
+
+        //Hard coded to load chromium only
+        CaddisflyApp.getApp().loadTestConfigurationByUuid(SensorConstants.CHROMIUM_ID);
+
+        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (AppPreferences.useExternalCamera()) {
+            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        }
+
+        if (!ApiUtil.hasPermissions(this, permissions)) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
+        } else {
+            startCalibration();
+        }
+
+//        final Intent intent = new Intent(getBaseContext(), TypeListActivity.class);
+//        startActivity(intent);
     }
+
+    private void startCalibration() {
+        //Only start the colorimetry calibration if the device has a camera flash
+        if (AppPreferences.useExternalCamera()
+                || CameraHelper.hasFeatureCameraFlash(this, R.string.cannotCalibrate, R.string.ok, null)) {
+
+            final Intent intent;
+            if (getIntent().getBooleanExtra("runTest", false)) {
+                intent = new Intent(this, ColorimetryLiquidActivity.class);
+            } else {
+                intent = new Intent(this, CalibrateListActivity.class);
+            }
+            startActivity(intent);
+        }
+    }
+
 
     @OnClick(R.id.fabDisableDiagnostics)
     public void disableDiagnostics() {
@@ -325,7 +319,8 @@ public class MainActivity extends BaseActivity {
                 }
             }
             if (granted) {
-                startStripTest();
+                startCalibration();
+                //startStripTest();
             } else {
                 String message = getString(R.string.storagePermission);
                 if (AppPreferences.useExternalCamera()) {
@@ -333,12 +328,7 @@ public class MainActivity extends BaseActivity {
                 }
                 Snackbar snackbar = Snackbar
                         .make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                        .setAction("SETTINGS", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ApiUtil.startInstalledAppDetailsActivity(activity);
-                            }
-                        });
+                        .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(activity));
 
                 TypedValue typedValue = new TypedValue();
                 getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
