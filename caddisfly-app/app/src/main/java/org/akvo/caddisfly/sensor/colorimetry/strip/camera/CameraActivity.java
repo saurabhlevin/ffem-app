@@ -530,7 +530,7 @@ public class CameraActivity extends BaseActivity implements CameraViewListener {
 
     @Override
     public void playSound() {
-        sound.playShortResource(R.raw.futurebeep2);
+//        sound.playShortResource(R.raw.futurebeep2);
     }
 
     @Override
