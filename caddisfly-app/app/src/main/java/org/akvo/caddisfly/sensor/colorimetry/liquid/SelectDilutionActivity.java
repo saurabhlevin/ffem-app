@@ -22,8 +22,8 @@ package org.akvo.caddisfly.sensor.colorimetry.liquid;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -34,7 +34,7 @@ import org.akvo.caddisfly.ui.BaseActivity;
 
 import java.util.Locale;
 
-public class SelectDilutionActivity extends BaseActivity {
+public class SelectDilutionActivity extends BaseActivity implements EditCustomDilution.OnFragmentInteractionListener {
     private static final int REQUEST_TEST = 1;
 
     @Override
@@ -47,35 +47,30 @@ public class SelectDilutionActivity extends BaseActivity {
         Button noDilutionButton = findViewById(R.id.buttonNoDilution);
         Button percentButton1 = findViewById(R.id.buttonDilution1);
         Button percentButton2 = findViewById(R.id.buttonDilution2);
+        Button buttonCustomDilution = findViewById(R.id.buttonCustomDilution);
 
         //todo: remove hardcoding of dilution times
         percentButton1.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 2));
         percentButton2.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 5));
 
-        noDilutionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTest(0);
-            }
-        });
+        noDilutionButton.setOnClickListener(view -> startTest(0));
 
-        percentButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTest(1);
-            }
-        });
+        percentButton1.setOnClickListener(view -> startTest(1));
 
-        percentButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTest(2);
-            }
-        });
+        percentButton2.setOnClickListener(view -> startTest(2));
+
+        buttonCustomDilution.setOnClickListener(view -> showCustomDilutionDialog());
 
         TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
         ((TextView) findViewById(R.id.textTitle)).setText(testInfo.getName());
     }
+
+    private void showCustomDilutionDialog() {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        EditCustomDilution editCustomDilution = EditCustomDilution.newInstance();
+        editCustomDilution.show(ft, "editCustomDilution");
+    }
+
 
     private void startTest(int dilution) {
         final Intent intent = new Intent(getIntent());
@@ -110,5 +105,10 @@ public class SelectDilutionActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(String value) {
+
     }
 }
