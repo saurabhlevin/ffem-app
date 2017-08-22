@@ -68,11 +68,13 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.assertTrue;
 import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.currentHashMap;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
@@ -85,6 +87,7 @@ import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.clickListViewItem;
+import static org.akvo.caddisfly.util.TestUtil.getText;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
@@ -99,7 +102,7 @@ import static org.hamcrest.Matchers.startsWith;
 @RunWith(AndroidJUnit4.class)
 public class AnalysisTest {
 
-    private static final int TEST_INTERVAL_DELAY = 2000;
+    private static final int TEST_INTERVAL_DELAY = 1000;
     private static final int TEST_START_DELAY = 305000;
 
     @Rule
@@ -313,8 +316,7 @@ public class AnalysisTest {
 
         sleep(TEST_START_DELAY);
 
-        sleep(TEST_INTERVAL_DELAY + (ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING + 5000)
-                * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT);
+        sleep(TEST_START_DELAY + (TEST_INTERVAL_DELAY * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT));
 
         goToMainScreen();
 
@@ -338,8 +340,7 @@ public class AnalysisTest {
 
         sleep(TEST_START_DELAY);
 
-        sleep(TEST_INTERVAL_DELAY + (ColorimetryLiquidConfig.DELAY_BETWEEN_SAMPLING + 5000)
-                * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT);
+        sleep(TEST_START_DELAY + (TEST_INTERVAL_DELAY * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT));
 
         //Result dialog
         takeScreenshot();
@@ -358,4 +359,180 @@ public class AnalysisTest {
 //        onView(withText(R.string.startTestConfirm)).check(matches(isDisplayed()));
 
     }
+
+    @Test
+    @RequiresDevice
+    public void testStartHighLevelTest() {
+
+        saveCalibration("ChromiumTestValid", SensorConstants.FLUORIDE_ID);
+
+        onView(withId(R.id.actionSettings)).perform(click());
+
+        onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
+
+        String version = CaddisflyApp.getAppVersion();
+
+        onView(withText(version)).check(matches(isDisplayed()));
+
+        enterDiagnosticMode();
+
+        goToMainScreen();
+
+        onView(withText(R.string.calibrate)).perform(click());
+
+        onView(withText(currentHashMap.get(TestConstant.CHROMIUM))).perform(click());
+
+        if (TestUtil.isEmulator()) {
+
+            onView(withText(R.string.errorCameraFlashRequired))
+                    .inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow()
+                            .getDecorView())))).check(matches(isDisplayed()));
+            return;
+        }
+
+        onView(withId(R.id.menuLoad)).perform(click());
+
+        sleep(1000);
+
+        clickListViewItem("ChromiumTestValid");
+
+        sleep(1000);
+
+        goToMainScreen();
+
+        onView(withId(R.id.actionSettings)).perform(click());
+
+        clickListViewItem(mActivityTestRule.getActivity().getString(R.string.noBackdropDetection));
+
+        leaveDiagnosticMode();
+
+        onView(withText(R.string.calibrate)).perform(click());
+
+        onView(withText(currentHashMap.get(TestConstant.CHROMIUM))).perform(click());
+
+        onView(withId(R.id.fabEditCalibration)).perform(click());
+
+        onView(withId(R.id.editBatchCode))
+                .perform(clearText(), closeSoftKeyboard());
+
+        onView(withId(R.id.editBatchCode))
+                .perform(typeText("    "), closeSoftKeyboard());
+
+        onView(withText(R.string.save)).perform(click());
+
+        onView(withId(R.id.editExpiryDate)).perform(click());
+
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.MONTH, 2);
+        onView(withClassName((Matchers.equalTo(DatePicker.class.getName()))))
+                .perform(PickerActions.setDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+                        date.get(Calendar.DATE)));
+
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withText(R.string.save)).perform(click());
+
+        onView(withId(R.id.editBatchCode))
+                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
+
+        onView(withText(R.string.save)).perform(click());
+
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        onView(withText("3" + dfs.getDecimalSeparator() + "00 ppm")).perform(click());
+
+        sleep(TEST_START_DELAY + (TEST_INTERVAL_DELAY * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT));
+
+        goToMainScreen();
+
+        onView(withId(R.id.buttonSurvey)).perform(click());
+
+        gotoSurveyForm();
+
+        clickExternalSourceButton(TestConstant.NEXT);
+
+        clickExternalSourceButton(TestConstant.NEXT);
+
+        clickExternalSourceButton(0);
+
+        sleep(1000);
+
+        onView(withId(R.id.buttonNoDilution)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.buttonNoDilution)).perform(click());
+
+        onView(allOf(withId(R.id.textDilution), withText(R.string.noDilution)))
+                .check(matches(isCompletelyDisplayed()));
+
+        //onView(withId(R.id.buttonStart)).perform(click());
+
+        onView(allOf(withId(R.id.textDilution), withText(R.string.noDilution)))
+                .check(matches(isCompletelyDisplayed()));
+
+        sleep(TEST_START_DELAY + (TEST_INTERVAL_DELAY * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT));
+
+        onView(withText(mActivityTestRule.getActivity().getString(R.string.testWithDilution)))
+                .check(matches(isCompletelyDisplayed()));
+
+        onView(withId(R.id.buttonOk)).perform(click());
+
+        clickExternalSourceButton(0);
+
+        onView(withId(R.id.buttonDilution1)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.buttonDilution1)).perform(click());
+
+        onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityTestRule.getActivity()
+                .getString(R.string.timesDilution), 2)))).check(matches(isCompletelyDisplayed()));
+
+        //Test Start Screen
+        takeScreenshot();
+
+        //onView(withId(R.id.buttonStart)).perform(click());
+
+//        onView(allOf(withId(R.id.textDilution), withText(mActivityRule.getActivity()
+//                .getString(R.string.testWithDilution)))).check(matches(isCompletelyDisplayed()));
+
+        sleep(TEST_START_DELAY + (TEST_INTERVAL_DELAY * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT));
+
+        onView(withText(mActivityTestRule.getActivity().getString(R.string.testWithDilution)))
+                .check(matches(isCompletelyDisplayed()));
+
+        //High levels found dialog
+        takeScreenshot();
+
+        onView(withId(R.id.buttonOk)).perform(click());
+
+        clickExternalSourceButton(0);
+
+        onView(withId(R.id.buttonDilution2)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.buttonDilution2)).perform(click());
+
+        onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityTestRule.getActivity()
+                .getString(R.string.timesDilution), 5)))).check(matches(isCompletelyDisplayed()));
+
+        //onView(withId(R.id.buttonStart)).perform(click());
+
+//        onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
+//                .getString(R.string.timesDilution), 5)))).check(matches(isCompletelyDisplayed()));
+
+        //Test Progress Screen
+        takeScreenshot();
+
+        sleep(TEST_START_DELAY + (TEST_INTERVAL_DELAY * ColorimetryLiquidConfig.SAMPLING_COUNT_DEFAULT));
+
+        double result = Double.valueOf(getText(withId(R.id.textResult)).replace(">", "").trim());
+        assertTrue("Result is wrong", result > 9);
+
+        onView(withId(R.id.buttonOk)).perform(click());
+
+        mDevice.pressBack();
+
+        mDevice.pressBack();
+
+        mDevice.pressBack();
+
+        mDevice.pressBack();
+    }
+
 }
