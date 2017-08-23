@@ -19,6 +19,7 @@
 
 package org.akvo.caddisfly.sensor.ec;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -156,17 +157,6 @@ public class SensorActivity extends BaseActivity {
     };
     private int identityCheck = 0;
     private int deviceStatus = 0;
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (deviceStatus == 1) {
-                requestResult();
-                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
-            } else {
-                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
-            }
-        }
-    };
     private final Runnable validateDeviceRunnable = new Runnable() {
         @Override
         public void run() {
@@ -194,6 +184,17 @@ public class SensorActivity extends BaseActivity {
                     }
                     handler.postDelayed(runnable, IDENTIFY_DELAY_MILLIS);
                     break;
+            }
+        }
+    };
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (deviceStatus == 1) {
+                requestResult();
+                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
+            } else {
+                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
             }
         }
     };
@@ -362,6 +363,7 @@ public class SensorActivity extends BaseActivity {
         }
     }
 
+    @SuppressLint("ShowToast")
     private void displayResult(String value) {
 
         String tempValue = value;
@@ -424,14 +426,12 @@ public class SensorActivity extends BaseActivity {
 
             if (AppPreferences.getShowDebugMessages()) {
                 final String finalValue = tempValue;
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        if (debugToast == null) {
-                            debugToast = Toast.makeText(getBaseContext(), finalValue, Toast.LENGTH_LONG);
-                        }
-                        debugToast.setText(finalValue);
-                        debugToast.show();
+                runOnUiThread(() -> {
+                    if (debugToast == null) {
+                        debugToast = Toast.makeText(getBaseContext(), finalValue, Toast.LENGTH_LONG);
                     }
+                    debugToast.setText(finalValue);
+                    debugToast.show();
                 });
             }
 

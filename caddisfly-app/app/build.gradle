@@ -28,8 +28,8 @@ android {
         applicationId "org.akvo.caddisfly"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 196
-        versionName "1.0.0 (Chromium Only Test)"
+        versionCode 197
+        versionName "1.0.0 (Chromium Only Test - 1)"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         applicationVariants.all { variant ->

@@ -80,7 +80,6 @@ public class TestInfo implements Parcelable {
     private String responseFormat;
     private boolean deprecated;
     private JSONArray instructions;
-    private String tintometerId;
     private String selectInstruction;
     private ArrayList<String> reagents;
     private Serializable sampleQuantity;
@@ -194,7 +193,6 @@ public class TestInfo implements Parcelable {
         deviceId = in.readString();
         responseFormat = in.readString();
         deprecated = in.readByte() != 0;
-        tintometerId = in.readString();
         selectInstruction = in.readString();
         reagents = in.createStringArrayList();
         swatches = null;
@@ -389,18 +387,6 @@ public class TestInfo implements Parcelable {
         return instructions;
     }
 
-    public String getTintometerId() {
-        return tintometerId;
-    }
-
-    public void setTintometerId(String tintometerId) {
-        this.tintometerId = tintometerId;
-    }
-
-    public String getSelectInstruction() {
-        return selectInstruction;
-    }
-
     public void setSelectInstruction(String selectInstruction) {
         this.selectInstruction = selectInstruction;
     }
@@ -430,7 +416,6 @@ public class TestInfo implements Parcelable {
         dest.writeString(deviceId);
         dest.writeString(responseFormat);
         dest.writeByte((byte) (deprecated ? 1 : 0));
-        dest.writeString(tintometerId);
         dest.writeString(selectInstruction);
         dest.writeStringList(reagents);
     }
