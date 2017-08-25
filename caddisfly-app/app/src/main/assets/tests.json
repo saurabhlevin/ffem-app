@@ -15,7 +15,7 @@
           "id": 1,
           "name": "Chromium",
           "unit": "ppm",
-          "timeDelay": 300
+          "timeDelay": 3
         }
       ]
     }

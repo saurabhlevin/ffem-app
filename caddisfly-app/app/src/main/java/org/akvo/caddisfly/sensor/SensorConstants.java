@@ -63,6 +63,8 @@ public final class SensorConstants {
     public static final String TESTS_META_FILENAME = "tests.json";
     public static final String DEPRECATED_TESTS_FILENAME = "deprecated_tests.json";
 
+    public static final String TEST_IMAGE_FILE = "test.jpg";
+
     private SensorConstants() {
     }
 }

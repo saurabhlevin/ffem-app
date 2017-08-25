@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
 import org.akvo.caddisfly.helper.CameraHelper;
+import org.akvo.caddisfly.mock.CameraMock;
 
 import java.util.UUID;
 
@@ -50,6 +51,17 @@ public final class ApiUtil {
     private static String uniqueID = null;
 
     private ApiUtil() {
+    }
+
+    @Nullable
+    public static CameraMock getCameraMockInstance() {
+        CameraMock c = null;
+        try {
+            c = CameraMock.open();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return c;
     }
 
     @Nullable

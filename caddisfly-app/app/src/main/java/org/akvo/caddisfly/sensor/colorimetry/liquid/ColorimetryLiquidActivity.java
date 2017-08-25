@@ -50,6 +50,7 @@ import org.akvo.caddisfly.helper.ShakeDetector;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.helper.TestConfigHelper;
+import org.akvo.caddisfly.mock.CameraDialogFragmentMock;
 import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.ResultDetail;
@@ -57,7 +58,6 @@ import org.akvo.caddisfly.model.Swatch;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.CameraDialog;
-import org.akvo.caddisfly.sensor.CameraDialogFragment;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
 import org.akvo.caddisfly.ui.BaseActivity;
@@ -440,7 +440,7 @@ public class ColorimetryLiquidActivity extends BaseActivity
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,
                 SensorManager.SENSOR_DELAY_UI);
 
-        mCameraFragment = CameraDialogFragment.newInstance();
+        mCameraFragment = CameraDialogFragmentMock.newInstance();
 
         mCameraFragment.setPictureTakenObserver((bytes, completed) -> {
             Bitmap bitmap = ImageUtil.getBitmap(bytes);
