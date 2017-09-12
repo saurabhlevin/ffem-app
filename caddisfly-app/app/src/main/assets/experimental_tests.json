@@ -65,6 +65,28 @@
       ]
     },
     {
+      "name": "Water - Free Chlorine - 2",
+      "description": "Measures Free chlorine in water. 0 - 3 ppm",
+      "subtype": "liquid-chamber",
+      "tags": [
+        "water quality"
+      ],
+      "uuid": "57a1d2fe-e578-4d74-a8a7-e2a576c4503c",
+      "brand": "Akvo Caddisfly",
+      "shortCode": "chlor",
+      "calibrate": true,
+      "ranges": "0,0.5,1.0,1.5,2.0,2.5,3.0",
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Free Chlorine",
+          "id": 1,
+          "unit": "ppm"
+        }
+      ]
+    },
+    {
       "name": "Chromium 1",
       "subtype": "liquid-chamber",
       "uuid": "082ec36a-71af-49d5-add8-5c03fc1c2f0b",
