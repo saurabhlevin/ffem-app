@@ -29,8 +29,8 @@ android {
         applicationId "org.akvo.caddisfly.experiment"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 184
-        versionName "1.0.0 Internal 8.975"
+        versionCode 185
+        versionName "1.0.0 Internal 8.976"
         resConfigs "en", "en_US", "fr", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         applicationVariants.all { variant ->
