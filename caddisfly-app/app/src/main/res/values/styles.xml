@@ -59,6 +59,10 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="ListButton" parent="Button">
+        <item name="android:layout_marginBottom">-7dp</item>
+    </style>
+
     <style name="AppTheme.Button.Green">
         <item name="colorButtonNormal">#009900</item>
         <item name="colorControlHighlight">#027602</item>

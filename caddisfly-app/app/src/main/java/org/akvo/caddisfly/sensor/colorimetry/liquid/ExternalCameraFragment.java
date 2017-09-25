@@ -23,7 +23,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.os.Handler;
@@ -168,6 +170,21 @@ public final class ExternalCameraFragment extends CameraDialog {
         return dialog;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog dialog = this.getDialog();
+        Window window = dialog.getWindow();
+        try {
+            window.setLayout(PREVIEW_HEIGHT, PREVIEW_WIDTH);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onCancel(DialogInterface dialog) {
         if (getActivity() instanceof Cancelled) {
@@ -235,9 +252,13 @@ public final class ExternalCameraFragment extends CameraDialog {
 //            mHandler.release();
             mHandler = null;
         }
-        if (mUSBMonitor != null) {
-            mUSBMonitor.destroy();
-            mUSBMonitor = null;
+        try {
+            if (mUSBMonitor != null) {
+                mUSBMonitor.destroy();
+                mUSBMonitor = null;
+            }
+        } catch (Exception e) {
+            // do nothing
         }
         mUVCCameraView = null;
         super.onDestroy();

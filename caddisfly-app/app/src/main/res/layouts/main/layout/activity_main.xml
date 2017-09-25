@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) Stichting Akvo (Akvo Foundation)
   ~
   ~ This file is part of Akvo Caddisfly.
@@ -37,30 +37,38 @@
             android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="1dp">
 
             <Button
-                android:id="@+id/buttonSurvey"
-                style="@style/Button"
+                style="@style/ListButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-7dp"
-                android:layout_marginTop="2dp"
                 android:gravity="center_vertical|start"
                 android:minHeight="80dp"
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
-                android:text="@string/survey"
+                android:textAlignment="viewStart"
+                android:textColor="?longButtonText"
+                android:theme="?longButtonStyle" />
+
+            <Button
+                style="@style/ListButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|start"
+                android:minHeight="80dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
                 android:textAlignment="viewStart"
                 android:textColor="?longButtonText"
                 android:theme="?longButtonStyle" />
 
             <Button
                 android:id="@+id/buttonCalibrate"
-                style="@style/Button"
+                style="@style/ListButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-7dp"
                 android:gravity="center_vertical|start"
                 android:minHeight="80dp"
                 android:paddingEnd="16dp"
@@ -69,6 +77,26 @@
                 android:textAlignment="viewStart"
                 android:textColor="?longButtonText"
                 android:theme="?longButtonStyle" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textVersionExpiry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
+                    android:ellipsize="none"
+                    android:gravity="center_horizontal"
+                    android:singleLine="true"
+                    android:textAllCaps="true"
+                    android:textColor="#9500192d"
+                    android:textSize="12dp"
+                    tools:ignore="SpUsage"
+                    tools:text="Version expires: 15 Jan 2018" />
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -84,11 +112,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="@dimen/text_margin_bottom"
             android:layout_marginStart="16dp"
             android:ellipsize="none"
             android:gravity="start"
-            android:maxLines="1"
+            android:singleLine="true"
             android:text="@string/externalCamera"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#2a01a2bc"
@@ -103,7 +131,6 @@
             android:layout_alignBottom="@+id/textDiagnostics"
             android:layout_alignParentEnd="true"
             android:src="@android:drawable/ic_menu_revert"
-            android:visibility="gone"
             app:backgroundTint="@color/diagnostic"
             tools:ignore="RelativeOverlap" />
     </RelativeLayout>

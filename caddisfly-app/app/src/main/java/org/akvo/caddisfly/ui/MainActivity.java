@@ -35,7 +35,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.akvo.caddisfly.AppConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -68,6 +67,8 @@ public class MainActivity extends BaseActivity {
     View coordinatorLayout;
     @BindView(R.id.layoutDiagnostics)
     View layoutDiagnostics;
+    @BindView(R.id.fabDisableDiagnostics)
+    FloatingActionButton fabDisableDiagnostics;
     private Runnable finishRunnable;
 
     @Override
@@ -78,34 +79,6 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         makeUpgrades();
-    }
-
-    @BindView(R.id.fabDisableDiagnostics)
-    FloatingActionButton fabDisableDiagnostics;
-
-    /**
-     * Navigate to the survey
-     */
-    @OnClick(R.id.buttonSurvey)
-    void navigateToSurvey() {
-        Intent intent = getPackageManager()
-                .getLaunchIntentForPackage(AppConfig.FLOW_SURVEY_PACKAGE_NAME);
-        if (intent == null) {
-            alertDependantAppNotFound();
-        } else {
-
-            finishRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            };
-
-            finishOnSurveyOpenedHandler.postDelayed(finishRunnable, AUTO_FINISH_DELAY_MILLIS);
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
     }
 
     @OnClick(R.id.buttonCalibrate)
@@ -255,7 +228,7 @@ public class MainActivity extends BaseActivity {
 
                 snackbar.setActionTextColor(typedValue.data);
                 View snackView = snackbar.getView();
-                TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+                TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
                 textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
                 textView.setTextColor(Color.WHITE);

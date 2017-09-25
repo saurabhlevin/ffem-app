@@ -20,11 +20,13 @@
 package org.akvo.caddisfly.sensor.colorimetry.liquid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -101,7 +103,21 @@ public class CalibrateListFragment extends ListFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_calibrate_list, container, false);
-        textCalibrationError = (TextView) view.findViewById(R.id.textCalibrationError);
+        textCalibrationError = view.findViewById(R.id.textCalibrationError);
+
+        Button buttonStart = view.findViewById(R.id.buttonStart);
+        buttonStart.setVisibility(View.VISIBLE);
+
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final Intent intent = new Intent(getActivity().getIntent());
+                intent.setClass(getContext(), ColorimetryLiquidExternalActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
 
     }

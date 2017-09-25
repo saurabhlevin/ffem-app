@@ -3,44 +3,91 @@
   "tests":[
     {
       "name": "Water - Fluoride",
-      "description": "Measures Fluoride in water. 0 - 2 ppm",
+      "description": "Measures Fluoride in water. 0 - 2 mg/l",
       "subtype": "liquid-chamber",
-      "tags": ["water quality"],
+      "tags": [
+        "water quality"
+      ],
       "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf",
-      "brand": "Akvo Caddisfly",
+      "brand": "Caddisfly",
       "shortCode": "fluor",
       "calibrate": true,
       "ranges": "0,0.5,1,1.5,2",
+      "subtitleExtra": "(upto 10 with dilution)",
       "defaultColors": "FD13AB,FE217C,F53A48,E75D28,D36B0B",
       "hueTrend": 1,
       "dilutions": "0,50,20",
       "monthsValid": 12,
       "hasImage": true,
+      "instructions": [
+        {
+          "section": [
+            "conduct_test_per_instructions"
+          ]
+        }
+      ],
       "results": [
         {
           "name": "Fluoride",
           "id": 1,
-          "unit": "ppm"
+          "unit": "mg/l"
         }
       ]
     },
     {
       "name": "Water - Free Chlorine",
-      "description": "Measures Free chlorine in water. 0 - 1 ppm",
+      "description": "Measures Free chlorine in water. 0 - 3 mg/l",
       "subtype": "liquid-chamber",
-      "tags": ["water quality"],
+      "tags": [
+        "water quality"
+      ],
       "uuid": "c3535e72-ff77-4225-9f4a-41d3288780c6",
-      "brand": "Akvo Caddisfly",
+      "brand": "Caddisfly",
       "shortCode": "chlor",
       "calibrate": true,
-      "ranges": "0,0.25,0.5,0.75,1.0",
+      "ranges": "0,0.5,1.0,1.5,2.0,2.5,3.0",
       "monthsValid": 24,
       "hasImage": true,
+      "instructions": [
+        {
+          "section": [
+            "conduct_test_per_instructions"
+          ]
+        }
+      ],
       "results": [
         {
           "name": "Free Chlorine",
           "id": 1,
-          "unit": "ppm"
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Water - Chromium",
+      "subtype": "liquid-chamber",
+      "uuid": "d488672f-9a4c-4aa4-82eb-8a95c40d0296",
+      "brand": "Caddisfly",
+      "shortCode": "chrom",
+      "calibrate": "true",
+      "ranges": "0,0.5,1,2,3",
+      "subtitleExtra": "(upto 15 with dilution)",
+      "dilutions": "0,50,20",
+      "monthsValid": "3",
+      "hasImage": true,
+      "instructions": [
+        {
+          "section": [
+            "conduct_test_per_instructions"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Chromium",
+          "unit": "mg/l",
+          "timeDelay": 300
         }
       ]
     }
