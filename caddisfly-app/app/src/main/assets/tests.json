@@ -1333,6 +1333,97 @@
       ]
     },
     {
+      "name": "Fluoride (Arsenic strip backdrop)",
+      "description": "",
+      "subtype": "striptest",
+      "uuid": "04667cc4-344d-445f-af52-8268ec6f4479",
+      "calibration": "",
+      "brand": "Caddisfly",
+      "groupingType": "INDIVIDUAL",
+      "length": 82.3,
+      "height": 12.8,
+      "unit": "mm",
+      "hasImage": true,
+      "results": [
+        {
+          "id":1,
+          "name":"Fluoride",
+          "unit": "",
+          "patchPos": 5.5,
+          "patchWidth":6,
+          "timeDelay": 0,
+          "colors":[
+            {
+              "value": 0,
+              "lab":[51.81,19.73,-10.86]
+            },
+            {
+              "value": 0.5,
+              "lab":[56.58,14.83,-6.42]
+            },
+            {
+              "value": 1.0,
+              "lab":[60.66,11.67,-1.36]
+            },
+            {
+              "value": 1.5,
+              "lab":[62.64,7.31,2.06]
+            },
+            {
+              "value": 2.0,
+              "lab":[60.59,4.63,2.72]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fluoride (Round container)",
+      "description": "",
+      "subtype": "striptest",
+      "uuid": "6993695a-d412-4cf8-9776-e5daeb6ff5f8",
+      "calibration": "",
+      "brand": "Caddisfly",
+      "groupingType": "INDIVIDUAL",
+      "length": 15,
+      "height": 9,
+      "unit": "mm",
+      "hasImage": true,
+      "isTransparent": true,
+      "results": [
+        {
+          "id":1,
+          "name":"Fluoride",
+          "unit": "",
+          "patchPos": 6,
+          "patchWidth":5,
+          "timeDelay": 0,
+          "colors":[
+            {
+              "value": 0,
+              "lab":[51.81,19.73,-10.86]
+            },
+            {
+              "value": 0.5,
+              "lab":[56.58,14.83,-6.42]
+            },
+            {
+              "value": 1.0,
+              "lab":[60.66,11.67,-1.36]
+            },
+            {
+              "value": 1.5,
+              "lab":[62.64,7.31,2.06]
+            },
+            {
+              "value": 2.0,
+              "lab":[60.59,4.63,2.72]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Water - pH",
       "description": "pH mid range",
       "subtype": "striptest",
