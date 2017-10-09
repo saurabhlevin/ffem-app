@@ -104,7 +104,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
 
         setTitle(R.string.result);
 
-        buttonSave = (Button) findViewById(R.id.button_save);
+        buttonSave = findViewById(R.id.button_save);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +141,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
             }
         });
 
-        buttonCancel = (Button) findViewById(R.id.button_cancel);
+        buttonCancel = findViewById(R.id.button_cancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +260,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
         } else {
             TextView textView = new TextView(this);
             textView.setText(R.string.noData);
-            LinearLayout layout = (LinearLayout) findViewById(R.id.layout_results);
+            LinearLayout layout = findViewById(R.id.layout_results);
 
             layout.addView(textView);
         }
@@ -560,12 +560,12 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
             final ViewGroup nullParent = null;
             LinearLayout itemResult = (LinearLayout) inflater.inflate(R.layout.item_result, nullParent, false);
 
-            TextView textTitle = (TextView) itemResult.findViewById(R.id.text_title);
+            TextView textTitle = itemResult.findViewById(R.id.text_title);
             textTitle.setText(patchDescription);
 
-            ImageView imageResult = (ImageView) itemResult.findViewById(R.id.image_result);
+            ImageView imageResult = itemResult.findViewById(R.id.image_result);
 
-            TextView textResult = (TextView) itemResult.findViewById(R.id.text_result);
+            TextView textResult = itemResult.findViewById(R.id.text_result);
 
             if (stripBitmap != null) {
                 imageResult.setImageBitmap(stripBitmap);
@@ -573,7 +573,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 if (!invalid) {
 
                     if (AppPreferences.isDiagnosticMode()) {
-                        TextView textColor = (TextView) itemResult.findViewById(R.id.text_color);
+                        TextView textColor = itemResult.findViewById(R.id.text_color);
                         double[] colorValues = colorDetected.getLab().val;
                         double[] labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR,
                                 colorValues[1] - 128, colorValues[2] - 128};
@@ -639,7 +639,7 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
                 invalid = true;
             }
 
-            LinearLayout layout = (LinearLayout) findViewById(R.id.layout_results);
+            LinearLayout layout = findViewById(R.id.layout_results);
             layout.addView(itemResult);
 
             // Job is done, decrement the work counter.
