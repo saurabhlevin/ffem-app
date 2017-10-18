@@ -570,49 +570,48 @@ public class ResultActivity extends BaseActivity implements DetectStripListener 
             if (stripBitmap != null) {
                 imageResult.setImageBitmap(stripBitmap);
 
+                if (AppPreferences.isDiagnosticMode()) {
+                    TextView textColor = itemResult.findViewById(R.id.text_color);
+                    double[] colorValues = colorDetected.getLab().val;
+                    double[] labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR,
+                            colorValues[1] - 128, colorValues[2] - 128};
+
+                    String calibrationInfo = PreferencesUtil.getString(getBaseContext(), Constant.CALIBRATION_INFO, "");
+
+                    String distanceInfo = PreferencesUtil.getString(
+                            CaddisflyApp.getApp().getApplicationContext(), Constant.DISTANCE_INFO + id, "");
+
+                    textColor.setText(String.format(Locale.US, "Lab: %.2f, %.2f, %.2f%nDistance: %s%n%s%n",
+                            labPoint[0], labPoint[1], labPoint[2], distanceInfo, calibrationInfo));
+                    textColor.setVisibility(View.VISIBLE);
+
+                    String diagnosticInfo = PreferencesUtil.getString(
+                            CaddisflyApp.getApp().getApplicationContext(), Constant.DIAGNOSTIC_INFO, "");
+
+                    String resultJson = String.format(Locale.getDefault(), "\"type\" : \"%s\",", patchDescription);
+
+                    resultJson += String.format(Locale.getDefault(), "\"color\" : \"%s\",", colorDetected.getLab());
+
+                    resultJson += String.format(Locale.getDefault(), "\"result\" : \"%.2f\",", resultValue);
+
+                    resultJson += String.format(Locale.getDefault(), "\"version\" : \"%s\",", CaddisflyApp.getAppVersion());
+
+                    resultJson += String.format(Locale.getDefault(), "\"phone\" : \"%s\",", Build.MODEL);
+
+                    resultJson += String.format(Locale.getDefault(), "\"colorCard\" : \"%s\",",
+                            String.valueOf(CalibrationCard.getMostFrequentVersionNumber()));
+
+                    diagnosticInfo = diagnosticInfo.replace("{Result}", resultJson);
+
+                    File path = FileHelper.getFilesDir(FileHelper.FileType.CARD, "");
+                    FileUtil.saveToFile(path, new SimpleDateFormat("yyyy-MM-dd HH-mm", Locale.US)
+                                    .format(Calendar.getInstance().getTimeInMillis())
+                                    + "_" + id + "_" + Build.MODEL.replace("_", "-") + "_CC"
+                                    + String.valueOf(CalibrationCard.getMostFrequentVersionNumber()) + ".json",
+                            diagnosticInfo);
+                }
+
                 if (!invalid) {
-
-                    if (AppPreferences.isDiagnosticMode()) {
-                        TextView textColor = itemResult.findViewById(R.id.text_color);
-                        double[] colorValues = colorDetected.getLab().val;
-                        double[] labPoint = new double[]{colorValues[0] / LAB_COLOR_NORMAL_DIVISOR,
-                                colorValues[1] - 128, colorValues[2] - 128};
-
-                        String calibrationInfo = PreferencesUtil.getString(getBaseContext(), Constant.CALIBRATION_INFO, "");
-
-                        String distanceInfo = PreferencesUtil.getString(
-                                CaddisflyApp.getApp().getApplicationContext(), Constant.DISTANCE_INFO + id, "");
-
-                        textColor.setText(String.format(Locale.US, "Lab: %.2f, %.2f, %.2f%nDistance: %s%n%s%n",
-                                labPoint[0], labPoint[1], labPoint[2], distanceInfo, calibrationInfo));
-                        textColor.setVisibility(View.VISIBLE);
-
-                        String diagnosticInfo = PreferencesUtil.getString(
-                                CaddisflyApp.getApp().getApplicationContext(), Constant.DIAGNOSTIC_INFO, "");
-
-                        String resultJson = String.format(Locale.getDefault(), "\"type\" : \"%s\",", patchDescription);
-
-                        resultJson += String.format(Locale.getDefault(), "\"color\" : \"%s\",", colorDetected.getLab());
-
-                        resultJson += String.format(Locale.getDefault(), "\"result\" : \"%.2f\",", resultValue);
-
-                        resultJson += String.format(Locale.getDefault(), "\"version\" : \"%s\",", CaddisflyApp.getAppVersion());
-
-                        resultJson += String.format(Locale.getDefault(), "\"phone\" : \"%s\",", Build.MODEL);
-
-                        resultJson += String.format(Locale.getDefault(), "\"colorCard\" : \"%s\",",
-                                String.valueOf(CalibrationCard.getMostFrequentVersionNumber()));
-
-                        diagnosticInfo = diagnosticInfo.replace("{Result}", resultJson);
-
-                        File path = FileHelper.getFilesDir(FileHelper.FileType.CARD, "");
-                        FileUtil.saveToFile(path, new SimpleDateFormat("yyyy-MM-dd HH-mm", Locale.US)
-                                        .format(Calendar.getInstance().getTimeInMillis())
-                                        + "_" + id + "_" + Build.MODEL.replace("_", "-") + "_CC"
-                                        + String.valueOf(CalibrationCard.getMostFrequentVersionNumber()) + ".json",
-                                diagnosticInfo);
-                    }
-
                     if (resultValue > -1) {
 
                         if (resultValue < 0.1) {

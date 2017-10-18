@@ -67,6 +67,13 @@
             android:maxLength="3"
             android:numeric="integer"
             android:title="Max color distance" />
+        <EditTextPreference
+            android:defaultValue="20"
+            android:dialogMessage="Enter a value below 400"
+            android:key="@string/stripColorDistanceToleranceKey"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:title="Max patch color distance" />
         <Preference
             android:key="diagnosticInformation"
             android:title="Diagnostic Information">

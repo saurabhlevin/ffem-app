@@ -22,6 +22,7 @@ package org.akvo.caddisfly.preference;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidConfig;
+import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 /**
@@ -62,6 +63,15 @@ public final class AppPreferences {
                     R.string.colorDistanceToleranceKey, String.valueOf(ColorimetryLiquidConfig.MAX_COLOR_DISTANCE_RGB)));
         } else {
             return ColorimetryLiquidConfig.MAX_COLOR_DISTANCE_RGB;
+        }
+    }
+
+    public static int getStripColorDistanceTolerance() {
+        if (isDiagnosticMode()) {
+            return Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
+                    R.string.stripColorDistanceToleranceKey, String.valueOf(Constant.MAX_COLOR_DISTANCE)));
+        } else {
+            return Constant.MAX_COLOR_DISTANCE;
         }
     }
 

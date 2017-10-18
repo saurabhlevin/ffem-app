@@ -632,7 +632,7 @@ public final class ResultUtil {
                     Constant.DISTANCE_INFO + id, String.format(Locale.US, "%.2f", nearest));
         }
 
-        if (nearest < Constant.MAX_COLOR_DISTANCE) {
+        if (nearest < AppPreferences.getStripColorDistanceTolerance()) {
             // return result only if the color distance is not too big
             return interpolTable[index][3];
         } else {
@@ -688,7 +688,7 @@ public final class ResultUtil {
                     Constant.DISTANCE_INFO + id, String.format(Locale.US, "%.2f", nearest));
         }
 
-        if (nearest < Constant.MAX_COLOR_DISTANCE * patches.size()) {
+        if (nearest < AppPreferences.getStripColorDistanceTolerance() * patches.size()) {
             // return result only if the color distance is not too big
             return interpolTables[0][index][3];
         } else {

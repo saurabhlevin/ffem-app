@@ -46,6 +46,7 @@ import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidConfig;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.DiagnosticPreviewFragment;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.TestTypeListActivity;
+import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
 import org.akvo.caddisfly.ui.TypeListActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.ListViewUtil;
@@ -179,6 +180,34 @@ public class DiagnosticPreferenceFragment extends PreferenceFragment {
             });
         }
 
+
+        final EditTextPreference stripDistancePreference =
+                (EditTextPreference) findPreference(getString(R.string.stripColorDistanceToleranceKey));
+        if (stripDistancePreference != null) {
+            stripDistancePreference.setSummary(stripDistancePreference.getText());
+
+            stripDistancePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    try {
+                        if (Integer.parseInt(String.valueOf(newValue)) > MAX_TOLERANCE) {
+                            newValue = MAX_TOLERANCE;
+                        }
+
+                        if (Integer.parseInt(String.valueOf(newValue)) < 1) {
+                            newValue = 1;
+                        }
+
+                    } catch (Exception e) {
+                        newValue = Constant.MAX_COLOR_DISTANCE;
+                    }
+                    stripDistancePreference.setText(String.valueOf(newValue));
+                    stripDistancePreference.setSummary(String.valueOf(newValue));
+                    return false;
+                }
+            });
+        }
+
         coordinatorLayout = rootView;
         return rootView;
     }
@@ -228,7 +257,7 @@ public class DiagnosticPreferenceFragment extends PreferenceFragment {
 
                 snackbar.setActionTextColor(typedValue.data);
                 View snackView = snackbar.getView();
-                TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+                TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
                 textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
                 textView.setTextColor(Color.WHITE);
@@ -263,7 +292,7 @@ public class DiagnosticPreferenceFragment extends PreferenceFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        list = (ListView) view.findViewById(android.R.id.list);
+        list = view.findViewById(android.R.id.list);
     }
 
     @Override
