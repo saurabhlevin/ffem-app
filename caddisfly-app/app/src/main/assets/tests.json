@@ -1333,51 +1333,6 @@
       ]
     },
     {
-      "name": "Fluoride (Arsenic strip backdrop)",
-      "description": "",
-      "subtype": "striptest",
-      "uuid": "04667cc4-344d-445f-af52-8268ec6f4479",
-      "calibration": "",
-      "brand": "Caddisfly",
-      "groupingType": "INDIVIDUAL",
-      "length": 82.3,
-      "height": 12.8,
-      "unit": "mm",
-      "hasImage": true,
-      "results": [
-        {
-          "id":1,
-          "name":"Fluoride",
-          "unit": "",
-          "patchPos": 5.5,
-          "patchWidth":6,
-          "timeDelay": 0,
-          "colors":[
-            {
-              "value": 0,
-              "lab":[51.81,19.73,-10.86]
-            },
-            {
-              "value": 0.5,
-              "lab":[56.58,14.83,-6.42]
-            },
-            {
-              "value": 1.0,
-              "lab":[60.66,11.67,-1.36]
-            },
-            {
-              "value": 1.5,
-              "lab":[62.64,7.31,2.06]
-            },
-            {
-              "value": 2.0,
-              "lab":[60.59,4.63,2.72]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "name": "Fluoride (Round container)",
       "description": "",
       "subtype": "striptest",
@@ -1401,23 +1356,23 @@
           "colors":[
             {
               "value": 0,
-              "lab":[51.81,19.73,-10.86]
+              "lab":[79.80, 25.78, -12.53]
             },
             {
               "value": 0.5,
-              "lab":[56.58,14.83,-6.42]
+              "lab":[81.63, 19.27, -4.77]
             },
             {
               "value": 1.0,
-              "lab":[60.66,11.67,-1.36]
+              "lab":[82.31, 11.48, 1.62]
             },
             {
               "value": 1.5,
-              "lab":[62.64,7.31,2.06]
+              "lab":[86.56, 5.00, 4.93]
             },
             {
               "value": 2.0,
-              "lab":[60.59,4.63,2.72]
+              "lab":[87.40, 3.81, 8.03]
             }
           ]
         }
