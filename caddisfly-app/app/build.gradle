@@ -40,6 +40,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 //    signingConfigs {
 //        caddisflyRelease {
 //            storeFile file(CADDISFLY_RELEASE_STORE_FILE)

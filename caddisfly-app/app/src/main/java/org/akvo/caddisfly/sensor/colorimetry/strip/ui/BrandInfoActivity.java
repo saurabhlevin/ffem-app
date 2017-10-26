@@ -21,7 +21,6 @@ package org.akvo.caddisfly.sensor.colorimetry.strip.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -32,13 +31,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +45,7 @@ import org.akvo.caddisfly.sensor.colorimetry.strip.camera.CameraActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.instructions.InstructionActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.model.StripTest;
 import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
+import org.akvo.caddisfly.sensor.colorimetry.stripv2.ui.StripMeasureActivity;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -57,6 +55,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -67,58 +68,34 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class BrandInfoActivity extends BaseActivity {
 
     private static final int PERMISSION_ALL = 1;
-    private static final String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final String[] PERMISSIONS = {Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final float SNACK_BAR_LINE_SPACING = 1.4f;
+    @BindView(R.id.button_instructions)
+    Button buttonInstruction;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.imageBrandLabel)
+    ImageView imageBrandLabel;
+    // TODO: Temporary to be removed
+    private boolean usePreviousVersion;
     private String mUuid;
-    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brand_info);
 
-        final Activity activity = this;
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-
-        ImageView imageBrandLabel = (ImageView) findViewById(R.id.imageBrandLabel);
-
-        // To start Camera
-        Button buttonPrepareTest = (Button) findViewById(R.id.button_prepare);
-        buttonPrepareTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!ApiUtil.hasPermissions(activity, PERMISSIONS)) {
-                    ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
-                } else {
-                    startCamera();
-                }
-            }
-        });
-
-        // To display Instructions
-        Button buttonInstruction = (Button) findViewById(R.id.button_instructions);
-        buttonInstruction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), InstructionActivity.class);
-                intent.putExtra(Constant.UUID, mUuid);
-                startActivity(intent);
-            }
-        });
+        ButterKnife.bind(this);
 
         mUuid = getIntent().getStringExtra(Constant.UUID);
 
+        StripTest stripTest = new StripTest();
+
         if (mUuid != null) {
-            StripTest stripTest = new StripTest();
 
             // Display the brand in title
             setTitle(stripTest.getBrand(mUuid).getName());
-
-//            try {
-//                imageBrandLabel.setBackgroundColor(Color.parseColor(stripTest.getBrand(this, mUuid).getBackground()));
-//            } catch (Exception ignored) {
-//
-//            }
 
             // Display the brand photo
             InputStream ims = null;
@@ -150,21 +127,40 @@ public class BrandInfoActivity extends BaseActivity {
                         Timber.e(e);
                     }
                 }
-
             }
+        }
 
-            JSONArray instructions = stripTest.getBrand(mUuid).getInstructions();
-            if (instructions == null || instructions.length() == 0) {
-                buttonInstruction.setVisibility(View.INVISIBLE);
-            }
+        JSONArray instructions = stripTest.getBrand(mUuid).getInstructions();
+        if (instructions == null || instructions.length() == 0) {
+            buttonInstruction.setVisibility(View.INVISIBLE);
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_brand, menu);
-        return true;
+    @OnClick(R.id.button_prepare)
+    void prepareTest() {
+        if (!ApiUtil.hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            startCamera();
+        }
+    }
+
+    // TODO: Temporary to be removed
+    @OnClick(R.id.button_prepare_v2)
+    void prepareV2Test() {
+        usePreviousVersion = true;
+        if (!ApiUtil.hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            startCamera();
+        }
+    }
+
+    @OnClick(R.id.button_instructions)
+    public void showInstructions() {
+        Intent intent = new Intent(this, InstructionActivity.class);
+        intent.putExtra(Constant.UUID, mUuid);
+        startActivity(intent);
     }
 
     @Override
@@ -189,19 +185,14 @@ public class BrandInfoActivity extends BaseActivity {
                 Snackbar snackbar = Snackbar
                         .make(coordinatorLayout, getString(R.string.cameraAndStoragePermissions),
                                 Snackbar.LENGTH_LONG)
-                        .setAction("SETTINGS", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ApiUtil.startInstalledAppDetailsActivity(activity);
-                            }
-                        });
+                        .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(activity));
 
                 TypedValue typedValue = new TypedValue();
                 getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
 
                 snackbar.setActionTextColor(typedValue.data);
                 View snackView = snackbar.getView();
-                TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+                TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
                 textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
                 textView.setTextColor(Color.WHITE);
@@ -220,51 +211,42 @@ public class BrandInfoActivity extends BaseActivity {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
                     View checkBoxView = View.inflate(this, R.layout.dialog_message, null);
-                    CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
-                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            PreferencesUtil.setBoolean(getBaseContext(), R.string.showMinMegaPixelDialogKey, !isChecked);
-                        }
-                    });
+                    CheckBox checkBox = checkBoxView.findViewById(R.id.checkbox);
+                    checkBox.setOnCheckedChangeListener((buttonView, isChecked)
+                            -> PreferencesUtil.setBoolean(getBaseContext(), R.string.showMinMegaPixelDialogKey, !isChecked));
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.warning);
                     builder.setMessage(R.string.camera_not_good)
                             .setView(checkBoxView)
                             .setCancelable(false)
-                            .setPositiveButton(R.string.continue_anyway, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                    Intent intent = new Intent(getIntent());
-                                    intent.setClass(getBaseContext(), CameraActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivityForResult(intent, 100);
-                                }
-                            })
-                            .setNegativeButton(R.string.stop_test, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
+                            .setPositiveButton(R.string.continue_anyway, (dialog, id) -> startStripMeasureActivity())
+                            .setNegativeButton(R.string.stop_test, (dialog, id) -> {
+                                dialog.dismiss();
+                                finish();
                             }).show();
 
                 } else {
-                    Intent intent = new Intent(getIntent());
-                    intent.setClass(this, CameraActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivityForResult(intent, 100);
+                    startStripMeasureActivity();
                 }
             } catch (Exception e) {
                 Timber.e(e);
             }
         } else {
-            Intent intent = new Intent(getIntent());
-            intent.setClass(this, CameraActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivityForResult(intent, 100);
+            startStripMeasureActivity();
         }
+    }
+
+    private void startStripMeasureActivity() {
+        Intent intent = new Intent(getIntent());
+        if (usePreviousVersion) {
+            // TODO: Temporary to be removed
+            intent.setClass(this, CameraActivity.class);
+        } else {
+            intent.setClass(this, StripMeasureActivity.class);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(intent, 100);
     }
 
     @Override
@@ -289,26 +271,12 @@ public class BrandInfoActivity extends BaseActivity {
         setTitle(stripTest.getBrand(mUuid).getName());
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.id.actionColor:
-
-                Intent intent = new Intent(getIntent());
-                intent.setClass(this, DiagnosticActivity.class);
-                intent.putExtra(Constant.UUID, mUuid);
-                startActivity(intent);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
-
-
         return super.onOptionsItemSelected(item);
-
     }
 }

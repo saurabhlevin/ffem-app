@@ -23,8 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".sensor.colorimetry.strip.ui.BrandInfoActivity">
+    android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -45,13 +44,13 @@
             android:id="@+id/imageBrandLabel"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="56dp"
             android:adjustViewBounds="false"
             android:contentDescription="@null"
             android:cropToPadding="false"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toTopOf="@+id/button_prepare"
+            app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -62,21 +61,43 @@
             tools:layout_constraintTop_creator="1"
             tools:src="@android:drawable/ic_menu_gallery" />
 
-        <Button
-            android:id="@+id/button_prepare"
-            style="@style/Button"
+        <LinearLayout
+            android:id="@+id/buttonLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:enabled="true"
-            android:minWidth="230dp"
-            android:text="@string/prepare_test"
-            android:theme="?primaryButtonStyle"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/button_instructions"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent">
+
+            <Button
+                android:id="@+id/button_prepare"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:enabled="true"
+                android:minWidth="230dp"
+                android:text="@string/prepare_test"
+                android:theme="?primaryButtonStyle" />
+
+            <Button
+                android:id="@+id/button_prepare_v2"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:enabled="true"
+                android:minWidth="230dp"
+                android:text="Previous version"
+                android:textColor="#605f5f"
+                android:textStyle="normal"
+                android:visibility="visible" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_instructions"
