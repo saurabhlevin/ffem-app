@@ -35,7 +35,6 @@ import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.Swatch;
 import org.akvo.caddisfly.model.TestInfo;
-import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.util.Date;
@@ -105,8 +104,8 @@ public class CalibrateListFragment extends ListFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_calibrate_list, container, false);
-        textCalibrationError = (TextView) view.findViewById(R.id.textCalibrationError);
-        buttonStart = (Button) view.findViewById(R.id.buttonStart);
+        textCalibrationError = view.findViewById(R.id.textCalibrationError);
+        buttonStart = view.findViewById(R.id.buttonStart);
 
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +115,7 @@ public class CalibrateListFragment extends ListFragment {
                 if (CaddisflyApp.getApp().getCurrentTestInfo().getCanUseDilution()) {
                     intent.setClass(getContext(), SelectDilutionActivity.class);
                 } else {
-                    if (AppPreferences.useExternalCamera()) {
-                        intent.setClass(getContext(), ColorimetryLiquidExternalActivity.class);
-                    } else {
-                        intent.setClass(getContext(), ColorimetryLiquidActivity.class);
-                    }
+                    intent.setClass(getContext(), ColorimetryLiquidActivity.class);
                 }
 
                 startActivity(intent);

@@ -262,19 +262,19 @@ public class SensorActivity extends BaseActivity {
         mIsInternal = intent.getBooleanExtra("internal", false);
         mHandler = new MyHandler(this);
 
-        textSubtitle = (TextView) findViewById(R.id.textSubtitle);
-        textSubtitle2 = (TextView) findViewById(R.id.textSubtitle2);
-        progressWait = (ProgressBar) findViewById(R.id.progressWait);
-        textResult = (TextView) findViewById(R.id.textResult);
-        textResult2 = (TextView) findViewById(R.id.textResult2);
-        textUnit = (TextView) findViewById(R.id.textUnit);
-        textUnit2 = (TextView) findViewById(R.id.textUnit2);
-        imageUsbConnection = (ImageView) findViewById(R.id.imageUsbConnection);
+        textSubtitle = findViewById(R.id.textSubtitle);
+        textSubtitle2 = findViewById(R.id.textSubtitle2);
+        progressWait = findViewById(R.id.progressWait);
+        textResult = findViewById(R.id.textResult);
+        textResult2 = findViewById(R.id.textResult2);
+        textUnit = findViewById(R.id.textUnit);
+        textUnit2 = findViewById(R.id.textUnit2);
+        imageUsbConnection = findViewById(R.id.imageUsbConnection);
 
         textSubtitle2.setText(R.string.deviceConnectSensor);
         textSubtitle.setText("");
 
-        buttonAcceptResult = (Button) findViewById(R.id.buttonAcceptResult);
+        buttonAcceptResult = findViewById(R.id.buttonAcceptResult);
         buttonAcceptResult.setVisibility(View.INVISIBLE);
         buttonAcceptResult.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -285,7 +285,7 @@ public class SensorActivity extends BaseActivity {
 
                 Intent resultIntent = new Intent(intent);
 
-                JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, -1, EMPTY_STRING, null);
+                JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, null, -1, EMPTY_STRING, null);
                 resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
 
                 // TODO: Remove this when obsolete
@@ -297,7 +297,7 @@ public class SensorActivity extends BaseActivity {
             }
         });
 
-        layoutResult = (LinearLayout) findViewById(R.id.layoutResult);
+        layoutResult = findViewById(R.id.layoutResult);
 
         if (mCurrentTestInfo != null && !mCurrentTestInfo.getName().isEmpty()) {
             ((TextView) findViewById(R.id.textTitle)).setText(

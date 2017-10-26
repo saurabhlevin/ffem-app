@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) Stichting Akvo (Akvo Foundation)
  *
@@ -24,9 +23,6 @@ import android.content.Intent;
 import android.os.Build;
 
 import org.akvo.caddisfly.app.CaddisflyApp;
-import org.akvo.caddisfly.preference.AppPreferences;
-
-import java.util.Locale;
 
 public class TurbidityStartReceiver extends BroadcastReceiver {
 
@@ -46,17 +42,8 @@ public class TurbidityStartReceiver extends BroadcastReceiver {
 
             String folderName = intent.getStringExtra("savePath");
 
-            if (AppPreferences.useExternalCamera()) {
-                final Intent cameraIntent = new Intent();
-                cameraIntent.setClass(context, ExternalCameraActivity.class);
-                cameraIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                cameraIntent.putExtra("uuid", uuid.trim().toLowerCase(Locale.US));
-                cameraIntent.putExtra("savePath", folderName);
-                context.startActivity(cameraIntent);
-            } else {
-                CameraHandler cameraHandler = new CameraHandler(context);
-                cameraHandler.takePicture(folderName);
-            }
+            CameraHandler cameraHandler = new CameraHandler(context);
+            cameraHandler.takePicture(folderName);
         }
     }
 }

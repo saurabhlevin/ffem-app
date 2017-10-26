@@ -128,15 +128,15 @@ public class CalibrateListActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibrate_list);
 
-        textSubtitle = (TextView) findViewById(R.id.textSubtitle);
-        textSubtitle1 = (TextView) findViewById(R.id.textSubtitle1);
-        textSubtitle2 = (TextView) findViewById(R.id.textSubtitle2);
+        textSubtitle = findViewById(R.id.textSubtitle);
+        textSubtitle1 = findViewById(R.id.textSubtitle1);
+        textSubtitle2 = findViewById(R.id.textSubtitle2);
 
         ((TextView) findViewById(R.id.textTitle)).setText(CaddisflyApp.getApp().
                 getCurrentTestInfo().getName());
 
         fabEditCalibration =
-                (FloatingActionButton) findViewById(R.id.fabEditCalibration);
+                findViewById(R.id.fabEditCalibration);
 
         if (AppPreferences.isDiagnosticMode()) {
             fabEditCalibration.setBackgroundTintList(
@@ -229,11 +229,7 @@ public class CalibrateListActivity extends BaseActivity
 
         if (AppPreferences.useExternalCamera() || !ApiUtil.isCameraInUse(this, null)) {
             final Intent intent = new Intent(getIntent());
-            if (AppPreferences.useExternalCamera()) {
-                intent.setClass(getBaseContext(), ColorimetryLiquidExternalActivity.class);
-            } else {
-                intent.setClass(getBaseContext(), ColorimetryLiquidActivity.class);
-            }
+            intent.setClass(getBaseContext(), ColorimetryLiquidActivity.class);
             intent.putExtra("isCalibration", true);
             intent.putExtra("swatchValue", swatch.getValue());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

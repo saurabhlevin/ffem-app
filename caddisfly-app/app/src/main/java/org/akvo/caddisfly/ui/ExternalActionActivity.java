@@ -45,7 +45,6 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.SensorConstants;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.CalibrateListActivity;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidActivity;
-import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidExternalActivity;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.SelectDilutionActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.BrandInfoActivity;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.TestTypeListActivity;
@@ -313,11 +312,7 @@ public class ExternalActionActivity extends BaseActivity {
                 if (caddisflyApp.getCurrentTestInfo().getCanUseDilution()) {
                     intent.setClass(context, SelectDilutionActivity.class);
                 } else {
-                    if (AppPreferences.useExternalCamera()) {
-                        intent.setClass(getBaseContext(), ColorimetryLiquidExternalActivity.class);
-                    } else {
-                        intent.setClass(getBaseContext(), ColorimetryLiquidActivity.class);
-                    }
+                    intent.setClass(getBaseContext(), ColorimetryLiquidActivity.class);
                 }
 
                 intent.putExtra(Constant.UUID, uuid);

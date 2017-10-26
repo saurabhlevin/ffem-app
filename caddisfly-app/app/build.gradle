@@ -33,11 +33,6 @@ android {
         versionName "1.0.0 Internal 193"
         resConfigs "en", "en_US", "fr", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        applicationVariants.all { variant ->
-            def productFlavor = variant.productFlavors[0] != null ? "${variant.productFlavors[0].name.capitalize()}" : ""
-            def buildType = "${variant.buildType.name.capitalize()}"
-            tasks["compile${productFlavor}${buildType}UnitTestSources"].dependsOn(tasks["merge${productFlavor}${buildType}Assets"])
-        }
     }
 
     compileOptions {
@@ -45,38 +40,22 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-//    signingConfigs {
-//        caddisflyRelease {
-//            storeFile file(CADDISFLY_RELEASE_STORE_FILE)
-//            storePassword CADDISFLY_RELEASE_STORE_PASSWORD
-//            keyAlias CADDISFLY_RELEASE_KEY_ALIAS
-//            keyPassword CADDISFLY_RELEASE_KEY_PASSWORD
-//        }
-//    }
-//
-//    buildTypes {
-//        release {
-//            signingConfig signingConfigs.caddisflyRelease
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            zipAlignEnabled true
-//        }
-//    }
+    signingConfigs {
+        caddisflyRelease {
+            storeFile file(CADDISFLY_RELEASE_STORE_FILE)
+            storePassword CADDISFLY_RELEASE_STORE_PASSWORD
+            keyAlias CADDISFLY_RELEASE_KEY_ALIAS
+            keyPassword CADDISFLY_RELEASE_KEY_PASSWORD
+        }
+    }
 
-    sourceSets {
-        main {
-            res.srcDirs =
-                    [
-                            'src/main/res/layouts/main',
-                            'src/main/res/layouts/sensor/liquid',
-                            'src/main/res/layouts/sensor/strip',
-                            'src/main/res/layouts/sensor/ec',
-                            'src/main/res/layouts/diagnostic',
-                            'src/main/res/layouts/general',
-                            'src/main/res/layouts',
-                            'src/main/res'
-                    ]
+    buildTypes {
+        release {
+            signingConfig signingConfigs.caddisflyRelease
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
         }
     }
 

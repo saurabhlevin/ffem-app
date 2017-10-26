@@ -103,7 +103,8 @@
     <string name="testWithDilution">Test with Dilution</string>
 
     <!--StripTest-->
-    <string name="brightness">Brightness</string>
+    <string name="brightness">Light</string>
+    <string name="measure_instruction">Put strip on black area with colour patches to the left. Hold camera above colour card until measurement is complete.</string>
     <string name="instructions">Instructions</string>
     <string name="shadows">Shadows</string>
     <string name="prepare_test">Prepare for test</string>
@@ -198,5 +199,6 @@
     <string name="versionExpired">Version expired</string> 
     <string name="thisVersionHasExpired">This version of the app has expired.</string> 
     <string name="uninstallAndInstallFromStore">Please uninstall and then install the latest version from Play Store.</string>
+    <string name="imageQuality">Image Quality</string>
 
 </resources>
