@@ -277,11 +277,12 @@ public final class TestConfigHelper {
 
     /**
      * Creates the json result containing the results for test.
-     * @param testInfo information about the test
-     * @param results the results for the test
-     * @param color the color extracted
+     *
+     * @param testInfo       information about the test
+     * @param results        the results for the test
+     * @param color          the color extracted
      * @param resultImageUrl the url of the image
-     * @param groupingType type of grouping
+     * @param groupingType   type of grouping
      * @return the result in json format
      */
     public static JSONObject getJsonResult(TestInfo testInfo, SparseArray<String> results,
@@ -403,15 +404,31 @@ public final class TestConfigHelper {
             if (uuid == null) {
                 uuid = getUuidByShortCode(shortCode, EXPERIMENTAL_TESTS_FILENAME);
             }
+
+            if (uuid == null) {
+                File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG),
+                        SensorConstants.TESTS_META_FILENAME);
+                uuid = getUuid(shortCode, FileUtil.loadTextFromFile(file));
+            }
+
             return uuid;
         }
         return null;
     }
 
     @Nullable
+    @Deprecated
     private static String getUuidByShortCode(String shortCode, String filename) {
         // Load the pre-configured tests from the app
         String jsonText = AssetsManager.getInstance().loadJSONFromAsset(filename);
+        String item = getUuid(shortCode, jsonText);
+        if (item != null) return item;
+        return null;
+    }
+
+    @Nullable
+    @Deprecated
+    private static String getUuid(String shortCode, String jsonText) {
         try {
             JSONArray array = new JSONObject(jsonText).getJSONArray("tests");
             for (int i = 0; i < array.length(); i++) {

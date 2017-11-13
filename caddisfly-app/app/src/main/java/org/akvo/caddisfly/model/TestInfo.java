@@ -152,6 +152,10 @@ public class TestInfo {
         this.requiresCalibration = false;
     }
 
+    public int getDilution(int i) {
+        return dilutions.get(i);
+    }
+
     /**
      * Sort the swatches for this test by their result values.
      */

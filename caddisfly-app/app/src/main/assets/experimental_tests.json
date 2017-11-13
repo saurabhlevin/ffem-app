@@ -152,6 +152,84 @@
       ]
     },
     {
+      "name": "Water - Nitrate",
+      "subtype": "liquid-chamber",
+      "tags": ["water quality"],
+      "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,50,100,150,200,250",
+      "dilutions": "0,50,20",
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Nitrate",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 360
+        }
+      ]
+    },
+    {
+      "name": "Water - Nitrate - 2",
+      "subtype": "liquid-chamber",
+      "tags": ["water quality"],
+      "uuid": "fcf39bd6-0e37-4523-9cba-19870d2192f8",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,10,25,50,75,100",
+      "dilutions": "0,50,10",
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Nitrate",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 360
+        }
+      ]
+    },
+    {
+      "name": "Water - Phosphate - 2",
+      "subtype": "liquid-chamber",
+      "tags": ["water quality"],
+      "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2.0",
+      "dilutions": "0,50,20",
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphate",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 600
+        }
+      ]
+    },
+    {
+      "name": "Total Iron",
+      "subtype": "liquid-chamber",
+      "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
+      "shortCode": "totfe",
+      "calibrate": "true",
+      "ranges": "0,0.5,1.0,1.5,2.0",
+      "dilutions": "0,50,20",
+      "monthsValid": "6",
+      "results": [
+        {
+          "id": 1,
+          "name": "Total Iron",
+          "unit": "ppm",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
       "name": "pH",
       "subtype": "liquid-chamber",
       "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",

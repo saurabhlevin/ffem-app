@@ -44,13 +44,14 @@ public class SelectDilutionActivity extends BaseActivity {
 
         setTitle(R.string.dilution);
 
-        Button noDilutionButton = (Button) findViewById(R.id.buttonNoDilution);
-        Button percentButton1 = (Button) findViewById(R.id.buttonDilution1);
-        Button percentButton2 = (Button) findViewById(R.id.buttonDilution2);
+        Button noDilutionButton = findViewById(R.id.buttonNoDilution);
+        Button percentButton1 = findViewById(R.id.buttonDilution1);
+        Button percentButton2 = findViewById(R.id.buttonDilution2);
 
-        //todo: remove hardcoding of dilution times
-        percentButton1.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 2));
-        percentButton2.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 5));
+        TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
+        percentButton1.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 100 / testInfo.getDilution(1)));
+        percentButton2.setText(String.format(Locale.getDefault(), getString(R.string.timesDilution), 100 / testInfo.getDilution(2)));
 
         noDilutionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +74,6 @@ public class SelectDilutionActivity extends BaseActivity {
             }
         });
 
-        TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
         ((TextView) findViewById(R.id.textTitle)).setText(testInfo.getName());
     }
 

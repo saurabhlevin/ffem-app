@@ -316,18 +316,13 @@ public class ColorimetryLiquidActivity extends BaseActivity
         mSwatchValue = getIntent().getDoubleExtra("swatchValue", 0);
         mDilutionLevel = getIntent().getIntExtra("dilution", 0);
 
-        switch (mDilutionLevel) {
-            case 1:
-                textDilution.setText(String.format(getString(R.string.timesDilution), 2));
-                break;
-            case 2:
-                textDilution.setText(String.format(getString(R.string.timesDilution), 5));
-                break;
-            default:
-                textDilution.setText(R.string.noDilution);
-        }
-
         TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+
+        if (mDilutionLevel == 0) {
+            textDilution.setText(R.string.noDilution);
+        } else {
+            textDilution.setText(String.format(getString(R.string.timesDilution), 100 / testInfo.getDilution(mDilutionLevel)));
+        }
 
 //        TextView textResult = ((TextView) findViewById(R.id.textResult));
         if (!mIsCalibration) {
@@ -610,16 +605,8 @@ public class ColorimetryLiquidActivity extends BaseActivity
                 mHighLevelsFound = true;
             }
 
-            // Calculate final result based on dilution
-            switch (mDilutionLevel) {
-                case 1:
-                    mResult = mResult * 2;
-                    break;
-                case 2:
-                    mResult = mResult * 5;
-                    break;
-                default:
-                    break;
+            if (mDilutionLevel > 0) {
+                mResult = mResult * (100 / testInfo.getDilution(mDilutionLevel));
             }
 
             // Format the result
@@ -707,21 +694,19 @@ public class ColorimetryLiquidActivity extends BaseActivity
                             PreferencesUtil.getInt(this, R.string.totalSuccessfulTestsKey, 0) + 1);
 
                 } else {
-                    String title = CaddisflyApp.getApp().getCurrentTestInfo().getName();
+                    TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
+                    String title = testInfo.getName();
 
                     String message = EMPTY_STRING;
                     if (mHighLevelsFound && mDilutionLevel < 2) {
                         sound.playShortResource(R.raw.beep_long);
-                        switch (mDilutionLevel) {
-                            case 0:
-                                message = String.format(getString(R.string.tryWithDilutedSample), 2);
-                                break;
-                            case 1:
-                                message = String.format(getString(R.string.tryWithDilutedSample), 5);
-                                break;
-                            default:
-                                message = EMPTY_STRING;
+
+                        if (mDilutionLevel == 0) {
+                            message = EMPTY_STRING;
+                        } else {
+                            message = String.format(getString(R.string.tryWithDilutedSample), 100 / testInfo.getDilution(mDilutionLevel));
                         }
+
                     } else {
                         sound.playShortResource(R.raw.done);
                     }
@@ -874,18 +859,13 @@ public class ColorimetryLiquidActivity extends BaseActivity
             mCameraFragment.dismiss();
             sound.playShortResource(R.raw.beep_long);
             String title = CaddisflyApp.getApp().getCurrentTestInfo().getName();
+            TestInfo testInfo = CaddisflyApp.getApp().getCurrentTestInfo();
 
             String message;
-            //todo: remove hard coding of dilution levels
-            switch (mDilutionLevel) {
-                case 0:
-                    message = String.format(getString(R.string.tryWithDilutedSample), 2);
-                    break;
-                case 1:
-                    message = String.format(getString(R.string.tryWithDilutedSample), 5);
-                    break;
-                default:
-                    message = EMPTY_STRING;
+            if (mDilutionLevel == 0) {
+                message = EMPTY_STRING;
+            } else {
+                message = String.format(getString(R.string.tryWithDilutedSample), 100 / testInfo.getDilution(mDilutionLevel));
             }
 
             ResultDialogFragment mResultDialogFragment = ResultDialogFragment.newInstance(title, result,

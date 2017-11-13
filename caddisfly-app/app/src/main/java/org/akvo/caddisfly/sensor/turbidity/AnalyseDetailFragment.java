@@ -77,13 +77,13 @@ public class AnalyseDetailFragment extends Fragment {
 //                    setImageDrawable(instructionDrawable);
 //        }
 
-        LinearLayout layoutResult = (LinearLayout) rootView.findViewById(R.id.layoutResult);
-        LinearLayout layoutImages = (LinearLayout) rootView.findViewById(R.id.layoutImages);
+        LinearLayout layoutResult = rootView.findViewById(R.id.layoutResult);
+        LinearLayout layoutImages = rootView.findViewById(R.id.layoutImages);
 
-        TextView textResult = (TextView) rootView.findViewById(R.id.textResult);
-        TextView textTime = (TextView) rootView.findViewById(R.id.textTime);
-        TextView textDate = (TextView) rootView.findViewById(R.id.textDate);
-        TextView textTotalTime = (TextView) rootView.findViewById(R.id.textTotalTime);
+        TextView textResult = rootView.findViewById(R.id.textResult);
+        TextView textTime = rootView.findViewById(R.id.textTime);
+        TextView textDate = rootView.findViewById(R.id.textDate);
+        TextView textTotalTime = rootView.findViewById(R.id.textTotalTime);
 
         textResult.setText(resultInfo.result);
 
@@ -98,9 +98,9 @@ public class AnalyseDetailFragment extends Fragment {
         textTime.setText(resultInfo.turbidTime);
         textTotalTime.setText(String.format("Total Time: %s", resultInfo.totalTime));
 
-        ImageView imageStart = (ImageView) rootView.findViewById(R.id.imageStart);
-        ImageView imageTurbid = (ImageView) rootView.findViewById(R.id.imageTurbid);
-        ImageView imageEnd = (ImageView) rootView.findViewById(R.id.imageEnd);
+        ImageView imageStart = rootView.findViewById(R.id.imageStart);
+        ImageView imageTurbid = rootView.findViewById(R.id.imageTurbid);
+        ImageView imageEnd = rootView.findViewById(R.id.imageEnd);
 
         imageStart.setImageBitmap(getImage(resultInfo.startImage));
 
@@ -124,12 +124,10 @@ public class AnalyseDetailFragment extends Fragment {
                 textDate.setText(datetime);
 
             } catch (ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         } catch (java.text.ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
