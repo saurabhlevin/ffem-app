@@ -66,11 +66,7 @@
     },
     {
       "name": "Water - Free Chlorine - 2",
-      "description": "Measures Free chlorine in water. 0 - 3 ppm",
       "subtype": "liquid-chamber",
-      "tags": [
-        "water quality"
-      ],
       "uuid": "57a1d2fe-e578-4d74-a8a7-e2a576c4503c",
       "brand": "Akvo Caddisfly",
       "shortCode": "chlor",
@@ -87,46 +83,12 @@
       ]
     },
     {
-      "name": "Chromium 1",
-      "subtype": "liquid-chamber",
-      "uuid": "082ec36a-71af-49d5-add8-5c03fc1c2f0b",
-      "shortCode": "chro1",
-      "calibrate": true,
-      "ranges": "0,25,50,75,100,5000,10000,25000",
-      "monthsValid": 3,
-      "results": [
-        {
-          "id": 1,
-          "name": "Chromium",
-          "unit": "ppb",
-          "timeDelay": 300
-        }
-      ]
-    },
-    {
-      "name": "Chromium 2",
+      "name": "Chromium",
       "subtype": "liquid-chamber",
       "uuid": "4970bfed-d289-429c-b4c0-5645ec6fd5af",
       "shortCode": "chro2",
       "calibrate": true,
       "ranges": " 0,0.025,0.050,0.075,0.100,0.5,1.0",
-      "monthsValid": 3,
-      "results": [
-        {
-          "id": 1,
-          "name": "Chromium",
-          "unit": "ppm",
-          "timeDelay": 300
-        }
-      ]
-    },
-    {
-      "name": "Chromium 3",
-      "subtype": "liquid-chamber",
-      "uuid": "e0730417-b475-4484-b9e0-a5e2b2b65e8c",
-      "shortCode": "chro3",
-      "calibrate": true,
-      "ranges": "0,1,5,15,25",
       "monthsValid": 3,
       "results": [
         {
@@ -154,7 +116,6 @@
     {
       "name": "Water - Nitrate",
       "subtype": "liquid-chamber",
-      "tags": ["water quality"],
       "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
       "brand": "Caddisfly",
       "calibrate": true,
@@ -174,7 +135,6 @@
     {
       "name": "Water - Nitrate - 2",
       "subtype": "liquid-chamber",
-      "tags": ["water quality"],
       "uuid": "fcf39bd6-0e37-4523-9cba-19870d2192f8",
       "brand": "Caddisfly",
       "calibrate": true,
@@ -194,7 +154,6 @@
     {
       "name": "Water - Phosphate - 2",
       "subtype": "liquid-chamber",
-      "tags": ["water quality"],
       "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
       "brand": "Caddisfly",
       "calibrate": true,
@@ -248,10 +207,44 @@
       ]
     },
     {
-      "name": "Phosphate",
-      "description": "Measures Phosphate in water. 0 - 20 ppm",
+      "name": "Soil - pH",
       "subtype": "liquid-chamber",
-      "tags": ["water quality"],
+      "uuid": "25bcfc97-ee9a-4f2f-bf5e-e3eb237b5e23",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "unit": "",
+          "timeDelay": 45
+        }
+      ]
+    },
+    {
+      "name": "Soil - Phosphorous",
+      "subtype": "liquid-chamber",
+      "uuid": "957f0c64-e658-4a04-b4e0-aa72f5692809",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,5,10,15,20",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphorous",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Phosphate",
+      "subtype": "liquid-chamber",
       "uuid": "f0262ede-5e91-4d65-9e0b-f51cae947294",
       "brand": "Akvo Caddisfly",
       "calibrate": true,
