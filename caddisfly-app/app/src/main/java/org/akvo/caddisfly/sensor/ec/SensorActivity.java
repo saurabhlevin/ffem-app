@@ -25,7 +25,6 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -33,7 +32,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.text.Spanned;
 import android.util.SparseArray;
 import android.view.MenuItem;
@@ -307,12 +305,9 @@ public class SensorActivity extends BaseActivity {
                     .setMessage(spanned)
                     .setCancelable(false);
 
-            builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(@NonNull DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                    finish();
-                }
+            builder.setNegativeButton(R.string.ok, (dialogInterface, i) -> {
+                dialogInterface.dismiss();
+                finish();
             });
 
             alertDialog = builder.create();

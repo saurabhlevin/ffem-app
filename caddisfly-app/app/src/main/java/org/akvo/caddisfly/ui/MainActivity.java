@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity {
 
         makeUpgrades();
 
-        if (!ApkHelper.isStoreVersion(this)) {
+        if (ApkHelper.isNonStoreVersion(this)) {
 
 //            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
 //            textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));

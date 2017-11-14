@@ -134,11 +134,6 @@ public class SettingsActivity extends BaseActivity
             PreferencesUtil.setBoolean(this, R.string.refreshKey, true);
             recreate();
         }
-
-        if (getApplicationContext().getString(R.string.selectedThemeKey).equals(s)) {
-            finish();
-        }
-
     }
 
     @Override
@@ -159,10 +154,6 @@ public class SettingsActivity extends BaseActivity
 
         mScrollPosition = PreferencesUtil.getInt(this, "settingsScrollPosition", 0);
 
-        mScrollView.post(new Runnable() {
-            public void run() {
-                mScrollView.scrollTo(0, mScrollPosition);
-            }
-        });
+        mScrollView.post(() -> mScrollView.scrollTo(0, mScrollPosition));
     }
 }

@@ -41,7 +41,6 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.json.JSONException;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,12 +75,7 @@ public class TestTypeListActivity extends BaseActivity {
 
         if (brands != null) {
             //order alpha-numeric on brand
-            Collections.sort(brands, new Comparator<StripTest.Brand>() {
-                @Override
-                public int compare(@NonNull final StripTest.Brand object1, @NonNull final StripTest.Brand object2) {
-                    return object1.getName().compareToIgnoreCase(object2.getName());
-                }
-            });
+            Collections.sort(brands, (object1, object2) -> object1.getName().compareToIgnoreCase(object2.getName()));
 
             if (adapter == null) {
                 adapter = new StripAdapter(this,
@@ -141,7 +135,7 @@ public class TestTypeListActivity extends BaseActivity {
 
         @SuppressWarnings("SameParameterValue")
         StripAdapter(@NonNull Context context, int resource, List<StripTest.Brand> brandNames) {
-            super(context, resource);
+            super(context, resource, brandNames);
 
             this.context = context;
             this.resource = resource;
@@ -162,9 +156,13 @@ public class TestTypeListActivity extends BaseActivity {
 
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(resource, parent, false);
-                holder = new ViewHolder(view);
-                view.setTag(holder);
+                if (inflater != null) {
+                    view = inflater.inflate(resource, parent, false);
+                    holder = new ViewHolder(view);
+                    view.setTag(holder);
+                } else {
+                    return new View(context);
+                }
             } else {
                 holder = (ViewHolder) view.getTag();
             }
@@ -199,7 +197,7 @@ public class TestTypeListActivity extends BaseActivity {
                     }
 
                     holder.textView.setText(brand.getName());
-                    holder.textSubtitle.setText(brand.getBrandDescription() + ", " + ranges.toString());
+                    holder.textSubtitle.setText(String.format("%s, %s", brand.getBrandDescription(), ranges.toString()));
                 }
             }
             return view;
