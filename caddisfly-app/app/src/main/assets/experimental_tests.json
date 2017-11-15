@@ -243,6 +243,42 @@
       ]
     },
     {
+      "name": "Soil - Phosphorous - 2",
+      "subtype": "liquid-chamber",
+      "uuid": "9abbb577-f9b7-451c-9cc9-5bf06681b31f",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,1,2,3,4,5",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphorous",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Soil - Phosphorous - 3",
+      "subtype": "liquid-chamber",
+      "uuid": "c47199fb-9f44-49d8-945b-548a7f76209e",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,2,4,6,8,10",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphorous",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
       "name": "Phosphate",
       "subtype": "liquid-chamber",
       "uuid": "f0262ede-5e91-4d65-9e0b-f51cae947294",
