@@ -135,13 +135,21 @@ public class DilutionTest {
 
         onView(withText("0.00 ppm")).check(matches(isDisplayed()));
 
+        onView(withText("0.025 ppm")).check(matches(isDisplayed()));
+
+        onView(withText("0.05 ppm")).check(matches(isDisplayed()));
+
+        onView(withText("0.10 ppm")).check(matches(isDisplayed()));
+
+        onView(withText("0.25 ppm")).check(matches(isDisplayed()));
+
         onView(withText("0.50 ppm")).check(matches(isDisplayed()));
 
         onView(withText("1.00 ppm")).check(matches(isDisplayed()));
 
-        onView(withText("2.00 ppm")).check(matches(isDisplayed()));
-
-        onView(withText("3.00 ppm")).check(matches(isDisplayed()));
+//        onView(withText("2.00 ppm")).check(matches(isDisplayed()));
+//
+//        onView(withText("3.00 ppm")).check(matches(isDisplayed()));
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Navigate up"),

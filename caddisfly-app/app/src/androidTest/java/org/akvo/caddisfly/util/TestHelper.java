@@ -130,6 +130,10 @@ public final class TestHelper {
         new Resources(assets, metrics, currentResources.getConfiguration());
 
         addCalibration("ChromiumTestValid", "0.00=169  147  89\n"
+                + "0.025=172  130  143\n"
+                + "0.05=183  100  133\n"
+                + "0.10=197  70 120\n"
+                + "0.25=223  40  103\n"
                 + "0.50=253  22  153\n"
                 + "1.00=251  26  106\n"
                 + "2.00=248  32  53\n"

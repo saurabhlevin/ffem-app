@@ -185,9 +185,9 @@ public class MainActivityTest {
 
     @Test
     public void testLoadJson() {
-        TestInfo testInfo = TestConfigHelper.loadTestByUuid("f0f3c1dd-89af-49f1-83e7-bcc31c3006cf");
+        TestInfo testInfo = TestConfigHelper.loadTestByUuid(SensorConstants.CHROMIUM_ID);
         assert testInfo != null;
-        assertEquals(SensorConstants.FLUORIDE_ID, testInfo.getId());
+        assertEquals(SensorConstants.CHROMIUM_ID, testInfo.getId());
     }
 
     @Test
