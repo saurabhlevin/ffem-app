@@ -22,6 +22,9 @@
         android:key="preferenceCategoryDiagnostics"
         android:title="@string/diagnostics">
         <Preference
+            android:key="syncTestList"
+            android:title="Sync Test List" />
+        <Preference
             android:key="cameraPreview"
             android:title="@string/cameraPreview" />
         <Preference

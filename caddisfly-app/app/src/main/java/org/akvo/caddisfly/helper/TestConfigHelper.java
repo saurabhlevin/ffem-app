@@ -78,14 +78,21 @@ public final class TestConfigHelper {
                 switch (i) {
                     case 1:
                         // Load any custom tests from the custom test config file
+                        File file2 = new File(FileHelper.getFilesDir(FileHelper.FileType.EXP_CONFIG),
+                                SensorConstants.TESTS_META_FILENAME);
+                        jsonText = FileUtil.loadTextFromFile(file2);
+                        break;
+                    case 2:
+                        // Load any custom tests from the custom test config file
                         File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG),
                                 SensorConstants.TESTS_META_FILENAME);
                         jsonText = FileUtil.loadTextFromFile(file);
                         break;
-                    case 2:
-                        // Load any experimental tests if app is in diagnostic mode
-                        jsonText = AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME);
-                        break;
+
+
+//                        // Load any experimental tests if app is in diagnostic mode
+//                        jsonText = AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME);
+//                        break;
                     default:
                         // Load the pre-configured tests from the app
                         jsonText = AssetsManager.getInstance().loadJSONFromAsset(SensorConstants.TESTS_META_FILENAME);
@@ -122,12 +129,19 @@ public final class TestConfigHelper {
         // Load the pre-configured tests from the app
         loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(SensorConstants.TESTS_META_FILENAME), -1);
 
-        loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME), R.string.experimental);
+//        loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME), R.string.experimental);
+
+
+        // Load any experimental tests from the custom test config file
+        File file = new File(FileHelper.getFilesDir(FileHelper.FileType.EXP_CONFIG), SensorConstants.TESTS_META_FILENAME);
+        if (file.exists()) {
+            loadTests(tests, FileUtil.loadTextFromFile(file), R.string.experimental);
+        }
 
         // Load any custom tests from the custom test config file
-        File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG), SensorConstants.TESTS_META_FILENAME);
+        File file2 = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG), SensorConstants.TESTS_META_FILENAME);
         if (file.exists()) {
-            loadTests(tests, FileUtil.loadTextFromFile(file), R.string.customTests);
+            loadTests(tests, FileUtil.loadTextFromFile(file2), R.string.customTests);
         }
 
 
