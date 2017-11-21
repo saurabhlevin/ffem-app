@@ -19,6 +19,12 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <org.akvo.caddisfly.preference.PreferenceCategoryCustom android:title="@string/other">
+
+        <Preference
+            android:key="syncTestList"
+            android:title="Download experimental tests"
+            android:summary="Sync the experimental tests from git repo"/>
+
         <Preference
             android:key="checkUpdate"
             android:summary="@string/updateSummary"

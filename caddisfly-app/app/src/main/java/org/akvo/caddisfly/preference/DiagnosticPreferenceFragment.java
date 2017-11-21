@@ -38,12 +38,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.CameraHelper;
-import org.akvo.caddisfly.helper.ConfigTask;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.ColorimetryLiquidConfig;
 import org.akvo.caddisfly.sensor.colorimetry.liquid.DiagnosticPreviewFragment;
 import org.akvo.caddisfly.sensor.colorimetry.strip.ui.TestTypeListActivity;
@@ -51,7 +49,6 @@ import org.akvo.caddisfly.sensor.colorimetry.strip.util.Constant;
 import org.akvo.caddisfly.ui.TypeListActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.ListViewUtil;
-import org.akvo.caddisfly.util.NetUtil;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -61,7 +58,6 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class DiagnosticPreferenceFragment extends PreferenceFragment {
 
     private static final int PERMISSION_ALL = 1;
-    private static final int PERMISSION_SYNC = 2;
     private static final float SNACK_BAR_LINE_SPACING = 1.4f;
     private static final int MAX_TOLERANCE = 399;
 
@@ -113,22 +109,6 @@ public class DiagnosticPreferenceFragment extends PreferenceFragment {
                 final Intent intent = new Intent(getActivity(), TypeListActivity.class);
                 intent.putExtra("runTest", true);
                 startActivity(intent);
-                return true;
-            });
-        }
-
-        final Preference syncTestsPreference = findPreference("syncTestList");
-        if (syncTestsPreference != null) {
-            syncTestsPreference.setOnPreferenceClickListener(preference -> {
-
-                String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !ApiUtil.hasPermissions(getActivity(), permissions)) {
-                    requestPermissions(permissions, PERMISSION_SYNC);
-                } else {
-                    startTestSync();
-                }
-
                 return true;
             });
         }
@@ -225,15 +205,6 @@ public class DiagnosticPreferenceFragment extends PreferenceFragment {
         }
     }
 
-    private void startTestSync() {
-        if (NetUtil.isNetworkAvailable(getActivity())) {
-            ConfigTask configTask = new ConfigTask(getActivity());
-            configTask.execute("https://raw.githubusercontent.com/foundation-for-enviromental-monitoring/experimental-tests/master/experimental_tests.json");
-        } else {
-            Toast.makeText(getActivity(), "No data connection. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
-        }
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -257,36 +228,6 @@ public class DiagnosticPreferenceFragment extends PreferenceFragment {
                 if (AppPreferences.useExternalCamera()) {
                     message = getString(R.string.storagePermission);
                 }
-                Snackbar snackbar = Snackbar
-                        .make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                        .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(getActivity()));
-
-                TypedValue typedValue = new TypedValue();
-                getActivity().getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
-
-                snackbar.setActionTextColor(typedValue.data);
-                View snackView = snackbar.getView();
-                TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
-                textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
-                textView.setTextColor(Color.WHITE);
-                snackbar.show();
-            }
-        } else if (requestCode == PERMISSION_SYNC) {
-            // If request is cancelled, the result arrays are empty.
-            boolean granted = false;
-            for (int grantResult : grantResults) {
-                if (grantResult != PERMISSION_GRANTED) {
-                    granted = false;
-                    break;
-                } else {
-                    granted = true;
-                }
-            }
-            if (granted) {
-                startTestSync();
-            } else {
-                String message = getString(R.string.storagePermission);
                 Snackbar snackbar = Snackbar
                         .make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
                         .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(getActivity()));
