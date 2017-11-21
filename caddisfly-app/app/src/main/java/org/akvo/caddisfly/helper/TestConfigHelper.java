@@ -77,22 +77,21 @@ public final class TestConfigHelper {
                 String jsonText;
                 switch (i) {
                     case 1:
-                        // Load any custom tests from the custom test config file
+                        // Load any custom tests from git repo
                         File file2 = new File(FileHelper.getFilesDir(FileHelper.FileType.EXP_CONFIG),
                                 SensorConstants.TESTS_META_FILENAME);
                         jsonText = FileUtil.loadTextFromFile(file2);
+
+//                        jsonText = AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME);
+
                         break;
                     case 2:
                         // Load any custom tests from the custom test config file
                         File file = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG),
                                 SensorConstants.TESTS_META_FILENAME);
                         jsonText = FileUtil.loadTextFromFile(file);
+
                         break;
-
-
-//                        // Load any experimental tests if app is in diagnostic mode
-//                        jsonText = AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME);
-//                        break;
                     default:
                         // Load the pre-configured tests from the app
                         jsonText = AssetsManager.getInstance().loadJSONFromAsset(SensorConstants.TESTS_META_FILENAME);
@@ -131,8 +130,7 @@ public final class TestConfigHelper {
 
 //        loadTests(tests, AssetsManager.getInstance().loadJSONFromAsset(EXPERIMENTAL_TESTS_FILENAME), R.string.experimental);
 
-
-        // Load any experimental tests from the custom test config file
+//      Load any experimental tests from git repo file
         File file = new File(FileHelper.getFilesDir(FileHelper.FileType.EXP_CONFIG), SensorConstants.TESTS_META_FILENAME);
         if (file.exists()) {
             loadTests(tests, FileUtil.loadTextFromFile(file), R.string.experimental);
@@ -140,10 +138,9 @@ public final class TestConfigHelper {
 
         // Load any custom tests from the custom test config file
         File file2 = new File(FileHelper.getFilesDir(FileHelper.FileType.CONFIG), SensorConstants.TESTS_META_FILENAME);
-        if (file.exists()) {
+        if (file2.exists()) {
             loadTests(tests, FileUtil.loadTextFromFile(file2), R.string.customTests);
         }
-
 
         return tests;
     }
@@ -164,7 +161,7 @@ public final class TestConfigHelper {
                     // get uuids
                     boolean found = false;
                     for (TestInfo test : tests) {
-                        if (uuid.equalsIgnoreCase(test.getId())) {
+                        if (test != null && uuid.equalsIgnoreCase(test.getId())) {
                             found = true;
                             break;
                         }
@@ -176,7 +173,9 @@ public final class TestConfigHelper {
                     TestInfo testInfo = loadTest(item);
 
                     //Create TestInfo object
-                    tests.add(testInfo);
+                    if (testInfo != null) {
+                        tests.add(testInfo);
+                    }
 
                 } catch (JSONException e) {
                     Timber.e(e);
@@ -206,7 +205,8 @@ public final class TestConfigHelper {
             TestType type;
             if (item.has("subtype")) {
                 switch (item.getString("subtype")) {
-                    case "liquid-chamber":
+                    case "above-chamber":
+                    case "backcase":
                         type = TestType.COLORIMETRIC_LIQUID;
                         break;
                     case "strip":
@@ -264,6 +264,10 @@ public final class TestConfigHelper {
 
             testInfo = new TestInfo(name, type, rangesArray,
                     defaultColorsArray, dilutionsArray, uuid, resultsArray);
+
+            if (item.getString("subtype").equals("above-chamber")) {
+                testInfo.setUseBackCase(false);
+            }
 
             testInfo.setShortCode(item.has(SensorConstants.SHORT_CODE) ? item.getString(SensorConstants.SHORT_CODE) : "");
 

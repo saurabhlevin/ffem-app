@@ -68,6 +68,7 @@ public class TestInfo {
     private String deviceId;
     private String responseFormat;
     private boolean deprecated;
+    private boolean useBackCase = true;
 
     public TestInfo(String name, TestType testType, String[] swatchArray,
                     String[] defaultColorsArray, String[] dilutionsArray,
@@ -358,6 +359,14 @@ public class TestInfo {
 
     public void setIsDeprecated(boolean value) {
         this.deprecated = value;
+    }
+
+    public void setUseBackCase(boolean useBackCase) {
+        this.useBackCase = useBackCase;
+    }
+
+    public boolean isUseBackCase() {
+        return useBackCase;
     }
 
     public static class SubTest {

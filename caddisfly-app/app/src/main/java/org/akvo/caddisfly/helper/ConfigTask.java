@@ -20,8 +20,11 @@
 package org.akvo.caddisfly.helper;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.akvo.caddisfly.util.FileUtil;
 
@@ -30,18 +33,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ConfigTask extends AsyncTask<String, String, String> {
 
+    private WeakReference<Context> contextRef;
+    private ProgressDialog pd;
+
+    public ConfigTask(Context context) {
+        contextRef = new WeakReference<>(context);
+    }
+
     protected void onPreExecute() {
         super.onPreExecute();
 
-//        pd = new ProgressDialog(MainActivity.this);
-//        pd.setMessage("Please wait");
-//        pd.setCancelable(false);
-//        pd.show();
+        pd = new ProgressDialog(contextRef.get());
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.show();
     }
 
     protected String doInBackground(String... params) {
@@ -92,11 +103,12 @@ public class ConfigTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-//        if (pd.isShowing()) {
-//            pd.dismiss();
-//        }
-//        txtJson.setText(result);
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+
         File path = FileHelper.getFilesDir(FileHelper.FileType.EXP_CONFIG, "");
         FileUtil.saveToFile(path, "tests.json", result);
+        Toast.makeText(contextRef.get(), "Experimental tests synced", Toast.LENGTH_LONG).show();
     }
 }

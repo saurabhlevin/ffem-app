@@ -99,19 +99,21 @@ public final class FileUtil {
 
     public static void saveToFile(File folder, String name, String data) {
 
-        File file = new File(folder, name);
+        if (data != null && !data.isEmpty()) {
+            File file = new File(folder, name);
 
-        PrintWriter pw = null;
-        try {
-            Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            pw = new PrintWriter(w);
-            pw.write(data);
+            PrintWriter pw = null;
+            try {
+                Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+                pw = new PrintWriter(w);
+                pw.write(data);
 
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-        } finally {
-            if (pw != null) {
-                pw.close();
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage(), e);
+            } finally {
+                if (pw != null) {
+                    pw.close();
+                }
             }
         }
     }
