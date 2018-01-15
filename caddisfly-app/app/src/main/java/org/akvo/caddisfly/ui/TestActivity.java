@@ -125,9 +125,8 @@ public class TestActivity extends BaseActivity {
         }
 
         Intent intent = getIntent();
-        String type = intent.getType();
 
-        if (type != null && AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
+        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
