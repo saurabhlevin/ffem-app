@@ -93,7 +93,7 @@
 
     <!--About Screen-->
     <string name="waterQualitySystem">Water &amp; Soil Quality System</string>
-    <string name="copyrightMessage">Copyright © Stichting Akvo</string>
+    <string name="copyrightMessage">Copyright © FFEM</string>
     <string name="legalInformation">Legal Information</string>
 
     <string name="selectTest">Select Test</string>

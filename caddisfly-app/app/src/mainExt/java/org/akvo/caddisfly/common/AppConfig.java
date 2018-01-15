@@ -28,24 +28,17 @@ public final class AppConfig {
 
     /**
      * Date on which the app version will expire.
-     * This is to ensure that installs from apk meant for testing only cannot be used for too long.
+     * This is to ensure that installs from apk meant for testing only is not used for too long.
      */
-    public static final boolean APP_EXPIRY = true;
+    public static final boolean APP_EXPIRY = false;
     public static final int APP_EXPIRY_DAY = 15;
     public static final int APP_EXPIRY_MONTH = 1;
-    public static final int APP_EXPIRY_YEAR = 2018;
+    public static final int APP_EXPIRY_YEAR = 2017;
 
-    /**
-     * The intent action string used to connect to external app.
-     *
-     * @deprecated use {@link #FLOW_ACTION_CADDISFLY} instead
-     */
-    @Deprecated
-    public static final String FLOW_ACTION_EXTERNAL_SOURCE = "org.akvo.flow.action.externalsource";
     /**
      * The intent action string used by the caddisfly question type.
      */
-    public static final String FLOW_ACTION_CADDISFLY = "org.akvo.flow.action.caddisfly";
+    public static final String EXTERNAL_ACTION_CADDISFLY = "io.ffem.app.caddisfly";
 
     /**
      * Uri for photos from built in camera.

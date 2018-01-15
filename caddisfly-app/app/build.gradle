@@ -24,12 +24,12 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "org.akvo.caddisfly"
-        minSdkVersion 19
+        applicationId "io.ffem.caddisfly"
+        minSdkVersion 23
         targetSdkVersion 27
-        versionCode 210
-        versionName "1.0.0 Beta 10"
-        resConfigs "en", "en_US", "fr", "in"
+        versionCode 205
+        versionName "Alpha 5"
+        resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Experiment Beta 10"
+            versionName "Experiment Alpha 5"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
@@ -62,17 +62,17 @@ android {
     }
 
 //    signingConfigs {
-//        caddisflyRelease {
-//            storeFile file(CADDISFLY_RELEASE_STORE_FILE)
-//            storePassword CADDISFLY_RELEASE_STORE_PASSWORD
-//            keyAlias CADDISFLY_RELEASE_KEY_ALIAS
-//            keyPassword CADDISFLY_RELEASE_KEY_PASSWORD
+//        appRelease {
+//            storeFile file(FFEM_CADDISFLY_RELEASE_STORE_FILE)
+//            storePassword FFEM_CADDISFLY_RELEASE_STORE_PASSWORD
+//            keyAlias FFEM_CADDISFLY_RELEASE_KEY_ALIAS
+//            keyPassword FFEM_CADDISFLY_RELEASE_KEY_PASSWORD
 //        }
 //    }
 //
 //    buildTypes {
 //        release {
-//            signingConfig signingConfigs.caddisflyRelease
+//            signingConfig signingConfigs.appRelease
 //            minifyEnabled true
 //            shrinkResources true
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

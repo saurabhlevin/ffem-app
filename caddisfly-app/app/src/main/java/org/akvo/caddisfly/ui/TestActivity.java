@@ -127,9 +127,7 @@ public class TestActivity extends BaseActivity {
         Intent intent = getIntent();
         String type = intent.getType();
 
-        if (type != null && "text/plain".equals(type)
-                && AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())
-                || AppConfig.FLOW_ACTION_CADDISFLY.equals(intent.getAction())) {
+        if (type != null && AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
@@ -165,7 +163,7 @@ public class TestActivity extends BaseActivity {
 
         String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
-        if (AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())) {
+        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
 
             // old version of survey does not expect image in result
             mCallerExpectsImageInResult = false;
@@ -350,7 +348,7 @@ public class TestActivity extends BaseActivity {
             Intent intent = new Intent(getIntent());
 
             //todo: remove when obsolete
-            if (AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())
+            if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
                     && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
                 //if survey from old version server then don't send json response
                 intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));

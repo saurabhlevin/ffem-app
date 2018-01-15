@@ -19,18 +19,14 @@
 
 <resources>
 
-    <string name="appName">"Akvo Caddisfly"</string>
+    <string name="appName">"FFEM Caddisfly"</string>
 
     <string-array name="languages">
-        <item>Bahasa Indonesia</item>
         <item>English</item>
-        <item>Français</item>
     </string-array>
 
     <string-array name="language_codes">
-        <item>in</item>
         <item>en</item>
-        <item>fr</item>
     </string-array>
 
     <string name="saveImages">Save images and data</string>

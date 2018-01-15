@@ -76,7 +76,7 @@
     <string name="dipSensorInSample">Celup sensor dalam sampel</string>
     <!--About Screen-->
     <string name="waterQualitySystem">Sistem kualitas Air &amp; Tanah</string>
-    <string name="copyrightMessage">Hak Cipta © Stichting Akvo</string>
+    <string name="copyrightMessage">Hak Cipta © Stichting FFEM</string>
     <string name="legalInformation">Informasi Hukum</string>
     <string name="selectTest">Pilih uji coba</string>
     <string name="calibrationDetails">Detail Kalibrasi</string>

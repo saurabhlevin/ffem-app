@@ -24,9 +24,6 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -63,6 +60,16 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.TestActivity"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="io.ffem.app.caddisfly" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
         </activity>
         <activity
@@ -119,32 +126,7 @@
             android:name=".sensor.chamber.ChamberTestActivity"
             android:screenOrientation="nosensor" />
 
-        <service
-            android:name=".sensor.bluetooth.BluetoothLeService"
-            android:enabled="true" />
         <!-- /Bluetooth -->
-
-
-        <!-- USB -->
-        <activity
-            android:name=".sensor.UsbConnectionActivity"
-            android:autoRemoveFromRecents="true"
-            android:screenOrientation="nosensor"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
-        </activity>
-
-        <service
-            android:name=".usb.UsbService"
-            android:enabled="true" />
-        <!-- /USB -->
-
 
         <!-- Diagnostic -->
         <activity
@@ -156,14 +138,5 @@
             android:screenOrientation="nosensor" />
         <!-- /Diagnostic -->
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="org.akvo.caddisfly.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 </manifest>

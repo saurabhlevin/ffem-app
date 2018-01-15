@@ -19,6 +19,6 @@
 
 <paths>
     <external-path
-        name="my_images"
-        path="Android/data/org.akvo.caddisfly/files/Pictures" />
+        name="ffem_images"
+        path="Android/data/io.ffem.caddisfly/files/Pictures" />
 </paths>
