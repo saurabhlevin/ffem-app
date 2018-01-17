@@ -332,8 +332,8 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
         closeKeyboard(getActivity(), editBatchCode);
+        super.onDismiss(dialog);
     }
 
     @Override

@@ -96,9 +96,6 @@ public class ChamberTest {
     private static final int TEST_START_DELAY = 16000;
 
     @Rule
-    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(WRITE_EXTERNAL_STORAGE, CAMERA);
-
-    @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @BeforeClass
@@ -121,7 +118,7 @@ public class ChamberTest {
                 PreferenceManager.getDefaultSharedPreferences(mActivityRule.getActivity());
         prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -385,7 +382,7 @@ public class ChamberTest {
 
         mDevice.waitForIdle();
 
-        assertNotNull(mDevice.findObject(By.text("Fluoride: " + resultString + " mg/l")));
+        assertNotNull(mDevice.findObject(By.text(resultString)));
 
         mDevice.pressBack();
 
@@ -498,9 +495,13 @@ public class ChamberTest {
 
         goToMainScreen();
 
+        sleep(2000);
+
         gotoSurveyForm();
 
-        clickExternalSourceButton(1);
+        sleep(2000);
+
+        clickExternalSourceButton(0);
 
         sleep(1000);
 
@@ -539,7 +540,7 @@ public class ChamberTest {
 
         mDevice.waitForIdle();
 
-        assertNotNull(mDevice.findObject(By.text("Fluoride: " + resultString + " mg/l")));
+        assertNotNull(mDevice.findObject(By.text(resultString)));
 
         mDevice.pressBack();
 

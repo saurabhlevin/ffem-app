@@ -66,14 +66,15 @@ import static io.fotoapparat.parameter.selector.FlashSelectors.off;
 import static io.fotoapparat.parameter.selector.FlashSelectors.torch;
 import static io.fotoapparat.parameter.selector.FocusModeSelectors.autoFocus;
 import static io.fotoapparat.parameter.selector.FocusModeSelectors.continuousFocus;
-import static io.fotoapparat.parameter.selector.FocusModeSelectors.fixed;
+import static io.fotoapparat.parameter.selector.FocusModeSelectors.infinity;
 import static io.fotoapparat.parameter.selector.LensPositionSelectors.lensPosition;
 import static io.fotoapparat.parameter.selector.Selectors.firstAvailable;
+import static io.fotoapparat.parameter.selector.SensorSensitivitySelectors.highestSensorSensitivity;
 import static io.fotoapparat.parameter.selector.SizeSelectors.biggestSize;
 import static io.fotoapparat.result.transformer.SizeTransformers.scaled;
 
 public class BaseRunTest extends Fragment implements RunTest {
-    private static final double SHORT_DELAY = 0.3;
+    private static final double SHORT_DELAY = 0.4;
     private final ArrayList<ResultDetail> results = new ArrayList<>();
     private final Handler delayHandler = new Handler();
     protected Fotoapparat camera;
@@ -144,11 +145,13 @@ public class BaseRunTest extends Fragment implements RunTest {
                 .previewScaleType(ScaleType.CENTER_CROP)
                 .photoSize(standardRatio(biggestSize()))
                 .lensPosition(lensPosition(LensPosition.BACK))
+                .sensorSensitivity(highestSensorSensitivity())
                 .focusMode(firstAvailable(
-                        fixed(),
                         autoFocus(),
+                        infinity(),
                         continuousFocus()
                 ))
+                .jpegQuality(100)
                 .flash(torch())
                 .cameraErrorCallback(e -> Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show())
                 .build();
@@ -206,14 +209,17 @@ public class BaseRunTest extends Fragment implements RunTest {
             return;
         }
 
-        PhotoResult photoResult = camera.takePicture();
+
+        PhotoResult photoResult = camera.autoFocus().takePicture();
 
         //photoResult.saveToFile(new File(getExternalFilesDir("photos"), "photo.jpg"));
 
         photoResult
                 .toBitmap(scaled(0.25f))
                 .whenAvailable(result -> {
-                    getAnalyzedResult(result.bitmap);
+                    if (result.bitmap != null) {
+                        getAnalyzedResult(result.bitmap);
+                    }
 
                     if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
                         // test has time delay so take the pictures quickly with short delay
@@ -317,6 +323,7 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             delayHandler.postDelayed(() -> {
                 camera.start();
+                camera.setZoom(0);
                 mRunnableCode.run();
             }, timeDelay * 1000);
         }

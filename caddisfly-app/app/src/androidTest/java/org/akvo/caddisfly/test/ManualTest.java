@@ -42,6 +42,7 @@ import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,6 +123,7 @@ public class ManualTest {
     }
 
     @Test
+    @Ignore
     public void runManualTurbidityTest() {
 
         gotoSurveyForm();
@@ -202,6 +204,7 @@ public class ManualTest {
     }
 
     @Test
+    @Ignore
     public void runManualPhTest() {
 
         gotoSurveyForm();
@@ -293,6 +296,7 @@ public class ManualTest {
     }
 
     @Test
+    @Ignore
     public void runManualEcTest() {
 
         gotoSurveyForm();

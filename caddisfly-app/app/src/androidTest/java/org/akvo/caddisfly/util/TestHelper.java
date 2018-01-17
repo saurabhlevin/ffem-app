@@ -135,7 +135,7 @@ public final class TestHelper {
         addString("unnamedDataPoint", "Unnamed data point", res.getString(R.string.unnamedDataPoint));
         addString("createNewDataPoint", "Add Data Point", res.getString(R.string.addDataPoint));
         addString(TestConstant.USE_EXTERNAL_SOURCE, "Use External Source", res.getString(R.string.useExternalSource));
-        addString(TestConstant.GO_TO_TEST, "Go to test", res.getString(R.string.goToText));
+        addString(TestConstant.GO_TO_TEST, "Launch", res.getString(R.string.goToText));
         addString("next", "Next", res.getString(R.string.next));
 
         // Restore device-specific locale
@@ -268,14 +268,14 @@ public final class TestHelper {
         buttons.get(index).click();
 
         // New Android OS seems to popup a button for external app
-        if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M
-                && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
-                || text.equals(TestConstant.GO_TO_TEST))) {
-            sleep(1000);
-            mDevice.findObject(By.text("Akvo Caddisfly")).click();
-            sleep(1000);
-        }
-
+//        if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M
+//                && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
+//                || text.equals(TestConstant.GO_TO_TEST))) {
+//            sleep(1000);
+//            mDevice.findObject(By.text("FFEM Caddisfly")).click();
+//            sleep(1000);
+//        }
+//
         mDevice.waitForWindowUpdate("", 2000);
 
         sleep(4000);
@@ -299,7 +299,7 @@ public final class TestHelper {
                     && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
                     || text.equals(TestConstant.GO_TO_TEST))) {
                 sleep(1000);
-                mDevice.findObject(By.text("Akvo Caddisfly")).click();
+                mDevice.findObject(By.text("FFEM Caddisfly")).click();
                 sleep(1000);
             }
 
@@ -319,25 +319,49 @@ public final class TestHelper {
     public static void gotoSurveyForm() {
 
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(TestConstants.FLOW_SURVEY_PACKAGE_NAME);
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME);
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
         context.startActivity(intent);
 
-        if (!clickListViewItem(currentHashMap.get("unnamedDataPoint"))) {
+        mDevice.waitForIdle();
 
-            UiObject addButton = mDevice.findObject(new UiSelector()
-                    .resourceId("org.akvo.flow:id/add_data_point_fab"));
+        sleep(2000);
 
-            try {
-                if (addButton.exists() && addButton.isEnabled()) {
-                    addButton.click();
-                }
-            } catch (UiObjectNotFoundException e) {
-                Timber.e(e);
+        UiObject addButton = mDevice.findObject(new UiSelector()
+                .resourceId("org.koboc.collect.android:id/enter_data"));
+
+        try {
+            if (addButton.exists() && addButton.isEnabled()) {
+                addButton.click();
             }
+        } catch (UiObjectNotFoundException e) {
+            Timber.e(e);
         }
+
+        mDevice.waitForIdle();
+
+        clickListViewItem("Testing");
+
+        mDevice.waitForIdle();
+
+        UiObject goToStartButton = mDevice.findObject(new UiSelector()
+                .resourceId("org.koboc.collect.android:id/jumpBeginningButton"));
+
+        try {
+            if (goToStartButton.exists() && goToStartButton.isEnabled()) {
+                goToStartButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            Timber.e(e);
+        }
+
+        mDevice.waitForIdle();
+
+        TestUtil.swipeLeft(2);
+
+        mDevice.waitForIdle();
 
         // mDevice.findObject(By.text("Caddisfly Tests")).click();
     }

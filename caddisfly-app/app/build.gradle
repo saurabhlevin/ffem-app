@@ -25,10 +25,10 @@ android {
 
     defaultConfig {
         applicationId "io.ffem.caddisfly"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 27
-        versionCode 205
-        versionName "Alpha 5"
+        versionCode 206
+        versionName "Alpha 6"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Experiment Alpha 5"
+            versionName "Experiment Alpha 6"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
