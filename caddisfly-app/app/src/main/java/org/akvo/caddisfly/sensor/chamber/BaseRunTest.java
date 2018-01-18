@@ -25,6 +25,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -34,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ChamberTestConfig;
@@ -55,40 +55,43 @@ import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 
-import io.fotoapparat.Fotoapparat;
-import io.fotoapparat.parameter.LensPosition;
-import io.fotoapparat.parameter.ScaleType;
-import io.fotoapparat.parameter.update.UpdateRequest;
-import io.fotoapparat.result.PhotoResult;
-
-import static io.fotoapparat.parameter.selector.AspectRatioSelectors.standardRatio;
-import static io.fotoapparat.parameter.selector.FlashSelectors.off;
-import static io.fotoapparat.parameter.selector.FlashSelectors.torch;
-import static io.fotoapparat.parameter.selector.FocusModeSelectors.autoFocus;
-import static io.fotoapparat.parameter.selector.FocusModeSelectors.continuousFocus;
-import static io.fotoapparat.parameter.selector.FocusModeSelectors.infinity;
-import static io.fotoapparat.parameter.selector.LensPositionSelectors.lensPosition;
-import static io.fotoapparat.parameter.selector.Selectors.firstAvailable;
-import static io.fotoapparat.parameter.selector.SensorSensitivitySelectors.highestSensorSensitivity;
-import static io.fotoapparat.parameter.selector.SizeSelectors.biggestSize;
-import static io.fotoapparat.result.transformer.SizeTransformers.scaled;
+import static org.akvo.caddisfly.util.ApiUtil.getCameraInstance;
 
 public class BaseRunTest extends Fragment implements RunTest {
     private static final double SHORT_DELAY = 0.4;
     private final ArrayList<ResultDetail> results = new ArrayList<>();
     private final Handler delayHandler = new Handler();
-    protected Fotoapparat camera;
     protected FragmentRunTestBinding binding;
     protected boolean cameraStarted;
     protected int pictureCount = 0;
     private SoundPoolPlayer sound;
-    private Context mContext;
     private Handler mHandler;
     private AlertDialog alertDialogToBeDestroyed;
     private TestInfo mTestInfo;
     private Calibration mCalibration;
     private int dilution;
+    private Camera mCamera;
     private OnResultListener mListener;
+    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+
+            mCamera.startPreview();
+
+            Bitmap bitmap = ImageUtil.getBitmap(data);
+
+            getAnalyzedResult(bitmap);
+
+            if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
+                // test has time delay so take the pictures quickly with short delay
+                mHandler.postDelayed(mRunnableCode, (long) (SHORT_DELAY * 1000));
+            } else {
+                mHandler.postDelayed(mRunnableCode, ChamberTestConfig.DELAY_BETWEEN_SAMPLING * 1000);
+            }
+        }
+    };
+    private CameraPreview mCameraPreview;
     private final Runnable mRunnableCode = () -> {
         if (pictureCount < AppPreferences.getSamplingTimes()) {
             pictureCount++;
@@ -102,11 +105,7 @@ public class BaseRunTest extends Fragment implements RunTest {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mContext = getContext();
-
         sound = new SoundPoolPlayer(getActivity());
-
     }
 
     @Override
@@ -135,26 +134,15 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     protected void setupCamera() {
-        camera = createCamera();
+        mCamera = getCameraInstance();
+
+        // Create our Preview view and set it as the content of our activity.
+        mCameraPreview = new CameraPreview(getActivity(), mCamera);
+        binding.cameraView.addView(mCameraPreview);
     }
 
-    private Fotoapparat createCamera() {
-        return Fotoapparat
-                .with(mContext)
-                .into(binding.cameraView)
-                .previewScaleType(ScaleType.CENTER_CROP)
-                .photoSize(standardRatio(biggestSize()))
-                .lensPosition(lensPosition(LensPosition.BACK))
-                .sensorSensitivity(highestSensorSensitivity())
-                .focusMode(firstAvailable(
-                        autoFocus(),
-                        infinity(),
-                        continuousFocus()
-                ))
-                .jpegQuality(100)
-                .flash(torch())
-                .cameraErrorCallback(e -> Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show())
-                .build();
+    protected void stopPreview() {
+        mCamera.stopPreview();
     }
 
     @Override
@@ -209,25 +197,11 @@ public class BaseRunTest extends Fragment implements RunTest {
             return;
         }
 
+        mCamera.startPreview();
+        turnFlashOn();
 
-        PhotoResult photoResult = camera.autoFocus().takePicture();
+        mCamera.takePicture(null, null, mPicture);
 
-        //photoResult.saveToFile(new File(getExternalFilesDir("photos"), "photo.jpg"));
-
-        photoResult
-                .toBitmap(scaled(0.25f))
-                .whenAvailable(result -> {
-                    if (result.bitmap != null) {
-                        getAnalyzedResult(result.bitmap);
-                    }
-
-                    if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
-                        // test has time delay so take the pictures quickly with short delay
-                        mHandler.postDelayed(mRunnableCode, (long) (SHORT_DELAY * 1000));
-                    } else {
-                        mHandler.postDelayed(mRunnableCode, ChamberTestConfig.DELAY_BETWEEN_SAMPLING * 1000);
-                    }
-                });
     }
 
     /**
@@ -258,22 +232,6 @@ public class BaseRunTest extends Fragment implements RunTest {
             results.add(resultDetail);
 
             if (mListener != null && pictureCount >= AppPreferences.getSamplingTimes()) {
-                try {
-
-                    if (cameraStarted) {
-                        camera.updateParameters(
-                                UpdateRequest.builder()
-                                        .flash(off())
-                                        .build()
-                        );
-
-                        camera.stop();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 // ignore the first two results
                 for (int i = 0; i < ChamberTestConfig.SKIP_SAMPLING_COUNT; i++) {
                     if (results.size() > 1) {
@@ -318,18 +276,49 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             // If the test has a time delay config then use that otherwise use standard delay
             if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
+                (new Handler()).postDelayed(this::stopPreview, 1000);
                 timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
             }
 
-            delayHandler.postDelayed(() -> {
-                camera.start();
-                camera.setZoom(0);
-                mRunnableCode.run();
-            }, timeDelay * 1000);
+            delayHandler.postDelayed(mRunnableCode, timeDelay * 1000);
         }
     }
 
+    public void turnFlashOff() {
+        if (mCamera == null) {
+            return;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        String flashMode = Camera.Parameters.FLASH_MODE_OFF;
+        parameters.setFlashMode(flashMode);
+
+        mCamera.setParameters(parameters);
+    }
+
+    public void turnFlashOn() {
+        if (mCamera == null) {
+            return;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        String flashMode = Camera.Parameters.FLASH_MODE_TORCH;
+        parameters.setFlashMode(flashMode);
+
+        mCamera.setParameters(parameters);
+    }
+
+
     protected void releaseResources() {
+
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
+        }
+        if (mCameraPreview != null) {
+            mCameraPreview.destroyDrawingCache();
+        }
 
         delayHandler.removeCallbacksAndMessages(null);
 
@@ -338,18 +327,7 @@ public class BaseRunTest extends Fragment implements RunTest {
         }
 
         stopRepeatingTask();
-        try {
 
-            camera.updateParameters(
-                    UpdateRequest.builder()
-                            .flash(off())
-                            .build()
-            );
-
-            camera.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         cameraStarted = false;
     }
 

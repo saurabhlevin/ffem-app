@@ -121,7 +121,7 @@ public class ChamberTestActivity extends BaseActivity implements
             if (testInfo.getCameraAbove()) {
                 runTestFragment = ChamberBelowFragment.newInstance(testInfo);
             } else {
-                runTestFragment = ChamberAboveTest.newInstance(testInfo);
+                runTestFragment = ChamberAboveFragment.newInstance(testInfo);
             }
 
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
@@ -159,7 +159,6 @@ public class ChamberTestActivity extends BaseActivity implements
 
     private void runTest() {
         if (cameraIsOk) {
-
             runTestFragment.setDilution(currentDilution);
             goToFragment((Fragment) runTestFragment);
         } else {
@@ -421,7 +420,6 @@ public class ChamberTestActivity extends BaseActivity implements
 
             int color = SwatchHelper.getAverageColor(resultDetails);
 
-
             if (color == Color.TRANSPARENT) {
 
                 if (AppPreferences.isDiagnosticMode()) {
@@ -517,7 +515,13 @@ public class ChamberTestActivity extends BaseActivity implements
         releaseResources();
 
         alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
-                (dialogInterface, i) -> start(),
+                (dialogInterface, i) -> {
+                    if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
+                        start();
+                    } else {
+                        runTest();
+                    }
+                },
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     releaseResources();

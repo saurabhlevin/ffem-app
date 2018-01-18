@@ -60,6 +60,18 @@ public final class ImageUtil {
     }
 
     /**
+     * Decode bitmap from byte array
+     *
+     * @param bytes the byte array
+     * @return the bitmap
+     */
+    public static Bitmap getBitmap(@NonNull byte[] bytes) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+    }
+
+    /**
      * Crop a bitmap to a square shape with  given length.
      *
      * @param bitmap the bitmap to crop
