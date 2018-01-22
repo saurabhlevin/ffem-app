@@ -239,6 +239,10 @@ public class MainActivity extends BaseActivity {
         return lifecycleRegistry;
     }
 
+    public void onColiformCountClick(View view) {
+        navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+    }
+
     /**
      * Handler to restart the app after language has been changed.
      */

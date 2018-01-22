@@ -484,6 +484,23 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Coliform count",
+      "subtype": "counter",
+      "cameraAbove": true,
+      "uuid": "2b5b096d-5b33-4931-a30a-4255442725ba",
+      "brand": "FFEM",
+      "image": "FFEM-Coliform-Count",
+      "imageScale": "centerCrop",
+      "hasImage": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "Free Chlorine",
+          "unit": "mg/l"
+        }
+      ]
     }
   ]
 }

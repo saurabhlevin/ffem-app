@@ -258,6 +258,9 @@ public class TestActivity extends BaseActivity {
             case CHAMBER_TEST:
                 startChamberTest();
                 break;
+            case COLIFORM_COUNT:
+                startColiformCountTest();
+                break;
             case MANUAL:
                 startManualTest();
                 break;
@@ -273,6 +276,13 @@ public class TestActivity extends BaseActivity {
                 break;
             default:
         }
+    }
+
+    private void startColiformCountTest() {
+        Intent intent = new Intent(this, ChamberTestActivity.class);
+        intent.putExtra(ConstantKey.RUN_TEST, true);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivityForResult(intent, REQUEST_TEST);
     }
 
     private void startBluetoothTest() {

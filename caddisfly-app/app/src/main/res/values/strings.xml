@@ -231,5 +231,6 @@
     <string name="eclipse_public_license">Eclipse Public License 1.0</string>
     <string name="experiment">Experiment</string>
     <string name="diagnostics_options">Diagnostic Options</string>
+    <string name="coliformCount">Coliform Count</string>
 
 </resources>
