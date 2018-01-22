@@ -117,10 +117,9 @@ public class TestActivity extends BaseActivity {
             testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
             if (testInfo != null) {
-                TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
-
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+                        .replace(R.id.fragment_container, TestInfoFragment.getInstance(testInfo),
+                                TestActivity.class.getSimpleName()).commit();
             }
         }
 
@@ -131,25 +130,25 @@ public class TestActivity extends BaseActivity {
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
 
-        if (testInfo != null && testInfo.getSubtype() == TestType.SENSOR
-                && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
-            ErrorMessages.alertFeatureNotSupported(this, true);
-        }
+        if (testInfo != null) {
+            if (testInfo.getSubtype() == TestType.SENSOR
+                    && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
+                ErrorMessages.alertFeatureNotSupported(this, true);
+            } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
 
-        if (testInfo != null && testInfo.getSubtype() == TestType.CHAMBER_TEST) {
+                if (!SwatchHelper.isSwatchListValid(testInfo)) {
+                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                    return;
+                }
 
-            if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                ErrorMessages.alertCalibrationIncomplete(this, testInfo);
-                return;
-            }
+                CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                        .calibrationDao().getCalibrationDetails(testInfo.getUuid());
 
-            CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
-                    .calibrationDao().getCalibrationDetails(testInfo.getUuid());
-
-            if (calibrationDetail != null) {
-                long milliseconds = calibrationDetail.expiry;
-                if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
-                    ErrorMessages.alertCalibrationExpired(this);
+                if (calibrationDetail != null) {
+                    long milliseconds = calibrationDetail.expiry;
+                    if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
+                        ErrorMessages.alertCalibrationExpired(this);
+                    }
                 }
             }
         }

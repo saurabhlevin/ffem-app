@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) Stichting Akvo (Akvo Foundation)
+ *
+ * This file is part of Akvo Caddisfly.
+ *
+ * Akvo Caddisfly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Akvo Caddisfly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.akvo.caddisfly.sensor.chamber;
 
 import android.content.Context;
@@ -15,19 +34,25 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+import static org.akvo.caddisfly.util.ApiUtil.getCameraInstance;
+
+public class ChamberCameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private static final int METERING_AREA_SIZE = 100;
     private static final int EXPOSURE_COMPENSATION = -2;
     private static final int MIN_PICTURE_WIDTH = 640;
     private static final int MIN_PICTURE_HEIGHT = 480;
     private static final int MIN_SUPPORTED_WIDTH = 400;
-    private static final int RADIUS = 40;
-    private SurfaceHolder mHolder;
+    private final SurfaceHolder mHolder;
     private Camera mCamera;
 
-    public CameraPreview(Context context, Camera camera) {
+    /**
+     * Camera preview.
+     *
+     * @param context the context
+     */
+    public ChamberCameraPreview(Context context) {
         super(context);
-        mCamera = camera;
+        mCamera = getCameraInstance();
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -35,6 +60,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.addCallback(this);
     }
 
+    /**
+     * Surface created.
+     *
+     * @param holder the holder
+     */
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
@@ -49,6 +79,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // empty. Take care of releasing the Camera preview in your activity.
     }
 
+    /**
+     * Surface changed.
+     *
+     * @param holder the holder
+     * @param format the format
+     * @param w      the width
+     * @param h      the height
+     */
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.
@@ -65,8 +103,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             // ignore: tried to stop a non-existent preview
         }
 
-        setupCamera(mCamera);
-
         // start preview with new settings
         try {
             mCamera.setPreviewDisplay(mHolder);
@@ -76,15 +112,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    private void setupCamera(Camera camera) {
+    /**
+     * Camera setup.
+     *
+     * @param camera the camera
+     */
+    public void setupCamera(Camera camera) {
         mCamera = camera;
-        List<String> mSupportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
         Camera.Parameters parameters = mCamera.getParameters();
 
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-
         List<String> supportedWhiteBalance = mCamera.getParameters().getSupportedWhiteBalance();
-        if (supportedWhiteBalance != null && supportedWhiteBalance.contains(Camera.Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT)) {
+        if (supportedWhiteBalance != null && supportedWhiteBalance.contains(
+                Camera.Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT)) {
             parameters.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT);
         }
 
@@ -108,11 +147,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         if (focusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
-        } else {
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
             // Attempt to set focus to infinity if supported
-            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
-            }
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
 
         if (parameters.getMaxNumMeteringAreas() > 0) {
@@ -122,10 +163,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             meteringAreas.add(new Camera.Area(areaRect1, 1000));
             parameters.setMeteringAreas(meteringAreas);
         }
-
-//        if (mSupportedFlashModes != null) {
-//            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-//        }
 
         parameters.setExposureCompensation(EXPOSURE_COMPENSATION);
 
@@ -153,5 +190,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
             mCamera.setParameters(parameters);
         }
+    }
+
+    public Camera getCamera() {
+        return mCamera;
     }
 }
