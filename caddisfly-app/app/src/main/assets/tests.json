@@ -7,7 +7,7 @@
       "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
       "brand": "Caddisfly",
       "calibrate": true,
-      "ranges": "0,50,100,150,200,250",
+      "ranges": "0,10,25,50,75,100",
       "dilutions": [
         1,
         2,
@@ -225,7 +225,7 @@
       "brand": "Caddisfly",
       "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,0.5,1,2,3",
+      "ranges": "0,0.1,0.5,1,2,3",
       "dilutions": [1,2,5],
       "monthsValid": 3,
       "hasImage": true,
@@ -331,7 +331,7 @@
       "brand": "Caddisfly",
       "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,0.5,1.0,1.5,2.0,2.5,3.0",
+      "ranges": "0,0.5,1,1.5,2,2.5,3",
       "monthsValid": 24,
       "hasImage": true,
       "instructions": [
@@ -404,7 +404,7 @@
       "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
       "brand": "Caddisfly",
       "calibrate": "true",
-      "ranges": "0,0.5,1.0,1.5,2.0",
+      "ranges": "0,0.5,1,1.5,2",
       "dilutions": [
         1,
         2,
