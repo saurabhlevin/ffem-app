@@ -19,7 +19,7 @@
         {
           "name": "Nitrate",
           "id": 1,
-          "unit": "ppm",
+          "unit": "mg/l",
           "timeDelay": 360,
           "colors": [
             {
@@ -80,7 +80,7 @@
         {
           "name": "Phosphate",
           "id": 1,
-          "unit": "ppm",
+          "unit": "mg/l",
           "timeDelay": 600,
           "colors": [
             {
@@ -515,7 +515,7 @@
         {
           "id": 1,
           "name": "Total Iron",
-          "unit": "ppm",
+          "unit": "mg/l",
           "timeDelay": 300,
           "colors": [
             {
