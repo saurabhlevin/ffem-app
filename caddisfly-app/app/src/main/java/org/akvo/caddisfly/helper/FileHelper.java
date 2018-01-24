@@ -57,6 +57,9 @@ public final class FileHelper {
     private static final String DIR_RESULT_IMAGES = ROOT_DIRECTORY
             + File.separator + "result-images"; // Images to be sent with result to dashboard
 
+    private static final String DIR_DIAGNOSTIC_IMAGE = ROOT_DIRECTORY
+            + File.separator + "qa" + File.separator + "diagnostic-images"; // Images saved for testing
+
     private FileHelper() {
     }
 
@@ -106,6 +109,9 @@ public final class FileHelper {
             case TEST_IMAGE:
                 path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false) + DIR_TEST_IMAGE;
                 break;
+            case DIAGNOSTIC_IMAGE:
+                path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false) + DIR_DIAGNOSTIC_IMAGE;
+                break;
             default:
                 path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), true);
                 break;
@@ -129,7 +135,7 @@ public final class FileHelper {
      * The different types of files.
      */
     public enum FileType {
-        CALIBRATION, CUSTOM_CONFIG, EXP_CONFIG, FFEM_EXP_CONFIG, CARD, TEST_IMAGE, RESULT_IMAGE
+        CALIBRATION, CUSTOM_CONFIG, EXP_CONFIG, FFEM_EXP_CONFIG, CARD, TEST_IMAGE, DIAGNOSTIC_IMAGE, RESULT_IMAGE
     }
 
 }

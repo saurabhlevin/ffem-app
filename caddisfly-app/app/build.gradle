@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Experiment Alpha 7"
+            versionName "Exp 1.0 Beta 1"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }

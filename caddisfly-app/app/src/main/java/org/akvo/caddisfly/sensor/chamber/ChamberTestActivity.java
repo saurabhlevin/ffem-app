@@ -440,12 +440,12 @@ public class ChamberTestActivity extends BaseActivity implements
                     calibration.image = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test
                     FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
-                            "/result-images", calibration.image);
+                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
 
                     calibration.croppedImage = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test
                     FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
-                            "/result-images", calibration.croppedImage);
+                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
                 }
                 dao.insert(calibration);
                 CalibrationFile.saveCalibratedData(this, testInfo, calibration, color);
@@ -501,7 +501,8 @@ public class ChamberTestActivity extends BaseActivity implements
 
         // Save photo taken during the test
         String resultImageUrl = UUID.randomUUID().toString() + ".png";
-        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap, "/result-images", resultImageUrl);
+        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap,
+                FileHelper.FileType.RESULT_IMAGE, resultImageUrl);
         resultIntent.putExtra(ConstantKey.IMAGE, path);
 
         JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,

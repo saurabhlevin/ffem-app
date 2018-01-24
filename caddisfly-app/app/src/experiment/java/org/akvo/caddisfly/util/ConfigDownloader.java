@@ -27,7 +27,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
@@ -101,6 +100,7 @@ public class ConfigDownloader {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void sendDataToCloudDatabase(Context context, TestInfo testInfo) {
 
         ProgressDialog pd;
@@ -117,10 +117,10 @@ public class ConfigDownloader {
             return;
         }
 
+        final File path = FileHelper.getFilesDir(FileHelper.FileType.DIAGNOSTIC_IMAGE);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-
-        File root = Environment.getExternalStorageDirectory();
 
         pd = new ProgressDialog(context);
         pd.setMessage("Please wait...");
@@ -130,26 +130,35 @@ public class ConfigDownloader {
         new Thread(() -> {
 
             boolean isSending = false;
-            for (Calibration calibration :
-                    testInfo.getCalibrations()) {
+            for (Calibration calibration : testInfo.getCalibrations()) {
 
                 if (calibration.image != null && calibration.croppedImage != null) {
 
+                    File imagePath = new File(path, calibration.image);
+                    File croppedImagePath = new File(path, calibration.croppedImage);
+
+                    if (!imagePath.exists() || !croppedImagePath.exists()) {
+                        continue;
+                    }
+
                     isSending = true;
 
-                    File dir = new File(root.getAbsolutePath() + FileHelper.ROOT_DIRECTORY + "/result-images");
-                    Uri file = Uri.fromFile(new File(dir, calibration.image));
-                    StorageReference riversRef = storageReference.child("calibration-images/" + calibration.image);
+                    Uri file = Uri.fromFile(imagePath);
+                    StorageReference storageReference1 = storageReference.child("calibration-images/" + calibration.image);
 
-                    riversRef.putFile(file)
+                    storageReference1.putFile(file)
                             .addOnSuccessListener(taskSnapshot -> {
 
-                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                Uri file1 = Uri.fromFile(new File(dir, calibration.croppedImage));
-                                StorageReference riversRef1 = storageReference.child("calibration-images/" + calibration.croppedImage);
+                                imagePath.delete();
 
-                                riversRef1.putFile(file1)
+                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                Uri file1 = Uri.fromFile(croppedImagePath);
+                                StorageReference storageReference2 = storageReference.child("calibration-images/" + calibration.croppedImage);
+
+                                storageReference2.putFile(file1)
                                         .addOnSuccessListener(taskSnapshot1 -> {
+
+                                            croppedImagePath.delete();
 
                                             // Get a URL to the uploaded content
                                             Uri downloadUrl1 = taskSnapshot1.getDownloadUrl();
@@ -200,8 +209,6 @@ public class ConfigDownloader {
 
                                                         Timber.w("Error adding document", e);
                                                     });
-
-
                                         })
                                         .addOnFailureListener(exception -> {
                                             if (pd.isShowing()) {

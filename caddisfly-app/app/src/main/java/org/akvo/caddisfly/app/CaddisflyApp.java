@@ -76,8 +76,7 @@ public class CaddisflyApp extends Application {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 
             if (AppPreferences.isDiagnosticMode()) {
-                version = String.format("%s %s (Build %s)", context.getString(R.string.version),
-                        packageInfo.versionName, packageInfo.versionCode);
+                version = String.format("%s (Build %s)", packageInfo.versionName, packageInfo.versionCode);
             } else {
                 version = String.format("%s %s", context.getString(R.string.version),
                         packageInfo.versionName);
