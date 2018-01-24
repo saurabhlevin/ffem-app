@@ -20,27 +20,7 @@
           "name": "Nitrate",
           "id": 1,
           "unit": "mg/l",
-          "timeDelay": 360,
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 50
-            },
-            {
-              "value": 100
-            },
-            {
-              "value": 150
-            },
-            {
-              "value": 200
-            },
-            {
-              "value": 250
-            }
-          ]
+          "timeDelay": 360
         }
       ]
     },
@@ -81,30 +61,7 @@
           "name": "Phosphate",
           "id": 1,
           "unit": "mg/l",
-          "timeDelay": 600,
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 0.3
-            },
-            {
-              "value": 0.6
-            },
-            {
-              "value": 0.9
-            },
-            {
-              "value": 1.2
-            },
-            {
-              "value": 1.5
-            },
-            {
-              "value": 2
-            }
-          ]
+          "timeDelay": 600
         }
       ]
     },
@@ -280,24 +237,7 @@
           "id": 1,
           "name": "Chromium",
           "unit": "mg/l",
-          "timeDelay": 300,
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 0.5
-            },
-            {
-              "value": 1
-            },
-            {
-              "value": 2
-            },
-            {
-              "value": 3
-            }
-          ]
+          "timeDelay": 300
         }
       ]
     },
@@ -380,24 +320,7 @@
         {
           "id": 1,
           "name": "Fluoride",
-          "unit": "mg/l",
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 0.5
-            },
-            {
-              "value": 1
-            },
-            {
-              "value": 1.5
-            },
-            {
-              "value": 2
-            }
-          ]
+          "unit": "mg/l"
         }
       ]
     },
@@ -471,30 +394,7 @@
         {
           "id": 1,
           "name": "Free Chlorine",
-          "unit": "mg/l",
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 0.5
-            },
-            {
-              "value": 1
-            },
-            {
-              "value": 1.5
-            },
-            {
-              "value": 2
-            },
-            {
-              "value": 2.5
-            },
-            {
-              "value": 3
-            }
-          ]
+          "unit": "mg/l"
         }
       ]
     },
@@ -516,24 +416,7 @@
           "id": 1,
           "name": "Total Iron",
           "unit": "mg/l",
-          "timeDelay": 300,
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 0.5
-            },
-            {
-              "value": 1
-            },
-            {
-              "value": 1.5
-            },
-            {
-              "value": 2
-            }
-          ]
+          "timeDelay": 300
         }
       ]
     }
