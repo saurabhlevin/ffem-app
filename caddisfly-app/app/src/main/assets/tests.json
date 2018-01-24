@@ -2,6 +2,113 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
+      "name": "Water - Nitrate",
+      "subtype": "cuvette",
+      "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,50,100,150,200,250",
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Nitrate",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 360,
+          "colors": [
+            {
+              "value": 0
+            },
+            {
+              "value": 50
+            },
+            {
+              "value": 100
+            },
+            {
+              "value": 150
+            },
+            {
+              "value": 200
+            },
+            {
+              "value": 250
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pH",
+      "subtype": "cuvette",
+      "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "unit": "",
+          "timeDelay": 45
+        }
+      ]
+    },
+    {
+      "name": "Water - Phosphate",
+      "subtype": "cuvette",
+      "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2.0",
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphate",
+          "id": 1,
+          "unit": "ppm",
+          "timeDelay": 600,
+          "colors": [
+            {
+              "value": 0
+            },
+            {
+              "value": 0.3
+            },
+            {
+              "value": 0.6
+            },
+            {
+              "value": 0.9
+            },
+            {
+              "value": 1.2
+            },
+            {
+              "value": 1.5
+            },
+            {
+              "value": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Water - Potassium",
       "subtype": "striptest",
       "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
@@ -158,7 +265,6 @@
       "name": "Water - Chromium",
       "subtype": "cuvette",
       "uuid": "d488672f-9a4c-4aa4-82eb-8a95c40d0296",
-      "shortCode": "CHROM",
       "brand": "Caddisfly",
       "imageScale": "centerCrop",
       "calibrate": true,
@@ -199,7 +305,6 @@
       "name": "Water - Fluoride",
       "subtype": "cuvette",
       "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf",
-      "shortCode": "FLUOR",
       "brand": "Caddisfly",
       "imageScale": "centerCrop",
       "calibrate": true,
@@ -291,98 +396,6 @@
             },
             {
               "value": 2
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Water - Free Chlorine",
-      "subtype": "cuvette",
-      "uuid": "c3535e72-ff77-4225-9f4a-41d3288780c6",
-      "shortCode": "CHLOR",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,0.25,0.5,0.75,1.0",
-      "monthsValid": 24,
-      "hasImage": true,
-      "instructions": [
-        {
-          "section": [
-            "bc_rinse",
-            "image:bc_rinse"
-          ]
-        },
-        {
-          "section": [
-            "bc_frc_1",
-            "image:bc_add_powder"
-          ]
-        },
-        {
-          "section": [
-            "bc_frc_2",
-            "image:bc_fill"
-          ]
-        },
-        {
-          "section": [
-            "bc_screw",
-            "image:bc_screw_frc"
-          ]
-        },
-        {
-          "section": [
-            "bc_shake",
-            "image:bc_shake"
-          ]
-        },
-        {
-          "section": [
-            "bc_wipe_bottom",
-            "image:bc_wipe_bottom"
-          ]
-        },
-        {
-          "section": [
-            "bc_wipe_camera",
-            "image:bc_wipe_camera"
-          ]
-        },
-        {
-          "section": [
-            "bc_place_chamber",
-            "image:bc_place_chamber"
-          ]
-        },
-        {
-          "section": [
-            "bc_place_phone",
-            "image:bc_place_phone"
-          ]
-        }
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Free Chlorine",
-          "unit": "mg/l",
-          "colors": [
-            {
-              "value": 0
-            },
-            {
-              "value": 0.25
-            },
-            {
-              "value": 0.5
-            },
-            {
-              "value": 0.75
-            },
-            {
-              "value": 1.0
             }
           ]
         }
@@ -486,19 +499,41 @@
       ]
     },
     {
-      "name": "Coliform count",
-      "subtype": "counter",
-      "cameraAbove": true,
-      "uuid": "2b5b096d-5b33-4931-a30a-4255442725ba",
-      "brand": "FFEM",
-      "image": "FFEM-Coliform-Count",
-      "imageScale": "centerCrop",
-      "hasImage": true,
+      "name": "Total Iron",
+      "subtype": "cuvette",
+      "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
+      "brand": "Caddisfly",
+      "calibrate": "true",
+      "ranges": "0,0.5,1.0,1.5,2.0",
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "monthsValid": "6",
       "results": [
         {
           "id": 1,
-          "name": "Free Chlorine",
-          "unit": "mg/l"
+          "name": "Total Iron",
+          "unit": "ppm",
+          "timeDelay": 300,
+          "colors": [
+            {
+              "value": 0
+            },
+            {
+              "value": 0.5
+            },
+            {
+              "value": 1
+            },
+            {
+              "value": 1.5
+            },
+            {
+              "value": 2
+            }
+          ]
         }
       ]
     }

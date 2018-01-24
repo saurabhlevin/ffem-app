@@ -191,12 +191,14 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         date.set(Calendar.SECOND, date.getMinimum(Calendar.SECOND));
         date.set(Calendar.MILLISECOND, date.getMinimum(Calendar.MILLISECOND));
         datePickerDialog.getDatePicker().setMinDate(date.getTimeInMillis());
-        date.add(Calendar.MONTH, mTestInfo.getMonthsValid());
-        date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getMaximum(Calendar.MILLISECOND));
-        datePickerDialog.getDatePicker().setMaxDate(date.getTimeInMillis());
+        if (mTestInfo.getMonthsValid() != null) {
+            date.add(Calendar.MONTH, mTestInfo.getMonthsValid());
+            date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
+            date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
+            date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
+            date.set(Calendar.MILLISECOND, date.getMaximum(Calendar.MILLISECOND));
+            datePickerDialog.getDatePicker().setMaxDate(date.getTimeInMillis());
+        }
 
         editExpiryDate.setOnFocusChangeListener((view1, b) -> {
             if (b) {

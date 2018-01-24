@@ -120,7 +120,7 @@ public class DiagnosticResultDialog extends DialogFragment {
 
                 ResultDetail result = resultDetails.get(position);
 
-                imageView.setImageBitmap(result.getBitmap());
+                imageView.setImageBitmap(result.getCroppedBitmap());
                 int color = result.getColor();
 
                 textSwatch.setBackgroundColor(color);

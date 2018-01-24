@@ -113,28 +113,64 @@
             android:textSize="16sp"
             app:checkValidity="@{testInfoViewModel.test}" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/calibrationList"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/textCalibrationError"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_calibration" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/buttonRunTest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/round_corners_button"
-            android:onClick="runTestClick"
-            android:text="@string/runTest"
-            android:theme="?primaryButtonStyle"
-            app:hideInNormalMode="@{true}" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/calibrationList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/layoutButtons"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/item_calibration" />
 
+            <LinearLayout
+                android:id="@+id/layoutButtons"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/main_button_blue"
+                android:orientation="horizontal"
+                app:hideInNormalMode="@{true}">
+
+                <Button
+                    android:id="@+id/buttonSendToServer"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_cloud_upload_black_24dp"
+                    android:onClick="sendToServerClick"
+                    android:text="@string/sendData" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/gray" />
+
+                <Button
+                    android:id="@+id/buttonRunTest"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_directions_run_black_24dp"
+                    android:onClick="runTestClick"
+                    android:text="@string/runTest" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
 
 </layout>

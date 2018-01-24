@@ -76,7 +76,17 @@ public class BaseRunTest extends Fragment implements RunTest {
     private int dilution;
     private Camera mCamera;
     private OnResultListener mListener;
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+    private ChamberCameraPreview mCameraPreview;
+    private final Runnable mRunnableCode = () -> {
+        if (pictureCount < AppPreferences.getSamplingTimes()) {
+            pictureCount++;
+            sound.playShortResource(R.raw.beep);
+            takePicture();
+        } else {
+            releaseResources();
+        }
+    };
+    private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -93,16 +103,6 @@ public class BaseRunTest extends Fragment implements RunTest {
             } else {
                 mHandler.postDelayed(mRunnableCode, ChamberTestConfig.DELAY_BETWEEN_SAMPLING * 1000);
             }
-        }
-    };
-    private ChamberCameraPreview mCameraPreview;
-    private final Runnable mRunnableCode = () -> {
-        if (pictureCount < AppPreferences.getSamplingTimes()) {
-            pictureCount++;
-            sound.playShortResource(R.raw.beep);
-            takePicture();
-        } else {
-            releaseResources();
         }
     };
 
@@ -240,7 +240,8 @@ public class BaseRunTest extends Fragment implements RunTest {
                 break;
         }
 
-        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(ImageUtil.rotateImage(bitmap, rotation),
+        Bitmap rotatedBitmap = ImageUtil.rotateImage(bitmap, rotation);
+        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(rotatedBitmap,
                 ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
         //Extract the color from the photo which will be used for comparison
@@ -256,7 +257,8 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             ResultDetail resultDetail = SwatchHelper.analyzeColor(mTestInfo.getSwatches().size(),
                     photoColor, mTestInfo.getSwatches());
-            resultDetail.setBitmap(croppedBitmap);
+            resultDetail.setBitmap(rotatedBitmap);
+            resultDetail.setCroppedBitmap(croppedBitmap);
             resultDetail.setDilution(dilution);
 
             results.add(resultDetail);

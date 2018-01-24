@@ -54,7 +54,6 @@ import org.akvo.caddisfly.diagnostic.DiagnosticResultDialog;
 import org.akvo.caddisfly.diagnostic.DiagnosticSwatchActivity;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.entity.CalibrationDetail;
-import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.helper.SwatchHelper;
@@ -65,6 +64,7 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
+import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
@@ -78,6 +78,8 @@ import java.util.List;
 import java.util.UUID;
 
 import timber.log.Timber;
+
+import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
         BaseRunTest.OnResultListener,
@@ -388,7 +390,7 @@ public class ChamberTestActivity extends BaseActivity implements
                         .replace(R.id.fragment_container,
                                 ResultFragment.newInstance(testInfo), null).commit();
 
-                mCroppedBitmap = resultDetails.get(0).getBitmap();
+                mCroppedBitmap = resultDetails.get(0).getCroppedBitmap();
 
                 if (AppPreferences.isDiagnosticMode()) {
                     showDiagnosticResultDialog(false, result, resultDetails, false, 0);
@@ -411,7 +413,7 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestFailed),
                             getString(R.string.checkChamberPlacement)),
-                            resultDetails.get(resultDetails.size() - 1).getBitmap());
+                            resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
                 }
             }
 
@@ -427,12 +429,24 @@ public class ChamberTestActivity extends BaseActivity implements
 
                 showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.couldNotCalibrate),
                         getString(R.string.checkChamberPlacement)),
-                        resultDetails.get(resultDetails.size() - 1).getBitmap());
+                        resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
             } else {
 
                 CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                 calibration.color = color;
                 calibration.date = new Date().getTime();
+                if (AppPreferences.isDiagnosticMode()) {
+
+                    calibration.image = UUID.randomUUID().toString() + ".png";
+                    // Save photo taken during the test
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
+                            "/result-images", calibration.image);
+
+                    calibration.croppedImage = UUID.randomUUID().toString() + ".png";
+                    // Save photo taken during the test
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
+                            "/result-images", calibration.croppedImage);
+                }
                 dao.insert(calibration);
                 CalibrationFile.saveCalibratedData(this, testInfo, calibration, color);
                 loadDetails();
@@ -566,7 +580,7 @@ public class ChamberTestActivity extends BaseActivity implements
         if (PreferencesUtil.getBoolean(this, R.string.showMinMegaPixelDialogKey, true)) {
             try {
 
-                if (CameraHelper.getMaxSupportedMegaPixelsByCamera(this) < Constants.MIN_CAMERA_MEGA_PIXELS) {
+                if (getMaxSupportedMegaPixelsByCamera(this) < Constants.MIN_CAMERA_MEGA_PIXELS) {
 
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -599,6 +613,10 @@ public class ChamberTestActivity extends BaseActivity implements
         } else {
             runTest();
         }
+    }
+
+    public void sendToServerClick(View view) {
+        ConfigDownloader.sendDataToCloudDatabase(this, testInfo);
     }
 
 }

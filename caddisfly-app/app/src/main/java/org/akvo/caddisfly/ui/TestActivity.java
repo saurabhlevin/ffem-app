@@ -169,6 +169,10 @@ public class TestActivity extends BaseActivity {
 
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
         if (uuid == null) {
+            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+        }
+
+        if (uuid == null) {
 
             //todo: remove when obsolete
             //UUID was not found so it must be old version survey, look for 5 letter code
