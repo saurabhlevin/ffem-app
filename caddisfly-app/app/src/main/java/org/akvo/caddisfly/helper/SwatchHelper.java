@@ -376,7 +376,7 @@ public final class SwatchHelper {
             for (int j = 0; j < resultDetails.size(); j++) {
                 int color2 = resultDetails.get(j).getColor();
 
-                if (ColorUtil.getColorDistance(color1, color2) > ChamberTestConfig.MAX_COLOR_DISTANCE_RGB) {
+                if (ColorUtil.getColorDistance(color1, color2) > AppPreferences.getAveragingColorDistanceTolerance()) {
                     return -1;
                 }
             }
@@ -424,7 +424,7 @@ public final class SwatchHelper {
             //check all the colors are mostly similar otherwise return -1
             for (int j = 0; j < resultDetails.size(); j++) {
                 int color2 = resultDetails.get(j).getColor();
-                if (ColorUtil.getColorDistanceRgb(color1, color2) > ChamberTestConfig.MAX_COLOR_DISTANCE_CALIBRATION) {
+                if (ColorUtil.getColorDistance(color1, color2) > AppPreferences.getAveragingColorDistanceTolerance()) {
                     return Color.TRANSPARENT;
                 }
             }

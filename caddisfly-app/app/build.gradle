@@ -27,8 +27,8 @@ android {
         applicationId "io.ffem.caddisfly"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 208
-        versionName "1.0 Beta 1"
+        versionCode 209
+        versionName "1.0 Beta 1.1"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -57,7 +57,7 @@ android {
 
     buildTypes {
         debug {
-            debuggable false
+            debuggable true
         }
     }
 
@@ -89,6 +89,9 @@ android {
         unitTests {
             includeAndroidResources = true
         }
+        testOptions {
+            unitTests.returnDefaultValues = true
+        }
     }
 
     unMock {
@@ -114,7 +117,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.5.1'
 
     // Architecture Components
-    implementation "android.arch.lifecycle:extensions:1.0.0"
+    implementation "android.arch.lifecycle:extensions:1.1.0"
 
     // Room
     implementation 'android.arch.persistence.room:runtime:1.0.0'

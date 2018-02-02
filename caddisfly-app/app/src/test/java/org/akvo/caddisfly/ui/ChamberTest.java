@@ -97,12 +97,12 @@ public class ChamberTest {
 
         RecyclerView recyclerView = activity.findViewById(R.id.list_types);
 
-        assertSame(4, recyclerView.getChildCount());
+        assertSame(7, recyclerView.getChildCount());
 
-        assertTestTitle(recyclerView, 0, "Water - Chromium");
-        assertTestTitle(recyclerView, 1, "Water - Fluoride");
-        assertTestTitle(recyclerView, 2, "Water - Free Chlorine");
-        assertTestTitle(recyclerView, 3, "Water - Free Chlorine");
+        assertTestTitle(recyclerView, 0, "pH");
+        assertTestTitle(recyclerView, 1, "Total Iron");
+        assertTestTitle(recyclerView, 2, "Water - Chromium");
+        assertTestTitle(recyclerView, 3, "Water - Fluoride");
     }
 
     private void assertTestTitle(RecyclerView recyclerView, int index, String title) {

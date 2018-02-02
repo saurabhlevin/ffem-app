@@ -51,6 +51,7 @@
     <string name="showDebugMessagesKey">showDebugMessages</string>
     <string name="soundOnKey">soundOn</string>
     <string name="colorDistanceToleranceKey">maxColorDistanceTolerance</string>
+    <string name="colorAverageDistanceToleranceKey">maxAverageColorDistanceTolerance</string>
     <string name="samplingsTimeKey">numberOfSamples</string>
     <string name="hasCameraFlashKey">hasCameraFlash</string>
     <string name="calibrationDateKey">calibrationDateTime</string>

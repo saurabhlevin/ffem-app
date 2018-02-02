@@ -37,6 +37,13 @@
             android:key="@string/colorDistanceToleranceKey"
             android:maxLength="3"
             android:numeric="integer"
-            android:title="Max color distance" />
+            android:title="Max swatch color distance" />
+        <EditTextPreference
+            android:defaultValue="12"
+            android:dialogMessage="Enter a value below 400"
+            android:key="@string/colorAverageDistanceToleranceKey"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:title="Max averaging color distance" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>

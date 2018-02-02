@@ -155,6 +155,8 @@ public class ChamberTestActivity extends BaseActivity implements
             runTest();
         }
 
+        setTitle(R.string.analyze);
+
         invalidateOptionsMenu();
 
     }
@@ -192,6 +194,7 @@ public class ChamberTestActivity extends BaseActivity implements
             } else {
                 (new Handler()).postDelayed(() -> {
                     runTestFragment.setCalibration(item);
+                    setTitle(R.string.calibrate);
                     runTest();
                     invalidateOptionsMenu();
                 }, 150);
@@ -203,7 +206,7 @@ public class ChamberTestActivity extends BaseActivity implements
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        setTitle(R.string.calibrate);
+        setTitle(R.string.calibration);
     }
 
     @Override
@@ -217,6 +220,10 @@ public class ChamberTestActivity extends BaseActivity implements
 
         if (!fragmentManager.popBackStackImmediate()) {
             super.onBackPressed();
+        }
+
+        if (fragmentManager.getBackStackEntryCount() == 0) {
+            setTitle(R.string.calibration);
         }
 
         invalidateOptionsMenu();
@@ -424,7 +431,7 @@ public class ChamberTestActivity extends BaseActivity implements
             if (color == Color.TRANSPARENT) {
 
                 if (AppPreferences.isDiagnosticMode()) {
-                    showDiagnosticResultDialog(false, new Result(), resultDetails, true, color);
+                    showDiagnosticResultDialog(true, new Result(), resultDetails, true, color);
                 }
 
                 showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.couldNotCalibrate),

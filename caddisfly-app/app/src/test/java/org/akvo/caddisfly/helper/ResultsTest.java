@@ -25,6 +25,7 @@ import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.repository.TestConfigRepository;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -58,6 +59,7 @@ public class ResultsTest {
         assertEquals(expectedJson, json);
     }
 
+    @Ignore
     @Test
     public void testEcSensorResult() {
 
