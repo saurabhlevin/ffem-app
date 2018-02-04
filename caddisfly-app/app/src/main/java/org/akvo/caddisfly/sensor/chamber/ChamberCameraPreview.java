@@ -166,7 +166,9 @@ public class ChamberCameraPreview extends SurfaceView implements SurfaceHolder.C
 
         parameters.setExposureCompensation(EXPOSURE_COMPENSATION);
 
-        parameters.setZoom(0);
+        if (parameters.isZoomSupported()) {
+            parameters.setZoom(parameters.getMaxZoom());
+        }
 
         mCamera.setDisplayOrientation(Constants.DEGREES_90);
 

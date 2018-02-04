@@ -27,9 +27,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -105,20 +108,21 @@ public class ConfigDownloader {
 
         ProgressDialog pd;
 
-        if (!NetUtil.isNetworkAvailable(context)) {
-            Toast.makeText(context,
-                    "No data connection. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
         String deviceId = PreferencesUtil.getString(context, R.string.deviceIdKey, "0");
         if (Integer.valueOf(deviceId) < 1) {
             AlertUtil.showMessage(context, R.string.error, "Please set Device ID in settings before sending.");
             return;
         }
 
+        if (!NetUtil.isNetworkAvailable(context)) {
+            Toast.makeText(context,
+                    "No data connection. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         final File path = FileHelper.getFilesDir(FileHelper.FileType.DIAGNOSTIC_IMAGE);
 
+        FirebaseApp.initializeApp(context);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -227,13 +231,14 @@ public class ConfigDownloader {
                                         "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
                             });
                 }
-
             }
 
             if (!isSending) {
                 if (pd.isShowing()) {
                     pd.dismiss();
                 }
+                new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context,
+                        "No data to send", Toast.LENGTH_SHORT).show());
             }
         }).start();
     }

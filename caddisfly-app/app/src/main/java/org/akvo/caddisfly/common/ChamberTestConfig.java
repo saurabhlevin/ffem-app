@@ -54,7 +54,7 @@ public final class ChamberTestConfig {
     /**
      * Max distance between colors for calibration.
      */
-    public static final int MAX_COLOR_DISTANCE_CALIBRATION = 12;
+    public static final int MAX_COLOR_DISTANCE_CALIBRATION = 15;
 
     /**
      * The number of interpolations to generate between range values.
