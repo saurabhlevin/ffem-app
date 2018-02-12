@@ -74,6 +74,7 @@
     <string name="ignoreTimeDelaysKey">ignoreTimeDelays</string>
     <string name="cameraMegaPixelsKey">cameraMegaPixels</string>
     <string name="showMinMegaPixelDialogKey">showMinMegaPixelDialog</string>
+    <string name="maxZoomKey">MaxZoomKey</string>
 
     <!--Diagnostic-->
     <string name="diagnostics">Diagnostics</string>
@@ -84,6 +85,7 @@
     <string name="debugging">Debugging</string>
     <string name="download_experimental_tests">Download experimental tests</string>
     <string name="testModeOn">Test Mode</string>
+    <string name="maxZoom">Max Zoom</string>
 
     <!--Diagnostic Mode: Messages -->
     <string name="diagnosticModeEnabled">Diagnostic mode enabled</string>
