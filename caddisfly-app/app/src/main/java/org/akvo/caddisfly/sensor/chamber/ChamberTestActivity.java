@@ -57,7 +57,6 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.helper.SwatchHelper;
-import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
@@ -68,7 +67,6 @@ import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,6 +75,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
@@ -86,7 +85,8 @@ public class ChamberTestActivity extends BaseActivity implements
         CalibrationItemFragment.OnCalibrationSelectedListener,
         SaveCalibrationDialogFragment.OnCalibrationDetailsSavedListener,
         SelectDilutionFragment.OnDilutionSelectedListener,
-        EditCustomDilution.OnCustomDilutionListener {
+        EditCustomDilution.OnCustomDilutionListener,
+        DiagnosticSendDialogFragment.OnDetailsSavedListener {
 
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
 
@@ -96,7 +96,6 @@ public class ChamberTestActivity extends BaseActivity implements
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private int currentDilution = 1;
-    private Bitmap mCroppedBitmap;
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
 
@@ -397,11 +396,28 @@ public class ChamberTestActivity extends BaseActivity implements
                         .replace(R.id.fragment_container,
                                 ResultFragment.newInstance(testInfo), null).commit();
 
-                mCroppedBitmap = resultDetails.get(0).getCroppedBitmap();
+//                if (AppPreferences.isDiagnosticMode()) {
+//                    showDiagnosticResultDialog(false, result, resultDetails, false, 0);
+//
+//                    ResultDetail resultDetail =resultDetails.get(resultDetails.size() -1);
+//                    resultDetail.setImage(UUID.randomUUID().toString() + ".png");
+//
+//
+//                    resultDetail.setCroppedImage(UUID.randomUUID().toString() + ".png");
+//
+//                    // Save photo taken during the test
+//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
+//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
+//
+//                    testInfo.setResultDetail(resultDetail);
+//
+//
+//                    calibration.croppedImage = UUID.randomUUID().toString() + ".png";
+//                    // Save photo taken during the test
+//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
+//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
+//                }
 
-                if (AppPreferences.isDiagnosticMode()) {
-                    showDiagnosticResultDialog(false, result, resultDetails, false, 0);
-                }
 
             } else {
 
@@ -507,17 +523,16 @@ public class ChamberTestActivity extends BaseActivity implements
         }
 
         // Save photo taken during the test
-        String resultImageUrl = UUID.randomUUID().toString() + ".png";
-        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap,
-                FileHelper.FileType.RESULT_IMAGE, resultImageUrl);
-        resultIntent.putExtra(ConstantKey.IMAGE, path);
+//        String resultImageUrl = UUID.randomUUID().toString() + ".png";
+//        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap,
+//                FileHelper.FileType.RESULT_IMAGE, resultImageUrl);
+//        resultIntent.putExtra(ConstantKey.IMAGE, path);
 
-        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
-                results, null, -1, resultImageUrl);
-        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
+//        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
+//                results, null, -1, "");
+//        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
 
-        // TODO: Remove this when obsolete
-        // Backward compatibility. Return plain text result
+        // Return plain text result
         resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
 
         setResult(Activity.RESULT_OK, resultIntent);
@@ -624,7 +639,18 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     public void sendToServerClick(View view) {
-        ConfigDownloader.sendDataToCloudDatabase(this, testInfo);
+        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
     }
 
+    public void sendTestResultClick(View view) {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        DiagnosticSendDialogFragment diagnosticSendDialogFragment =
+                DiagnosticSendDialogFragment.newInstance();
+        diagnosticSendDialogFragment.show(ft, "sendDialog");
+    }
+
+    @Override
+    public void onDetailsSaved(int type, String comment) {
+        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, type, comment);
+    }
 }

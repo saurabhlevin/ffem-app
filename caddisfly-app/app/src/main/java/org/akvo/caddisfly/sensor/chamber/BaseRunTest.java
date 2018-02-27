@@ -76,6 +76,16 @@ public class BaseRunTest extends Fragment implements RunTest {
     private int dilution;
     private Camera mCamera;
     private OnResultListener mListener;
+    private ChamberCameraPreview mCameraPreview;
+    private final Runnable mRunnableCode = () -> {
+        if (pictureCount < AppPreferences.getSamplingTimes()) {
+            pictureCount++;
+            sound.playShortResource(R.raw.beep);
+            takePicture();
+        } else {
+            releaseResources();
+        }
+    };
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -93,16 +103,6 @@ public class BaseRunTest extends Fragment implements RunTest {
             } else {
                 mHandler.postDelayed(mRunnableCode, ChamberTestConfig.DELAY_BETWEEN_SAMPLING * 1000);
             }
-        }
-    };
-    private ChamberCameraPreview mCameraPreview;
-    private final Runnable mRunnableCode = () -> {
-        if (pictureCount < AppPreferences.getSamplingTimes()) {
-            pictureCount++;
-            sound.playShortResource(R.raw.beep);
-            takePicture();
-        } else {
-            releaseResources();
         }
     };
 
@@ -350,6 +350,8 @@ public class BaseRunTest extends Fragment implements RunTest {
 
         if (mCamera != null) {
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mCameraPreview.getHolder().removeCallback(mCameraPreview);
             mCamera.release();
             mCamera = null;
         }

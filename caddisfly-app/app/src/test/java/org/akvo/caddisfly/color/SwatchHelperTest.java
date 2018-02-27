@@ -285,14 +285,14 @@ public class SwatchHelperTest {
     public void testGetAverageColor9() {
         ArrayList<ResultDetail> results = new ArrayList<>();
 
-        results.add(createNewResult(1.90, Color.rgb(255, 117, 195)));
-        results.add(createNewResult(40, Color.rgb(255, 117, 195)));
-        results.add(createNewResult(0, Color.rgb(255, 117, 195)));
-        results.add(createNewResult(0, Color.rgb(255, 118, 196)));
-        results.add(createNewResult(0, Color.rgb(255, 117, 196)));
+        results.add(createNewResult(1, Color.rgb(196, 218, 156)));
+        results.add(createNewResult(0, Color.rgb(198, 220, 158)));
+        results.add(createNewResult(0, Color.rgb(197, 219, 157)));
+        results.add(createNewResult(0, Color.rgb(197, 219, 157)));
+        results.add(createNewResult(0, Color.rgb(193, 215, 151)));
 
         int color = SwatchHelper.getAverageColor(results);
-        assertEquals(Color.rgb(255, 117, 195), color);
+        assertEquals(Color.rgb(196, 218, 155), color);
     }
 
 }

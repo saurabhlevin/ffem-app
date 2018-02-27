@@ -359,7 +359,6 @@ public class TestActivity extends BaseActivity {
             //return the test result to the external app
             Intent intent = new Intent(getIntent());
 
-            //todo: remove when obsolete
             if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
                     && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
                 //if survey from old version server then don't send json response
@@ -409,11 +408,11 @@ public class TestActivity extends BaseActivity {
 
     @NonNull
     @Deprecated
-    private String getTestName(@NonNull String title) {
+    private String getTestName(String title) {
 
         String tempTitle = title;
         //ensure we have short name to display as title
-        if (title.length() > 0) {
+        if (title != null && title.length() > 0) {
             if (title.length() > 30) {
                 tempTitle = title.substring(0, 30);
             }

@@ -2,7 +2,24 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
-      "name": "Water - Nitrate",
+      "name": "Arsenic (III)",
+      "subtype": "cuvette",
+      "uuid": "93c259c5-f8b5-4317-828b-adfa324a2918",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,0.1,0.2,0.3,0.4,0.5",
+      "monthsValid": "2",
+      "results": [
+        {
+          "id": 1,
+          "name": "Arsenic",
+          "unit": "mg/l",
+          "timeDelay": 600
+        }
+      ]
+    },
+    {
+      "name": "Nitrate",
       "subtype": "cuvette",
       "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
       "brand": "Caddisfly",
@@ -43,12 +60,12 @@
       ]
     },
     {
-      "name": "Water - Phosphate",
+      "name": "Phosphate",
       "subtype": "cuvette",
       "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
       "brand": "Caddisfly",
       "calibrate": true,
-      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2.0",
+      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2",
       "dilutions": [
         1,
         2,
@@ -66,7 +83,7 @@
       ]
     },
     {
-      "name": "Water - Potassium",
+      "name": "Potassium",
       "subtype": "striptest",
       "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
       "brand": "MERCK 117985",
@@ -219,7 +236,7 @@
       ]
     },
     {
-      "name": "Water - Chromium",
+      "name": "Chromium",
       "subtype": "cuvette",
       "uuid": "d488672f-9a4c-4aa4-82eb-8a95c40d0296",
       "brand": "Caddisfly",
@@ -242,7 +259,7 @@
       ]
     },
     {
-      "name": "Water - Fluoride",
+      "name": "Fluoride",
       "subtype": "cuvette",
       "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf",
       "brand": "Caddisfly",
@@ -325,7 +342,7 @@
       ]
     },
     {
-      "name": "Water - Free Chlorine",
+      "name": "Free Chlorine",
       "subtype": "cuvette",
       "uuid": "a2413119-38eb-4959-92ee-cc169fdbb0fc",
       "brand": "Caddisfly",

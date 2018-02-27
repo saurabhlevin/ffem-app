@@ -44,6 +44,7 @@ import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.diagnostic.ConfigTask;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.FileHelper;
+import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.TestListActivity;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -53,6 +54,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -104,7 +106,7 @@ public class ConfigDownloader {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo) {
+    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
 
         ProgressDialog pd;
 
@@ -134,6 +136,13 @@ public class ConfigDownloader {
         new Thread(() -> {
 
             boolean isSending = false;
+
+            ResultDetail result = testInfo.getResultDetail();
+            String resultImageUrl = UUID.randomUUID().toString() + ".png";
+            FileUtil.writeBitmapToExternalStorage(result.getBitmap(),
+                    FileHelper.FileType.DIAGNOSTIC_IMAGE, resultImageUrl);
+
+
             for (Calibration calibration : testInfo.getCalibrations()) {
 
                 if (calibration.image != null && calibration.croppedImage != null) {
@@ -170,12 +179,14 @@ public class ConfigDownloader {
                                             Map<String, Object> cal = new HashMap<>();
                                             cal.put("deviceId", deviceId);
                                             cal.put("id", calibration.uid);
+                                            cal.put("type", type);
                                             cal.put("value", calibration.value);
                                             cal.put("color", calibration.color);
                                             cal.put("r", Color.red(calibration.color));
                                             cal.put("g", Color.green(calibration.color));
                                             cal.put("b", Color.blue(calibration.color));
                                             cal.put("date", calibration.date);
+                                            cal.put("comment", comment);
                                             cal.put("version", BuildConfig.VERSION_CODE);
                                             cal.put("manufacturer", Build.MANUFACTURER);
                                             cal.put("device", Build.MODEL);

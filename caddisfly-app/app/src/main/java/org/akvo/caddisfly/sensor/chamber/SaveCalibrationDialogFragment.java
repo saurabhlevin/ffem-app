@@ -356,6 +356,12 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
     public interface OnCalibrationDetailsSavedListener {
         void onCalibrationDetailsSaved();
     }

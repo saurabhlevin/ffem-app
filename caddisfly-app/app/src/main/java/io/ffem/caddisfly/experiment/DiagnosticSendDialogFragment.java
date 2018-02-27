@@ -1,0 +1,98 @@
+package io.ffem.caddisfly.experiment;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import org.akvo.caddisfly.R;
+
+public class DiagnosticSendDialogFragment extends DialogFragment {
+
+    private DiagnosticSendDialogFragment.OnDetailsSavedListener mListener;
+
+    public DiagnosticSendDialogFragment() {
+        // Required empty public constructor
+    }
+
+    public static DiagnosticSendDialogFragment newInstance() {
+        DiagnosticSendDialogFragment fragment = new DiagnosticSendDialogFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        final Activity activity = getActivity();
+        LayoutInflater i = activity.getLayoutInflater();
+
+        @SuppressLint("InflateParams")
+        View view = i.inflate(R.layout.fragment_diagnostic_send_dialog, null);
+
+        Spinner spinner = view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.cuvettes, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        EditText comment = view.findViewById(R.id.comment);
+
+        AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
+                .setTitle("Details")
+                .setPositiveButton(R.string.sendData,
+                        (dialog, whichButton) -> {
+                            mListener.onDetailsSaved(spinner.getSelectedItemPosition(), comment.getText().toString());
+                            dismiss();
+                        }
+                )
+                .setNegativeButton(R.string.cancel,
+                        (dialog, whichButton) -> {
+                            dismiss();
+                        }
+                );
+
+        b.setView(view);
+
+
+        return b.create();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof DiagnosticSendDialogFragment.OnDetailsSavedListener) {
+            mListener = (DiagnosticSendDialogFragment.OnDetailsSavedListener) context;
+        } else {
+            throw new IllegalArgumentException(context.toString()
+                    + " must implement OnDetailsSavedListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnDetailsSavedListener {
+        void onDetailsSaved(int i, String s);
+    }
+
+}
