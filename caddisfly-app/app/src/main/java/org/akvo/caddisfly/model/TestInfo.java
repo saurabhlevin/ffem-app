@@ -81,7 +81,7 @@ public class TestInfo implements Parcelable {
     private String brand;
     @SerializedName("brandUrl")
     @Expose
-    private String brandUrl;
+    private String brandUrl = "";
     @SerializedName("groupingType")
     @Expose
     private GroupType groupingType;

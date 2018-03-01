@@ -30,10 +30,10 @@ public final class AppConfig {
      * Date on which the app version will expire.
      * This is to ensure that installs from apk meant for testing only is not used for too long.
      */
-    public static final boolean APP_EXPIRY = false;
+    public static final boolean APP_EXPIRY = true;
     public static final int APP_EXPIRY_DAY = 15;
-    public static final int APP_EXPIRY_MONTH = 1;
-    public static final int APP_EXPIRY_YEAR = 2017;
+    public static final int APP_EXPIRY_MONTH = 3;
+    public static final int APP_EXPIRY_YEAR = 2018;
 
     /**
      * The intent action string used by the caddisfly question type.

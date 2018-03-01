@@ -21,7 +21,6 @@ package org.akvo.caddisfly.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -66,7 +65,6 @@ public class MainActivity extends BaseActivity {
 
     private static final float SNACK_BAR_LINE_SPACING = 1.4f;
 
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -231,12 +229,6 @@ public class MainActivity extends BaseActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    @NonNull
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
     }
 
     public void onColiformCountClick(View view) {

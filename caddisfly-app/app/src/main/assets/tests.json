@@ -2,7 +2,7 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
-      "name": "Arsenic (III)",
+      "name": "Water - Arsenic (III)",
       "subtype": "cuvette",
       "uuid": "93c259c5-f8b5-4317-828b-adfa324a2918",
       "brand": "Caddisfly",
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "name": "Nitrate",
+      "name": "Water - Nitrate",
       "subtype": "cuvette",
       "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
       "brand": "Caddisfly",
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "name": "pH",
+      "name": "Water - pH",
       "subtype": "cuvette",
       "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
       "brand": "Caddisfly",
@@ -60,7 +60,7 @@
       ]
     },
     {
-      "name": "Phosphate",
+      "name": "Water - Phosphate",
       "subtype": "cuvette",
       "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
       "brand": "Caddisfly",
@@ -83,7 +83,7 @@
       ]
     },
     {
-      "name": "Potassium",
+      "name": "Water - Potassium",
       "subtype": "striptest",
       "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
       "brand": "MERCK 117985",
@@ -236,7 +236,7 @@
       ]
     },
     {
-      "name": "Chromium",
+      "name": "Water - Chromium",
       "subtype": "cuvette",
       "uuid": "d488672f-9a4c-4aa4-82eb-8a95c40d0296",
       "brand": "Caddisfly",
@@ -259,7 +259,7 @@
       ]
     },
     {
-      "name": "Fluoride",
+      "name": "Water - Fluoride",
       "subtype": "cuvette",
       "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf",
       "brand": "Caddisfly",
@@ -342,7 +342,7 @@
       ]
     },
     {
-      "name": "Free Chlorine",
+      "name": "Water - Free Chlorine",
       "subtype": "cuvette",
       "uuid": "a2413119-38eb-4959-92ee-cc169fdbb0fc",
       "brand": "Caddisfly",
@@ -416,7 +416,7 @@
       ]
     },
     {
-      "name": "Total Iron",
+      "name": "Water - Total Iron",
       "subtype": "cuvette",
       "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
       "brand": "Caddisfly",
@@ -434,6 +434,164 @@
           "name": "Total Iron",
           "unit": "mg/l",
           "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Soil - pH",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "485a0c0a-0af5-40bc-baee-f5f0b03ff739",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 6,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "unit": "",
+          "timeDelay": 30
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available-N",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "8e7badf4-3c7e-4c45-9cb2-0810ffaa8c26",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,2,5,10,15,20,30,40",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available-N",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available-P",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "ddd64497-43e0-4289-a84f-6890ff80cf20",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,5,10,15,20",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available-P",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available-K",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "0035a4fc-6b9b-4b12-975f-3459c7fdcda3",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,5,10,15,20",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available-K",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available-B",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "29e609a0-0f57-4365-a4eb-4eb84c61c9ab",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,0.25,0.5,1.0,1.5,2",
+      "monthsValid": 3,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available-B",
+          "unit": "mg/l",
+          "timeDelay": 600,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available-Fe",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
+      "brand": "Caddisfly",
+      "calibrate": true,
+      "ranges": "0,0.5,1.0,1.5,2",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available-Fe",
+          "unit": "mg/l",
+          "timeDelay": 180,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Exchangeable Ca & Mg",
+      "type": "soil",
+      "subtype": "titration",
+      "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
+      "brand": "Caddisfly",
+      "monthsValid": 6,
+      "results": [
+        {
+          "id": 1,
+          "name": "Exchangeable Ca & Mg",
+          "unit": "mg/l"
         }
       ]
     }
