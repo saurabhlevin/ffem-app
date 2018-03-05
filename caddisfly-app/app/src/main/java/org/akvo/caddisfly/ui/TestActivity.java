@@ -117,42 +117,38 @@ public class TestActivity extends BaseActivity {
             testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
             if (testInfo != null) {
-                TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
-
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+                        .replace(R.id.fragment_container, TestInfoFragment.getInstance(testInfo),
+                                TestActivity.class.getSimpleName()).commit();
             }
         }
 
         Intent intent = getIntent();
-        String type = intent.getType();
 
-        if (type != null && "text/plain".equals(type)
-                && AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())
-                || AppConfig.FLOW_ACTION_CADDISFLY.equals(intent.getAction())) {
+        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
 
-        if (testInfo != null && testInfo.getSubtype() == TestType.SENSOR
-                && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
-            ErrorMessages.alertFeatureNotSupported(this, true);
-        }
+        if (testInfo != null) {
+            if (testInfo.getSubtype() == TestType.SENSOR
+                    && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
+                ErrorMessages.alertFeatureNotSupported(this, true);
+            } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
 
-        if (testInfo != null && testInfo.getSubtype() == TestType.CHAMBER_TEST) {
+                if (!SwatchHelper.isSwatchListValid(testInfo)) {
+                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                    return;
+                }
 
-            if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                ErrorMessages.alertCalibrationIncomplete(this, testInfo);
-                return;
-            }
+                CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                        .calibrationDao().getCalibrationDetails(testInfo.getUuid());
 
-            CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
-                    .calibrationDao().getCalibrationDetails(testInfo.getUuid());
-
-            if (calibrationDetail != null) {
-                long milliseconds = calibrationDetail.expiry;
-                if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
-                    ErrorMessages.alertCalibrationExpired(this);
+                if (calibrationDetail != null) {
+                    long milliseconds = calibrationDetail.expiry;
+                    if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
+                        ErrorMessages.alertCalibrationExpired(this);
+                    }
                 }
             }
         }
@@ -165,13 +161,17 @@ public class TestActivity extends BaseActivity {
 
         String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
-        if (AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())) {
+        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
 
             // old version of survey does not expect image in result
             mCallerExpectsImageInResult = false;
         }
 
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
+        if (uuid == null) {
+            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+        }
+
         if (uuid == null) {
 
             //todo: remove when obsolete
@@ -261,6 +261,9 @@ public class TestActivity extends BaseActivity {
             case CHAMBER_TEST:
                 startChamberTest();
                 break;
+            case COLIFORM_COUNT:
+                startColiformCountTest();
+                break;
             case MANUAL:
                 startManualTest();
                 break;
@@ -276,6 +279,13 @@ public class TestActivity extends BaseActivity {
                 break;
             default:
         }
+    }
+
+    private void startColiformCountTest() {
+        Intent intent = new Intent(this, ChamberTestActivity.class);
+        intent.putExtra(ConstantKey.RUN_TEST, true);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivityForResult(intent, REQUEST_TEST);
     }
 
     private void startBluetoothTest() {
@@ -349,8 +359,7 @@ public class TestActivity extends BaseActivity {
             //return the test result to the external app
             Intent intent = new Intent(getIntent());
 
-            //todo: remove when obsolete
-            if (AppConfig.FLOW_ACTION_EXTERNAL_SOURCE.equals(intent.getAction())
+            if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
                     && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
                 //if survey from old version server then don't send json response
                 intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));
@@ -399,11 +408,11 @@ public class TestActivity extends BaseActivity {
 
     @NonNull
     @Deprecated
-    private String getTestName(@NonNull String title) {
+    private String getTestName(String title) {
 
         String tempTitle = title;
         //ensure we have short name to display as title
-        if (title.length() > 0) {
+        if (title != null && title.length() > 0) {
             if (title.length() > 30) {
                 tempTitle = title.substring(0, 30);
             }

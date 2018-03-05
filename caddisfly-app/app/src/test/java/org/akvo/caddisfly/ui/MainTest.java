@@ -25,11 +25,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.preference.SettingsActivity;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -44,6 +46,8 @@ import org.robolectric.shadows.ShadowPackageManager;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
@@ -52,10 +56,10 @@ public class MainTest {
     @Test
     public void titleIsCorrect() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
-        assertEquals(activity.getTitle(), "Akvo Caddisfly");
+        assertEquals(activity.getTitle(), "FFEM Caddisfly");
 
         TextView textView = activity.findViewById(R.id.textToolbarTitle);
-        assertEquals(textView.getText(), "Akvo Caddisfly");
+        assertEquals(textView.getText(), "FFEM Caddisfly");
 
     }
 
@@ -134,11 +138,14 @@ public class MainTest {
         }
     }
 
+    @Ignore
     @Test
     public void cbt() throws Exception {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         Button button = activity.findViewById(R.id.buttonCbt);
+
+        assertThat(button.getVisibility(), equalTo(View.VISIBLE));
 
         button.performClick();
         Intent intent = shadowOf(activity).getNextStartedActivity();

@@ -46,6 +46,9 @@ public class TestInfo implements Parcelable {
             return new TestInfo[size];
         }
     };
+    @SerializedName("dilutions")
+    @Expose
+    private final List<Integer> dilutions = new ArrayList<>();
     @SerializedName("reagents")
     @Expose
     private List<Reagent> reagents = null;
@@ -78,7 +81,7 @@ public class TestInfo implements Parcelable {
     private String brand;
     @SerializedName("brandUrl")
     @Expose
-    private String brandUrl;
+    private String brandUrl = "";
     @SerializedName("groupingType")
     @Expose
     private GroupType groupingType;
@@ -118,9 +121,6 @@ public class TestInfo implements Parcelable {
     @SerializedName("hueTrend")
     @Expose
     private Integer hueTrend = 0;
-    @SerializedName("dilutions")
-    @Expose
-    private List<Integer> dilutions = new ArrayList<>();
     @SerializedName("monthsValid")
     @Expose
     private Integer monthsValid;
@@ -155,6 +155,8 @@ public class TestInfo implements Parcelable {
     private int dilution = 1;
     private List<Swatch> swatches = new ArrayList<>();
     private Integer decimalPlaces = 0;
+
+    private ResultDetail resultDetail;
 
     public TestInfo() {
     }
@@ -516,6 +518,8 @@ public class TestInfo implements Parcelable {
                 if (calibration.value == colorItem.getValue()) {
                     newCalibration.color = calibration.color;
                     newCalibration.date = calibration.date;
+                    newCalibration.image = calibration.image;
+                    newCalibration.croppedImage = calibration.croppedImage;
                     colorItem.setRgb(calibration.color);
                 }
             }
@@ -577,5 +581,13 @@ public class TestInfo implements Parcelable {
 
     public int getDecimalPlaces() {
         return decimalPlaces;
+    }
+
+    public ResultDetail getResultDetail() {
+        return resultDetail;
+    }
+
+    public void setResultDetail(ResultDetail resultDetail) {
+        this.resultDetail = resultDetail;
     }
 }

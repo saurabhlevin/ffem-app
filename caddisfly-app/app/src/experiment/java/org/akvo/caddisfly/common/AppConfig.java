@@ -32,20 +32,13 @@ public final class AppConfig {
      */
     public static final boolean APP_EXPIRY = true;
     public static final int APP_EXPIRY_DAY = 15;
-    public static final int APP_EXPIRY_MONTH = 1;
+    public static final int APP_EXPIRY_MONTH = 3;
     public static final int APP_EXPIRY_YEAR = 2018;
 
     /**
-     * The intent action string used to connect to external app.
-     *
-     * @deprecated use {@link #FLOW_ACTION_CADDISFLY} instead
-     */
-    @Deprecated
-    public static final String FLOW_ACTION_EXTERNAL_SOURCE = "org.akvo.flow.action.externalsource";
-    /**
      * The intent action string used by the caddisfly question type.
      */
-    public static final String FLOW_ACTION_CADDISFLY = "org.akvo.flow.action.caddisfly";
+    public static final String EXTERNAL_ACTION_CADDISFLY = "io.ffem.app.caddisfly";
 
     /**
      * Uri for photos from built in camera.
@@ -60,9 +53,9 @@ public final class AppConfig {
     /**
      *  The url for the experimental tests json config.
      */
-    public static final String EXPERIMENT_TESTS_URL = "https://raw.githubusercontent.com/foundation-for-enviromental-monitoring/experimental-tests/master/experimental_tests.json";
+    public static final String EXPERIMENT_TESTS_URL = "https://raw.githubusercontent.com/foundation-for-environmental-monitoring/experimental-tests/ffem-experiment/experimental_tests.json";
 
-    public static final String EXPERIMENT_TESTS_FFEM_URL = "https://raw.githubusercontent.com/foundation-for-enviromental-monitoring/experimental-tests/ffem-app/experimental_tests.json";
+    public static final String EXPERIMENT_TESTS_FFEM_URL = "https://raw.githubusercontent.com/foundation-for-environmental-monitoring/experimental-tests/ffem-app/experimental_tests.json";
 
     private AppConfig() {
     }

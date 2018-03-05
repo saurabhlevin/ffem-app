@@ -63,5 +63,10 @@ public enum TestType {
     @SerializedName("cbt")
     CBT,
 
+    /**
+     * Coliform counting.
+     */
+    @SerializedName("counter")
+    COLIFORM_COUNT,
 }
 

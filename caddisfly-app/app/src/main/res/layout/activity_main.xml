@@ -29,7 +29,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?primaryBackgroundStyle"
             android:orientation="vertical">
 
             <include layout="@layout/toolbar" />
@@ -38,8 +37,8 @@
                 android:id="@+id/mainLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingTop="1dp">
+                android:layout_marginTop="-1dp"
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/buttonSensors"
@@ -54,22 +53,7 @@
                     android:text="@string/sensors"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
-                    android:theme="?longButtonStyle" />
-
-                <!--<Button-->
-                <!--android:id="@+id/buttonMeters"-->
-                <!--style="@style/ListButton"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center_vertical|start"-->
-                <!--android:minHeight="80dp"-->
-                <!--android:onClick="onMetersClick"-->
-                <!--android:paddingEnd="16dp"-->
-                <!--android:paddingStart="16dp"-->
-                <!--android:text="@string/meters"-->
-                <!--android:textAlignment="viewStart"-->
-                <!--android:textColor="?longButtonText"-->
-                <!--android:theme="?longButtonStyle" />-->
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/buttonStripTest"
@@ -83,8 +67,7 @@
                     android:paddingStart="16dp"
                     android:text="@string/stripTest"
                     android:textAlignment="viewStart"
-                    android:textColor="?longButtonText"
-                    android:theme="?longButtonStyle" />
+                    android:textColor="?longButtonText" />
 
                 <Button
                     android:id="@+id/buttonBluetooth"
@@ -99,7 +82,7 @@
                     android:text="@string/md610_photometer"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
-                    android:theme="?longButtonStyle" />
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/buttonCbt"
@@ -114,7 +97,22 @@
                     android:text="@string/cbt"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
-                    android:theme="?longButtonStyle" />
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/buttonColiformCount"
+                    style="@style/ListButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|start"
+                    android:minHeight="80dp"
+                    android:onClick="onColiformCountClick"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:text="@string/coliformCount"
+                    android:textAlignment="viewStart"
+                    android:textColor="?longButtonText"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/buttonCalibrate"
@@ -128,8 +126,7 @@
                     android:paddingStart="16dp"
                     android:text="@string/calibrate"
                     android:textAlignment="viewStart"
-                    android:textColor="?longButtonText"
-                    android:theme="?longButtonStyle" />
+                    android:textColor="?longButtonText" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -149,8 +146,7 @@
                         android:textSize="12dp"
                         android:visibility="gone"
                         tools:ignore="SpUsage"
-                        tools:text="Version expires: 15 Jan 2018"
-                        tools:visibility="visible" />
+                        tools:text="Version expires: 15 Jan 2018" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>

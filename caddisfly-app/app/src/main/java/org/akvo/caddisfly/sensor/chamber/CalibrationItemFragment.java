@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.databinding.FragmentCalibrationListBinding;
@@ -123,6 +124,10 @@ public class CalibrationItemFragment extends Fragment {
 
         binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_calibration_list, container, false);
+
+        if (!BuildConfig.showExperimentalTests) {
+            binding.buttonSendToServer.setVisibility(View.GONE);
+        }
 
         final TestInfoViewModel model =
                 ViewModelProviders.of(this).get(TestInfoViewModel.class);

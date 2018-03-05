@@ -21,6 +21,7 @@ package org.akvo.caddisfly.sensor.chamber;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -49,24 +50,23 @@ import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.SensorConstants;
 import org.akvo.caddisfly.dao.CalibrationDao;
+import org.akvo.caddisfly.diagnostic.DiagnosticResultDialog;
 import org.akvo.caddisfly.diagnostic.DiagnosticSwatchActivity;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.entity.CalibrationDetail;
-import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.helper.SwatchHelper;
-import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
+import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,14 +75,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
+
+import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
         BaseRunTest.OnResultListener,
         CalibrationItemFragment.OnCalibrationSelectedListener,
         SaveCalibrationDialogFragment.OnCalibrationDetailsSavedListener,
         SelectDilutionFragment.OnDilutionSelectedListener,
-        EditCustomDilution.OnCustomDilutionListener {
+        EditCustomDilution.OnCustomDilutionListener,
+        DiagnosticSendDialogFragment.OnDetailsSavedListener {
 
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
 
@@ -92,7 +96,6 @@ public class ChamberTestActivity extends BaseActivity implements
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private int currentDilution = 1;
-    private Bitmap mCroppedBitmap;
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
 
@@ -119,7 +122,7 @@ public class ChamberTestActivity extends BaseActivity implements
             if (testInfo.getCameraAbove()) {
                 runTestFragment = ChamberBelowFragment.newInstance(testInfo);
             } else {
-                runTestFragment = ChamberAboveTest.newInstance(testInfo);
+                runTestFragment = ChamberAboveFragment.newInstance(testInfo);
             }
 
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
@@ -151,13 +154,14 @@ public class ChamberTestActivity extends BaseActivity implements
             runTest();
         }
 
+        setTitle(R.string.analyze);
+
         invalidateOptionsMenu();
 
     }
 
     private void runTest() {
         if (cameraIsOk) {
-
             runTestFragment.setDilution(currentDilution);
             goToFragment((Fragment) runTestFragment);
         } else {
@@ -189,6 +193,7 @@ public class ChamberTestActivity extends BaseActivity implements
             } else {
                 (new Handler()).postDelayed(() -> {
                     runTestFragment.setCalibration(item);
+                    setTitle(R.string.calibrate);
                     runTest();
                     invalidateOptionsMenu();
                 }, 150);
@@ -200,7 +205,7 @@ public class ChamberTestActivity extends BaseActivity implements
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        setTitle(R.string.calibrate);
+        setTitle(R.string.calibration);
     }
 
     @Override
@@ -214,6 +219,10 @@ public class ChamberTestActivity extends BaseActivity implements
 
         if (!fragmentManager.popBackStackImmediate()) {
             super.onBackPressed();
+        }
+
+        if (fragmentManager.getBackStackEntryCount() == 0) {
+            setTitle(R.string.calibration);
         }
 
         invalidateOptionsMenu();
@@ -361,7 +370,7 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     @Override
-    public void onResult(ArrayList<ResultDetail> resultDetails, Calibration calibration, Bitmap croppedBitmap) {
+    public void onResult(ArrayList<ResultDetail> resultDetails, Calibration calibration) {
 
         if (calibration == null) {
 
@@ -387,11 +396,48 @@ public class ChamberTestActivity extends BaseActivity implements
                         .replace(R.id.fragment_container,
                                 ResultFragment.newInstance(testInfo), null).commit();
 
-                mCroppedBitmap = croppedBitmap;
+//                if (AppPreferences.isDiagnosticMode()) {
+//                    showDiagnosticResultDialog(false, result, resultDetails, false, 0);
+//
+//                    ResultDetail resultDetail =resultDetails.get(resultDetails.size() -1);
+//                    resultDetail.setImage(UUID.randomUUID().toString() + ".png");
+//
+//
+//                    resultDetail.setCroppedImage(UUID.randomUUID().toString() + ".png");
+//
+//                    // Save photo taken during the test
+//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
+//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
+//
+//                    testInfo.setResultDetail(resultDetail);
+//
+//
+//                    calibration.croppedImage = UUID.randomUUID().toString() + ".png";
+//                    // Save photo taken during the test
+//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
+//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
+//                }
+
+
             } else {
 
-                showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestFailed),
-                        getString(R.string.checkChamberPlacement)), croppedBitmap);
+                if (AppPreferences.isDiagnosticMode()) {
+                    sound.playShortResource(R.raw.err);
+
+                    releaseResources();
+
+                    setResult(Activity.RESULT_CANCELED);
+
+                    fragmentManager.popBackStack();
+
+                    showDiagnosticResultDialog(true, new Result(), resultDetails, false, 0);
+
+                } else {
+
+                    showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestFailed),
+                            getString(R.string.checkChamberPlacement)),
+                            resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
+                }
             }
 
         } else {
@@ -399,20 +445,67 @@ public class ChamberTestActivity extends BaseActivity implements
             int color = SwatchHelper.getAverageColor(resultDetails);
 
             if (color == Color.TRANSPARENT) {
+
+                if (AppPreferences.isDiagnosticMode()) {
+                    showDiagnosticResultDialog(true, new Result(), resultDetails, true, color);
+                }
+
                 showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.couldNotCalibrate),
-                        getString(R.string.checkChamberPlacement)), croppedBitmap);
+                        getString(R.string.checkChamberPlacement)),
+                        resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
             } else {
 
                 CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                 calibration.color = color;
                 calibration.date = new Date().getTime();
+                if (AppPreferences.isDiagnosticMode()) {
+
+                    calibration.image = UUID.randomUUID().toString() + ".png";
+                    // Save photo taken during the test
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
+                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
+
+                    calibration.croppedImage = UUID.randomUUID().toString() + ".png";
+                    // Save photo taken during the test
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
+                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
+                }
                 dao.insert(calibration);
                 CalibrationFile.saveCalibratedData(this, testInfo, calibration, color);
+                loadDetails();
 
                 sound.playShortResource(R.raw.done);
+
+                if (AppPreferences.isDiagnosticMode()) {
+                    showDiagnosticResultDialog(false, new Result(), resultDetails, true, color);
+                }
             }
             fragmentManager.popBackStackImmediate();
         }
+    }
+
+    /**
+     * In diagnostic mode show the diagnostic results dialog.
+     *
+     * @param testFailed    if test has failed then dialog knows to show the retry button
+     * @param result        the result shown to the user
+     * @param resultDetails the result details
+     * @param isCalibration is this a calibration result
+     * @param color         the matched color
+     */
+    private void showDiagnosticResultDialog(boolean testFailed, Result result,
+                                            ArrayList<ResultDetail> resultDetails, boolean isCalibration, int color) {
+        DialogFragment resultFragment = DiagnosticResultDialog.newInstance(
+                testFailed, result, resultDetails, isCalibration, color);
+        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("gridDialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        resultFragment.setCancelable(false);
+        resultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        resultFragment.show(ft, "gridDialog");
     }
 
     /**
@@ -430,16 +523,16 @@ public class ChamberTestActivity extends BaseActivity implements
         }
 
         // Save photo taken during the test
-        String resultImageUrl = UUID.randomUUID().toString() + ".png";
-        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap, "/result-images", resultImageUrl);
-        resultIntent.putExtra(ConstantKey.IMAGE, path);
+//        String resultImageUrl = UUID.randomUUID().toString() + ".png";
+//        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap,
+//                FileHelper.FileType.RESULT_IMAGE, resultImageUrl);
+//        resultIntent.putExtra(ConstantKey.IMAGE, path);
 
-        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
-                results, null, -1, resultImageUrl);
-        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
+//        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
+//                results, null, -1, "");
+//        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
 
-        // TODO: Remove this when obsolete
-        // Backward compatibility. Return plain text result
+        // Return plain text result
         resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
 
         setResult(Activity.RESULT_OK, resultIntent);
@@ -460,7 +553,13 @@ public class ChamberTestActivity extends BaseActivity implements
         releaseResources();
 
         alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
-                (dialogInterface, i) -> start(),
+                (dialogInterface, i) -> {
+                    if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
+                        start();
+                    } else {
+                        runTest();
+                    }
+                },
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     releaseResources();
@@ -504,7 +603,7 @@ public class ChamberTestActivity extends BaseActivity implements
         if (PreferencesUtil.getBoolean(this, R.string.showMinMegaPixelDialogKey, true)) {
             try {
 
-                if (CameraHelper.getMaxSupportedMegaPixelsByCamera(this) < Constants.MIN_CAMERA_MEGA_PIXELS) {
+                if (getMaxSupportedMegaPixelsByCamera(this) < Constants.MIN_CAMERA_MEGA_PIXELS) {
 
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -539,4 +638,19 @@ public class ChamberTestActivity extends BaseActivity implements
         }
     }
 
+    public void sendToServerClick(View view) {
+        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
+    }
+
+    public void sendTestResultClick(View view) {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        DiagnosticSendDialogFragment diagnosticSendDialogFragment =
+                DiagnosticSendDialogFragment.newInstance();
+        diagnosticSendDialogFragment.show(ft, "sendDialog");
+    }
+
+    @Override
+    public void onDetailsSaved(int type, String comment) {
+        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, type, comment);
+    }
 }

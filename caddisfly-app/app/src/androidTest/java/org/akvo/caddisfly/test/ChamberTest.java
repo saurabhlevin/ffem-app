@@ -26,7 +26,6 @@ import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.RequiresDevice;
 import android.support.test.rule.ActivityTestRule;
-import android.support.test.rule.GrantPermissionRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
@@ -48,8 +47,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -76,7 +73,6 @@ import static org.akvo.caddisfly.util.TestHelper.leaveDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
@@ -94,9 +90,6 @@ import static org.hamcrest.Matchers.startsWith;
 public class ChamberTest {
 
     private static final int TEST_START_DELAY = 16000;
-
-    @Rule
-    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(WRITE_EXTERNAL_STORAGE, CAMERA);
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
@@ -121,7 +114,7 @@ public class ChamberTest {
                 PreferenceManager.getDefaultSharedPreferences(mActivityRule.getActivity());
         prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -385,7 +378,7 @@ public class ChamberTest {
 
         mDevice.waitForIdle();
 
-        assertNotNull(mDevice.findObject(By.text("Fluoride: " + resultString + " mg/l")));
+        assertNotNull(mDevice.findObject(By.text(resultString)));
 
         mDevice.pressBack();
 
@@ -498,9 +491,13 @@ public class ChamberTest {
 
         goToMainScreen();
 
+        sleep(2000);
+
         gotoSurveyForm();
 
-        clickExternalSourceButton(1);
+        sleep(2000);
+
+        clickExternalSourceButton(0);
 
         sleep(1000);
 
@@ -539,7 +536,7 @@ public class ChamberTest {
 
         mDevice.waitForIdle();
 
-        assertNotNull(mDevice.findObject(By.text("Fluoride: " + resultString + " mg/l")));
+        assertNotNull(mDevice.findObject(By.text(resultString)));
 
         mDevice.pressBack();
 

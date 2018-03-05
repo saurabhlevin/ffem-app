@@ -31,6 +31,10 @@ public class Calibration implements Parcelable {
     public double value;
     @ColumnInfo(name = "color")
     public int color;
+    @ColumnInfo(name = "image")
+    public String image;
+    @ColumnInfo(name = "croppedImage")
+    public String croppedImage;
 
     public Calibration() {
     }
@@ -46,6 +50,8 @@ public class Calibration implements Parcelable {
         date = in.readLong();
         value = in.readDouble();
         color = in.readInt();
+        image = in.readString();
+        croppedImage = in.readString();
     }
 
     @Override
@@ -59,5 +65,7 @@ public class Calibration implements Parcelable {
         dest.writeLong(date);
         dest.writeDouble(value);
         dest.writeInt(color);
+        dest.writeString(image);
+        dest.writeString(croppedImage);
     }
 }

@@ -33,6 +33,7 @@ import org.akvo.caddisfly.common.TestConstantKeys;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,6 +101,7 @@ public class LanguageTest {
     }
 
     @Test
+    @Ignore
     public void testLanguageFrench() {
         languageTest("fr");
     }

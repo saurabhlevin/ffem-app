@@ -21,7 +21,6 @@ package org.akvo.caddisfly.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -66,7 +65,6 @@ public class MainActivity extends BaseActivity {
 
     private static final float SNACK_BAR_LINE_SPACING = 1.4f;
 
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -91,7 +89,7 @@ public class MainActivity extends BaseActivity {
         DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
         b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
 
-        if (AppConfig.APP_EXPIRY) {
+        if (AppConfig.APP_EXPIRY && ApkHelper.isNonStoreVersion(this)) {
             b.textVersionExpiry.setVisibility(View.VISIBLE);
         }
 
@@ -233,10 +231,8 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    @NonNull
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
+    public void onColiformCountClick(View view) {
+        navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
     }
 
     /**

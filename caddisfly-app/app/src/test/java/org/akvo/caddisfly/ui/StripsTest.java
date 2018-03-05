@@ -66,14 +66,14 @@ public class StripsTest {
 
         RecyclerView recyclerView = activity.findViewById(R.id.list_types);
 
-        assertSame(20, recyclerView.getChildCount());
+        assertSame(2, recyclerView.getChildCount());
 
         TestInfoAdapter adapter = (TestInfoAdapter) recyclerView.getAdapter();
         recyclerView.getAdapter();
-        assertEquals("Water - Total Iron",
-                adapter.getItemAt(18).getName());
-        assertEquals("Water - Total Iron",
-                ((TextView) recyclerView.getChildAt(18).findViewById(R.id.text_title)).getText());
+        assertEquals("Water - Potassium",
+                adapter.getItemAt(1).getName());
+        assertEquals("Water - Potassium",
+                ((TextView) recyclerView.getChildAt(1).findViewById(R.id.text_title)).getText());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class StripsTest {
 
         RecyclerView recyclerView = activity.findViewById(R.id.list_types);
 
-        assertSame(20, recyclerView.getChildCount());
+        assertSame(2, recyclerView.getChildCount());
 
         recyclerView.getChildAt(1).performClick();
 

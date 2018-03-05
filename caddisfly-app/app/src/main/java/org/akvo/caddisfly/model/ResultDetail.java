@@ -19,6 +19,8 @@
 
 package org.akvo.caddisfly.model;
 
+import android.graphics.Bitmap;
+
 public class ResultDetail {
     private final int color;
     private double result;
@@ -26,6 +28,8 @@ public class ResultDetail {
     private double distance;
     private int dilution = 1;
     private int calibrationSteps;
+    private Bitmap croppedBitmap;
+    private Bitmap bitmap;
 
     public ResultDetail(double result, int color) {
         this.result = result;
@@ -52,10 +56,6 @@ public class ResultDetail {
         this.distance = distance;
     }
 
-    public void setDilution(int dilution) {
-        this.dilution = dilution;
-    }
-
     public int getMatchedColor() {
         return matchedColor;
     }
@@ -74,5 +74,25 @@ public class ResultDetail {
 
     public int getDilution() {
         return dilution;
+    }
+
+    public void setDilution(int dilution) {
+        this.dilution = dilution;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public Bitmap getCroppedBitmap() {
+        return croppedBitmap;
+    }
+
+    public void setCroppedBitmap(Bitmap croppedBitmap) {
+        this.croppedBitmap = croppedBitmap;
     }
 }

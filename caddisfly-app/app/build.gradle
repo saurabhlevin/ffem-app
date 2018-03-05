@@ -24,12 +24,12 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "org.akvo.caddisfly"
+        applicationId "io.ffem.caddisfly"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 210
-        versionName "1.0.0 Beta 10"
-        resConfigs "en", "en_US", "fr", "in"
+        versionCode 215
+        versionName "1.0 Beta 1.5"
+        resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Experiment Beta 10"
+            versionName "Exp 1.0 Beta 1.5"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
@@ -57,22 +57,22 @@ android {
 
     buildTypes {
         debug {
-            debuggable false
+            debuggable true
         }
     }
 
 //    signingConfigs {
-//        caddisflyRelease {
-//            storeFile file(CADDISFLY_RELEASE_STORE_FILE)
-//            storePassword CADDISFLY_RELEASE_STORE_PASSWORD
-//            keyAlias CADDISFLY_RELEASE_KEY_ALIAS
-//            keyPassword CADDISFLY_RELEASE_KEY_PASSWORD
+//        appRelease {
+//            storeFile file(FFEM_CADDISFLY_RELEASE_STORE_FILE)
+//            storePassword FFEM_CADDISFLY_RELEASE_STORE_PASSWORD
+//            keyAlias FFEM_CADDISFLY_RELEASE_KEY_ALIAS
+//            keyPassword FFEM_CADDISFLY_RELEASE_KEY_PASSWORD
 //        }
 //    }
 //
 //    buildTypes {
 //        release {
-//            signingConfig signingConfigs.caddisflyRelease
+//            signingConfig signingConfigs.appRelease
 //            minifyEnabled true
 //            shrinkResources true
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -88,6 +88,9 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+        }
+        testOptions {
+            unitTests.returnDefaultValues = true
         }
     }
 
@@ -114,7 +117,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.5.1'
 
     // Architecture Components
-    implementation "android.arch.lifecycle:extensions:1.0.0"
+    implementation "android.arch.lifecycle:extensions:1.1.0"
 
     // Room
     implementation 'android.arch.persistence.room:runtime:1.0.0'
@@ -122,9 +125,6 @@ dependencies {
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.2'
-
-    // Fotoapparat
-    implementation 'io.fotoapparat.fotoapparat:library:1.5.0'
 
     // Usb
     implementation 'com.github.felHR85:UsbSerial:4.5.1'
@@ -154,4 +154,11 @@ dependencies {
 
     // Unmock
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
+
+    // Firebase (Experiment Flavor)
+    experimentImplementation 'com.google.firebase:firebase-database:11.8.0'
+    experimentImplementation 'com.google.firebase:firebase-firestore:11.8.0'
+    experimentImplementation 'com.google.firebase:firebase-storage:11.8.0'
+    experimentImplementation 'com.google.firebase:firebase-auth:11.8.0'
 }
+//apply plugin: 'com.google.gms.google-services'

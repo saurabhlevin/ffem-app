@@ -44,10 +44,12 @@ public class SettingsActivity extends BaseActivity
     private int mScrollPosition;
 
     private void removeAllFragments() {
+        findViewById(R.id.layoutGeneral).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnosticsOptions).setVisibility(View.GONE);
         findViewById(R.id.layoutDebugging).setVisibility(View.GONE);
         findViewById(R.id.layoutTesting).setVisibility(View.GONE);
+        findViewById(R.id.layoutDeviceInfo).setVisibility(View.GONE);
     }
 
     @Override
@@ -76,15 +78,16 @@ public class SettingsActivity extends BaseActivity
 
         setContentView(R.layout.activity_settings);
 
-        getFragmentManager().beginTransaction()
-                .replace(R.id.layoutGeneral, new GeneralPreferenceFragment())
-                .commit();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.layoutOther, new OtherPreferenceFragment())
                 .commit();
 
         if (AppPreferences.isDiagnosticMode()) {
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.layoutGeneral, new GeneralPreferenceFragment())
+                    .commit();
 
             getFragmentManager().beginTransaction()
                     .add(R.id.layoutDiagnostics, new DiagnosticPreferenceFragment())
@@ -102,11 +105,15 @@ public class SettingsActivity extends BaseActivity
                     .add(R.id.layoutTesting, new TestingPreferenceFragment())
                     .commit();
 
+            getFragmentManager().beginTransaction()
+                    .add(R.id.layoutDeviceInfo, new DiagnosticDevicePreferenceFragment())
+                    .commit();
 
             findViewById(R.id.layoutDiagnosticsOptions).setVisibility(View.VISIBLE);
             findViewById(R.id.layoutDiagnostics).setVisibility(View.VISIBLE);
             findViewById(R.id.layoutDebugging).setVisibility(View.VISIBLE);
             findViewById(R.id.layoutTesting).setVisibility(View.VISIBLE);
+            findViewById(R.id.layoutDeviceInfo).setVisibility(View.VISIBLE);
         }
 
         mScrollView = findViewById(R.id.scrollViewSettings);

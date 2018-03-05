@@ -24,7 +24,7 @@ public final class TestConstants {
     /**
      * To launch Flow app.
      */
-    public static final String FLOW_SURVEY_PACKAGE_NAME = "org.akvo.flow";
+    public static final String EXTERNAL_SURVEY_PACKAGE_NAME = "org.koboc.collect.android";
 
     public static final int SENSOR_TESTS_COUNT = 3;
     public static final int STRIP_TESTS_COUNT = 20;

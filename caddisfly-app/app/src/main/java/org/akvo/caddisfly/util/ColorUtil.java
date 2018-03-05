@@ -147,16 +147,6 @@ public final class ColorUtil {
         );
     }
 
-    /**
-     * Computes the Euclidean distance between the two colors
-     *
-     * @param color1 the first color
-     * @param color2 the color to compare with
-     * @return the distance between the two colors
-     */
-    public static double getColorDistance(int color1, int color2) {
-        return getColorDistanceRgb(color1, color2);
-    }
 
     /**
      * Computes the Euclidean distance between the two colors
@@ -165,7 +155,7 @@ public final class ColorUtil {
      * @param color2 the color to compare with
      * @return the distance between the two colors
      */
-    public static double getColorDistanceRgb(int color1, int color2) {
+    public static double getColorDistance(int color1, int color2) {
         double r;
         double g;
         double b;
@@ -182,7 +172,7 @@ public final class ColorUtil {
 //    }
 
     public static boolean areColorsSimilar(int color1, int color2) {
-        return getColorDistanceRgb(color1, color2) < MIN_COLOR_DISTANCE_RGB;
+        return getColorDistance(color1, color2) < MIN_COLOR_DISTANCE_RGB;
     }
 
     /**

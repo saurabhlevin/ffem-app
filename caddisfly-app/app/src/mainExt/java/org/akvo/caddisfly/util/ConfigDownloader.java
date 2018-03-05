@@ -20,7 +20,9 @@
 package org.akvo.caddisfly.util;
 
 import android.app.Activity;
+import android.content.Context;
 
+import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.TestListActivity;
 
 @SuppressWarnings({"unused", "EmptyMethod"})
@@ -31,6 +33,10 @@ public class ConfigDownloader {
     }
 
     public static void syncFfemExperimentalConfig(TestListActivity testListActivity) {
+        // do nothing
+    }
+
+    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
         // do nothing
     }
 }
