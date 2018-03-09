@@ -66,6 +66,7 @@ import org.akvo.caddisfly.sensor.cbt.CbtActivity;
 import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.sensor.manual.ManualTestActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
+import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
@@ -277,8 +278,18 @@ public class TestActivity extends BaseActivity {
                     checkCameraMegaPixel();
                 }
                 break;
+            case TITRATION:
+                startTitrationTest();
+                break;
             default:
         }
+    }
+
+    private void startTitrationTest() {
+        Intent intent;
+        intent = new Intent(this, TitrationTestActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivityForResult(intent, REQUEST_TEST);
     }
 
     private void startColiformCountTest() {

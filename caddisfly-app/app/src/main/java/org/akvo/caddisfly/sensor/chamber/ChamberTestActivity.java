@@ -512,7 +512,7 @@ public class ChamberTestActivity extends BaseActivity implements
      * Create result json to send back.
      */
     @SuppressWarnings("unused")
-    public void onClickAcceptChamberResult(View view) {
+    public void onClickAcceptResult(View view) {
 
         Intent resultIntent = new Intent(getIntent());
         final SparseArray<String> results = new SparseArray<>();

@@ -68,5 +68,11 @@ public enum TestType {
      */
     @SerializedName("counter")
     COLIFORM_COUNT,
+
+    /**
+     * Titration counting.
+     */
+    @SerializedName("titration")
+    TITRATION,
 }
 

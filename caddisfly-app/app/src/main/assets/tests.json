@@ -6,6 +6,7 @@
       "subtype": "cuvette",
       "uuid": "93c259c5-f8b5-4317-828b-adfa324a2918",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.1,0.2,0.3,0.4,0.5",
       "monthsValid": "2",
@@ -23,6 +24,7 @@
       "subtype": "cuvette",
       "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,10,25,50,75,100",
       "dilutions": [
@@ -46,6 +48,7 @@
       "subtype": "cuvette",
       "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "4,5,6,7,8,9,10",
       "monthsValid": 12,
@@ -64,6 +67,7 @@
       "subtype": "cuvette",
       "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.3,0.6,0.9,1.2,1.5,2",
       "dilutions": [
@@ -87,6 +91,7 @@
       "subtype": "striptest",
       "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
       "brand": "MERCK 117985",
+      "imageScale": "centerCrop",
       "groupingType": "INDIVIDUAL",
       "hasImage": true,
       "length": 74,
@@ -164,6 +169,7 @@
       "subtype": "striptest",
       "uuid": "ac533acc-8ffc-48e1-a66e-2394f9a54050",
       "brand": "MERCK 117985",
+      "imageScale": "centerCrop",
       "groupingType": "INDIVIDUAL",
       "hasImage": true,
       "length": 74,
@@ -420,6 +426,7 @@
       "subtype": "cuvette",
       "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": "true",
       "ranges": "0,0.5,1,1.5,2",
       "dilutions": [
@@ -443,6 +450,7 @@
       "subtype": "cuvette",
       "uuid": "485a0c0a-0af5-40bc-baee-f5f0b03ff739",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "4,5,6,7,8,9,10",
       "monthsValid": 6,
@@ -456,13 +464,14 @@
       ]
     },
     {
-      "name": "Soil - Available-N",
+      "name": "Soil - Available Nitrogen",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "8e7badf4-3c7e-4c45-9cb2-0810ffaa8c26",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,2,5,10,15,20,30,40",
+      "ranges": "0,1.0,2.5,5,7.5,10,15,20,30,40",
       "monthsValid": 6,
       "dilutions": [
         1,
@@ -473,7 +482,7 @@
       "results": [
         {
           "id": 1,
-          "name": "Available-N",
+          "name": "Available Nitrogen",
           "unit": "mg/l",
           "timeDelay": 300,
           "formula": "(%1$f * 5)"
@@ -481,13 +490,14 @@
       ]
     },
     {
-      "name": "Soil - Available-P",
+      "name": "Soil - Available Phosphorous",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "ddd64497-43e0-4289-a84f-6890ff80cf20",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,5,10,15,20",
+      "ranges": "0,5,10,15,20,25",
       "monthsValid": 6,
       "dilutions": [
         1,
@@ -498,7 +508,7 @@
       "results": [
         {
           "id": 1,
-          "name": "Available-P",
+          "name": "Available Phosphorous",
           "unit": "mg/l",
           "timeDelay": 300,
           "formula": "(%1$f * 5)"
@@ -506,13 +516,14 @@
       ]
     },
     {
-      "name": "Soil - Available-K",
+      "name": "Soil - Available Potassium",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "0035a4fc-6b9b-4b12-975f-3459c7fdcda3",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,5,10,15,20",
+      "ranges": "0,10,20,30,40",
       "monthsValid": 6,
       "dilutions": [
         1,
@@ -523,19 +534,21 @@
       "results": [
         {
           "id": 1,
-          "name": "Available-K",
+          "name": "Available Potassium",
           "unit": "mg/l",
           "timeDelay": 300,
-          "formula": "(%1$f * 5)"
+          "formula": "(%1$f * 5)",
+          "grayScale": true
         }
       ]
     },
     {
-      "name": "Soil - Available-B",
+      "name": "Soil - Available Boron",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "29e609a0-0f57-4365-a4eb-4eb84c61c9ab",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.25,0.5,1.0,1.5,2",
       "monthsValid": 3,
@@ -548,7 +561,7 @@
       "results": [
         {
           "id": 1,
-          "name": "Available-B",
+          "name": "Available Boron",
           "unit": "mg/l",
           "timeDelay": 600,
           "formula": "(%1$f * 5)"
@@ -556,11 +569,12 @@
       ]
     },
     {
-      "name": "Soil - Available-Fe",
+      "name": "Soil - Available Iron",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.5,1.0,1.5,2",
       "monthsValid": 6,
@@ -573,7 +587,7 @@
       "results": [
         {
           "id": 1,
-          "name": "Available-Fe",
+          "name": "Available Iron",
           "unit": "mg/l",
           "timeDelay": 180,
           "formula": "(%1$f * 5)"
@@ -581,17 +595,23 @@
       ]
     },
     {
-      "name": "Soil - Exchangeable Ca & Mg",
+      "name": "Soil - Exchangeable Calcium and Magnesium",
       "type": "soil",
       "subtype": "titration",
       "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
       "brand": "Caddisfly",
+      "imageScale": "centerCrop",
       "monthsValid": 6,
       "results": [
         {
           "id": 1,
-          "name": "Exchangeable Ca & Mg",
-          "unit": "mg/l"
+          "name": "Exchangeable Calcium",
+          "unit": "mg/kg"
+        },
+        {
+          "id": 2,
+          "name": "Exchangeable Magnesium",
+          "unit": "mg/kg"
         }
       ]
     }

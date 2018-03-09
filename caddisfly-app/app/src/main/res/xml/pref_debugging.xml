@@ -24,5 +24,8 @@
         <CheckBoxPreference
             android:key="@string/showDebugMessagesKey"
             android:title="@string/debuggingOn" />
+        <Preference
+            android:key="titration"
+            android:title="Titration" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>

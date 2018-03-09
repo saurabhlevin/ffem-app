@@ -29,6 +29,8 @@ import com.google.gson.annotations.SerializedName;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.SwatchHelper;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -46,9 +48,8 @@ public class TestInfo implements Parcelable {
             return new TestInfo[size];
         }
     };
-    @SerializedName("dilutions")
-    @Expose
-    private final List<Integer> dilutions = new ArrayList<>();
+    private transient DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    private transient DecimalFormat decimalFormat = new DecimalFormat("#.###", symbols);
     @SerializedName("reagents")
     @Expose
     private List<Reagent> reagents = null;
@@ -121,6 +122,9 @@ public class TestInfo implements Parcelable {
     @SerializedName("hueTrend")
     @Expose
     private Integer hueTrend = 0;
+    @SerializedName("dilutions")
+    @Expose
+    private List<Integer> dilutions = new ArrayList<>();
     @SerializedName("monthsValid")
     @Expose
     private Integer monthsValid;
@@ -318,9 +322,9 @@ public class TestInfo implements Parcelable {
                         minMaxRange.append(", ");
                     }
                     if (result.getColors().size() > 0) {
-                        minMaxRange.append(String.format(Locale.US, "%.0f - %.0f",
-                                result.getColors().get(0).getValue(),
-                                result.getColors().get(valueCount - 1).getValue()));
+                        minMaxRange.append(String.format(Locale.US, "%s - %s",
+                                decimalFormat.format(result.getColors().get(0).getValue()),
+                                decimalFormat.format(result.getColors().get(valueCount - 1).getValue())));
                     }
                     if (groupingType == GroupType.GROUP) {
                         break;
