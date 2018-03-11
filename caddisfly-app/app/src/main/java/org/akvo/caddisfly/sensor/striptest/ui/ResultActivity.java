@@ -37,8 +37,6 @@ import android.widget.TextView;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.SensorConstants;
-import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.ColorItem;
 import org.akvo.caddisfly.model.GroupType;
 import org.akvo.caddisfly.model.Result;
@@ -49,15 +47,12 @@ import org.akvo.caddisfly.sensor.striptest.utils.ColorUtils;
 import org.akvo.caddisfly.sensor.striptest.utils.Constants;
 import org.akvo.caddisfly.sensor.striptest.utils.ResultUtils;
 import org.akvo.caddisfly.ui.BaseActivity;
-import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.MathUtil;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.akvo.caddisfly.sensor.striptest.utils.BitmapUtils.concatTwoBitmaps;
 import static org.akvo.caddisfly.sensor.striptest.utils.BitmapUtils.createErrorImage;
@@ -79,9 +74,8 @@ public class ResultActivity extends BaseActivity {
     private Button buttonSave;
     private Button buttonCancel;
     private Bitmap totalImage;
-    private String totalImageUrl;
+    //    private String totalImageUrl;
     private LinearLayout layout;
-    private TestInfo testInfo;
 
     public static void setDecodeData(DecodeData decodeData) {
         mDecodeData = decodeData;
@@ -95,28 +89,28 @@ public class ResultActivity extends BaseActivity {
 
         buttonSave = findViewById(R.id.button_save);
         buttonSave.setOnClickListener(v -> {
-            Intent intent = new Intent(getIntent());
-            String path;
+            Intent intent = new Intent();
+//            String path;
 
-            if (totalImage != null) {
+//            if (totalImage != null) {
+//
+//                // store image on sd card
+//                path = FileUtil.writeBitmapToExternalStorage(totalImage,
+//                        FileHelper.FileType.RESULT_IMAGE, totalImageUrl);
+//
+//                intent.putExtra(ConstantKey.IMAGE, path);
+//
+//                if (path.length() == 0) {
+//                    totalImageUrl = "";
+//                }
+//            } else {
+//                totalImageUrl = "";
+//            }
 
-                // store image on sd card
-                path = FileUtil.writeBitmapToExternalStorage(totalImage,
-                        FileHelper.FileType.RESULT_IMAGE, totalImageUrl);
+//            JSONObject resultJsonObj = TestConfigHelper.getJsonResult(testInfo,
+//                    resultStringValues, brackets, -1, totalImageUrl);
 
-                intent.putExtra(ConstantKey.IMAGE, path);
-
-                if (path.length() == 0) {
-                    totalImageUrl = "";
-                }
-            } else {
-                totalImageUrl = "";
-            }
-
-            JSONObject resultJsonObj = TestConfigHelper.getJsonResult(testInfo,
-                    resultStringValues, brackets, -1, totalImageUrl);
-
-            intent.putExtra(SensorConstants.RESPONSE, resultJsonObj.toString());
+            intent.putExtra(SensorConstants.VALUE, resultStringValues.get(1));
             setResult(RESULT_OK, intent);
             finish();
         });
@@ -144,14 +138,14 @@ public class ResultActivity extends BaseActivity {
         layout = findViewById(R.id.layout_results);
         layout.removeAllViews();
 
-        testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
+        TestInfo testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
         List<PatchResult> patchResultList = computeResults(testInfo);
         showResults(patchResultList, testInfo);
     }
 
     private List<PatchResult> computeResults(TestInfo testInfo) {
-        totalImageUrl = UUID.randomUUID().toString() + ".png";
+//        totalImageUrl = UUID.randomUUID().toString() + ".png";
 
         // get the images for the patches
         Map<Integer, float[][][]> patchImageMap = mDecodeData.getStripImageMap();

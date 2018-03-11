@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +72,41 @@ public class TitrationInputFragment extends BaseFragment {
         editResult1 = view.findViewById(R.id.editTitration1);
         editResult2 = view.findViewById(R.id.editTitration2);
 
+        editResult1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                editResult1.setError(null);
+                editResult2.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        editResult2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                editResult1.setError(null);
+                editResult2.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         if (getArguments() != null) {
 
@@ -90,8 +127,10 @@ public class TitrationInputFragment extends BaseFragment {
 
                             if (n1String.isEmpty()) {
                                 editResult1.setError("Enter result");
+                                editResult1.requestFocus();
                             } else if (n2String.isEmpty()) {
                                 editResult2.setError("Enter result");
+                                editResult2.requestFocus();
                             } else {
 
                                 Float n1 = Float.parseFloat(n1String);
@@ -100,6 +139,8 @@ public class TitrationInputFragment extends BaseFragment {
                                 if (okToSubmit) {
                                     if (n2 > n1) {
                                         editResult1.setError("Invalid result");
+                                        editResult2.setError("Invalid result");
+                                        editResult1.requestFocus();
                                     } else {
                                         float v1 = n1 / 24;
                                         float v2 = n2 / 24;

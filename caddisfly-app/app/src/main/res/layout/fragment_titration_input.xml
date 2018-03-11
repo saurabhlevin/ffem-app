@@ -41,7 +41,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
-        android:text="Titration Ca + Mg"
+        android:text="Calcium and Magnesium"
         android:textSize="@dimen/default_text_size"
         android:textStyle="bold" />
 
@@ -63,7 +63,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="30dp"
         android:gravity="center_horizontal"
-        android:text="Titration Ca"
+        android:text="Calcium Only"
         android:textSize="@dimen/default_text_size"
         android:textStyle="bold" />
 

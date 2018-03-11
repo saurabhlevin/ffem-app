@@ -514,7 +514,7 @@ public class ChamberTestActivity extends BaseActivity implements
     @SuppressWarnings("unused")
     public void onClickAcceptResult(View view) {
 
-        Intent resultIntent = new Intent(getIntent());
+        Intent resultIntent = new Intent();
         final SparseArray<String> results = new SparseArray<>();
 
         for (int i = 0; i < testInfo.getResults().size(); i++) {
@@ -533,7 +533,8 @@ public class ChamberTestActivity extends BaseActivity implements
 //        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
 
         // Return plain text result
-        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
+//        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
+        resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
 
         setResult(Activity.RESULT_OK, resultIntent);
 

@@ -10,9 +10,7 @@ import android.view.View;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
-import org.akvo.caddisfly.common.SensorConstants;
 import org.akvo.caddisfly.model.TestInfo;
-import org.akvo.caddisfly.sensor.chamber.ResultFragment;
 import org.akvo.caddisfly.ui.BaseActivity;
 
 public class TitrationTestActivity extends BaseActivity
@@ -22,7 +20,7 @@ public class TitrationTestActivity extends BaseActivity
     //    SparseArray<String> results = new SparseArray<>();
     private TestInfo testInfo;
     private FragmentManager fragmentManager;
-    private String imageFileName = "";
+//    private String imageFileName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,21 +71,35 @@ public class TitrationTestActivity extends BaseActivity
         testInfo.getResults().get(0).setResult(result1, 0, 0);
         testInfo.getResults().get(1).setResult(result2, 0, 0);
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, ResultFragment.newInstance(testInfo), "resultFragment")
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .addToBackStack(null)
-                .commit();
+        Intent resultIntent = new Intent();
+
+        resultIntent.putExtra(testInfo.getResults().get(0).getName().replace(" ", "_"),
+                testInfo.getResults().get(0).getResult());
+        resultIntent.putExtra(testInfo.getResults().get(1).getName().replace(" ", "_"),
+                testInfo.getResults().get(1).getResult());
+
+        setResult(Activity.RESULT_OK, resultIntent);
+
+        finish();
+
+
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.fragment_container, ResultFragment.newInstance(testInfo), "resultFragment")
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+//                .addToBackStack(null)
+//                .commit();
 
 //        results.put(1, result1);
     }
 
     public void onClickAcceptResult(View view) {
 
-        Intent resultIntent = new Intent(getIntent());
-        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT,
-                testInfo.getResults().get(0).getResult() + ";" +
-                        testInfo.getResults().get(1).getResult());
+        Intent resultIntent = new Intent();
+
+        resultIntent.putExtra(testInfo.getResults().get(0).getName().replace(" ", "_"),
+                testInfo.getResults().get(0).getResult());
+        resultIntent.putExtra(testInfo.getResults().get(1).getName().replace(" ", "_"),
+                testInfo.getResults().get(1).getResult());
 
         setResult(Activity.RESULT_OK, resultIntent);
 
