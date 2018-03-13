@@ -2,32 +2,6 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
-      "name": "Soil - Available Iron",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,0.5,1.0,1.5,2",
-      "monthsValid": 6,
-      "dilutions": [
-        1,
-        2,
-        5,
-        -1
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Available Iron",
-          "unit": "mg/l",
-          "timeDelay": 180,
-          "formula": "(%1$f * 5)"
-        }
-      ]
-    },
-    {
       "name": "Soil - Available Boron",
       "type": "soil",
       "subtype": "cuvette",
@@ -49,6 +23,32 @@
           "name": "Available Boron",
           "unit": "mg/l",
           "timeDelay": 600,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available Iron",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1.0,1.5,2",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Iron",
+          "unit": "mg/l",
+          "timeDelay": 180,
           "formula": "(%1$f * 5)"
         }
       ]
