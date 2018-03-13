@@ -2,6 +2,176 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
+      "name": "Soil - Available Iron",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1.0,1.5,2",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Iron",
+          "unit": "mg/l",
+          "timeDelay": 180,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available Boron",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "29e609a0-0f57-4365-a4eb-4eb84c61c9ab",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.25,0.5,1.0,1.5,2",
+      "monthsValid": 3,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Boron",
+          "unit": "mg/l",
+          "timeDelay": 600,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available Nitrogen",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "8e7badf4-3c7e-4c45-9cb2-0810ffaa8c26",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,1.0,2.5,5,7.5,10,15,20,30,40",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Nitrogen",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available Phosphorous",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "ddd64497-43e0-4289-a84f-6890ff80cf20",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,5,10,15,20,25",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Phosphorous",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Soil - Available Potassium",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "0035a4fc-6b9b-4b12-975f-3459c7fdcda3",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,10,20,30,40",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Potassium",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)",
+          "grayScale": true
+        }
+      ]
+    },
+    {
+      "name": "Soil - pH",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "485a0c0a-0af5-40bc-baee-f5f0b03ff739",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 6,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "unit": "",
+          "timeDelay": 30
+        }
+      ]
+    },
+    {
+      "name": "Soil - Exchangeable Calcium and Magnesium",
+      "type": "soil",
+      "subtype": "titration",
+      "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "results": [
+        {
+          "id": 1,
+          "name": "Exchangeable Calcium",
+          "unit": "mg/kg"
+        },
+        {
+          "id": 2,
+          "name": "Exchangeable Magnesium",
+          "unit": "mg/kg"
+        }
+      ]
+    },
+    {
       "name": "Water - Arsenic (III)",
       "subtype": "cuvette",
       "uuid": "93c259c5-f8b5-4317-828b-adfa324a2918",
@@ -13,231 +183,9 @@
       "results": [
         {
           "id": 1,
-          "name": "Arsenic",
+          "name": "Arsenic (III)",
           "unit": "mg/l",
           "timeDelay": 600
-        }
-      ]
-    },
-    {
-      "name": "Water - Nitrate",
-      "subtype": "cuvette",
-      "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,10,25,50,75,100",
-      "dilutions": [
-        1,
-        2,
-        5
-      ],
-      "monthsValid": 24,
-      "hasImage": true,
-      "results": [
-        {
-          "name": "Nitrate",
-          "id": 1,
-          "unit": "mg/l",
-          "timeDelay": 360
-        }
-      ]
-    },
-    {
-      "name": "Water - pH",
-      "subtype": "cuvette",
-      "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "4,5,6,7,8,9,10",
-      "monthsValid": 12,
-      "hasImage": true,
-      "results": [
-        {
-          "id": 1,
-          "name": "pH",
-          "unit": "",
-          "timeDelay": 45
-        }
-      ]
-    },
-    {
-      "name": "Water - Phosphate",
-      "subtype": "cuvette",
-      "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2",
-      "dilutions": [
-        1,
-        2,
-        5
-      ],
-      "monthsValid": 24,
-      "hasImage": true,
-      "results": [
-        {
-          "name": "Phosphate",
-          "id": 1,
-          "unit": "mg/l",
-          "timeDelay": 600
-        }
-      ]
-    },
-    {
-      "name": "Water - Potassium",
-      "subtype": "striptest",
-      "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
-      "brand": "MERCK 117985",
-      "imageScale": "centerCrop",
-      "groupingType": "INDIVIDUAL",
-      "hasImage": true,
-      "length": 74,
-      "height": 6,
-      "instructions": [
-        {
-          "section": [
-            "collect_water_sample",
-            "image:collect_sample"
-          ]
-        },
-        {
-          "section": [
-            "immerse_reaction_zone",
-            "image:dip_sample_1"
-          ]
-        },
-        {
-          "section": [
-            "allow_excess_liquid_to_run_off"
-          ]
-        },
-        {
-          "section": [
-            "add_reagent_k1",
-            "image:add_k_1"
-          ]
-        },
-        {
-          "section": [
-            "allow_excess_liquid_to_run_off"
-          ]
-        },
-        {
-          "section": [
-            "place_strip_clr",
-            "image:place_clr"
-          ]
-        }
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Potassium",
-          "unit": "mg/l",
-          "patchPos": 4.5,
-          "patchWidth": 7,
-          "colors": [
-            {
-              "value": 0,
-              "lab": [78.90,12.62,47.41]
-            },
-            {
-              "value": 250,
-              "lab": [73.59,24.18,53.73]
-            },
-            {
-              "value": 450,
-              "lab": [65.05,41.19,55.50]
-            },
-            {
-              "value": 700,
-              "lab": [59.62,50.94,54.60]
-            },
-            {
-              "value": 1000,
-              "lab": [53.77,58.94,52.64]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Soil - Potassium",
-      "subtype": "striptest",
-      "uuid": "ac533acc-8ffc-48e1-a66e-2394f9a54050",
-      "brand": "MERCK 117985",
-      "imageScale": "centerCrop",
-      "groupingType": "INDIVIDUAL",
-      "hasImage": true,
-      "length": 74,
-      "height": 6,
-      "instructions": [
-        {
-          "section": [
-            "collect_mehlich_extraction_sample"
-          ]
-        },
-        {
-          "section": [
-            "immerse_reaction_zone"
-          ]
-        },
-        {
-          "section": [
-            "allow_excess_liquid_to_run_off"
-          ]
-        },
-        {
-          "section": [
-            "add_reagent_k1"
-          ]
-        },
-        {
-          "section": [
-            "allow_excess_liquid_to_run_off"
-          ]
-        },
-        {
-          "section": [
-            "place_strip_clr",
-            "image:place_clr"
-          ]
-        }
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Potassium",
-          "unit": "mg/l",
-          "formula": "(%1$f * 5)",
-          "timeDelay": 60,
-          "patchPos": 4.5,
-          "patchWidth": 7,
-          "colors": [
-            {
-              "value": 0,
-              "lab": [78.90,12.62,47.41]
-            },
-            {
-              "value": 250,
-              "lab": [73.59,24.18,53.73]
-            },
-            {
-              "value": 450,
-              "lab": [65.05,41.19,55.50]
-            },
-            {
-              "value": 700,
-              "lab": [59.62,50.94,54.60]
-            },
-            {
-              "value": 1000,
-              "lab": [53.77,58.94,52.64]
-            }
-          ]
         }
       ]
     },
@@ -249,11 +197,14 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.1,0.5,1,2,3",
-      "dilutions": [1,2,5],
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
       "monthsValid": 3,
       "hasImage": true,
       "instructions": [
-
       ],
       "results": [
         {
@@ -274,7 +225,11 @@
       "ranges": "0,0.5,1,1.5,2",
       "defaultColors": "FD13AB,FE217C,F53A48,E75D28,D36B0B",
       "hueTrend": 1,
-      "dilutions": [1,2,5],
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
       "monthsValid": 12,
       "hasImage": true,
       "instructions": [
@@ -422,6 +377,73 @@
       ]
     },
     {
+      "name": "Water - Nitrate",
+      "subtype": "cuvette",
+      "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,10,25,50,75,100",
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Nitrate",
+          "id": 1,
+          "unit": "mg/l",
+          "timeDelay": 360
+        }
+      ]
+    },
+    {
+      "name": "Water - pH",
+      "subtype": "cuvette",
+      "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "unit": "",
+          "timeDelay": 45
+        }
+      ]
+    },
+    {
+      "name": "Water - Phosphate",
+      "subtype": "cuvette",
+      "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2",
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "monthsValid": 24,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Phosphate",
+          "id": 1,
+          "unit": "mg/l",
+          "timeDelay": 600
+        }
+      ]
+    },
+    {
       "name": "Water - Total Iron",
       "subtype": "cuvette",
       "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
@@ -445,173 +467,197 @@
       ]
     },
     {
-      "name": "Soil - pH",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "485a0c0a-0af5-40bc-baee-f5f0b03ff739",
-      "brand": "Caddisfly",
+      "name": "Water - Potassium",
+      "subtype": "striptest",
+      "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
+      "brand": "MERCK 117985",
       "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "4,5,6,7,8,9,10",
-      "monthsValid": 6,
-      "results": [
+      "groupingType": "INDIVIDUAL",
+      "hasImage": true,
+      "length": 74,
+      "height": 6,
+      "instructions": [
         {
-          "id": 1,
-          "name": "pH",
-          "unit": "",
-          "timeDelay": 30
-        }
-      ]
-    },
-    {
-      "name": "Soil - Available Nitrogen",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "8e7badf4-3c7e-4c45-9cb2-0810ffaa8c26",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,1.0,2.5,5,7.5,10,15,20,30,40",
-      "monthsValid": 6,
-      "dilutions": [
-        1,
-        2,
-        5,
-        -1
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Available Nitrogen",
-          "unit": "mg/l",
-          "timeDelay": 300,
-          "formula": "(%1$f * 5)"
-        }
-      ]
-    },
-    {
-      "name": "Soil - Available Phosphorous",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "ddd64497-43e0-4289-a84f-6890ff80cf20",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,5,10,15,20,25",
-      "monthsValid": 6,
-      "dilutions": [
-        1,
-        2,
-        5,
-        -1
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Available Phosphorous",
-          "unit": "mg/l",
-          "timeDelay": 300,
-          "formula": "(%1$f * 5)"
-        }
-      ]
-    },
-    {
-      "name": "Soil - Available Potassium",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "0035a4fc-6b9b-4b12-975f-3459c7fdcda3",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,10,20,30,40",
-      "monthsValid": 6,
-      "dilutions": [
-        1,
-        2,
-        5,
-        -1
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Available Potassium",
-          "unit": "mg/l",
-          "timeDelay": 300,
-          "formula": "(%1$f * 5)",
-          "grayScale": true
-        }
-      ]
-    },
-    {
-      "name": "Soil - Available Boron",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "29e609a0-0f57-4365-a4eb-4eb84c61c9ab",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,0.25,0.5,1.0,1.5,2",
-      "monthsValid": 3,
-      "dilutions": [
-        1,
-        2,
-        5,
-        -1
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Available Boron",
-          "unit": "mg/l",
-          "timeDelay": 600,
-          "formula": "(%1$f * 5)"
-        }
-      ]
-    },
-    {
-      "name": "Soil - Available Iron",
-      "type": "soil",
-      "subtype": "cuvette",
-      "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,0.5,1.0,1.5,2",
-      "monthsValid": 6,
-      "dilutions": [
-        1,
-        2,
-        5,
-        -1
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Available Iron",
-          "unit": "mg/l",
-          "timeDelay": 180,
-          "formula": "(%1$f * 5)"
-        }
-      ]
-    },
-    {
-      "name": "Soil - Exchangeable Calcium and Magnesium",
-      "type": "soil",
-      "subtype": "titration",
-      "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "monthsValid": 6,
-      "results": [
-        {
-          "id": 1,
-          "name": "Exchangeable Calcium",
-          "unit": "mg/kg"
+          "section": [
+            "collect_water_sample",
+            "image:collect_sample"
+          ]
         },
         {
-          "id": 2,
-          "name": "Exchangeable Magnesium",
-          "unit": "mg/kg"
+          "section": [
+            "immerse_reaction_zone",
+            "image:dip_sample_1"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "add_reagent_k1",
+            "image:add_k_1"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "place_strip_clr",
+            "image:place_clr"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Potassium",
+          "unit": "mg/l",
+          "patchPos": 4.5,
+          "patchWidth": 7,
+          "colors": [
+            {
+              "value": 0,
+              "lab": [
+                78.90,
+                12.62,
+                47.41
+              ]
+            },
+            {
+              "value": 250,
+              "lab": [
+                73.59,
+                24.18,
+                53.73
+              ]
+            },
+            {
+              "value": 450,
+              "lab": [
+                65.05,
+                41.19,
+                55.50
+              ]
+            },
+            {
+              "value": 700,
+              "lab": [
+                59.62,
+                50.94,
+                54.60
+              ]
+            },
+            {
+              "value": 1000,
+              "lab": [
+                53.77,
+                58.94,
+                52.64
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Soil - Potassium",
+      "subtype": "striptest",
+      "uuid": "ac533acc-8ffc-48e1-a66e-2394f9a54050",
+      "brand": "MERCK 117985",
+      "imageScale": "centerCrop",
+      "groupingType": "INDIVIDUAL",
+      "hasImage": true,
+      "length": 74,
+      "height": 6,
+      "instructions": [
+        {
+          "section": [
+            "collect_mehlich_extraction_sample"
+          ]
+        },
+        {
+          "section": [
+            "immerse_reaction_zone"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "add_reagent_k1"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "place_strip_clr",
+            "image:place_clr"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Potassium",
+          "unit": "mg/l",
+          "formula": "(%1$f * 5)",
+          "timeDelay": 60,
+          "patchPos": 4.5,
+          "patchWidth": 7,
+          "colors": [
+            {
+              "value": 0,
+              "lab": [
+                78.90,
+                12.62,
+                47.41
+              ]
+            },
+            {
+              "value": 250,
+              "lab": [
+                73.59,
+                24.18,
+                53.73
+              ]
+            },
+            {
+              "value": 450,
+              "lab": [
+                65.05,
+                41.19,
+                55.50
+              ]
+            },
+            {
+              "value": 700,
+              "lab": [
+                59.62,
+                50.94,
+                54.60
+              ]
+            },
+            {
+              "value": 1000,
+              "lab": [
+                53.77,
+                58.94,
+                52.64
+              ]
+            }
+          ]
         }
       ]
     }
