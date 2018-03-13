@@ -198,12 +198,12 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.1,0.5,1,2,3",
+      "monthsValid": 3,
       "dilutions": [
         1,
         2,
         5
       ],
-      "monthsValid": 3,
       "instructions": [
       ],
       "results": [
@@ -224,12 +224,12 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 12,
       "dilutions": [
         1,
         2,
         5
       ],
-      "monthsValid": 12,
       "instructions": [
         {
           "section": [
@@ -383,12 +383,12 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,10,25,50,75,100",
+      "monthsValid": 24,
       "dilutions": [
         1,
         2,
         5
       ],
-      "monthsValid": 24,
       "results": [
         {
           "id": 1,
@@ -425,12 +425,12 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.3,0.6,0.9,1.2,1.5,2",
+      "monthsValid": 24,
       "dilutions": [
         1,
         2,
         5
       ],
-      "monthsValid": 24,
       "results": [
         {
           "id": 1,
@@ -449,12 +449,12 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 6,
       "dilutions": [
         1,
         2,
         5
       ],
-      "monthsValid": 6,
       "results": [
         {
           "id": 1,
