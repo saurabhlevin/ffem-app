@@ -146,7 +146,6 @@
         {
           "id": 1,
           "name": "pH",
-          "unit": "",
           "timeDelay": 30
         }
       ]
@@ -179,7 +178,7 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.1,0.2,0.3,0.4,0.5",
-      "monthsValid": "2",
+      "monthsValid": 2,
       "results": [
         {
           "id": 1,
@@ -409,7 +408,6 @@
         {
           "id": 1,
           "name": "pH",
-          "unit": "",
           "timeDelay": 45
         }
       ]
@@ -450,7 +448,7 @@
         2,
         5
       ],
-      "monthsValid": "6",
+      "monthsValid": 6,
       "results": [
         {
           "id": 1,
