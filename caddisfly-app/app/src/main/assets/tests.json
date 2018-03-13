@@ -467,104 +467,6 @@
       ]
     },
     {
-      "name": "Water - Potassium",
-      "subtype": "striptest",
-      "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
-      "brand": "MERCK 117985",
-      "imageScale": "centerCrop",
-      "groupingType": "INDIVIDUAL",
-      "hasImage": true,
-      "length": 74,
-      "height": 6,
-      "instructions": [
-        {
-          "section": [
-            "collect_water_sample",
-            "image:collect_sample"
-          ]
-        },
-        {
-          "section": [
-            "immerse_reaction_zone",
-            "image:dip_sample_1"
-          ]
-        },
-        {
-          "section": [
-            "allow_excess_liquid_to_run_off"
-          ]
-        },
-        {
-          "section": [
-            "add_reagent_k1",
-            "image:add_k_1"
-          ]
-        },
-        {
-          "section": [
-            "allow_excess_liquid_to_run_off"
-          ]
-        },
-        {
-          "section": [
-            "place_strip_clr",
-            "image:place_clr"
-          ]
-        }
-      ],
-      "results": [
-        {
-          "id": 1,
-          "name": "Potassium",
-          "unit": "mg/l",
-          "patchPos": 4.5,
-          "patchWidth": 7,
-          "colors": [
-            {
-              "value": 0,
-              "lab": [
-                78.90,
-                12.62,
-                47.41
-              ]
-            },
-            {
-              "value": 250,
-              "lab": [
-                73.59,
-                24.18,
-                53.73
-              ]
-            },
-            {
-              "value": 450,
-              "lab": [
-                65.05,
-                41.19,
-                55.50
-              ]
-            },
-            {
-              "value": 700,
-              "lab": [
-                59.62,
-                50.94,
-                54.60
-              ]
-            },
-            {
-              "value": 1000,
-              "lab": [
-                53.77,
-                58.94,
-                52.64
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "name": "Soil - Potassium",
       "subtype": "striptest",
       "uuid": "ac533acc-8ffc-48e1-a66e-2394f9a54050",
@@ -655,6 +557,104 @@
                 53.77,
                 58.94,
                 52.64
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Water - Potassium",
+          "subtype": "striptest",
+          "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
+          "brand": "MERCK 117985",
+          "imageScale": "centerCrop",
+          "groupingType": "INDIVIDUAL",
+          "hasImage": true,
+          "length": 74,
+          "height": 6,
+          "instructions": [
+            {
+              "section": [
+                "collect_water_sample",
+                "image:collect_sample"
+              ]
+            },
+            {
+              "section": [
+                "immerse_reaction_zone",
+                "image:dip_sample_1"
+              ]
+            },
+            {
+              "section": [
+                "allow_excess_liquid_to_run_off"
+              ]
+            },
+            {
+              "section": [
+                "add_reagent_k1",
+                "image:add_k_1"
+              ]
+            },
+            {
+              "section": [
+                "allow_excess_liquid_to_run_off"
+              ]
+            },
+            {
+              "section": [
+                "place_strip_clr",
+                "image:place_clr"
+              ]
+            }
+          ],
+          "results": [
+            {
+              "id": 1,
+              "name": "Potassium",
+              "unit": "mg/l",
+              "patchPos": 4.5,
+              "patchWidth": 7,
+              "colors": [
+                {
+                  "value": 0,
+                  "lab": [
+                    78.90,
+                    12.62,
+                    47.41
+                  ]
+                },
+                {
+                  "value": 250,
+                  "lab": [
+                    73.59,
+                    24.18,
+                    53.73
+                  ]
+                },
+                {
+                  "value": 450,
+                  "lab": [
+                    65.05,
+                    41.19,
+                    55.50
+                  ]
+                },
+                {
+                  "value": 700,
+                  "lab": [
+                    59.62,
+                    50.94,
+                    54.60
+                  ]
+                },
+                {
+                  "value": 1000,
+                  "lab": [
+                    53.77,
+                    58.94,
+                    52.64
+                  ]
+                }
               ]
             }
           ]
