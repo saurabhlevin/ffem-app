@@ -224,8 +224,6 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0,0.5,1,1.5,2",
-      "defaultColors": "FD13AB,FE217C,F53A48,E75D28,D36B0B",
-      "hueTrend": 1,
       "dilutions": [
         1,
         2,
