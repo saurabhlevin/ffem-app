@@ -203,7 +203,6 @@
         5
       ],
       "monthsValid": 3,
-      "hasImage": true,
       "instructions": [
       ],
       "results": [
@@ -231,7 +230,6 @@
         5
       ],
       "monthsValid": 12,
-      "hasImage": true,
       "instructions": [
         {
           "section": [
@@ -311,7 +309,6 @@
       "calibrate": true,
       "ranges": "0,0.5,1,1.5,2,2.5,3",
       "monthsValid": 24,
-      "hasImage": true,
       "instructions": [
         {
           "section": [
@@ -390,7 +387,6 @@
         5
       ],
       "monthsValid": 24,
-      "hasImage": true,
       "results": [
         {
           "name": "Nitrate",
@@ -409,7 +405,6 @@
       "calibrate": true,
       "ranges": "4,5,6,7,8,9,10",
       "monthsValid": 12,
-      "hasImage": true,
       "results": [
         {
           "id": 1,
@@ -433,7 +428,6 @@
         5
       ],
       "monthsValid": 24,
-      "hasImage": true,
       "results": [
         {
           "name": "Phosphate",
@@ -473,7 +467,6 @@
       "brand": "MERCK 117985",
       "imageScale": "centerCrop",
       "groupingType": "INDIVIDUAL",
-      "hasImage": true,
       "length": 74,
       "height": 6,
       "instructions": [
@@ -568,7 +561,6 @@
           "brand": "MERCK 117985",
           "imageScale": "centerCrop",
           "groupingType": "INDIVIDUAL",
-          "hasImage": true,
           "length": 74,
           "height": 6,
           "instructions": [
