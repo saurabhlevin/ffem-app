@@ -393,8 +393,8 @@
       "monthsValid": 24,
       "results": [
         {
-          "name": "Nitrate",
           "id": 1,
+          "name": "Nitrate",
           "unit": "mg/l",
           "timeDelay": 360
         }
@@ -435,8 +435,8 @@
       "monthsValid": 24,
       "results": [
         {
-          "name": "Phosphate",
           "id": 1,
+          "name": "Phosphate",
           "unit": "mg/l",
           "timeDelay": 600
         }
@@ -449,7 +449,7 @@
       "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
       "brand": "Caddisfly",
       "imageScale": "centerCrop",
-      "calibrate": "true",
+      "calibrate": true,
       "ranges": "0,0.5,1,1.5,2",
       "dilutions": [
         1,
