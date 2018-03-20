@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:text="@string/cancel"
-            android:textColor="#aaa"
+            android:textColor="#565656"
             android:textSize="17sp"
             android:visibility="gone" />
 
@@ -70,7 +70,7 @@
             android:letterSpacing="0.01"
             android:padding="20dp"
             android:text="@string/save"
-            android:textColor="#ccc"
+            android:textColor="#393939"
             android:textSize="17sp"
             android:visibility="gone"
             tools:targetApi="lollipop" />

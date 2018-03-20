@@ -46,7 +46,6 @@ import android.widget.TextView;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
-import org.akvo.caddisfly.common.ConstantJsonKey;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.SensorConstants;
@@ -66,14 +65,33 @@ import org.akvo.caddisfly.sensor.cbt.CbtActivity;
 import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.sensor.manual.ManualTestActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
+import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
+import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Date;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import timber.log.Timber;
 
@@ -96,7 +114,7 @@ public class TestActivity extends BaseActivity {
     private final String[] noPermissions = {};
 
     // old versions of the survey app does not expect image in result
-    private boolean mCallerExpectsImageInResult = true;
+//    private boolean mCallerExpectsImageInResult = true;
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private LinearLayout mainLayout;
@@ -161,11 +179,11 @@ public class TestActivity extends BaseActivity {
 
         String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
-        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
+//        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
 
-            // old version of survey does not expect image in result
-            mCallerExpectsImageInResult = false;
-        }
+        // old version of survey does not expect image in result
+//            mCallerExpectsImageInResult = false;
+//        }
 
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
         if (uuid == null) {
@@ -192,6 +210,17 @@ public class TestActivity extends BaseActivity {
             setTitle(getTestName(questionTitle));
             alertTestTypeNotSupported();
         } else {
+
+            if (testInfo.getSubtype() == TestType.TITRATION) {
+
+//                for (String key : intent.getExtras().keySet()) {
+//                }
+//
+                if (intent.hasExtra("value")) {
+                    checkSurveys();
+                    restartSurveyApp();
+                }
+            }
 
             TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
 
@@ -277,8 +306,18 @@ public class TestActivity extends BaseActivity {
                     checkCameraMegaPixel();
                 }
                 break;
+            case TITRATION:
+                startTitrationTest();
+                break;
             default:
         }
+    }
+
+    private void startTitrationTest() {
+        Intent intent;
+        intent = new Intent(this, TitrationTestActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivityForResult(intent, REQUEST_TEST);
     }
 
     private void startColiformCountTest() {
@@ -357,19 +396,19 @@ public class TestActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TEST && resultCode == Activity.RESULT_OK) {
             //return the test result to the external app
-            Intent intent = new Intent(getIntent());
+            Intent intent = new Intent(data);
 
-            if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
-                    && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
-                //if survey from old version server then don't send json response
-                intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));
-                intent.putExtra(SensorConstants.VALUE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));
-            } else {
-                intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE));
-                if (testInfo.getHasImage() && mCallerExpectsImageInResult) {
-                    intent.putExtra(ConstantJsonKey.IMAGE, data.getStringExtra(ConstantKey.IMAGE));
-                }
-            }
+//            if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
+//                    && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
+//                //if survey from old version server then don't send json response
+//                intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));
+//                intent.putExtra(SensorConstants.VALUE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));
+//            } else {
+//                intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE));
+//                if (testInfo.getHasImage() && mCallerExpectsImageInResult) {
+//                    intent.putExtra(ConstantJsonKey.IMAGE, data.getStringExtra(ConstantKey.IMAGE));
+//                }
+//            }
 
             this.setResult(Activity.RESULT_OK, intent);
             finish();
@@ -523,6 +562,27 @@ public class TestActivity extends BaseActivity {
     }
 
     /**
+     * Alert displayed when an unsupported contaminant test type was requested.
+     */
+    private void restartSurveyApp() {
+
+        String message = getString(R.string.restartSurveyApp);
+//        message = String.format(MESSAGE_TWO_LINE_FORMAT, message, getString(R.string.pleaseContactSupport));
+
+        AlertUtil.showAlert(this, R.string.cannotStartTest, message,
+                R.string.ok,
+                (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    finish();
+                }, null,
+                dialogInterface -> {
+                    dialogInterface.dismiss();
+                    finish();
+                }
+        );
+    }
+
+    /**
      * Show CBT incubation times instructions in a dialog.
      *
      * @param view the view
@@ -539,6 +599,73 @@ public class TestActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkSurveys() {
+
+        String formsFolder = "/odk/forms";
+        File path = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false), formsFolder);
+
+        File[] fileList;
+        if (path.exists() && path.isDirectory()) {
+            fileList = path.listFiles();
+
+            for (File ff : fileList) {
+                if (ff.isFile() && ff.getPath().endsWith(".xml")) {
+
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder builder;
+
+                    boolean xmlModified = false;
+                    try {
+                        builder = factory.newDocumentBuilder();
+                        Document doc = builder.parse(ff);
+
+                        NodeList nodesList = doc.getElementsByTagName("group");
+
+                        for (int i = 0; i < nodesList.getLength(); i++) {
+                            Node node = nodesList.item(i);
+
+                            Node appearanceNode = node.getChildNodes().item(3).getAttributes().getNamedItem("appearance");
+
+                            if (appearanceNode != null) {
+                                String appearance = appearanceNode.getNodeValue();
+
+                                if (appearance.contains("52ec4ca0-d691-4f2b-b17a-232c2966974a")) {
+                                    ((Element) node).setAttribute("intent",
+                                            "io.ffem.app.caddisfly(testId='52ec4ca0-d691-4f2b-b17a-232c2966974a')");
+                                    xmlModified = true;
+
+                                    for (int j = 0; j < node.getChildNodes().getLength(); j++) {
+                                        if (node.getChildNodes().item(j).getAttributes() != null) {
+                                            if (node.getChildNodes().item(j).getAttributes().getNamedItem("appearance") != null) {
+                                                node.getChildNodes().item(j).getAttributes().removeNamedItem("appearance");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (xmlModified) {
+                            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
+                            DOMSource source = new DOMSource(doc);
+                            StreamResult result = new StreamResult(ff.getAbsolutePath());
+                            transformer.transform(source, result);
+                        }
+
+                    } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }
+
+
     }
 
     /**

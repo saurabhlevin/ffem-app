@@ -152,6 +152,7 @@
     <string name="versionExpired">Version expired</string>
     <string name="thisVersionHasExpired">This version of the app has expired.</string>
     <string name="uninstallAndInstallFromStore">Please uninstall and then install the latest version from Play Store.</string>
+    <string name="restartSurveyApp">Please save and restart the survey to continue.</string>
 
     <!--Permission-->
     <string name="storagePermission">Storage permission is required</string>

@@ -136,6 +136,9 @@
         <activity
             android:name=".diagnostic.DiagnosticSwatchActivity"
             android:screenOrientation="nosensor" />
+        <activity
+            android:name=".sensor.titration.TitrationTestActivity"
+            android:screenOrientation="nosensor" />
         <!-- /Diagnostic -->
 
     </application>
