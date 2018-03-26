@@ -63,11 +63,13 @@ import static org.akvo.caddisfly.common.Constants.DEGREES_90;
 
 public class BaseRunTest extends Fragment implements RunTest {
     private static final double SHORT_DELAY = 1;
+    final int[] countdown = {0};
     private final ArrayList<ResultDetail> results = new ArrayList<>();
     private final Handler delayHandler = new Handler();
     protected FragmentRunTestBinding binding;
     protected boolean cameraStarted;
     protected int pictureCount = 0;
+    int timeDelay = 0;
     private SoundPoolPlayer sound;
     private Handler mHandler;
     private AlertDialog alertDialogToBeDestroyed;
@@ -76,6 +78,16 @@ public class BaseRunTest extends Fragment implements RunTest {
     private int dilution;
     private Camera mCamera;
     private OnResultListener mListener;
+    private ChamberCameraPreview mCameraPreview;
+    private final Runnable mRunnableCode = () -> {
+        if (pictureCount < AppPreferences.getSamplingTimes()) {
+            pictureCount++;
+            sound.playShortResource(R.raw.beep);
+            takePicture();
+        } else {
+            releaseResources();
+        }
+    };
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -95,16 +107,16 @@ public class BaseRunTest extends Fragment implements RunTest {
             }
         }
     };
-    private ChamberCameraPreview mCameraPreview;
-    private final Runnable mRunnableCode = () -> {
-        if (pictureCount < AppPreferences.getSamplingTimes()) {
-            pictureCount++;
-            sound.playShortResource(R.raw.beep);
-            takePicture();
+    private Runnable mCountdown = this::setCountDown;
+
+    private void setCountDown() {
+        if (countdown[0] < timeDelay) {
+            binding.countdownTimer.setProgress(timeDelay - countdown[0]++, timeDelay);
+            delayHandler.postDelayed(mCountdown, 1000);
         } else {
-            releaseResources();
+            binding.countdownTimer.setVisibility(View.GONE);
         }
-    };
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -146,7 +158,9 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     protected void stopPreview() {
-        mCamera.stopPreview();
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
     }
 
     @Override
@@ -180,6 +194,16 @@ public class BaseRunTest extends Fragment implements RunTest {
         } else {
             binding.textDilution.setText(getResources()
                     .getQuantityString(R.plurals.dilutions, dilution, dilution));
+        }
+
+        // If the test has a time delay config then use that otherwise use standard delay
+        if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
+            timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+
+            binding.countdownTimer.setVisibility(View.VISIBLE);
+            binding.countdownTimer.setProgress(timeDelay, timeDelay);
+
+            setCountDown();
         }
 
         return binding.getRoot();
@@ -308,12 +332,17 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             sound.playShortResource(R.raw.futurebeep2);
 
-            int timeDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
+            timeDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
 
             // If the test has a time delay config then use that otherwise use standard delay
             if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
                 (new Handler()).postDelayed(this::stopPreview, 1000);
                 timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+
+                binding.countdownTimer.setVisibility(View.VISIBLE);
+                binding.countdownTimer.setProgress(timeDelay, timeDelay);
+
+                setCountDown();
             }
 
             delayHandler.postDelayed(mRunnableCode, timeDelay * 1000);

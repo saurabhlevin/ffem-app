@@ -22,7 +22,10 @@ package org.akvo.caddisfly.ui;
 import android.Manifest;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -31,6 +34,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,14 +45,18 @@ import android.widget.Toast;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
+import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.NavigationController;
 import org.akvo.caddisfly.databinding.ActivityMainBinding;
 import org.akvo.caddisfly.helper.ApkHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
+import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
+import org.akvo.caddisfly.repository.TestConfigRepository;
+import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -70,6 +78,28 @@ public class MainActivity extends BaseActivity {
     private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private ActivityMainBinding b;
     private NavigationController navigationController;
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String uuid = ((TestInfo) intent.getParcelableExtra(ConstantKey.TEST_INFO)).getUuid();
+
+            TestInfo testInfo = (new TestConfigRepository()).getTestInfo(uuid);
+
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(() -> {
+
+                Intent testIntent = new Intent(MainActivity.this, ChamberTestActivity.class);
+                testIntent.putExtra(ConstantKey.RUN_TEST, true);
+                testIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                startActivity(testIntent);
+//
+//                Intent testIntent = new Intent(MainActivity.this, TestActivity.class);
+//                testIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+//                startActivity(testIntent);
+            }, 10000L);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +126,16 @@ public class MainActivity extends BaseActivity {
         // If app has expired then close this activity
         ApkHelper.isAppVersionExpired(this);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-name"));
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     /**

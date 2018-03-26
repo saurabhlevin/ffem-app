@@ -44,7 +44,6 @@ import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.diagnostic.ConfigTask;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.TestListActivity;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -54,7 +53,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -137,10 +135,10 @@ public class ConfigDownloader {
 
             boolean isSending = false;
 
-            ResultDetail result = testInfo.getResultDetail();
-            String resultImageUrl = UUID.randomUUID().toString() + ".png";
-            FileUtil.writeBitmapToExternalStorage(result.getBitmap(),
-                    FileHelper.FileType.DIAGNOSTIC_IMAGE, resultImageUrl);
+//            ResultDetail result = testInfo.getResultDetail();
+//            String resultImageUrl = UUID.randomUUID().toString() + ".png";
+//            FileUtil.writeBitmapToExternalStorage(result.getBitmap(),
+//                    FileHelper.FileType.DIAGNOSTIC_IMAGE, resultImageUrl);
 
 
             for (Calibration calibration : testInfo.getCalibrations()) {

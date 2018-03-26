@@ -22,12 +22,14 @@ package org.akvo.caddisfly.ui;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -43,12 +45,10 @@ import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.util.List;
 
-public class TestListFragment extends Fragment {
+public class TestListFragment extends Fragment implements TestInfoAdapter.AdapterInterface {
 
     public static final String TAG = "TestListViewModel";
-
     private FragmentListBinding b;
-
     private OnListFragmentInteractionListener mListener;
 
     private final TestInfoClickCallback mTestInfoClickCallback = test -> {
@@ -71,6 +71,13 @@ public class TestListFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onLongClick(TestInfo testInfo) {
+        Intent intent = new Intent("custom-event-name");
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -83,7 +90,7 @@ public class TestListFragment extends Fragment {
             mTestType = (TestType) getArguments().get(ConstantKey.TYPE);
         }
 
-        mTestInfoAdapter = new TestInfoAdapter(mTestInfoClickCallback);
+        mTestInfoAdapter = new TestInfoAdapter(mTestInfoClickCallback, this);
 
         if (getContext() != null) {
             b.listTypes.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));

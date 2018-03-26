@@ -39,6 +39,7 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import org.akvo.caddisfly.R;
@@ -51,10 +52,12 @@ public class TestInfoAdapter extends RecyclerView.Adapter<TestInfoAdapter.TestIn
 
     @Nullable
     private final TestInfoClickCallback mTestInfoClickCallback;
+    private final AdapterInterface longClickListener;
     private List<? extends TestInfo> mTestList;
 
-    public TestInfoAdapter(@Nullable TestInfoClickCallback clickCallback) {
+    public TestInfoAdapter(@Nullable TestInfoClickCallback clickCallback, AdapterInterface longClickListener) {
         mTestInfoClickCallback = clickCallback;
+        this.longClickListener = longClickListener;
     }
 
     public void setTestList(final List<? extends TestInfo> testList) {
@@ -89,13 +92,26 @@ public class TestInfoAdapter extends RecyclerView.Adapter<TestInfoAdapter.TestIn
         return mTestList.get(i);
     }
 
-    static class TestInfoViewHolder extends RecyclerView.ViewHolder {
+    public interface AdapterInterface {
+        void onLongClick(TestInfo testInfo);
+    }
+
+    class TestInfoViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
         final TestItemBinding binding;
 
         TestInfoViewHolder(TestItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.getRoot().setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+
+            TestInfo testInfo = getItemAt(getAdapterPosition());
+            longClickListener.onLongClick(testInfo);
+            return true;
         }
     }
 }
