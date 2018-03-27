@@ -30,6 +30,8 @@ public class ResultDetail {
     private int calibrationSteps;
     private Bitmap croppedBitmap;
     private Bitmap bitmap;
+    private String image;
+    private String croppedImage;
 
     public ResultDetail(double result, int color) {
         this.result = result;
@@ -94,5 +96,21 @@ public class ResultDetail {
 
     public void setCroppedBitmap(Bitmap croppedBitmap) {
         this.croppedBitmap = croppedBitmap;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getCroppedImage() {
+        return croppedImage;
+    }
+
+    public void setCroppedImage(String croppedImage) {
+        this.croppedImage = croppedImage;
     }
 }

@@ -11,8 +11,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 
@@ -46,32 +48,43 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
         @SuppressLint("InflateParams")
         View view = i.inflate(R.layout.fragment_diagnostic_send_dialog, null);
 
+        TextView textError = view.findViewById(R.id.textError);
+
         Spinner spinner = view.findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.cuvettes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+
         EditText comment = view.findViewById(R.id.comment);
 
-        AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setView(view)
                 .setTitle("Details")
-                .setPositiveButton(R.string.sendData,
-                        (dialog, whichButton) -> {
-                            mListener.onDetailsSaved(spinner.getSelectedItemPosition(), comment.getText().toString());
-                            dismiss();
-                        }
-                )
-                .setNegativeButton(R.string.cancel,
-                        (dialog, whichButton) -> {
-                            dismiss();
-                        }
-                );
+                .setPositiveButton(R.string.sendData, null) //Set to null. We override the onclick
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
 
-        b.setView(view);
+        dialog.setOnShowListener(dialogInterface -> {
 
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view1 -> {
 
-        return b.create();
+                textError.setError(null);
+                if (spinner.getSelectedItemPosition() > 0) {
+                    mListener.onDetailsSaved(spinner.getSelectedItemPosition(), comment.getText().toString());
+                    dismiss();
+                } else {
+                    textError.requestFocus();
+                    textError.setError("Select cuvette type");
+
+                }
+            });
+        });
+        dialog.show();
+
+        return dialog;
     }
 
     @Override

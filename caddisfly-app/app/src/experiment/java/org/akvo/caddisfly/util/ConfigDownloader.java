@@ -138,10 +138,29 @@ public class ConfigDownloader {
             boolean isSending = false;
 
             ResultDetail result = testInfo.getResultDetail();
-            String resultImageUrl = UUID.randomUUID().toString() + ".png";
-            FileUtil.writeBitmapToExternalStorage(result.getBitmap(),
-                    FileHelper.FileType.DIAGNOSTIC_IMAGE, resultImageUrl);
+            if (result != null) {
 
+                isSending = true;
+
+                result.setImage(UUID.randomUUID().toString() + ".png");
+                result.setCroppedImage(UUID.randomUUID().toString() + ".png");
+
+                // Save photo taken during the test
+                FileUtil.writeBitmapToExternalStorage(result.getBitmap(),
+                        FileHelper.FileType.DIAGNOSTIC_IMAGE, result.getImage());
+
+                // Save photo taken during the test
+                FileUtil.writeBitmapToExternalStorage(result.getCroppedBitmap(),
+                        FileHelper.FileType.DIAGNOSTIC_IMAGE, result.getCroppedImage());
+
+                File imagePath = new File(path, result.getImage());
+                File croppedImagePath = new File(path, result.getCroppedImage());
+
+                sendFile(context, testInfo.getUuid(), type, comment, pd, deviceId, db, storageReference,
+                        result.getImage(), result.getCroppedImage(), imagePath, croppedImagePath,
+                        result.getColor(), result.getResult(), new Date());
+
+            }
 
             for (Calibration calibration : testInfo.getCalibrations()) {
 
@@ -156,91 +175,9 @@ public class ConfigDownloader {
 
                     isSending = true;
 
-                    Uri file = Uri.fromFile(imagePath);
-                    StorageReference storageReference1 = storageReference.child("calibration-images/" + calibration.image);
-
-                    storageReference1.putFile(file)
-                            .addOnSuccessListener(taskSnapshot -> {
-
-                                imagePath.delete();
-
-                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                Uri file1 = Uri.fromFile(croppedImagePath);
-                                StorageReference storageReference2 = storageReference.child("calibration-images/" + calibration.croppedImage);
-
-                                storageReference2.putFile(file1)
-                                        .addOnSuccessListener(taskSnapshot1 -> {
-
-                                            croppedImagePath.delete();
-
-                                            // Get a URL to the uploaded content
-                                            Uri downloadUrl1 = taskSnapshot1.getDownloadUrl();
-                                            // Create a new calibration with a first and last name
-                                            Map<String, Object> cal = new HashMap<>();
-                                            cal.put("deviceId", deviceId);
-                                            cal.put("id", calibration.uid);
-                                            cal.put("type", type);
-                                            cal.put("value", calibration.value);
-                                            cal.put("color", calibration.color);
-                                            cal.put("r", Color.red(calibration.color));
-                                            cal.put("g", Color.green(calibration.color));
-                                            cal.put("b", Color.blue(calibration.color));
-                                            cal.put("date", calibration.date);
-                                            cal.put("comment", comment);
-                                            cal.put("version", BuildConfig.VERSION_CODE);
-                                            cal.put("manufacturer", Build.MANUFACTURER);
-                                            cal.put("device", Build.MODEL);
-                                            cal.put("product", Build.PRODUCT);
-                                            cal.put("os", "Android - " + Build.VERSION.RELEASE + " ("
-                                                    + Build.VERSION.SDK_INT + ")");
-                                            cal.put("megaPixel", getMaxSupportedMegaPixelsByCamera(context));
-                                            cal.put("appName", context.getString(R.string.appName));
-                                            cal.put("appVersion", CaddisflyApp.getAppVersion());
-
-                                            if (downloadUrl != null) {
-                                                cal.put("image", downloadUrl.toString());
-                                            }
-                                            if (downloadUrl1 != null) {
-                                                cal.put("croppedImage", downloadUrl1.toString());
-                                            }
-
-                                            db.collection(calibration.uid)
-                                                    .document(String.valueOf(deviceId + "-" + calibration.date))
-                                                    .set(cal)
-                                                    .addOnSuccessListener(documentReference -> {
-                                                        if (pd.isShowing()) {
-                                                            pd.dismiss();
-                                                        }
-
-                                                        Toast.makeText(context, "Data sent", Toast.LENGTH_SHORT).show();
-                                                    })
-                                                    .addOnFailureListener(e -> {
-                                                        if (pd.isShowing()) {
-                                                            pd.dismiss();
-                                                        }
-
-                                                        Toast.makeText(context,
-                                                                "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
-
-                                                        Timber.w("Error adding document", e);
-                                                    });
-                                        })
-                                        .addOnFailureListener(exception -> {
-                                            if (pd.isShowing()) {
-                                                pd.dismiss();
-                                            }
-                                            Toast.makeText(context,
-                                                    "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
-                                        });
-                            })
-                            .addOnFailureListener(exception -> {
-                                if (pd.isShowing()) {
-                                    pd.dismiss();
-                                }
-
-                                Toast.makeText(context,
-                                        "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
-                            });
+                    sendFile(context, testInfo.getUuid(), type, comment, pd, deviceId, db, storageReference,
+                            calibration.image, calibration.croppedImage, imagePath, croppedImagePath,
+                            calibration.color, calibration.value, new Date(calibration.date));
                 }
             }
 
@@ -252,5 +189,98 @@ public class ConfigDownloader {
                         "No data to send", Toast.LENGTH_SHORT).show());
             }
         }).start();
+    }
+
+    private static void sendFile(Context context, String uuid, int type, String comment, ProgressDialog pd,
+                                 String deviceId, FirebaseFirestore db, StorageReference storageReference,
+                                 String imageName, String croppedImageName, File imagePath, File croppedImagePath,
+                                 int color, double value, Date date) {
+        Uri file = Uri.fromFile(imagePath);
+        StorageReference storageReference1 = storageReference.child("calibration-images/" + imageName);
+
+        storageReference1.putFile(file)
+                .addOnSuccessListener(taskSnapshot -> {
+
+                    //noinspection ResultOfMethodCallIgnored
+                    imagePath.delete();
+
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Uri file1 = Uri.fromFile(croppedImagePath);
+                    StorageReference storageReference2 = storageReference.child("calibration-images/" + croppedImageName);
+
+                    storageReference2.putFile(file1)
+                            .addOnSuccessListener(taskSnapshot1 -> {
+
+                                //noinspection ResultOfMethodCallIgnored
+                                croppedImagePath.delete();
+
+                                // Get a URL to the uploaded content
+                                Uri downloadUrl1 = taskSnapshot1.getDownloadUrl();
+                                // Create a new calibration with a first and last name
+                                Map<String, Object> cal = new HashMap<>();
+                                cal.put("deviceId", deviceId);
+                                cal.put("id", uuid);
+                                cal.put("type", type);
+                                cal.put("value", value);
+                                cal.put("color", color);
+                                cal.put("r", Color.red(color));
+                                cal.put("g", Color.green(color));
+                                cal.put("b", Color.blue(color));
+                                cal.put("date", date);
+                                cal.put("comment", comment);
+                                cal.put("version", BuildConfig.VERSION_CODE);
+                                cal.put("manufacturer", Build.MANUFACTURER);
+                                cal.put("device", Build.MODEL);
+                                cal.put("product", Build.PRODUCT);
+                                cal.put("os", "Android - " + Build.VERSION.RELEASE + " ("
+                                        + Build.VERSION.SDK_INT + ")");
+                                cal.put("megaPixel", getMaxSupportedMegaPixelsByCamera(context));
+                                cal.put("appName", context.getString(R.string.appName));
+                                cal.put("appVersion", CaddisflyApp.getAppVersion());
+
+                                if (downloadUrl != null) {
+                                    cal.put("image", downloadUrl.toString());
+                                }
+                                if (downloadUrl1 != null) {
+                                    cal.put("croppedImage", downloadUrl1.toString());
+                                }
+
+                                db.collection(uuid)
+                                        .document(String.valueOf(deviceId + "-" + date.getTime()))
+                                        .set(cal)
+                                        .addOnSuccessListener(documentReference -> {
+                                            if (pd.isShowing()) {
+                                                pd.dismiss();
+                                            }
+
+                                            Toast.makeText(context, "Data sent", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            if (pd.isShowing()) {
+                                                pd.dismiss();
+                                            }
+
+                                            Toast.makeText(context,
+                                                    "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
+
+                                            Timber.w("Error adding document", e);
+                                        });
+                            })
+                            .addOnFailureListener(exception -> {
+                                if (pd.isShowing()) {
+                                    pd.dismiss();
+                                }
+                                Toast.makeText(context,
+                                        "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(exception -> {
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                    }
+
+                    Toast.makeText(context,
+                            "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
+                });
     }
 }
