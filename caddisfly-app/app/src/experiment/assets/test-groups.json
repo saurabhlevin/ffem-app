@@ -1,0 +1,28 @@
+{
+  "groups": [
+    {
+      "name": "Multiple Tests",
+      "uuid": "181273fc-16bd-413c-9986-58231fa3686e",
+      "imageScale": "centerCrop",
+      "instructions": [
+      ],
+      "tests": [
+        {
+          "id": 1,
+          "name": "Fluoride",
+          "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf"
+        },
+        {
+          "id": 2,
+          "name": "Free Chlorine",
+          "uuid": "a2413119-38eb-4959-92ee-cc169fdbb0fc"
+        },
+        {
+          "id": 3,
+          "name": "pH",
+          "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93"
+        }
+      ]
+    }
+  ]
+}

@@ -16,6 +16,7 @@ import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.ColorItem;
+import org.akvo.caddisfly.model.Groups;
 import org.akvo.caddisfly.model.TestConfig;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
@@ -126,6 +127,13 @@ public class TestConfigRepository {
                 testInfoList.addAll(experimentalList);
             }
         }
+    }
+
+    public Groups getGroupTestsInfo() {
+        String groupJson = assetsManager.getGroupJson();
+        Groups groups = new Gson().fromJson(groupJson, Groups.class);
+
+        return groups;
     }
 
     /**

@@ -51,6 +51,7 @@ import org.akvo.caddisfly.databinding.ActivityMainBinding;
 import org.akvo.caddisfly.helper.ApkHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
+import org.akvo.caddisfly.model.Groups;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
@@ -273,6 +274,13 @@ public class MainActivity extends BaseActivity {
 
     public void onColiformCountClick(View view) {
         navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+    }
+
+    public void onGroupTestClick(View view) {
+
+        TestConfigRepository testConfigRepository = new TestConfigRepository();
+        Groups groups = testConfigRepository.getGroupTestsInfo();
+
     }
 
     /**

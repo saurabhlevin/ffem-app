@@ -121,4 +121,7 @@ public final class AssetsManager {
         return customJson;
     }
 
+    public String getGroupJson() {
+        return loadJsonFromAsset(Constants.GROUP_TESTS_META_FILENAME);
+    }
 }
