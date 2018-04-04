@@ -51,7 +51,7 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
         TextView textError = view.findViewById(R.id.textError);
 
         Spinner spinner = view.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
                 R.array.cuvettes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);

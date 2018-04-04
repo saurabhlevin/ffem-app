@@ -138,7 +138,27 @@ public class ConfigDownloader {
             boolean isSending = false;
 
             ResultDetail result = testInfo.getResultDetail();
-            if (result != null) {
+            if (result == null) {
+
+                for (Calibration calibration : testInfo.getCalibrations()) {
+
+                    if (calibration.image != null && calibration.croppedImage != null) {
+
+                        File imagePath = new File(path, calibration.image);
+                        File croppedImagePath = new File(path, calibration.croppedImage);
+
+                        if (!imagePath.exists() || !croppedImagePath.exists()) {
+                            continue;
+                        }
+
+                        isSending = true;
+
+                        sendFile(context, testInfo.getUuid(), type, comment, pd, deviceId, db, storageReference,
+                                calibration.image, calibration.croppedImage, imagePath, croppedImagePath,
+                                calibration.color, calibration.value, new Date(calibration.date));
+                    }
+                }
+            } else {
 
                 isSending = true;
 
@@ -160,25 +180,6 @@ public class ConfigDownloader {
                         result.getImage(), result.getCroppedImage(), imagePath, croppedImagePath,
                         result.getColor(), result.getResult(), new Date());
 
-            }
-
-            for (Calibration calibration : testInfo.getCalibrations()) {
-
-                if (calibration.image != null && calibration.croppedImage != null) {
-
-                    File imagePath = new File(path, calibration.image);
-                    File croppedImagePath = new File(path, calibration.croppedImage);
-
-                    if (!imagePath.exists() || !croppedImagePath.exists()) {
-                        continue;
-                    }
-
-                    isSending = true;
-
-                    sendFile(context, testInfo.getUuid(), type, comment, pd, deviceId, db, storageReference,
-                            calibration.image, calibration.croppedImage, imagePath, croppedImagePath,
-                            calibration.color, calibration.value, new Date(calibration.date));
-                }
             }
 
             if (!isSending) {
