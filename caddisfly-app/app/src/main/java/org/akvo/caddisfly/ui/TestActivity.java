@@ -22,7 +22,10 @@ package org.akvo.caddisfly.ui;
 import android.Manifest;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -33,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.TypedValue;
@@ -59,6 +63,7 @@ import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
+import org.akvo.caddisfly.repository.TestConfigRepository;
 import org.akvo.caddisfly.sensor.bluetooth.DeviceControlActivity;
 import org.akvo.caddisfly.sensor.bluetooth.DeviceScanActivity;
 import org.akvo.caddisfly.sensor.cbt.CbtActivity;
@@ -81,6 +86,7 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -118,6 +124,23 @@ public class TestActivity extends BaseActivity {
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private LinearLayout mainLayout;
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            String uuid = ((TestInfo) intent.getParcelableExtra(ConstantKey.TEST_INFO)).getUuid();
+
+            TestInfo testInfo = intent.getParcelableExtra(ConstantKey.TEST_INFO);
+
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(() -> {
+                Intent testIntent = new Intent(TestActivity.this, ChamberTestActivity.class);
+                testIntent.putExtra(ConstantKey.RUN_TEST, true);
+                testIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                startActivity(testIntent);
+            }, 1L);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +193,8 @@ public class TestActivity extends BaseActivity {
                 }
             }
         }
+
+
     }
 
     private void getTestSelectedByExternalApp(FragmentManager fragmentManager, Intent intent) {
@@ -188,6 +213,16 @@ public class TestActivity extends BaseActivity {
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
         if (uuid == null) {
             uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+
+            if (uuid != null && uuid.equals("group-test")) {
+
+                TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+
+                return;
+            }
         }
 
         if (uuid == null) {
@@ -213,14 +248,13 @@ public class TestActivity extends BaseActivity {
 
             if (testInfo.getSubtype() == TestType.TITRATION) {
 
-//                for (String key : intent.getExtras().keySet()) {
-//                }
-//
                 if (intent.hasExtra("value")) {
                     checkSurveys();
                     restartSurveyApp();
                 }
             }
+
+            fixTestGroupInSurvey();
 
             TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
 
@@ -256,6 +290,27 @@ public class TestActivity extends BaseActivity {
     public void onStartTestClick(View view) {
 
         String[] checkPermissions = permissions;
+
+        String uuid = getIntent().getStringExtra(SensorConstants.TEST_ID);
+        if (uuid != null && uuid.equals("group-test")) {
+
+            TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+
+            TestConfigRepository testConfigRepository = new TestConfigRepository();
+            ArrayList<TestInfo> testInfos = testConfigRepository.getGroupTestsInfo();
+
+            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                    new IntentFilter("custom-event-name"));
+
+            Intent groupIntent = new Intent("custom-event-name");
+            groupIntent.putExtra(ConstantKey.TEST_INFO, testInfos.get(0));
+            LocalBroadcastManager.getInstance(this).sendBroadcast(groupIntent);
+            return;
+        }
 
         switch (testInfo.getSubtype()) {
             case SENSOR:
@@ -664,8 +719,79 @@ public class TestActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    private void fixTestGroupInSurvey() {
+
+        String formsFolder = "/odk/forms";
+        File path = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false), formsFolder);
+
+        File[] fileList;
+        if (path.exists() && path.isDirectory()) {
+            fileList = path.listFiles();
+
+            for (File ff : fileList) {
+                if (ff.isFile() && ff.getPath().endsWith(".xml")) {
+
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder builder;
+
+                    boolean xmlModified = false;
+                    try {
+                        builder = factory.newDocumentBuilder();
+                        Document doc = builder.parse(ff);
+
+                        NodeList nodesList = doc.getElementsByTagName("group");
+
+                        for (int i = 0; i < nodesList.getLength(); i++) {
+                            Node node = nodesList.item(i);
+
+                            Node appearanceNode = node.getChildNodes().item(3).getAttributes().getNamedItem("appearance");
+
+                            if (appearanceNode != null) {
+                                String appearance = appearanceNode.getNodeValue();
+
+                                if (appearance.contains("f0f3c1dd-89af-49f1-83e7-bcc31c3006cf")) {
+                                    ((Element) node).setAttribute("intent",
+                                            "io.ffem.app.caddisfly(testId='group-test')");
+                                    xmlModified = true;
+
+                                    for (int j = 0; j < node.getChildNodes().getLength(); j++) {
+                                        if (node.getChildNodes().item(j).getAttributes() != null) {
+                                            if (node.getChildNodes().item(j).getAttributes().getNamedItem("appearance") != null) {
+                                                node.getChildNodes().item(j).getAttributes().removeNamedItem("appearance");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (xmlModified) {
+                            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
+                            DOMSource source = new DOMSource(doc);
+                            StreamResult result = new StreamResult(ff.getAbsolutePath());
+                            transformer.transform(source, result);
+                        }
+
+                    } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }
+    }
 
 
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     /**
@@ -687,4 +813,5 @@ public class TestActivity extends BaseActivity {
             }
         }
     }
+
 }

@@ -17,6 +17,7 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.ColorItem;
 import org.akvo.caddisfly.model.Groups;
+import org.akvo.caddisfly.model.Test;
 import org.akvo.caddisfly.model.TestConfig;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
@@ -97,8 +98,6 @@ public class TestConfigRepository {
                     testInfoList.addAll(customList);
                 }
             }
-
-
         } catch (Exception e) {
             Log.e("error parsing", e.toString());
         }
@@ -129,11 +128,16 @@ public class TestConfigRepository {
         }
     }
 
-    public Groups getGroupTestsInfo() {
+    public ArrayList<TestInfo> getGroupTestsInfo() {
         String groupJson = assetsManager.getGroupJson();
         Groups groups = new Gson().fromJson(groupJson, Groups.class);
 
-        return groups;
+        ArrayList<TestInfo> testInfos = new ArrayList<>();
+        for (Test test : groups.getGroups().get(0).getTests()) {
+            testInfos.add(getTestInfo(test.getUuid()));
+        }
+
+        return testInfos;
     }
 
     /**
