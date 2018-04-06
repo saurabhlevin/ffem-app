@@ -655,6 +655,20 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Test Group",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "9eea0281-a608-4b44-bde0-5d25795db531",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "results": [
+        {
+          "id": 1,
+          "name": "Test Group"
+        }
+      ]
     }
   ]
 }

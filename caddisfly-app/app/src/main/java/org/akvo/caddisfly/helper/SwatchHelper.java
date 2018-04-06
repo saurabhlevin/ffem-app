@@ -283,8 +283,10 @@ public final class SwatchHelper {
                 list.add(new Swatch(startValue + (j * increment), color, Color.TRANSPARENT));
             }
         }
-        list.add(new Swatch(swatches.get(swatches.size() - 1).getValue(),
-                swatches.get(swatches.size() - 1).getColor(), Color.TRANSPARENT));
+        if (swatches.size() > 0) {
+            list.add(new Swatch(swatches.get(swatches.size() - 1).getValue(),
+                    swatches.get(swatches.size() - 1).getColor(), Color.TRANSPARENT));
+        }
 
         return list;
     }
@@ -300,6 +302,10 @@ public final class SwatchHelper {
 
         if (testInfo == null) {
             return false;
+        }
+
+        if (testInfo.getSwatches().size() < 1) {
+            return true;
         }
 
         boolean result = true;

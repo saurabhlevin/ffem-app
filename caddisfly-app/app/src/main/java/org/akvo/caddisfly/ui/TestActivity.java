@@ -22,10 +22,7 @@ package org.akvo.caddisfly.ui;
 import android.Manifest;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -36,7 +33,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.TypedValue;
@@ -63,7 +59,6 @@ import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
-import org.akvo.caddisfly.repository.TestConfigRepository;
 import org.akvo.caddisfly.sensor.bluetooth.DeviceControlActivity;
 import org.akvo.caddisfly.sensor.bluetooth.DeviceScanActivity;
 import org.akvo.caddisfly.sensor.cbt.CbtActivity;
@@ -86,7 +81,6 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -125,22 +119,22 @@ public class TestActivity extends BaseActivity {
     private boolean cameraIsOk = false;
     private LinearLayout mainLayout;
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-//            String uuid = ((TestInfo) intent.getParcelableExtra(ConstantKey.TEST_INFO)).getUuid();
-
-            TestInfo testInfo = intent.getParcelableExtra(ConstantKey.TEST_INFO);
-
-            Handler mHandler = new Handler();
-            mHandler.postDelayed(() -> {
-                Intent testIntent = new Intent(TestActivity.this, ChamberTestActivity.class);
-                testIntent.putExtra(ConstantKey.RUN_TEST, true);
-                testIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
-                startActivity(testIntent);
-            }, 1L);
-        }
-    };
+//    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+////            String uuid = ((TestInfo) intent.getParcelableExtra(ConstantKey.TEST_INFO)).getUuid();
+//
+//            TestInfo testInfo = intent.getParcelableExtra(ConstantKey.TEST_INFO);
+//
+//            Handler mHandler = new Handler();
+//            mHandler.postDelayed(() -> {
+//                Intent testIntent = new Intent(TestActivity.this, ChamberTestActivity.class);
+//                testIntent.putExtra(ConstantKey.RUN_TEST, true);
+//                testIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+//                startActivity(testIntent);
+//            }, 1L);
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,12 +210,15 @@ public class TestActivity extends BaseActivity {
 
             if (uuid != null && uuid.equals("group-test")) {
 
+                uuid = "9eea0281-a608-4b44-bde0-5d25795db531";
+                final TestListViewModel viewModel =
+                        ViewModelProviders.of(this).get(TestListViewModel.class);
+                testInfo = viewModel.getTestInfo(uuid);
+
                 TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
 
                 fragmentManager.beginTransaction()
                         .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
-
-                return;
             }
         }
 
@@ -292,25 +289,26 @@ public class TestActivity extends BaseActivity {
         String[] checkPermissions = permissions;
 
         String uuid = getIntent().getStringExtra(SensorConstants.TEST_ID);
-        if (uuid != null && uuid.equals("group-test")) {
-
-            TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
-
-            TestConfigRepository testConfigRepository = new TestConfigRepository();
-            ArrayList<TestInfo> testInfos = testConfigRepository.getGroupTestsInfo();
-
-            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                    new IntentFilter("custom-event-name"));
-
-            Intent groupIntent = new Intent("custom-event-name");
-            groupIntent.putExtra(ConstantKey.TEST_INFO, testInfos.get(0));
-            LocalBroadcastManager.getInstance(this).sendBroadcast(groupIntent);
-            return;
-        }
+//        if (uuid != null && uuid.equals("group-test")) {
+//
+//
+////            TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
+////
+////            FragmentManager fragmentManager = getSupportFragmentManager();
+////            fragmentManager.beginTransaction()
+////                    .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+////
+////            TestConfigRepository testConfigRepository = new TestConfigRepository();
+////            ArrayList<TestInfo> testInfos = testConfigRepository.getGroupTestsInfo();
+////
+////            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+////                    new IntentFilter("custom-event-name"));
+////
+////            Intent groupIntent = new Intent("custom-event-name");
+////            groupIntent.putExtra(ConstantKey.TEST_INFO, testInfos.get(0));
+////            LocalBroadcastManager.getInstance(this).sendBroadcast(groupIntent);
+//            return;
+//        }
 
         switch (testInfo.getSubtype()) {
             case SENSOR:
@@ -753,7 +751,7 @@ public class TestActivity extends BaseActivity {
 
                                 if (appearance.contains("f0f3c1dd-89af-49f1-83e7-bcc31c3006cf")) {
                                     ((Element) node).setAttribute("intent",
-                                            "io.ffem.app.caddisfly(testId='group-test')");
+                                            "io.ffem.app.caddisfly(testId='9eea0281-a608-4b44-bde0-5d25795db531')");
                                     xmlModified = true;
 
                                     for (int j = 0; j < node.getChildNodes().getLength(); j++) {
@@ -786,13 +784,12 @@ public class TestActivity extends BaseActivity {
         }
     }
 
-
-    @Override
-    protected void onDestroy() {
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        // Unregister since the activity is about to be closed.
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+//        super.onDestroy();
+//    }
 
     /**
      * Handler to restart the app after language has been changed.

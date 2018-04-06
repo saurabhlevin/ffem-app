@@ -67,6 +67,7 @@ import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
+import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -99,6 +100,8 @@ public class ChamberTestActivity extends BaseActivity implements
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
 
+    private boolean isGroupTests = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -117,6 +120,15 @@ public class ChamberTestActivity extends BaseActivity implements
             if (testInfo == null) {
                 finish();
                 return;
+            }
+
+            if (testInfo.getSwatches().size() < 1) {
+                isGroupTests = true;
+
+                final TestListViewModel viewModel =
+                        ViewModelProviders.of(this).get(TestListViewModel.class);
+
+                testInfo = viewModel.getTestInfo(Constants.FLUORIDE_ID);
             }
 
             if (testInfo.getCameraAbove()) {
@@ -396,28 +408,13 @@ public class ChamberTestActivity extends BaseActivity implements
                         .replace(R.id.fragment_container,
                                 ResultFragment.newInstance(testInfo), null).commit();
 
-//                if (AppPreferences.isDiagnosticMode()) {
-//                    showDiagnosticResultDialog(false, result, resultDetails, false, 0);
-//
-//                    ResultDetail resultDetail =resultDetails.get(resultDetails.size() -1);
-//                    resultDetail.setImage(UUID.randomUUID().toString() + ".png");
-//
-//
-//                    resultDetail.setCroppedImage(UUID.randomUUID().toString() + ".png");
-//
-//                    // Save photo taken during the test
-//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
-//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
-//
-//                    testInfo.setResultDetail(resultDetail);
-//
-//
-//                    calibration.croppedImage = UUID.randomUUID().toString() + ".png";
-//                    // Save photo taken during the test
-//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
-//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
-//                }
+                if (AppPreferences.isDiagnosticMode()) {
+                    showDiagnosticResultDialog(false, result, resultDetails, false, 0);
 
+                    ResultDetail resultDetail = resultDetails.get(resultDetails.size() - 1);
+
+                    testInfo.setResultDetail(resultDetail);
+                }
 
             } else {
 
@@ -462,12 +459,12 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     calibration.image = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test
-                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(resultDetails.size() - 1).getBitmap(),
                             FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
 
                     calibration.croppedImage = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test
-                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(resultDetails.size() - 1).getCroppedBitmap(),
                             FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
                 }
                 dao.insert(calibration);
@@ -538,7 +535,18 @@ public class ChamberTestActivity extends BaseActivity implements
 
         setResult(Activity.RESULT_OK, resultIntent);
 
-        finish();
+        if (!isGroupTests) {
+            finish();
+        } else {
+            final TestListViewModel viewModel =
+                    ViewModelProviders.of(this).get(TestListViewModel.class);
+
+            testInfo = viewModel.getTestInfo("4d3a7d6d-2f11-49de-9f7f-9e21e840df93");
+
+            runTestFragment = ChamberAboveFragment.newInstance(testInfo);
+
+            start();
+        }
     }
 
     /**

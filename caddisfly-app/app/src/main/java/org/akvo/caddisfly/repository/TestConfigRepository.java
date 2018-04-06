@@ -291,7 +291,7 @@ public class TestConfigRepository {
         // If colors are defined as comma delimited range values then create array
         try {
             if (testInfo.getResults().get(0).getColors().size() == 0
-                    && !testInfo.getRanges().isEmpty()) {
+                    && testInfo.getRanges() != null && !testInfo.getRanges().isEmpty()) {
                 String[] values = testInfo.getRanges().split(",");
                 for (String value : values) {
                     testInfo.getResults().get(0).getColors()
