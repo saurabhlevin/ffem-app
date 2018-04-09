@@ -111,11 +111,19 @@ public class BaseRunTest extends Fragment implements RunTest {
 
     private void setCountDown() {
         if (countdown[0] < timeDelay) {
+            binding.timeLayout.setVisibility(View.VISIBLE);
+            binding.layoutWait.setVisibility(View.GONE);
             binding.countdownTimer.setProgress(timeDelay - countdown[0]++, timeDelay);
             delayHandler.postDelayed(mCountdown, 1000);
         } else {
-            binding.countdownTimer.setVisibility(View.GONE);
+            binding.timeLayout.setVisibility(View.GONE);
+            binding.layoutWait.setVisibility(View.VISIBLE);
+            waitForStillness();
         }
+    }
+
+    protected void waitForStillness() {
+
     }
 
     @Override
@@ -200,10 +208,13 @@ public class BaseRunTest extends Fragment implements RunTest {
         if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
             timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
 
-            binding.countdownTimer.setVisibility(View.VISIBLE);
+            binding.timeLayout.setVisibility(View.VISIBLE);
+            binding.layoutWait.setVisibility(View.GONE);
             binding.countdownTimer.setProgress(timeDelay, timeDelay);
 
             setCountDown();
+        } else {
+            waitForStillness();
         }
 
         return binding.getRoot();
@@ -335,15 +346,18 @@ public class BaseRunTest extends Fragment implements RunTest {
             timeDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
 
             // If the test has a time delay config then use that otherwise use standard delay
-            if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
-                (new Handler()).postDelayed(this::stopPreview, 1000);
-                timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
-
-                binding.countdownTimer.setVisibility(View.VISIBLE);
-                binding.countdownTimer.setProgress(timeDelay, timeDelay);
-
-                setCountDown();
-            }
+//            if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
+//                (new Handler()).postDelayed(this::stopPreview, 1000);
+//                timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+//
+//                binding.timeLayout.setVisibility(View.VISIBLE);
+//                binding.layoutWait.setVisibility(View.GONE);
+//                binding.countdownTimer.setProgress(timeDelay, timeDelay);
+//
+//                setCountDown();
+//            } else {
+            binding.layoutWait.setVisibility(View.VISIBLE);
+//            }
 
             delayHandler.postDelayed(mRunnableCode, timeDelay * 1000);
         }

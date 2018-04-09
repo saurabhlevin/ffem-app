@@ -16,6 +16,7 @@ public class ConstantKey {
     public static final String IMAGE = NAMESPACE_PREFIX + "image";
 
     public static final String TYPE = NAMESPACE_PREFIX + "type";
-    public static final String GROUP_INFO = NAMESPACE_PREFIX + "groupInfo";
+    //    public static final String GROUP_INFO = NAMESPACE_PREFIX + "groupInfo";
+    public static final String START_TIME = NAMESPACE_PREFIX + "startTime";
 }
 

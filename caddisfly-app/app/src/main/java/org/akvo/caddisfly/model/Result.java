@@ -174,7 +174,7 @@ public class Result implements Parcelable {
         }
     }
 
-    public void setTimeDelay(Integer timeDelay) {
+    public void setTimeDelay(int timeDelay) {
         this.timeDelay = timeDelay;
     }
 

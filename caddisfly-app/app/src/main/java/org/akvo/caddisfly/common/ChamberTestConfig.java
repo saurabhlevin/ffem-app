@@ -24,12 +24,12 @@ public final class ChamberTestConfig {
     /**
      * The delay before starting the test
      */
-    public static final int DELAY_INITIAL = 4;
+    public static final int DELAY_INITIAL = 0;
 
     /**
      * The delay seconds between each photo taken by the camera during the analysis.
      */
-    public static final int DELAY_BETWEEN_SAMPLING = 4;
+    public static final int DELAY_BETWEEN_SAMPLING = 1;
 
     /**
      * The number of photos to take during analysis.
@@ -49,7 +49,7 @@ public final class ChamberTestConfig {
     /**
      * Max distance between colors at which the colors are considered to be similar.
      */
-    public static final int MAX_COLOR_DISTANCE_RGB = 40;
+    public static final int MAX_COLOR_DISTANCE_RGB = 60;
 
     /**
      * Max distance between colors for calibration.

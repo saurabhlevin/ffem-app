@@ -82,6 +82,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -108,18 +110,17 @@ public class TestActivity extends BaseActivity {
 
     private final WeakRefHandler handler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
-
     private final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] bluetoothPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
     private final String[] noPermissions = {};
-
+    private int isGroupTests = 0;
     // old versions of the survey app does not expect image in result
 //    private boolean mCallerExpectsImageInResult = true;
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private LinearLayout mainLayout;
 
-//    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    //    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
 ////            String uuid = ((TestInfo) intent.getParcelableExtra(ConstantKey.TEST_INFO)).getUuid();
@@ -135,6 +136,8 @@ public class TestActivity extends BaseActivity {
 //            }, 1L);
 //        }
 //    };
+    private Intent resultIntent;
+    private long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,9 +211,9 @@ public class TestActivity extends BaseActivity {
         if (uuid == null) {
             uuid = intent.getStringExtra(SensorConstants.TEST_ID);
 
-            if (uuid != null && uuid.equals("group-test")) {
+            if (uuid != null && uuid.equals("9eea0281-a608-4b44-bde0-5d25795db531")) {
+                isGroupTests = 1;
 
-                uuid = "9eea0281-a608-4b44-bde0-5d25795db531";
                 final TestListViewModel viewModel =
                         ViewModelProviders.of(this).get(TestListViewModel.class);
                 testInfo = viewModel.getTestInfo(uuid);
@@ -219,6 +222,9 @@ public class TestActivity extends BaseActivity {
 
                 fragmentManager.beginTransaction()
                         .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+
+                uuid = Constants.FLUORIDE_ID;
+
             }
         }
 
@@ -232,10 +238,17 @@ public class TestActivity extends BaseActivity {
         }
 
         if (uuid != null) {
+
+            if (uuid.equals("group-test")) {
+                fixTestGroupInSurvey();
+                return;
+            }
+
             //Get the test config by uuid
             final TestListViewModel viewModel =
                     ViewModelProviders.of(this).get(TestListViewModel.class);
             testInfo = viewModel.getTestInfo(uuid);
+
         }
 
         if (testInfo == null) {
@@ -250,8 +263,6 @@ public class TestActivity extends BaseActivity {
                     restartSurveyApp();
                 }
             }
-
-            fixTestGroupInSurvey();
 
             TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
 
@@ -333,6 +344,10 @@ public class TestActivity extends BaseActivity {
     }
 
     private void startTest() {
+        if (isGroupTests == 1) {
+            startTime = System.currentTimeMillis();
+        }
+
         switch (testInfo.getSubtype()) {
             case BLUETOOTH:
                 startBluetoothTest();
@@ -421,6 +436,7 @@ public class TestActivity extends BaseActivity {
             Intent intent = new Intent(this, ChamberTestActivity.class);
             intent.putExtra(ConstantKey.RUN_TEST, true);
             intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+            intent.putExtra(ConstantKey.START_TIME, startTime);
             startActivityForResult(intent, REQUEST_TEST);
         }
     }
@@ -447,9 +463,9 @@ public class TestActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_TEST && resultCode == Activity.RESULT_OK) {
             //return the test result to the external app
-            Intent intent = new Intent(data);
 
 //            if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
 //                    && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
@@ -463,7 +479,65 @@ public class TestActivity extends BaseActivity {
 //                }
 //            }
 
-            this.setResult(Activity.RESULT_OK, intent);
+
+            if (isGroupTests > 0) {
+                if (resultIntent == null) {
+                    resultIntent = new Intent(data);
+                } else {
+
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        for (String key : bundle.keySet()) {
+                            Object value = bundle.get(key);
+                            resultIntent.putExtra(key, value.toString());
+                        }
+                    }
+                }
+            }
+
+            if (isGroupTests > 0 && isGroupTests < 8) {
+                isGroupTests++;
+
+                String uuid = "";
+                switch (isGroupTests) {
+                    case 2:
+                        uuid = Constants.FREE_CHLORINE_ID_2;
+                        break;
+                    case 3:
+                        uuid = Constants.PH_ID;
+                        break;
+                    case 4:
+                        uuid = Constants.TOTAL_IRON_ID;
+                        break;
+                    case 5:
+                        uuid = Constants.CHROMIUM_ID;
+                        break;
+                    case 6:
+                        uuid = Constants.NITRATE_ID;
+                        break;
+                    case 7:
+                        uuid = Constants.PHOSPHATE_ID;
+                        break;
+                    case 8:
+                        uuid = Constants.ARSENIC_ID;
+                        break;
+                }
+                //Get the test config by uuid
+                final TestListViewModel viewModel =
+                        ViewModelProviders.of(this).get(TestListViewModel.class);
+
+                testInfo = viewModel.getTestInfo(uuid);
+
+                TestInfoFragment fragment = TestInfoFragment.getInstance(testInfo);
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+
+                return;
+            }
+
+            this.setResult(Activity.RESULT_OK, resultIntent);
             finish();
         }
     }
@@ -730,55 +804,67 @@ public class TestActivity extends BaseActivity {
 
             for (File ff : fileList) {
                 if (ff.isFile() && ff.getPath().endsWith(".xml")) {
+                    String surveyText = FileUtil.loadTextFromFile(ff);
 
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder;
+                    Matcher m = Pattern.compile("\\sid=\\\"(.*?)\\\"").matcher(surveyText);
+                    if (m.find()) {
+                        String id = m.group(1);
 
-                    boolean xmlModified = false;
-                    try {
-                        builder = factory.newDocumentBuilder();
-                        Document doc = builder.parse(ff);
+                        Matcher m1 = Pattern.compile("Group_Test/>\\s*\\n*</(.*?)>").matcher(surveyText);
+                        if (m1.find()) {
+                            String group = m1.group(1);
 
-                        NodeList nodesList = doc.getElementsByTagName("group");
+                            surveyText = surveyText.replace("<Group_Test/>",
+                                    "<Fluoride/><Free_Chlorine/><pH/><Total_Iron/><Chromium/><Nitrate/><Phosphate/><Arsenic_III/>");
 
-                        for (int i = 0; i < nodesList.getLength(); i++) {
-                            Node node = nodesList.item(i);
+                            String nodeSet = "<bind nodeset=\"/{0}/Fluoride\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/Free_Chlorine\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/pH\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/Total_Iron\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/Chromium\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/Nitrate\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/Phosphate\" required=\"false()\" type=\"string\"/>\n" +
+                                    "<bind nodeset=\"/{0}/Arsenic_III\" required=\"false()\" type=\"string\"/>";
 
-                            Node appearanceNode = node.getChildNodes().item(3).getAttributes().getNamedItem("appearance");
+                            nodeSet = nodeSet.replace("{0}", id + "/" + group);
 
-                            if (appearanceNode != null) {
-                                String appearance = appearanceNode.getNodeValue();
+                            surveyText = surveyText.replaceAll("<bind .*?Group_Test\".*?/>", nodeSet);
 
-                                if (appearance.contains("f0f3c1dd-89af-49f1-83e7-bcc31c3006cf")) {
-                                    ((Element) node).setAttribute("intent",
-                                            "io.ffem.app.caddisfly(testId='9eea0281-a608-4b44-bde0-5d25795db531')");
-                                    xmlModified = true;
+                            String fieldList = "<group appearance=\"field-list\" ref=\"/{0}\" intent=\"io.ffem.app.caddisfly(testId='9eea0281-a608-4b44-bde0-5d25795db531')\">\n" +
+                                    "    <label>Test group</label>\n" +
+                                    "    <input ref=\"/{0}/Fluoride\">\n" +
+                                    "        <label>Fluoride</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/Free_Chlorine\">\n" +
+                                    "        <label>Free Chlorine</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/pH\">\n" +
+                                    "        <label>pH</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/Total_Iron\">\n" +
+                                    "        <label>Total Iron</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/Chromium\">\n" +
+                                    "        <label>Chromium</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/Nitrate\">\n" +
+                                    "        <label>Nitrate</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/Phosphate\">\n" +
+                                    "        <label>Phosphate</label>\n" +
+                                    "    </input>\n" +
+                                    "    <input ref=\"/{0}/Arsenic_III\">\n" +
+                                    "        <label>Arsenic (III)</label>\n" +
+                                    "    </input>\n" +
+                                    "</group>";
 
-                                    for (int j = 0; j < node.getChildNodes().getLength(); j++) {
-                                        if (node.getChildNodes().item(j).getAttributes() != null) {
-                                            if (node.getChildNodes().item(j).getAttributes().getNamedItem("appearance") != null) {
-                                                node.getChildNodes().item(j).getAttributes().removeNamedItem("appearance");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            fieldList = fieldList.replace("{0}", id + "/" + group);
+
+                            surveyText = surveyText.replaceAll("(?s)<group\\s.*?" + id + "/" + group + ".*?</group>", fieldList);
+
+                            FileUtil.saveToFile(ff, "", surveyText);
                         }
-
-                        if (xmlModified) {
-                            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-                            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
-                            DOMSource source = new DOMSource(doc);
-                            StreamResult result = new StreamResult(ff.getAbsolutePath());
-                            transformer.transform(source, result);
-                        }
-
-                    } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
-                        e.printStackTrace();
                     }
-
                 }
             }
         }

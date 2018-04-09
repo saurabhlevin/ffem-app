@@ -42,6 +42,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -67,13 +68,13 @@ import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
-import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
@@ -92,6 +93,7 @@ public class ChamberTestActivity extends BaseActivity implements
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
 
     private RunTest runTestFragment;
+    private ResultFragment resultFragment;
     private CalibrationItemFragment calibrationItemFragment;
     private FragmentManager fragmentManager;
     private TestInfo testInfo;
@@ -99,8 +101,18 @@ public class ChamberTestActivity extends BaseActivity implements
     private int currentDilution = 1;
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
+    private long startTime;
 
-    private boolean isGroupTests = false;
+    private static String formatDuration(long millis) {
+
+        int seconds = (int) (millis / 1000);
+        String positive = String.format(Locale.US,
+                "%d:%02d:%02d",
+                seconds / 3600,
+                (seconds % 3600) / 60,
+                seconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +120,8 @@ public class ChamberTestActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_chamber_test);
+
+        TextView elapsedTimeText = findViewById(R.id.elapsedTimeText);
 
         sound = new SoundPoolPlayer(this);
 
@@ -122,19 +136,18 @@ public class ChamberTestActivity extends BaseActivity implements
                 return;
             }
 
-            if (testInfo.getSwatches().size() < 1) {
-                isGroupTests = true;
-
-                final TestListViewModel viewModel =
-                        ViewModelProviders.of(this).get(TestListViewModel.class);
-
-                testInfo = viewModel.getTestInfo(Constants.FLUORIDE_ID);
-            }
-
             if (testInfo.getCameraAbove()) {
                 runTestFragment = ChamberBelowFragment.newInstance(testInfo);
             } else {
                 runTestFragment = ChamberAboveFragment.newInstance(testInfo);
+            }
+
+            startTime = getIntent().getLongExtra(ConstantKey.START_TIME, 0);
+
+            if (testInfo.getResults().get(0).getTimeDelay() > 0) {
+                testInfo.getResults().get(0).setTimeDelay((int) (Math.max(0,
+                        (testInfo.getResults().get(0).getTimeDelay() * 1000)
+                                - (System.currentTimeMillis() - startTime)) / 1000));
             }
 
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
@@ -144,6 +157,21 @@ public class ChamberTestActivity extends BaseActivity implements
                 goToFragment(calibrationItemFragment);
             }
         }
+
+        final Handler someHandler = new Handler(getMainLooper());
+        someHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String message = String.format("Group test time: %s",
+                        formatDuration(System.currentTimeMillis() - startTime));
+
+                elapsedTimeText.setText(message);
+
+                someHandler.postDelayed(this, 1000);
+            }
+        }, 10);
+
     }
 
     private void goToFragment(Fragment fragment) {
@@ -402,11 +430,12 @@ public class ChamberTestActivity extends BaseActivity implements
                 }
 
                 fragmentManager.popBackStack();
+                resultFragment = ResultFragment.newInstance(testInfo);
                 fragmentManager
                         .beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.fragment_container,
-                                ResultFragment.newInstance(testInfo), null).commit();
+                                resultFragment, null).commit();
 
                 if (AppPreferences.isDiagnosticMode()) {
                     showDiagnosticResultDialog(false, result, resultDetails, false, 0);
@@ -425,7 +454,15 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     setResult(Activity.RESULT_CANCELED);
 
+                    resultFragment = ResultFragment.newInstance(testInfo);
+
                     fragmentManager.popBackStack();
+
+                    fragmentManager
+                            .beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.fragment_container,
+                                    resultFragment, null).commit();
 
                     showDiagnosticResultDialog(true, new Result(), resultDetails, false, 0);
 
@@ -532,21 +569,16 @@ public class ChamberTestActivity extends BaseActivity implements
         // Return plain text result
 //        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
         resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
+        resultIntent.putExtra(testInfo.getResults().get(0).getName()
+                        .replace("(", "")
+                        .replace(")", "")
+                        .replace(" ", "_"),
+                testInfo.getResults().get(0).getResult());
 
         setResult(Activity.RESULT_OK, resultIntent);
 
-        if (!isGroupTests) {
-            finish();
-        } else {
-            final TestListViewModel viewModel =
-                    ViewModelProviders.of(this).get(TestListViewModel.class);
+        finish();
 
-            testInfo = viewModel.getTestInfo("4d3a7d6d-2f11-49de-9f7f-9e21e840df93");
-
-            runTestFragment = ChamberAboveFragment.newInstance(testInfo);
-
-            start();
-        }
     }
 
     /**
