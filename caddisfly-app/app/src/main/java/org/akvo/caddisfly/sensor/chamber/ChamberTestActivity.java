@@ -80,6 +80,7 @@ import java.util.UUID;
 import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
+import static android.view.View.GONE;
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
@@ -158,19 +159,20 @@ public class ChamberTestActivity extends BaseActivity implements
             }
         }
 
-        final Handler someHandler = new Handler(getMainLooper());
-        someHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if (startTime > 0) {
+            final Handler someHandler = new Handler(getMainLooper());
+            someHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                String message = String.format("Group test time: %s",
-                        formatDuration(System.currentTimeMillis() - startTime));
+                    elapsedTimeText.setText(formatDuration(System.currentTimeMillis() - startTime));
 
-                elapsedTimeText.setText(message);
-
-                someHandler.postDelayed(this, 1000);
-            }
-        }, 10);
+                    someHandler.postDelayed(this, 1000);
+                }
+            }, 10);
+        } else {
+            findViewById(R.id.elapsedTimeLayout).setVisibility(GONE);
+        }
 
     }
 

@@ -39,14 +39,31 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical" />
 
-            <TextView
-                android:id="@+id/elapsedTimeText"
+            <LinearLayout
+                android:id="@+id/elapsedTimeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="Elapsed time:"
-                android:textSize="18sp" />
+                android:background="@color/button_green"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_vertical_margin">
+
+                <TextView
+                    android:id="@+id/elapsedTimeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="00:00:50"
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Group test in progress"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
         </FrameLayout>
 
     </LinearLayout>

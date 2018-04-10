@@ -241,6 +241,7 @@ public class TestActivity extends BaseActivity {
 
             if (uuid.equals("group-test")) {
                 fixTestGroupInSurvey();
+                restartSurveyApp();
                 return;
             }
 
@@ -268,6 +269,10 @@ public class TestActivity extends BaseActivity {
 
             fragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
+        }
+
+        if (isGroupTests > 0) {
+            onStartTestClick(null);
         }
     }
 
@@ -299,7 +304,7 @@ public class TestActivity extends BaseActivity {
 
         String[] checkPermissions = permissions;
 
-        String uuid = getIntent().getStringExtra(SensorConstants.TEST_ID);
+//        String uuid = getIntent().getStringExtra(SensorConstants.TEST_ID);
 //        if (uuid != null && uuid.equals("group-test")) {
 //
 //
@@ -480,15 +485,15 @@ public class TestActivity extends BaseActivity {
 //            }
 
 
-            if (isGroupTests > 0) {
-                if (resultIntent == null) {
-                    resultIntent = new Intent(data);
-                } else {
+            if (resultIntent == null) {
+                resultIntent = new Intent(data);
+            } else {
 
-                    Bundle bundle = data.getExtras();
-                    if (bundle != null) {
-                        for (String key : bundle.keySet()) {
-                            Object value = bundle.get(key);
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    for (String key : bundle.keySet()) {
+                        Object value = bundle.get(key);
+                        if (value != null) {
                             resultIntent.putExtra(key, value.toString());
                         }
                     }
@@ -806,7 +811,7 @@ public class TestActivity extends BaseActivity {
                 if (ff.isFile() && ff.getPath().endsWith(".xml")) {
                     String surveyText = FileUtil.loadTextFromFile(ff);
 
-                    Matcher m = Pattern.compile("\\sid=\\\"(.*?)\\\"").matcher(surveyText);
+                    Matcher m = Pattern.compile("\\sid=\"(.*?)\"").matcher(surveyText);
                     if (m.find()) {
                         String id = m.group(1);
 
