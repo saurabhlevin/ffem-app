@@ -137,24 +137,30 @@ public final class SwatchHelper {
      *
      * @param context         the context
      * @param testInfo        the test
-     * @param batchCode       the batch number
+     * @param cuvette       the cuvette type
      * @param calibrationDate date of calibration
      * @param expiryDate      expiry date of the reagent
      * @return the calibration file content
      */
-    public static String generateCalibrationFile(Context context, TestInfo testInfo, String batchCode,
+    public static String generateCalibrationFile(Context context, TestInfo testInfo, String cuvette,
                                                  long calibrationDate, long expiryDate) {
 
         final StringBuilder calibrationDetails = new StringBuilder();
 
-        for (Swatch swatch : testInfo.getSwatches()) {
-            calibrationDetails.append(String.format(Locale.US, "%.2f", swatch.getValue()))
+        for (Calibration calibration : testInfo.getCalibrations()) {
+            calibrationDetails.append(String.format(Locale.US, "%.2f", calibration.value))
                     .append("=")
-                    .append(ColorUtil.getColorRgbString(swatch.getColor()));
+                    .append(ColorUtil.getColorRgbString(calibration.color));
             calibrationDetails.append('\n');
         }
 
-        calibrationDetails.append("Type: ");
+        calibrationDetails.append("Test: ");
+        calibrationDetails.append(testInfo.getName());
+        calibrationDetails.append("\n");
+        calibrationDetails.append("Cuvette: ");
+        calibrationDetails.append(cuvette);
+        calibrationDetails.append("\n");
+        calibrationDetails.append("UUID: ");
         calibrationDetails.append(testInfo.getUuid());
         calibrationDetails.append("\n");
         calibrationDetails.append("Date: ");
@@ -165,9 +171,6 @@ public final class SwatchHelper {
         calibrationDetails.append("\n");
         calibrationDetails.append("ReagentExpiry: ");
         calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(expiryDate));
-        calibrationDetails.append("\n");
-        calibrationDetails.append("ReagentBatch: ");
-        calibrationDetails.append(batchCode);
         calibrationDetails.append("\n");
         calibrationDetails.append("Version: ");
         calibrationDetails.append(CaddisflyApp.getAppVersion());

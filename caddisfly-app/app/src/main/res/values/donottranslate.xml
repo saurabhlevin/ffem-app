@@ -131,10 +131,8 @@
 
     <string-array name="cuvettes">
         <item>Cuvette Type</item>
+        <item>Old Test Chamber</item>
         <item>Borosil Bottle</item>
-        <item>Quartz Cuvette</item>
-        <item>Plastic Round Container</item>
-        <item>Plastic Rectangle Container</item>
     </string-array>
 
 </resources>
