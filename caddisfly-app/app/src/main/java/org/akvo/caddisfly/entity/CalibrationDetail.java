@@ -46,8 +46,8 @@ public class CalibrationDetail implements Parcelable {
     public long date;
     @ColumnInfo(name = "expiry")
     public long expiry;
-    @ColumnInfo(name = "batchNumber")
-    public String batchNumber;
+    @ColumnInfo(name = "cuvetteType")
+    public String cuvetteType;
 
     public CalibrationDetail() {
     }
@@ -56,7 +56,7 @@ public class CalibrationDetail implements Parcelable {
         uid = in.readString();
         date = in.readLong();
         expiry = in.readLong();
-        batchNumber = in.readString();
+        cuvetteType = in.readString();
     }
 
     @Override
@@ -69,6 +69,6 @@ public class CalibrationDetail implements Parcelable {
         dest.writeString(uid);
         dest.writeLong(date);
         dest.writeLong(expiry);
-        dest.writeString(batchNumber);
+        dest.writeString(cuvetteType);
     }
 }

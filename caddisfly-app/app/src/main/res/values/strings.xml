@@ -238,4 +238,7 @@
     <string name="diagnostics_info">Device Info</string>
     <string name="analyze">Analyse</string>
 
+    <!--Support-->
+    <string name="emailSupport">Email support</string>
+
 </resources>

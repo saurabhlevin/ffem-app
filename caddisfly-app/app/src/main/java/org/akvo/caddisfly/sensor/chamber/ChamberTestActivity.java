@@ -243,7 +243,6 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onCalibrationDetailsSaved() {
         loadDetails();
-        calibrationItemFragment.loadDetails();
     }
 
     @Override
@@ -265,7 +264,6 @@ public class ChamberTestActivity extends BaseActivity implements
                 return true;
             case R.id.menuLoad:
                 loadCalibrationFromFile(this);
-                loadDetails();
                 return true;
             case R.id.menuSave:
                 showEditCalibrationDetailsDialog(false);
@@ -294,6 +292,8 @@ public class ChamberTestActivity extends BaseActivity implements
                 ViewModelProviders.of(this).get(TestInfoViewModel.class);
 
         model.setTest(testInfo);
+
+        calibrationItemFragment.loadDetails();
     }
 
     /**

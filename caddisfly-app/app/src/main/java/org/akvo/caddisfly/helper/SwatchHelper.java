@@ -137,28 +137,33 @@ public final class SwatchHelper {
      *
      * @param context         the context
      * @param testInfo        the test
-     * @param cuvette       the cuvette type
-     * @param calibrationDate date of calibration
-     * @param expiryDate      expiry date of the reagent
      * @return the calibration file content
      */
-    public static String generateCalibrationFile(Context context, TestInfo testInfo, String cuvette,
-                                                 long calibrationDate, long expiryDate) {
+    public static String generateCalibrationFile(Context context, TestInfo testInfo, boolean internal) {
 
         final StringBuilder calibrationDetails = new StringBuilder();
 
+        long calibrationDate = 0;
         for (Calibration calibration : testInfo.getCalibrations()) {
+
+            if (calibrationDate < calibration.date) {
+                calibrationDate = calibration.date;
+            }
+
             calibrationDetails.append(String.format(Locale.US, "%.2f", calibration.value))
                     .append("=")
                     .append(ColorUtil.getColorRgbString(calibration.color));
             calibrationDetails.append('\n');
         }
 
-        calibrationDetails.append("Test: ");
+        CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                .calibrationDao().getCalibrationDetails(testInfo.getUuid());
+
+        calibrationDetails.append("Name: ");
         calibrationDetails.append(testInfo.getName());
         calibrationDetails.append("\n");
         calibrationDetails.append("Cuvette: ");
-        calibrationDetails.append(cuvette);
+        calibrationDetails.append(calibrationDetail.cuvetteType);
         calibrationDetails.append("\n");
         calibrationDetails.append("UUID: ");
         calibrationDetails.append(testInfo.getUuid());
@@ -170,7 +175,7 @@ public final class SwatchHelper {
         calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(calibrationDate));
         calibrationDetails.append("\n");
         calibrationDetails.append("ReagentExpiry: ");
-        calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(expiryDate));
+        calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calibrationDetail.expiry));
         calibrationDetails.append("\n");
         calibrationDetails.append("Version: ");
         calibrationDetails.append(CaddisflyApp.getAppVersion());
@@ -182,9 +187,13 @@ public final class SwatchHelper {
         calibrationDetails.append("OS: ");
         calibrationDetails.append(android.os.Build.VERSION.RELEASE).append(" (")
                 .append(android.os.Build.VERSION.SDK_INT).append(")");
-        calibrationDetails.append("\n");
-        calibrationDetails.append("DeviceId: ");
-        calibrationDetails.append(ApiUtil.getInstallationId(context));
+
+        if (internal) {
+            calibrationDetails.append("\n");
+            calibrationDetails.append("DeviceId: ");
+            calibrationDetails.append(ApiUtil.getInstallationId(context));
+        }
+
         return calibrationDetails.toString();
     }
 
@@ -205,12 +214,12 @@ public final class SwatchHelper {
         List<String> calibrationDetails = FileUtil.loadFromFile(path, fileName);
         if (calibrationDetails != null) {
 
+            CalibrationDetail calibrationDetail = new CalibrationDetail();
+            calibrationDetail.uid = testInfo.getUuid();
+
             for (int i = calibrationDetails.size() - 1; i >= 0; i--) {
                 String line = calibrationDetails.get(i);
                 if (!line.contains("=")) {
-
-                    CalibrationDetail calibrationDetail = new CalibrationDetail();
-                    calibrationDetail.uid = testInfo.getUuid();
 
                     if (line.contains("Calibrated:")) {
                         Calendar calendar = Calendar.getInstance();
@@ -231,15 +240,15 @@ public final class SwatchHelper {
                         }
                     }
 
-                    if (line.contains("ReagentBatch:")) {
-                        calibrationDetail.batchNumber = line.substring(line.indexOf(':') + 1).trim();
+                    if (line.contains("Cuvette:")) {
+                        calibrationDetail.cuvetteType = line.substring(line.indexOf(':') + 1).trim();
                     }
-
-                    dao.insert(calibrationDetail);
 
                     calibrationDetails.remove(i);
                 }
             }
+
+            dao.insert(calibrationDetail);
 
             for (String rgb : calibrationDetails) {
                 String[] values = rgb.split("=");

@@ -148,7 +148,7 @@ public final class TestConfigHelper {
                             new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US)
                             .format(calibrationDetail.date));
                     subTestJson.put("reagentExpiry", calibrationDetail.expiry);
-                    subTestJson.put("reagentBatch", calibrationDetail.batchNumber);
+                    subTestJson.put("cuvetteType", calibrationDetail.cuvetteType);
 
                     JSONArray calibrationSwatches = new JSONArray();
                     for (Calibration calibration : testInfo.getCalibrations()) {

@@ -256,15 +256,15 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                                 AlertUtil.askQuestion(context, R.string.fileAlreadyExists,
                                         R.string.doYouWantToOverwrite, R.string.overwrite, R.string.cancel, true,
                                         (dialogInterface, i) -> {
-                                            saveCalibrationDetails(path);
                                             saveDetails(testCode);
+                                            saveCalibrationDetails(path);
                                             closeKeyboard(context, editName);
                                             dismiss();
                                         }, null
                                 );
                             } else {
-                                saveCalibrationDetails(path);
                                 saveDetails(testCode);
+                                saveCalibrationDetails(path);
                                 closeKeyboard(context, editName);
                                 dismiss();
                             }
@@ -282,6 +282,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                     calibrationDetail.uid = testCode;
                     calibrationDetail.date = Calendar.getInstance().getTimeInMillis();
                     calibrationDetail.expiry = calendar.getTimeInMillis();
+                    calibrationDetail.cuvetteType = spinnerCuvette.getSelectedItem().toString();
 
                     CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                     dao.insert(calibrationDetail);
@@ -318,15 +319,11 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     private void saveCalibrationDetails(File path) {
         final Context context = getContext();
 
-        final String calibrationDetails = SwatchHelper.generateCalibrationFile(context, mTestInfo,
-                spinnerCuvette.getSelectedItem().toString(),
-                Calendar.getInstance().getTimeInMillis(),
-                calendar.getTimeInMillis());
+        final String calibrationDetails = SwatchHelper.generateCalibrationFile(context, mTestInfo, true);
 
         FileUtil.saveToFile(path, editName.getText().toString().trim(), calibrationDetails);
 
         Toast.makeText(context, R.string.fileSaved, Toast.LENGTH_SHORT).show();
-
     }
 
     /**
