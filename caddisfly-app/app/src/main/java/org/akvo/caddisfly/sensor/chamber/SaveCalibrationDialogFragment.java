@@ -50,13 +50,13 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.FileUtil;
-import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -114,19 +114,16 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
 
         editExpiryDate = view.findViewById(R.id.editExpiryDate);
 
-        long milliseconds = PreferencesUtil.getLong(getActivity(),
-                mTestInfo.getUuid(),
-                R.string.calibrationExpiryDateKey);
-        if (milliseconds > new Date().getTime()) {
+        CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                .calibrationDao().getCalibrationDetails(mTestInfo.getUuid());
 
-            long expiryDate = PreferencesUtil.getLong(getContext(), mTestInfo.getUuid(),
-                    R.string.calibrationExpiryDateKey);
+        if (calibrationDetail.expiry > new Date().getTime()) {
 
-            if (expiryDate >= 0) {
-                calendar.setTimeInMillis(expiryDate);
+            if (calibrationDetail.expiry >= 0) {
+                calendar.setTimeInMillis(calibrationDetail.expiry);
 
                 editExpiryDate.setText(new SimpleDateFormat("dd-MMM-yyyy", Locale.US)
-                        .format(new Date(expiryDate)));
+                        .format(new Date(calibrationDetail.expiry)));
             }
         }
 
@@ -135,6 +132,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         editName = view.findViewById(R.id.editName);
         if (!isEditing && AppPreferences.isDiagnosticMode()) {
             editName.requestFocus();
+            showKeyboard(activity);
         } else {
             editName.setVisibility(View.GONE);
         }
@@ -147,6 +145,12 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCuvette.setAdapter(adapter);
 
+        for (int j = 0; j < adapter.getCount(); j++) {
+            if (Objects.equals(adapter.getItem(j), calibrationDetail.cuvetteType)) {
+                spinnerCuvette.setSelection(j);
+            }
+        }
+
         spinnerCuvette.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -158,8 +162,6 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                 textError.setError(null);
             }
         });
-
-        showKeyboard(activity);
 
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.calibrationDetails)

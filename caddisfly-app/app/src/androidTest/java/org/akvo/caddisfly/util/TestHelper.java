@@ -46,6 +46,7 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.helper.FileHelper;
+import org.akvo.caddisfly.preference.AppPreferences;
 import org.hamcrest.Matchers;
 
 import java.io.File;
@@ -237,7 +238,7 @@ public final class TestHelper {
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 
-        String version = CaddisflyApp.getAppVersion();
+        String version = CaddisflyApp.getAppVersion(AppPreferences.isDiagnosticMode());
 
         onView(withText(version)).check(matches(isDisplayed()));
 

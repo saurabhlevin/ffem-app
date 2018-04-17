@@ -65,7 +65,7 @@ public class OtherPreferenceFragment extends PreferenceFragment {
 
         Preference aboutPreference = findPreference("about");
         if (aboutPreference != null) {
-            aboutPreference.setSummary(CaddisflyApp.getAppVersion());
+            aboutPreference.setSummary(CaddisflyApp.getAppVersion(AppPreferences.isDiagnosticMode()));
             aboutPreference.setOnPreferenceClickListener(preference -> {
                 final Intent intent = new Intent(getActivity(), AboutActivity.class);
                 getActivity().startActivity(intent);
@@ -137,7 +137,7 @@ public class OtherPreferenceFragment extends PreferenceFragment {
 
     public void sendEmail(Context context, String message) {
         try {
-            String email = "siteadmin@ternup.com";
+            String email = "devices@ternup.com";
             String subject = "Support request";
             final Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setType("plain/text");
