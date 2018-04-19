@@ -847,7 +847,6 @@
       "subtype": "sensor",
       "uuid": "f88237b7-be3d-4fac-bbee-ab328eefcd14",
       "deviceId": "WaterEC",
-      "shortCode": "ECOND",
       "brand": "Caddisfly",
       "image": "Caddisfly-Water-EC",
       "imageScale": "centerCrop",

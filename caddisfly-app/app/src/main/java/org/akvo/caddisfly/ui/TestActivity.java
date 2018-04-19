@@ -55,7 +55,6 @@ import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SwatchHelper;
-import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
@@ -113,8 +112,6 @@ public class TestActivity extends BaseActivity {
     private final String[] bluetoothPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
     private final String[] noPermissions = {};
 
-    // old versions of the survey app does not expect image in result
-//    private boolean mCallerExpectsImageInResult = true;
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private LinearLayout mainLayout;
@@ -143,7 +140,7 @@ public class TestActivity extends BaseActivity {
 
         Intent intent = getIntent();
 
-        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
+        if (AppConfig.EXTERNAL_APP_ACTION.equals(intent.getAction())) {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
@@ -179,24 +176,9 @@ public class TestActivity extends BaseActivity {
 
         String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
-//        if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())) {
-
-        // old version of survey does not expect image in result
-//            mCallerExpectsImageInResult = false;
-//        }
-
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
         if (uuid == null) {
             uuid = intent.getStringExtra(SensorConstants.TEST_ID);
-        }
-
-        if (uuid == null) {
-
-            //todo: remove when obsolete
-            //UUID was not found so it must be old version survey, look for 5 letter code
-            String code = questionTitle.trim().substring(Math.max(0, questionTitle.length() - 5)).toLowerCase();
-
-            uuid = TestConfigHelper.getUuidFromShortCode(code);
         }
 
         if (uuid != null) {
@@ -213,9 +195,6 @@ public class TestActivity extends BaseActivity {
 
             if (testInfo.getSubtype() == TestType.TITRATION) {
 
-//                for (String key : intent.getExtras().keySet()) {
-//                }
-//
                 if (intent.hasExtra("value")) {
                     checkSurveys();
                     restartSurveyApp();
@@ -398,7 +377,7 @@ public class TestActivity extends BaseActivity {
             //return the test result to the external app
             Intent intent = new Intent(data);
 
-//            if (AppConfig.EXTERNAL_ACTION_CADDISFLY.equals(intent.getAction())
+//            if (AppConfig.EXTERNAL_APP_ACTION.equals(intent.getAction())
 //                    && data.hasExtra(SensorConstants.RESPONSE_COMPAT)) {
 //                //if survey from old version server then don't send json response
 //                intent.putExtra(SensorConstants.RESPONSE, data.getStringExtra(SensorConstants.RESPONSE_COMPAT));
@@ -438,15 +417,16 @@ public class TestActivity extends BaseActivity {
      */
     public void onSiteLinkClick(View view) {
         String url = testInfo.getBrandUrl();
-        if (!url.contains("http://")) {
-            url = "http://" + url;
+        if (url != null) {
+            if (!url.contains("http://")) {
+                url = "http://" + url;
+            }
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
         }
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(browserIntent);
     }
 
     @NonNull
-    @Deprecated
     private String getTestName(String title) {
 
         String tempTitle = title;
@@ -454,9 +434,6 @@ public class TestActivity extends BaseActivity {
         if (title != null && title.length() > 0) {
             if (title.length() > 30) {
                 tempTitle = title.substring(0, 30);
-            }
-            if (title.contains("-")) {
-                tempTitle = title.substring(0, title.indexOf("-")).trim();
             }
         } else {
             tempTitle = getString(R.string.error);

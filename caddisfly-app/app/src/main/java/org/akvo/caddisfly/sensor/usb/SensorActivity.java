@@ -452,16 +452,10 @@ public class SensorActivity extends BaseActivity {
     }
 
     public void onClickAcceptResult(View view) {
-        // Build the result json to be returned
 
         Intent resultIntent = new Intent(getIntent());
 
-        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, null, -1, EMPTY_STRING);
-        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
-
-        // TODO: Remove this when obsolete
-        // Backward compatibility. Return plain text result
-        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
+        resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
 
         setResult(Activity.RESULT_OK, resultIntent);
 

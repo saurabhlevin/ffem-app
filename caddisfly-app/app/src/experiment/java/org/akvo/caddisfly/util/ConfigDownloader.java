@@ -237,7 +237,7 @@ public class ConfigDownloader {
                                         + Build.VERSION.SDK_INT + ")");
                                 cal.put("megaPixel", getMaxSupportedMegaPixelsByCamera(context));
                                 cal.put("appName", context.getString(R.string.appName));
-                                cal.put("appVersion", CaddisflyApp.getAppVersion());
+                                cal.put("appVersion", CaddisflyApp.getAppVersion(true));
 
                                 if (downloadUrl != null) {
                                     cal.put("image", downloadUrl.toString());

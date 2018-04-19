@@ -83,19 +83,22 @@ public class MainActivity extends BaseActivity {
 
         setTitle(R.string.appName);
 
-        final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
-                AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
+        try {
+            final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
+                    AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
 
-        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
-        b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
+            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+            b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
 
-        if (AppConfig.APP_EXPIRY && ApkHelper.isNonStoreVersion(this)) {
-            b.textVersionExpiry.setVisibility(View.VISIBLE);
+            if (AppConfig.APP_EXPIRY && ApkHelper.isNonStoreVersion(this)) {
+                b.textVersionExpiry.setVisibility(View.VISIBLE);
+            }
+
+            // If app has expired then close this activity
+            ApkHelper.isAppVersionExpired(this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // If app has expired then close this activity
-        ApkHelper.isAppVersionExpired(this);
-
     }
 
     /**

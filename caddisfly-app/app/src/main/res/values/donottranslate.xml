@@ -110,19 +110,8 @@
     <string name="delete_error">Error on file delete</string>
 
     <!--Software Notices-->
-    <string name="apache_software"><a href="https://source.android.com/setup/licenses">Android Open Source Project</a>
-          &#160;&#160;&#8226;&#160;&#160;
-        <a href="https://github.com/bjoernQ/unmock-plugin">Android Unmock Gradle Plugin</a>
-          &#160;&#160;&#8226;&#160;&#160;
-        <a href="https://github.com/joel-costigliola/assertj-core">AssertJ</a>
-          &#160;&#160;&#8226;&#160;&#160;
-        <a href="http://commons.apache.org/proper/commons-math/">Commons Math</a>
-          &#160;&#160;&#8226;&#160;&#160;
-        <a href="https://github.com/google/gson">Gson</a>
-          &#160;&#160;&#8226;&#160;&#160;
-        <a href="https://github.com/JakeWharton/timber">Timber</a>
-          &#160;&#160;&#8226;&#160;&#160;
-        <a href="https://github.com/zxing/zxing">ZXing</a>
+    <string name="apache_software">
+        <a href="https://source.android.com/setup/licenses">Android Open Source Project</a>&#160;&#160;&#8226;&#160;&#160;<a href="https://github.com/bjoernQ/unmock-plugin">Android Unmock Gradle Plugin</a>&#160;&#160;&#8226;&#160;&#160;<a href="https://github.com/joel-costigliola/assertj-core">AssertJ</a>&#160;&#160;&#8226;&#160;&#160;<a href="http://commons.apache.org/proper/commons-math/">Commons Math</a>&#160;&#160;&#8226;&#160;&#160;<a href="https://github.com/google/gson">Gson</a>&#160;&#160;&#8226;&#160;&#160;<a href="https://github.com/JakeWharton/timber">Timber</a>&#160;&#160;&#8226;&#160;&#160;<a href="https://github.com/zxing/zxing">ZXing</a>
     </string>
     <string name="mit_software"><a href="http://robolectric.org/">Robolectric</a></string>
     <string name="cca_software"><a href="https://design.google.com/icons/">Material Icons</a></string>

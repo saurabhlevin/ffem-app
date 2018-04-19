@@ -38,7 +38,7 @@ public final class AppConfig {
     /**
      * The intent action string used by the caddisfly question type.
      */
-    public static final String EXTERNAL_ACTION_CADDISFLY = "io.ffem.app.caddisfly";
+    public static final String EXTERNAL_APP_ACTION = "io.ffem.app.caddisfly";
 
     /**
      * Uri for photos from built in camera.

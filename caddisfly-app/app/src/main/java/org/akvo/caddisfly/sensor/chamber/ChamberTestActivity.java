@@ -423,6 +423,8 @@ public class ChamberTestActivity extends BaseActivity implements
 
                 } else {
 
+                    fragmentManager.popBackStack();
+
                     showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestFailed),
                             getString(R.string.checkChamberPlacement)),
                             resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
@@ -447,7 +449,7 @@ public class ChamberTestActivity extends BaseActivity implements
                 CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                 calibration.color = color;
                 calibration.date = new Date().getTime();
-                if (AppPreferences.getShowDebugInfo()) {
+                if (AppPreferences.isDiagnosticMode()) {
 
                     calibration.image = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test

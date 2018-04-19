@@ -147,7 +147,6 @@ public final class ColorUtil {
         );
     }
 
-
     /**
      * Computes the Euclidean distance between the two colors
      *

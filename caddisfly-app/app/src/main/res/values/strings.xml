@@ -53,6 +53,7 @@
     <string name="runTest">Run Test</string>
     <string name="stage_one"><b>Stage 1:</b></string>
     <string name="stage_two"><b>Stage 2:</b></string>
+    <string name="analyze">Analyse</string>
 
     <!--External-->
     <string name="sensor">Sensor</string>
@@ -236,7 +237,6 @@
     <string name="coliformCount">Coliform Count</string>
     <string name="sendData">Send Data</string>
     <string name="diagnostics_info">Device Info</string>
-    <string name="analyze">Analyse</string>
 
     <!--Support-->
     <string name="emailSupport">Email support</string>
