@@ -26,6 +26,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -223,11 +224,13 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
 
         editExpiryDate.setOnFocusChangeListener((view1, b) -> {
             if (b) {
+                closeKeyboard(getContext(), editName);
                 datePickerDialog.show();
             }
         });
 
         editExpiryDate.setOnClickListener(view12 -> {
+            closeKeyboard(getContext(), editName);
             datePickerDialog.show();
         });
     }
@@ -349,6 +352,18 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         } catch (Exception e) {
             Timber.e(e);
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        closeKeyboard(getActivity(), editName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        closeKeyboard(getActivity(), editName);
     }
 
     @Override
