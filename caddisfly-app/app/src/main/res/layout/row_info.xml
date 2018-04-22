@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) Stichting Akvo (Akvo Foundation)
   ~
   ~ This file is part of Akvo Caddisfly.
@@ -19,65 +17,59 @@
   ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:stretchColumns="2">
 
-    <TableLayout
+    <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="2">
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:clickable="false"
+        android:columnCount="3"
+        android:focusable="false"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/textSwatch"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
             android:clickable="false"
-            android:columnCount="3"
-            android:focusable="false"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
+            android:focusable="false" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="10dp"
-                android:contentDescription="@null" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textSwatch"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#ffffff"
-                android:clickable="false"
-                android:focusable="false" />
-
-            <LinearLayout
+                android:id="@+id/textRgb"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textRgb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:textIsSelectable="false"
-                    android:textSize="14sp"
-                    tools:text="rgb: 243 23 156" />
-            </LinearLayout>
-        </TableRow>
-    </TableLayout>
-</LinearLayout>
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                tools:text="rgb: 243 23 156" />
+        </LinearLayout>
+    </TableRow>
+</TableLayout>

@@ -237,6 +237,7 @@
     <string name="coliformCount">Coliform Count</string>
     <string name="sendData">Send Data</string>
     <string name="diagnostics_info">Device Info</string>
+    <string name="comments">Comments</string>
 
     <!--Support-->
     <string name="emailSupport">Email support</string>

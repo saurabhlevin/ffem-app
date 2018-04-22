@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
-        android:gravity="top|left">
+        android:gravity="top|start">
 
         <Spinner
             android:id="@+id/spinner"
@@ -36,9 +36,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top"
-        android:hint="Comments"
+        android:hint="@string/comments"
         android:inputType="textCapSentences|textMultiLine"
-        android:lines="5"
+        android:lines="4"
         android:maxLength="200" />
 
 </LinearLayout>

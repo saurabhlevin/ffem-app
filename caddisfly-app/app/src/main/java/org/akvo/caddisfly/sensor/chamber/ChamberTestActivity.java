@@ -377,6 +377,9 @@ public class ChamberTestActivity extends BaseActivity implements
         ResultDetail resultDetail = SwatchHelper.analyzeColor(testInfo.getSwatches().size(),
                 colorInfo, testInfo.getSwatches());
 
+        resultDetail.setBitmap(resultDetails.get(resultDetails.size() - 1).getBitmap());
+        resultDetail.setCroppedBitmap(resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
+
         if (calibration == null) {
 
             int dilution = resultDetails.get(0).getDilution();
@@ -402,11 +405,10 @@ public class ChamberTestActivity extends BaseActivity implements
                                 ResultFragment.newInstance(testInfo), null).commit();
 
                 if (AppPreferences.getShowDebugInfo()) {
-
                     showDiagnosticResultDialog(false, resultDetail, resultDetails, false);
-
-                    testInfo.setResultDetail(resultDetail);
                 }
+
+                testInfo.setResultDetail(resultDetail);
 
             } else {
 

@@ -134,13 +134,13 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.8.0'
 
     // AndroidJUnitRunner and JUnit Rules
-    androidTestImplementation 'com.android.support.test:rules:1.0.2-alpha1'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2-alpha1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2-beta1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2-beta1'
 
     // Espresso
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-alpha1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2-alpha1'
-    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.2-alpha1') {
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-beta1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2-beta1'
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.2-beta1') {
         exclude group: 'com.android.support'
         exclude group: 'javax.inject'
     }
@@ -161,4 +161,4 @@ dependencies {
     experimentImplementation 'com.google.firebase:firebase-storage:15.0.0'
     experimentImplementation 'com.google.firebase:firebase-auth:15.0.0'
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
