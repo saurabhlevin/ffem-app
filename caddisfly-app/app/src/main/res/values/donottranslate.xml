@@ -122,6 +122,7 @@
         <item>Cuvette Type</item>
         <item>Borosil Bottle</item>
         <item>Old Test Chamber</item>
+        <item>Cuvette Other</item>
     </string-array>
 
 </resources>

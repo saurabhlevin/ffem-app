@@ -45,14 +45,12 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.SensorConstants;
 import org.akvo.caddisfly.databinding.ActivitySensorBinding;
-import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.usb.UsbService;
 import org.akvo.caddisfly.util.StringUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
@@ -120,17 +118,6 @@ public class SensorActivity extends BaseActivity {
     };
     private int identityCheck = 0;
     private int deviceStatus = 0;
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (deviceStatus == 1) {
-                requestResult();
-                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
-            } else {
-                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
-            }
-        }
-    };
     private final Runnable validateDeviceRunnable = new Runnable() {
         @Override
         public void run() {
@@ -158,6 +145,17 @@ public class SensorActivity extends BaseActivity {
                     }
                     handler.postDelayed(runnable, IDENTIFY_DELAY_MILLIS);
                     break;
+            }
+        }
+    };
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (deviceStatus == 1) {
+                requestResult();
+                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
+            } else {
+                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
             }
         }
     };
