@@ -196,7 +196,6 @@ public class ManualTest {
         onView(withId(R.id.editResult)).check(matches(isDisplayed()))
                 .perform(replaceText("1234"), closeSoftKeyboard());
 
-
         onView(withText("Submit Result")).perform(click());
 
         assertNotNull(mDevice.findObject(By.text("Turbidity: 1234.0 NTU")));

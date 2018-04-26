@@ -36,7 +36,6 @@ import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ChamberTestConfig;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.TestConstantKeys;
-import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
@@ -51,10 +50,7 @@ import java.util.Calendar;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
@@ -79,6 +75,7 @@ import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
 import static org.akvo.caddisfly.util.TestUtil.clickListViewItem;
 import static org.akvo.caddisfly.util.TestUtil.getText;
+import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
@@ -90,7 +87,7 @@ import static org.hamcrest.Matchers.startsWith;
 @LargeTest
 public class ChamberTest {
 
-    private static final int TEST_START_DELAY = 16000;
+    private static final int TEST_START_DELAY = 24000;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
@@ -138,7 +135,7 @@ public class ChamberTest {
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 
-        String version = CaddisflyApp.getAppVersion(AppPreferences.isDiagnosticMode());
+        String version = CaddisflyApp.getAppVersion(false);
 
         onView(withText(version)).check(matches(isDisplayed()));
 
@@ -178,11 +175,11 @@ public class ChamberTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(clearText(), closeSoftKeyboard());
-
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("    "), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(clearText(), closeSoftKeyboard());
+//
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("    "), closeSoftKeyboard());
 
         onView(withText(R.string.save)).perform(click());
 
@@ -198,10 +195,10 @@ public class ChamberTest {
 
         onView(withText(R.string.save)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
 
-        onView(withText(R.string.save)).perform(click());
+//        onView(withText(R.string.save)).perform(click());
 
 //        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 //        onView(withText("2" + dfs.getDecimalSeparator() + "0 mg/l")).perform(click());
@@ -210,9 +207,8 @@ public class ChamberTest {
                 allOf(withId(R.id.calibrationList),
                         childAtPosition(
                                 withClassName(is("android.widget.RelativeLayout")),
-                                3)));
+                                0)));
         recyclerView2.perform(actionOnItemAtPosition(4, click()));
-
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
@@ -236,7 +232,9 @@ public class ChamberTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(0);
+        nextSurveyPage(3, "Water Tests 1");
+
+        clickExternalSourceButton(2);
 
         sleep(1000);
 
@@ -279,7 +277,7 @@ public class ChamberTest {
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
-        clickExternalSourceButton(0);
+        clickExternalSourceButton(2);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -327,7 +325,7 @@ public class ChamberTest {
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
-        clickExternalSourceButton(0);
+        clickExternalSourceButton(2);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -400,7 +398,7 @@ public class ChamberTest {
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 
-        String version = CaddisflyApp.getAppVersion(AppPreferences.isDiagnosticMode());
+        String version = CaddisflyApp.getAppVersion(false);
 
         onView(withText(version)).check(matches(isDisplayed()));
 
@@ -438,11 +436,11 @@ public class ChamberTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(clearText(), closeSoftKeyboard());
-
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("    "), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(clearText(), closeSoftKeyboard());
+//
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("    "), closeSoftKeyboard());
 
         onView(withText(R.string.save)).perform(click());
 
@@ -458,10 +456,10 @@ public class ChamberTest {
 
         onView(withText(R.string.save)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
 
-        onView(withText(R.string.save)).perform(click());
+//        onView(withText(R.string.save)).perform(click());
 
 //        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 //        onView(withText("1" + dfs.getDecimalSeparator() + "5 mg/l")).perform(click());
@@ -470,8 +468,8 @@ public class ChamberTest {
                 allOf(withId(R.id.calibrationList),
                         childAtPosition(
                                 withClassName(is("android.widget.RelativeLayout")),
-                                3)));
-        recyclerView2.perform(actionOnItemAtPosition(3, click()));
+                                0)));
+        recyclerView2.perform(actionOnItemAtPosition(2, click()));
 
 
         sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
@@ -492,13 +490,13 @@ public class ChamberTest {
 
         goToMainScreen();
 
-        sleep(2000);
-
         gotoSurveyForm();
 
         sleep(2000);
 
-        clickExternalSourceButton(0);
+        nextSurveyPage(3, "Water Tests 1");
+
+        clickExternalSourceButton(2);
 
         sleep(1000);
 
@@ -538,14 +536,6 @@ public class ChamberTest {
         mDevice.waitForIdle();
 
         assertNotNull(mDevice.findObject(By.text(resultString)));
-
-        mDevice.pressBack();
-
-        mDevice.pressBack();
-
-        mDevice.pressBack();
-
-        mDevice.pressBack();
 
 //        onView(withId(android.R.id.list)).check(matches(withChildCount(is(greaterThan(0)))));
 //        onView(withText(R.string.startTestConfirm)).check(matches(isDisplayed()));

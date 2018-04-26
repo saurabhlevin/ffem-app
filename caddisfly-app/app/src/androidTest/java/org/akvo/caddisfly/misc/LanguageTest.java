@@ -30,7 +30,6 @@ import android.support.test.uiautomator.UiDevice;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.TestConstantKeys;
-import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -86,7 +85,7 @@ public class LanguageTest {
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 
-        String version = CaddisflyApp.getAppVersion(AppPreferences.isDiagnosticMode());
+        String version = CaddisflyApp.getAppVersion(false);
 
         onView(withText(version)).check(matches(isDisplayed()));
 

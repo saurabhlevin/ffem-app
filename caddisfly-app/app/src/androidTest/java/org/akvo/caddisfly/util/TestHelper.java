@@ -46,7 +46,6 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.preference.AppPreferences;
 import org.hamcrest.Matchers;
 
 import java.io.File;
@@ -238,7 +237,7 @@ public final class TestHelper {
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 
-        String version = CaddisflyApp.getAppVersion(AppPreferences.isDiagnosticMode());
+        String version = CaddisflyApp.getAppVersion(false);
 
         onView(withText(version)).check(matches(isDisplayed()));
 
@@ -343,7 +342,7 @@ public final class TestHelper {
 
         mDevice.waitForIdle();
 
-        clickListViewItem("Testing");
+        clickListViewItem("Test All Tests");
 
         mDevice.waitForIdle();
 
@@ -360,11 +359,6 @@ public final class TestHelper {
 
         mDevice.waitForIdle();
 
-        TestUtil.swipeLeft(2);
-
-        mDevice.waitForIdle();
-
-        // mDevice.findObject(By.text("Caddisfly Tests")).click();
     }
 
     public static void enterDiagnosticMode() {

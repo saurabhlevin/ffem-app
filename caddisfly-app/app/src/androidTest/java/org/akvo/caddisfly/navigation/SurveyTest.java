@@ -62,6 +62,7 @@ import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
+import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
@@ -103,6 +104,8 @@ public class SurveyTest {
     @RequiresDevice
     public void testChangeTestType() {
 
+        goToMainScreen();
+
         onView(withText(R.string.calibrate)).perform(click());
 
         onView(withText(currentHashMap.get("fluoride"))).perform(click());
@@ -133,9 +136,9 @@ public class SurveyTest {
 
 //        onView(withText(currentHashMap.get("chlorine"))).perform(click());
 
-        onView(withText("Caddisfly, 0 - 1")).perform(click());
+        onView(withText("Caddisfly, 0 - 3.0")).perform(click());
 
-        onView(withText("1" + dfs.getDecimalSeparator() + "00")).check(matches(isDisplayed()));
+        onView(withText("1" + dfs.getDecimalSeparator() + "0")).check(matches(isDisplayed()));
 
 //        onView(withText("0" + dfs.getDecimalSeparator() + "5 mg/l")).check(matches(isDisplayed()));
 
@@ -176,6 +179,8 @@ public class SurveyTest {
         goToMainScreen();
 
         gotoSurveyForm();
+
+        nextSurveyPage(0);
 
         clickExternalSourceButton(0);
 

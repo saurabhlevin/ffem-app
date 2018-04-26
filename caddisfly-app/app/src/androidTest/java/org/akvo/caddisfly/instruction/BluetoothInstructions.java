@@ -29,7 +29,6 @@ import android.support.test.filters.RequiresDevice;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
-import android.util.Log;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.TestConstants;
@@ -51,7 +50,9 @@ import java.util.List;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -152,15 +153,15 @@ public class BluetoothInstructions {
 //            return;
 //        }
 
-//        TestUtil.sleep(5000);
-//
-//        onView(allOf(withId(R.id.button_connect), withText("Connect"))).perform(click());
-//
-//        TestUtil.sleep(2000);
+        onView(withText(R.string.next)).check(matches(isDisplayed())).perform(click());
 
-//        onView(withText(R.string.test_selected)).perform(click());
-//
-//        onView(withText("Test Instructions")).perform(click());
+        TestUtil.sleep(5000);
+
+        onView(allOf(withId(R.id.button_connect), withText("Connect"))).perform(click());
+
+        TestUtil.sleep(2000);
+
+        onView(withText(R.string.test_selected)).perform(click());
 
         onView(withText("Instructions")).perform(click());
 
@@ -180,10 +181,12 @@ public class BluetoothInstructions {
                 TestUtil.sleep(300);
                 Espresso.pressBack();
                 TestUtil.sleep(300);
-//                Espresso.pressBack();
-//                TestUtil.sleep(300);
-//                Espresso.pressBack();
-//                TestUtil.sleep(600);
+                Espresso.pressBack();
+                TestUtil.sleep(300);
+                Espresso.pressBack();
+                TestUtil.sleep(600);
+                Espresso.pressBack();
+                TestUtil.sleep(600);
                 break;
             }
         }
