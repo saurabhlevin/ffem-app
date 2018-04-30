@@ -214,6 +214,24 @@
       ]
     },
     {
+      "name": "Water - Copper",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "4828ff51-0f2d-4a20-913b-896d6c947d8a",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Copper",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
       "name": "Water - Fluoride",
       "type": "water",
       "subtype": "cuvette",
@@ -435,6 +453,24 @@
           "name": "Phosphate",
           "unit": "mg/l",
           "timeDelay": 600
+        }
+      ]
+    },
+    {
+      "name": "Water - Sulphate",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "0b542432-5574-411d-944c-a9a958454e68",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,10,20,30,40",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Sulphate",
+          "unit": "mg/l"
         }
       ]
     },

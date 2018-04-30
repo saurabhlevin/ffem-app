@@ -76,6 +76,8 @@
     <string name="showMinMegaPixelDialogKey">showMinMegaPixelDialog</string>
     <string name="maxZoomKey">MaxZoomKey</string>
 
+    <string name="nextUpdateCheckKey">nextUpdateCheck</string>
+
     <!--Diagnostic-->
     <string name="diagnostics">Diagnostics</string>
     <string name="debuggingOn">Show debug info</string>
