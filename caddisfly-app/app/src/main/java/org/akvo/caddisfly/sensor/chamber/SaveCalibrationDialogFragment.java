@@ -33,8 +33,12 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -47,13 +51,13 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.FileUtil;
-import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -68,9 +72,10 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     private final Calendar calendar = Calendar.getInstance();
     private TestInfo mTestInfo;
     private EditText editName = null;
-    private EditText editBatchCode = null;
     private EditText editExpiryDate;
     private boolean isEditing = false;
+    private Spinner spinnerCuvette;
+    private TextView textError;
 
     private OnCalibrationDetailsSavedListener mListener;
 
@@ -109,38 +114,61 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         View view = i.inflate(R.layout.fragment_save_calibration, null);
 
         editExpiryDate = view.findViewById(R.id.editExpiryDate);
-        editBatchCode = view.findViewById(R.id.editBatchCode);
 
-        long milliseconds = PreferencesUtil.getLong(getActivity(),
-                mTestInfo.getUuid(),
-                R.string.calibrationExpiryDateKey);
-        if (milliseconds > new Date().getTime()) {
+        CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                .calibrationDao().getCalibrationDetails(mTestInfo.getUuid());
 
-            editBatchCode.setText(PreferencesUtil.getString(activity, mTestInfo.getUuid(),
-                    R.string.batchNumberKey, "").trim());
+        if (calibrationDetail.expiry > new Date().getTime()) {
 
-            long expiryDate = PreferencesUtil.getLong(getContext(), mTestInfo.getUuid(),
-                    R.string.calibrationExpiryDateKey);
-
-            if (expiryDate >= 0) {
-                calendar.setTimeInMillis(expiryDate);
+            if (calibrationDetail.expiry >= 0) {
+                calendar.setTimeInMillis(calibrationDetail.expiry);
 
                 editExpiryDate.setText(new SimpleDateFormat("dd-MMM-yyyy", Locale.US)
-                        .format(new Date(expiryDate)));
+                        .format(new Date(calibrationDetail.expiry)));
             }
         }
 
         setupDatePicker(activity);
 
+        spinnerCuvette = view.findViewById(R.id.spinner);
+        if (AppPreferences.isDiagnosticMode()) {
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
+                    R.array.cuvettes, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCuvette.setAdapter(adapter);
+
+            textError = view.findViewById(R.id.textError);
+
+            for (int j = 0; j < adapter.getCount(); j++) {
+                if (Objects.equals(adapter.getItem(j), calibrationDetail.cuvetteType)) {
+                    spinnerCuvette.setSelection(j);
+                }
+            }
+
+            spinnerCuvette.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    textError.setError(null);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    textError.setError(null);
+                }
+            });
+        } else {
+            spinnerCuvette.setVisibility(View.GONE);
+            view.findViewById(R.id.layoutSpinner).setVisibility(View.GONE);
+        }
+
         editName = view.findViewById(R.id.editName);
         if (!isEditing && AppPreferences.isDiagnosticMode()) {
             editName.requestFocus();
+            showKeyboard(activity);
+
         } else {
             editName.setVisibility(View.GONE);
-            editBatchCode.requestFocus();
         }
-
-        showKeyboard(activity);
 
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.calibrationDetails)
@@ -202,13 +230,13 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
 
         editExpiryDate.setOnFocusChangeListener((view1, b) -> {
             if (b) {
-                closeKeyboard(getContext(), editBatchCode);
+                closeKeyboard(getContext(), editName);
                 datePickerDialog.show();
             }
         });
 
         editExpiryDate.setOnClickListener(view12 -> {
-            closeKeyboard(getContext(), editBatchCode);
+            closeKeyboard(getContext(), editName);
             datePickerDialog.show();
         });
     }
@@ -239,15 +267,15 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                                 AlertUtil.askQuestion(context, R.string.fileAlreadyExists,
                                         R.string.doYouWantToOverwrite, R.string.overwrite, R.string.cancel, true,
                                         (dialogInterface, i) -> {
-                                            saveCalibrationDetails(path);
                                             saveDetails(testCode);
+                                            saveCalibrationDetails(path);
                                             closeKeyboard(context, editName);
                                             dismiss();
                                         }, null
                                 );
                             } else {
-                                saveCalibrationDetails(path);
                                 saveDetails(testCode);
+                                saveCalibrationDetails(path);
                                 closeKeyboard(context, editName);
                                 dismiss();
                             }
@@ -265,7 +293,10 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                     calibrationDetail.uid = testCode;
                     calibrationDetail.date = Calendar.getInstance().getTimeInMillis();
                     calibrationDetail.expiry = calendar.getTimeInMillis();
-                    calibrationDetail.batchNumber = editBatchCode.getText().toString().trim();
+
+                    if (AppPreferences.isDiagnosticMode()) {
+                        calibrationDetail.cuvetteType = spinnerCuvette.getSelectedItem().toString();
+                    }
 
                     CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                     dao.insert(calibrationDetail);
@@ -280,9 +311,16 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                         editName.setError(getString(R.string.saveInvalidFileName));
                         return false;
                     }
-                    if (editBatchCode.getText().toString().trim().isEmpty()) {
-                        editBatchCode.setError(getString(R.string.required));
-                        return false;
+
+                    if (AppPreferences.isDiagnosticMode()) {
+
+                        textError.setError(null);
+
+                        if (spinnerCuvette.getSelectedItemPosition() == 0) {
+                            textError.requestFocus();
+                            textError.setError("Select cuvette type");
+                            return false;
+                        }
                     }
 
                     if (editExpiryDate.getText().toString().trim().isEmpty()) {
@@ -299,15 +337,11 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     private void saveCalibrationDetails(File path) {
         final Context context = getContext();
 
-        final String calibrationDetails = SwatchHelper.generateCalibrationFile(context, mTestInfo,
-                editBatchCode.getText().toString().trim(),
-                Calendar.getInstance().getTimeInMillis(),
-                calendar.getTimeInMillis());
+        final String calibrationDetails = SwatchHelper.generateCalibrationFile(context, mTestInfo, true);
 
         FileUtil.saveToFile(path, editName.getText().toString().trim(), calibrationDetails);
 
         Toast.makeText(context, R.string.fileSaved, Toast.LENGTH_SHORT).show();
-
     }
 
     /**
@@ -336,13 +370,13 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        closeKeyboard(getActivity(), editBatchCode);
+        closeKeyboard(getActivity(), editName);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        closeKeyboard(getActivity(), editBatchCode);
+        closeKeyboard(getActivity(), editName);
     }
 
     @Override

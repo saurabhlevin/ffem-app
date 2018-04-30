@@ -30,6 +30,12 @@ import org.akvo.caddisfly.model.TestInfo;
 
 public class ChamberBelowFragment extends BaseRunTest implements RunTest {
 
+    /**
+     * Instance of fragment.
+     *
+     * @param testInfo the test info
+     * @return the fragment
+     */
     public static ChamberBelowFragment newInstance(TestInfo testInfo) {
         ChamberBelowFragment fragment = new ChamberBelowFragment();
         Bundle args = new Bundle();

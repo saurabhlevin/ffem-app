@@ -61,6 +61,8 @@ import static org.akvo.caddisfly.common.Constants.DEGREES_180;
 import static org.akvo.caddisfly.common.Constants.DEGREES_270;
 import static org.akvo.caddisfly.common.Constants.DEGREES_90;
 
+//import timber.log.Timber;
+
 public class BaseRunTest extends Fragment implements RunTest {
     private static final double SHORT_DELAY = 1;
     private final ArrayList<ResultDetail> results = new ArrayList<>();
@@ -265,6 +267,8 @@ public class BaseRunTest extends Fragment implements RunTest {
             resultDetail.setBitmap(rotatedBitmap);
             resultDetail.setCroppedBitmap(croppedBitmap);
             resultDetail.setDilution(dilution);
+
+//            Timber.d("Result is: " + String.valueOf(resultDetail.getResult()));
 
             results.add(resultDetail);
 

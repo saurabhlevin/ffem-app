@@ -31,14 +31,14 @@ public final class AppConfig {
      * This is to ensure that installs from apk meant for testing only cannot be used for too long.
      */
     public static final boolean APP_EXPIRY = true;
-    public static final int APP_EXPIRY_DAY = 30;
-    public static final int APP_EXPIRY_MONTH = 4;
+    public static final int APP_EXPIRY_DAY = 15;
+    public static final int APP_EXPIRY_MONTH = 5;
     public static final int APP_EXPIRY_YEAR = 2018;
 
     /**
      * The intent action string used by the caddisfly question type.
      */
-    public static final String EXTERNAL_ACTION_CADDISFLY = "io.ffem.app.caddisfly";
+    public static final String EXTERNAL_APP_ACTION = "io.ffem.app.caddisfly";
 
     /**
      * Uri for photos from built in camera.

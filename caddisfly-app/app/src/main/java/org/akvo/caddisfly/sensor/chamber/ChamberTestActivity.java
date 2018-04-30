@@ -57,6 +57,7 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.helper.SwatchHelper;
+import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
@@ -243,7 +244,6 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onCalibrationDetailsSaved() {
         loadDetails();
-        calibrationItemFragment.loadDetails();
     }
 
     @Override
@@ -265,7 +265,6 @@ public class ChamberTestActivity extends BaseActivity implements
                 return true;
             case R.id.menuLoad:
                 loadCalibrationFromFile(this);
-                loadDetails();
                 return true;
             case R.id.menuSave:
                 showEditCalibrationDetailsDialog(false);
@@ -294,6 +293,8 @@ public class ChamberTestActivity extends BaseActivity implements
                 ViewModelProviders.of(this).get(TestInfoViewModel.class);
 
         model.setTest(testInfo);
+
+        calibrationItemFragment.loadDetails();
     }
 
     /**
@@ -372,11 +373,18 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onResult(ArrayList<ResultDetail> resultDetails, Calibration calibration) {
 
+        ColorInfo colorInfo = new ColorInfo(SwatchHelper.getAverageColor(resultDetails), 0);
+        ResultDetail resultDetail = SwatchHelper.analyzeColor(testInfo.getSwatches().size(),
+                colorInfo, testInfo.getSwatches());
+
+        resultDetail.setBitmap(resultDetails.get(resultDetails.size() - 1).getBitmap());
+        resultDetail.setCroppedBitmap(resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
+
         if (calibration == null) {
 
             int dilution = resultDetails.get(0).getDilution();
 
-            double value = SwatchHelper.getAverageResult(resultDetails);
+            double value = resultDetail.getResult();
 
             if (value > -1) {
 
@@ -396,32 +404,15 @@ public class ChamberTestActivity extends BaseActivity implements
                         .replace(R.id.fragment_container,
                                 ResultFragment.newInstance(testInfo), null).commit();
 
-//                if (AppPreferences.isDiagnosticMode()) {
-//                    showDiagnosticResultDialog(false, result, resultDetails, false, 0);
-//
-//                    ResultDetail resultDetail =resultDetails.get(resultDetails.size() -1);
-//                    resultDetail.setImage(UUID.randomUUID().toString() + ".png");
-//
-//
-//                    resultDetail.setCroppedImage(UUID.randomUUID().toString() + ".png");
-//
-//                    // Save photo taken during the test
-//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
-//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
-//
-//                    testInfo.setResultDetail(resultDetail);
-//
-//
-//                    calibration.croppedImage = UUID.randomUUID().toString() + ".png";
-//                    // Save photo taken during the test
-//                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
-//                            FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
-//                }
+                if (AppPreferences.getShowDebugInfo()) {
+                    showDiagnosticResultDialog(false, resultDetail, resultDetails, false);
+                }
 
+                testInfo.setResultDetail(resultDetail);
 
             } else {
 
-                if (AppPreferences.isDiagnosticMode()) {
+                if (AppPreferences.getShowDebugInfo()) {
                     sound.playShortResource(R.raw.err);
 
                     releaseResources();
@@ -430,9 +421,11 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     fragmentManager.popBackStack();
 
-                    showDiagnosticResultDialog(true, new Result(), resultDetails, false, 0);
+                    showDiagnosticResultDialog(true, resultDetail, resultDetails, false);
 
                 } else {
+
+                    fragmentManager.popBackStack();
 
                     showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.errorTestFailed),
                             getString(R.string.checkChamberPlacement)),
@@ -446,8 +439,8 @@ public class ChamberTestActivity extends BaseActivity implements
 
             if (color == Color.TRANSPARENT) {
 
-                if (AppPreferences.isDiagnosticMode()) {
-                    showDiagnosticResultDialog(true, new Result(), resultDetails, true, color);
+                if (AppPreferences.getShowDebugInfo()) {
+                    showDiagnosticResultDialog(true, resultDetail, resultDetails, true);
                 }
 
                 showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.couldNotCalibrate),
@@ -462,12 +455,12 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     calibration.image = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test
-                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getBitmap(),
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(resultDetails.size() - 1).getBitmap(),
                             FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.image);
 
                     calibration.croppedImage = UUID.randomUUID().toString() + ".png";
                     // Save photo taken during the test
-                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(0).getCroppedBitmap(),
+                    FileUtil.writeBitmapToExternalStorage(resultDetails.get(resultDetails.size() - 1).getCroppedBitmap(),
                             FileHelper.FileType.DIAGNOSTIC_IMAGE, calibration.croppedImage);
                 }
                 dao.insert(calibration);
@@ -476,8 +469,8 @@ public class ChamberTestActivity extends BaseActivity implements
 
                 sound.playShortResource(R.raw.done);
 
-                if (AppPreferences.isDiagnosticMode()) {
-                    showDiagnosticResultDialog(false, new Result(), resultDetails, true, color);
+                if (AppPreferences.getShowDebugInfo()) {
+                    showDiagnosticResultDialog(false, resultDetail, resultDetails, true);
                 }
             }
             fragmentManager.popBackStackImmediate();
@@ -488,15 +481,14 @@ public class ChamberTestActivity extends BaseActivity implements
      * In diagnostic mode show the diagnostic results dialog.
      *
      * @param testFailed    if test has failed then dialog knows to show the retry button
-     * @param result        the result shown to the user
+     * @param resultDetail  the result shown to the user
      * @param resultDetails the result details
      * @param isCalibration is this a calibration result
-     * @param color         the matched color
      */
-    private void showDiagnosticResultDialog(boolean testFailed, Result result,
-                                            ArrayList<ResultDetail> resultDetails, boolean isCalibration, int color) {
+    private void showDiagnosticResultDialog(boolean testFailed, ResultDetail resultDetail,
+                                            ArrayList<ResultDetail> resultDetails, boolean isCalibration) {
         DialogFragment resultFragment = DiagnosticResultDialog.newInstance(
-                testFailed, result, resultDetails, isCalibration, color);
+                testFailed, resultDetail, resultDetails, isCalibration);
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("gridDialog");

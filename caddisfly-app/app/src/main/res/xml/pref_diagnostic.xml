@@ -32,14 +32,14 @@
             android:numeric="integer"
             android:title="Sampling times" />
         <EditTextPreference
-            android:defaultValue="40"
+            android:defaultValue="50"
             android:dialogMessage="Enter a value below 400"
             android:key="@string/colorDistanceToleranceKey"
             android:maxLength="3"
             android:numeric="integer"
             android:title="Max swatch color distance" />
         <EditTextPreference
-            android:defaultValue="15"
+            android:defaultValue="20"
             android:dialogMessage="Enter a value below 400"
             android:key="@string/colorAverageDistanceToleranceKey"
             android:maxLength="3"

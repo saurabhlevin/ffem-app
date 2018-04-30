@@ -70,12 +70,7 @@ public class ResultFragment extends Fragment {
             if (testInfo != null) {
                 Result result = testInfo.getResults().get(0);
 
-                String finalResult = result.getResult();
-                if (testInfo.getResults().size() > 1) {
-                    finalResult += ";" + testInfo.getResults().get(1).getResult();
-                }
-
-                b.textResult.setText(finalResult);
+                b.textResult.setText(result.getResult());
                 b.textTitle.setText(testInfo.getName());
                 b.textDilution.setText(getResources().getQuantityString(R.plurals.dilutions,
                         testInfo.getDilution(), testInfo.getDilution()));

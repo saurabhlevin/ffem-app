@@ -245,8 +245,6 @@ public class TestConfigRepository {
         if (expiry > 0) {
             calibrationDetail.expiry = expiry;
         }
-        calibrationDetail.batchNumber = PreferencesUtil.getString(context,
-                testInfo.getUuid(), R.string.batchNumberKey, "");
 
         CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
         dao.insert(calibrationDetail);

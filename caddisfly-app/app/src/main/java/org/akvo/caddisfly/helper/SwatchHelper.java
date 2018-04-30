@@ -40,6 +40,8 @@ import org.akvo.caddisfly.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,6 +58,8 @@ import static org.apache.commons.math3.util.Precision.round;
 public final class SwatchHelper {
 
     private static final int MAX_DISTANCE = 999;
+    private static transient DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    private static transient DecimalFormat decimalFormat = new DecimalFormat("#.###", symbols);
 
     private SwatchHelper() {
     }
@@ -135,42 +139,69 @@ public final class SwatchHelper {
     /**
      * Generate the calibration details file.
      *
-     * @param context         the context
-     * @param testInfo        the test
-     * @param batchCode       the batch number
-     * @param calibrationDate date of calibration
-     * @param expiryDate      expiry date of the reagent
+     * @param context  the context
+     * @param testInfo the test
      * @return the calibration file content
      */
-    public static String generateCalibrationFile(Context context, TestInfo testInfo, String batchCode,
-                                                 long calibrationDate, long expiryDate) {
+    public static String generateCalibrationFile(Context context, TestInfo testInfo, boolean internal) {
 
         final StringBuilder calibrationDetails = new StringBuilder();
 
-        for (Swatch swatch : testInfo.getSwatches()) {
-            calibrationDetails.append(String.format(Locale.US, "%.2f", swatch.getValue()))
+        long calibrationDate = 0;
+        for (Calibration calibration : testInfo.getCalibrations()) {
+
+            if (calibrationDate < calibration.date) {
+                calibrationDate = calibration.date;
+            }
+
+//            calibrationDetails.append(String.format(Locale.US, "%.2f", calibration.value))
+//                    .append("=")
+//                    .append(ColorUtil.getColorRgbString(calibration.color));
+
+            calibrationDetails.append(decimalFormat.format(calibration.value))
                     .append("=")
-                    .append(ColorUtil.getColorRgbString(swatch.getColor()));
+                    .append(ColorUtil.getColorRgbString(calibration.color));
+
             calibrationDetails.append('\n');
         }
 
-        calibrationDetails.append("Type: ");
+        CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                .calibrationDao().getCalibrationDetails(testInfo.getUuid());
+
+        calibrationDetails.append("Name: ");
+        calibrationDetails.append(testInfo.getName());
+
+        if (calibrationDetail.cuvetteType != null) {
+            calibrationDetails.append("\n");
+            calibrationDetails.append("Cuvette: ");
+            calibrationDetails.append(calibrationDetail.cuvetteType);
+        }
+
+        calibrationDetails.append("\n");
+        calibrationDetails.append("UUID: ");
         calibrationDetails.append(testInfo.getUuid());
-        calibrationDetails.append("\n");
-        calibrationDetails.append("Date: ");
-        calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(calibrationDate));
-        calibrationDetails.append("\n");
-        calibrationDetails.append("Calibrated: ");
-        calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(calibrationDate));
-        calibrationDetails.append("\n");
-        calibrationDetails.append("ReagentExpiry: ");
-        calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(expiryDate));
-        calibrationDetails.append("\n");
-        calibrationDetails.append("ReagentBatch: ");
-        calibrationDetails.append(batchCode);
+
+        if (internal) {
+            calibrationDetails.append("\n");
+            calibrationDetails.append("Date: ");
+            calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(System.currentTimeMillis()));
+        }
+
+        if (calibrationDate > 0) {
+            calibrationDetails.append("\n");
+            calibrationDetails.append("Calibrated: ");
+            calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(calibrationDate));
+        }
+
+        if (calibrationDetail.expiry > 0) {
+            calibrationDetails.append("\n");
+            calibrationDetails.append("ReagentExpiry: ");
+            calibrationDetails.append(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calibrationDetail.expiry));
+        }
+
         calibrationDetails.append("\n");
         calibrationDetails.append("Version: ");
-        calibrationDetails.append(CaddisflyApp.getAppVersion());
+        calibrationDetails.append(CaddisflyApp.getAppVersion(true));
         calibrationDetails.append("\n");
         calibrationDetails.append("Model: ");
         calibrationDetails.append(android.os.Build.MODEL).append(" (")
@@ -179,9 +210,13 @@ public final class SwatchHelper {
         calibrationDetails.append("OS: ");
         calibrationDetails.append(android.os.Build.VERSION.RELEASE).append(" (")
                 .append(android.os.Build.VERSION.SDK_INT).append(")");
-        calibrationDetails.append("\n");
-        calibrationDetails.append("DeviceId: ");
-        calibrationDetails.append(ApiUtil.getInstallationId(context));
+
+        if (internal) {
+            calibrationDetails.append("\n");
+            calibrationDetails.append("DeviceId: ");
+            calibrationDetails.append(ApiUtil.getInstallationId(context));
+        }
+
         return calibrationDetails.toString();
     }
 
@@ -202,12 +237,12 @@ public final class SwatchHelper {
         List<String> calibrationDetails = FileUtil.loadFromFile(path, fileName);
         if (calibrationDetails != null) {
 
+            CalibrationDetail calibrationDetail = new CalibrationDetail();
+            calibrationDetail.uid = testInfo.getUuid();
+
             for (int i = calibrationDetails.size() - 1; i >= 0; i--) {
                 String line = calibrationDetails.get(i);
                 if (!line.contains("=")) {
-
-                    CalibrationDetail calibrationDetail = new CalibrationDetail();
-                    calibrationDetail.uid = testInfo.getUuid();
 
                     if (line.contains("Calibrated:")) {
                         Calendar calendar = Calendar.getInstance();
@@ -228,15 +263,15 @@ public final class SwatchHelper {
                         }
                     }
 
-                    if (line.contains("ReagentBatch:")) {
-                        calibrationDetail.batchNumber = line.substring(line.indexOf(':') + 1).trim();
+                    if (line.contains("Cuvette:")) {
+                        calibrationDetail.cuvetteType = line.substring(line.indexOf(':') + 1).trim();
                     }
-
-                    dao.insert(calibrationDetail);
 
                     calibrationDetails.remove(i);
                 }
             }
+
+            dao.insert(calibrationDetail);
 
             for (String rgb : calibrationDetails) {
                 String[] values = rgb.split("=");
