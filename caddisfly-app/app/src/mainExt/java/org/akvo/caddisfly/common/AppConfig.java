@@ -50,6 +50,12 @@ public final class AppConfig {
      */
     public static final float SOUND_EFFECTS_VOLUME = 0.99f;
 
+    /**
+     * The url to check for version updates.
+     */
+    public static final String EXPERIMENT_TESTS_FFEM_URL
+            = "http://ffem.io/app/ffem-app-version";
+
     private AppConfig() {
     }
 
