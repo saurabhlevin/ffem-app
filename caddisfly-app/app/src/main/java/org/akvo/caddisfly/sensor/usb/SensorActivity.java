@@ -451,7 +451,7 @@ public class SensorActivity extends BaseActivity {
 
     public void onClickAcceptResult(View view) {
 
-        Intent resultIntent = new Intent(getIntent());
+        Intent resultIntent = new Intent();
 
         resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
 

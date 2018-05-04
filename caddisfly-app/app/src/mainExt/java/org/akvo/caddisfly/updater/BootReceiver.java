@@ -13,7 +13,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Objects.requireNonNull(intent.getAction()).equals("android.intent.action.BOOT_COMPLETED")) {
-            CaddisflyApp.setNextUpdateCheck(context, -1);
+            UpdateCheck.setNextUpdateCheck(context, -1);
         }
     }
 }
