@@ -53,7 +53,7 @@ public final class AppConfig {
     /**
      * The url to check for version updates.
      */
-    public static final String EXPERIMENT_TESTS_FFEM_URL
+    public static final String UPDATE_CHECK_URL
             = "http://ffem.io/app/ffem-app-version";
 
     private AppConfig() {

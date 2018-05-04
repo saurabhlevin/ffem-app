@@ -27,6 +27,6 @@
             android:title="@string/testModeOn" />
         <Preference
             android:key="nextUpdateCheck"
-            android:title="Next update check"></Preference>
+            android:title="Next update check" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>
