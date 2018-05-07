@@ -27,8 +27,8 @@ android {
         applicationId "io.ffem.caddisfly"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 222
-        versionName "1.0 Beta 1.6"
+        versionCode 223
+        versionName "1.0 Beta 1.65"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Exp 1.0 Beta 1.6"
+            versionName "Exp 1.0 Beta 1.65"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
@@ -156,9 +156,9 @@ dependencies {
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
 
     // Firebase (Experiment Flavor)
-    experimentImplementation 'com.google.firebase:firebase-database:15.0.0'
-    experimentImplementation 'com.google.firebase:firebase-firestore:15.0.0'
-    experimentImplementation 'com.google.firebase:firebase-storage:15.0.0'
-    experimentImplementation 'com.google.firebase:firebase-auth:15.0.0'
+    experimentImplementation 'com.google.firebase:firebase-database:15.0.1'
+    experimentImplementation 'com.google.firebase:firebase-firestore:16.0.0'
+    experimentImplementation 'com.google.firebase:firebase-storage:15.0.2'
+    experimentImplementation 'com.google.firebase:firebase-auth:15.1.0'
 }
 //apply plugin: 'com.google.gms.google-services'

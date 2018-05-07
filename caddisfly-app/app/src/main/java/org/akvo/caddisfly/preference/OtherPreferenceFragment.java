@@ -88,7 +88,9 @@ public class OtherPreferenceFragment extends PreferenceFragment {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.emailSupport);
-                builder.setMessage("If you need assistance with using the app then choose continue. An email with information required by support will be generated.\n\nPlease select your email app in the next step and send the generated email.")
+                builder.setMessage("If you need assistance with using the app then choose continue. " +
+                        "An email with information required by support will be generated.\n\n" +
+                        "Please select your email app in the next step and send the generated email.")
                         .setCancelable(false)
                         .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
                         .setPositiveButton(R.string.continue_send, (dialog, id) -> {
