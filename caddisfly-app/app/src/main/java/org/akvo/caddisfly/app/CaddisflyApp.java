@@ -45,13 +45,21 @@ import timber.log.Timber;
 
 public class CaddisflyApp extends Application {
 
-    static final Migration MIGRATION_1_3 = new Migration(1, 3) {
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE Calibration " + " ADD COLUMN image STRING, croppedImage STRING");
-            database.execSQL("ALTER TABLE CalibrationDetail " + " ADD COLUMN cuvetteType STRING");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN image TEXT");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN croppedImage TEXT");
         }
     };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE CalibrationDetail" + " ADD COLUMN cuvetteType TEXT");
+        }
+    };
+
     private static final String DATABASE_NAME = "calibration";
     private static CalibrationDatabase database;
     private static CaddisflyApp app; // Singleton
@@ -114,7 +122,7 @@ public class CaddisflyApp extends Application {
         database = Room.databaseBuilder(getApplicationContext(),
                 CalibrationDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries()
-                .addMigrations(MIGRATION_1_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
     }
 
