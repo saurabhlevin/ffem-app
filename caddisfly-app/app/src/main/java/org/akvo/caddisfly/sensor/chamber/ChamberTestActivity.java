@@ -129,6 +129,7 @@ public class ChamberTestActivity extends BaseActivity implements
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                 start();
             } else {
+                setTitle(R.string.calibration);
                 calibrationItemFragment = CalibrationItemFragment.newInstance(testInfo);
                 goToFragment(calibrationItemFragment);
             }
@@ -203,13 +204,6 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        setTitle(R.string.calibration);
-    }
-
-    @Override
     protected void onDestroy() {
         sound.release();
         super.onDestroy();
@@ -223,7 +217,11 @@ public class ChamberTestActivity extends BaseActivity implements
         }
 
         if (fragmentManager.getBackStackEntryCount() == 0) {
-            setTitle(R.string.calibration);
+            if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
+                setTitle(R.string.analyze);
+            } else {
+                setTitle(R.string.calibration);
+            }
         }
 
         invalidateOptionsMenu();

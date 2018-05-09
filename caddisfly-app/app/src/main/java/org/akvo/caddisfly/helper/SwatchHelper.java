@@ -302,6 +302,14 @@ public final class SwatchHelper {
     @SuppressWarnings("SameParameterValue")
     public static List<Swatch> generateGradient(List<Swatch> swatches) {
 
+        // Predict 2 more points in the calibration list to account for high levels of contamination
+        Swatch swatch1 = swatches.get(swatches.size() - 2);
+        Swatch swatch2 = swatches.get(swatches.size() - 1);
+
+        swatches.add(predictNextColor(swatch1, swatch2));
+
+        swatches.add(predictNextColor(swatch2, swatches.get(swatches.size() - 1)));
+
         List<Swatch> list = new ArrayList<>();
 
         for (int i = 0; i < swatches.size() - 1; i++) {
@@ -318,10 +326,30 @@ public final class SwatchHelper {
                 list.add(new Swatch(startValue + (j * increment), color, Color.TRANSPARENT));
             }
         }
+
         list.add(new Swatch(swatches.get(swatches.size() - 1).getValue(),
                 swatches.get(swatches.size() - 1).getColor(), Color.TRANSPARENT));
 
+
         return list;
+    }
+
+    private static Swatch predictNextColor(Swatch swatch1, Swatch swatch2) {
+
+        double valueDiff = swatch2.getValue() - swatch1.getValue();
+
+        int color1 = swatch1.getColor();
+        int color2 = swatch2.getColor();
+        int r = getNextLinePoint(Color.red(color1), Color.red(color2));
+        int g = getNextLinePoint(Color.green(color1), Color.green(color2));
+        int b = getNextLinePoint(Color.blue(color1), Color.blue(color2));
+
+        return new Swatch(swatch2.getValue() + valueDiff, Color.rgb(r, g, b), Color.TRANSPARENT);
+    }
+
+    private static int getNextLinePoint(int y, int y2) {
+        int diff = y2 - y;
+        return Math.min(255, Math.max(0, y2 + diff));
     }
 
     /**
