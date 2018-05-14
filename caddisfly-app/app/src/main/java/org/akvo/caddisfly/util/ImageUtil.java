@@ -31,11 +31,13 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import org.akvo.caddisfly.helper.FileHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -381,5 +383,13 @@ public final class ImageUtil {
         Matrix mat = new Matrix();
         mat.postRotate(angle);
         return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+    }
+
+    public static String encodeImage(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

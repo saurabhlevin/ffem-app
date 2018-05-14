@@ -58,6 +58,10 @@ android {
     buildTypes {
         debug {
             debuggable true
+            multiDexEnabled true
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -102,6 +106,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation 'com.android.support:multidex:1.0.3'
+
     // Support
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
@@ -120,8 +126,8 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     // Room
-    implementation 'android.arch.persistence.room:runtime:1.0.0'
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    implementation 'android.arch.persistence.room:runtime:1.1.0'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -162,3 +168,4 @@ dependencies {
     experimentImplementation 'com.google.firebase:firebase-auth:15.1.0'
 }
 //apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.getkeepsafe.dexcount'

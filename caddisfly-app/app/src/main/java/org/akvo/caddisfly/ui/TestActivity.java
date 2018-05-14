@@ -64,7 +64,7 @@ import org.akvo.caddisfly.sensor.cbt.CbtActivity;
 import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.sensor.manual.ManualTestActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
-import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
+import org.akvo.caddisfly.sensor.titration.ui.TitrationMeasureActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
@@ -177,15 +177,28 @@ public class TestActivity extends BaseActivity {
         String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
-        if (uuid == null) {
-            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
-        }
-
         if (uuid != null) {
             //Get the test config by uuid
             final TestListViewModel viewModel =
                     ViewModelProviders.of(this).get(TestListViewModel.class);
             testInfo = viewModel.getTestInfo(uuid);
+        }
+
+        if (uuid == null) {
+            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+
+            if (uuid != null) {
+                final TestListViewModel viewModel =
+                        ViewModelProviders.of(this).get(TestListViewModel.class);
+                testInfo = viewModel.getTestInfo(uuid);
+
+                if (testInfo != null && intent.getExtras() != null) {
+                    for (int i = 1; i < intent.getExtras().keySet().size(); i++) {
+                        testInfo.getResults().get(intent.getExtras().keySet().size() - i - 1)
+                                .setCode(intent.getExtras().keySet().toArray()[i].toString());
+                    }
+                }
+            }
         }
 
         if (testInfo == null) {
@@ -294,7 +307,7 @@ public class TestActivity extends BaseActivity {
 
     private void startTitrationTest() {
         Intent intent;
-        intent = new Intent(this, TitrationTestActivity.class);
+        intent = new Intent(this, TitrationMeasureActivity.class);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivityForResult(intent, REQUEST_TEST);
     }
@@ -390,6 +403,8 @@ public class TestActivity extends BaseActivity {
 //            }
 
             this.setResult(Activity.RESULT_OK, intent);
+            finish();
+        } else {
             finish();
         }
     }

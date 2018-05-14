@@ -17,5 +17,6 @@ public class ConstantKey {
     public static final String TYPE = NAMESPACE_PREFIX + "type";
 
     public static final String NEXT_UPDATE_CHECK = NAMESPACE_PREFIX + "lastUpdateCheck";
+    public static final String VALUE = NAMESPACE_PREFIX + "value";
 }
 

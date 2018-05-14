@@ -4,14 +4,14 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import org.akvo.caddisfly.sensor.qrdetector.BitMatrix;
+import org.akvo.caddisfly.sensor.qrdetector.Detector;
+import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
+import org.akvo.caddisfly.sensor.qrdetector.PerspectiveTransform;
+import org.akvo.caddisfly.sensor.qrdetector.ResultPoint;
 import org.akvo.caddisfly.sensor.striptest.models.CalibrationCardData;
 import org.akvo.caddisfly.sensor.striptest.models.CalibrationCardException;
 import org.akvo.caddisfly.sensor.striptest.models.DecodeData;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.BitMatrix;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.Detector;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPattern;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.PerspectiveTransform;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.ResultPoint;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.akvo.caddisfly.sensor.striptest.qrdetector.MathUtils.distance;
+import static org.akvo.caddisfly.sensor.qrdetector.MathUtils.distance;
 import static org.akvo.caddisfly.sensor.striptest.utils.MathUtils.meanMedianMax;
 
 /**

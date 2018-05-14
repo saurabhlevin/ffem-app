@@ -30,6 +30,7 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StriptestHandler;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
+import org.akvo.caddisfly.util.CameraPreview;
 import org.akvo.caddisfly.util.ImageUtil;
 
 /**

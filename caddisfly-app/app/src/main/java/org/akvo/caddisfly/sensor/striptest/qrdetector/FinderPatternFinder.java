@@ -16,7 +16,12 @@
 
 package org.akvo.caddisfly.sensor.striptest.qrdetector;
 
-import android.util.Log;
+import org.akvo.caddisfly.sensor.qrdetector.BitMatrix;
+import org.akvo.caddisfly.sensor.qrdetector.DecodeHintType;
+import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
+import org.akvo.caddisfly.sensor.qrdetector.NotFoundException;
+import org.akvo.caddisfly.sensor.qrdetector.ResultPoint;
+import org.akvo.caddisfly.sensor.qrdetector.ResultPointCallback;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -104,17 +109,17 @@ public class FinderPatternFinder {
     }
 
     /* Find finder patterns
-    * The image we have is higher than it is wide, and contains the calibration card rotated:
-    * ----------
-    *|o        o|
-    *|          |
-    *|          |
-    *|          |
-    *|          |
-    *|          |
-    *|o________o|
-    * It contains 4 finder patterns
-    */
+     * The image we have is higher than it is wide, and contains the calibration card rotated:
+     * ----------
+     *|o        o|
+     *|          |
+     *|          |
+     *|          |
+     *|          |
+     *|          |
+     *|o________o|
+     * It contains 4 finder patterns
+     */
     public final FinderPatternInfo find(Map<DecodeHintType, ?> hints) throws NotFoundException {
         boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
         boolean pureBarcode = hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE);

@@ -31,9 +31,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
+import org.akvo.caddisfly.sensor.qrdetector.PerspectiveTransform;
 import org.akvo.caddisfly.sensor.striptest.decode.DecodeProcessor;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPattern;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.PerspectiveTransform;
 import org.akvo.caddisfly.sensor.striptest.utils.Constants;
 
 import java.util.List;
