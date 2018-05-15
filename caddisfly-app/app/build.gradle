@@ -27,7 +27,7 @@ android {
         applicationId "io.ffem.caddisfly"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 224
+        versionCode 225
         versionName "1.0 Beta 1.66"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Exp 1.0 Beta 1.66"
+            versionName "Titration Test 1"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }

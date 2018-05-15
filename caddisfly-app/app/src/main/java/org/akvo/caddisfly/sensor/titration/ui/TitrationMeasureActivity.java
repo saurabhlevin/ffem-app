@@ -204,6 +204,9 @@ public class TitrationMeasureActivity extends BaseActivity implements TitrationM
     @Override
     public void onPause() {
         releaseResources();
+        if (!isFinishing()) {
+            finish();
+        }
         super.onPause();
     }
 
