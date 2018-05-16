@@ -33,7 +33,6 @@ import android.view.ViewParent;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.Constants;
-import org.akvo.caddisfly.common.TestConstantKeys;
 import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
@@ -68,8 +67,8 @@ import static org.akvo.caddisfly.util.TestHelper.gotoSurveyForm;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
+import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -121,7 +120,7 @@ public class ChamberInstructions {
 //                PreferenceManager.getDefaultSharedPreferences(mActivityTestRule.getActivity());
 //        prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -132,7 +131,9 @@ public class ChamberInstructions {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(0);
+        nextSurveyPage(3, "Water Tests 1");
+
+        clickExternalSourceButton(2);
 
         sleep(1000);
 
@@ -172,7 +173,7 @@ public class ChamberInstructions {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(TestConstantKeys.NEXT);
+        nextSurveyPage(4, "Water Tests 2");
 
         clickExternalSourceButton(0);
 
@@ -189,23 +190,23 @@ public class ChamberInstructions {
 
         mDevice.waitForIdle();
 
-//        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
+        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
 
-        onView(withText(getString(mActivityTestRule.getActivity(), R.string.instructions))).perform(click());
+//        onView(withText(getString(mActivityTestRule.getActivity(), R.string.instructions))).perform(click());
 
-        for (int i = 0; i < 17; i++) {
-
-            try {
-                takeScreenshot(id, i);
-
-                onView(withId(R.id.image_pageRight)).perform(click());
-
-            } catch (Exception e) {
-                TestUtil.sleep(600);
-                Espresso.pressBack();
-                break;
-            }
-        }
+//        for (int i = 0; i < 17; i++) {
+//
+//            try {
+//                takeScreenshot(id, i);
+//
+//                onView(withId(R.id.image_pageRight)).perform(click());
+//
+//            } catch (Exception e) {
+//                TestUtil.sleep(600);
+//                Espresso.pressBack();
+//                break;
+//            }
+//        }
     }
 
     @Test
