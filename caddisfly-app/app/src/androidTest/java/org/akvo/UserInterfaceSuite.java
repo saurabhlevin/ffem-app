@@ -1,7 +1,6 @@
 package org.akvo;
 
 import org.akvo.caddisfly.diagnostic.DiagnosticTest;
-import org.akvo.caddisfly.misc.LanguageTest;
 import org.akvo.caddisfly.misc.MiscTest;
 import org.akvo.caddisfly.navigation.NavigationTest;
 import org.akvo.caddisfly.navigation.StripTestNavigation;
@@ -14,7 +13,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({CalibrationTest.class,
         DiagnosticTest.class,
-        LanguageTest.class,
         MiscTest.class,
         NavigationTest.class,
         SensorsUiTest.class,

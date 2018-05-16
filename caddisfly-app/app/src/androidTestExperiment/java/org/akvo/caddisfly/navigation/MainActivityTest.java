@@ -64,5 +64,17 @@ public class MainActivityTest {
 
         pressBack();
 
+        onView(withText("Sensors")).perform(click());
+
+        pressBack();
+
+        onView(withText("MD 610 Photometer")).perform(click());
+
+        pressBack();
+
+        onView(withText("E.coli - Aquagenx CBT")).perform(click());
+
+        pressBack();
+
     }
 }

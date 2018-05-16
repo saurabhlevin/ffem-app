@@ -69,7 +69,6 @@ import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
 import static org.akvo.caddisfly.util.TestUtil.clickListViewItem;
@@ -105,7 +104,7 @@ public class MiscTest {
                 PreferenceManager.getDefaultSharedPreferences(mActivityRule.getActivity());
         prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -121,9 +120,9 @@ public class MiscTest {
 
         Espresso.pressBack();
 
-        onView(withText(R.string.language)).perform(click());
+//        onView(withText(R.string.language)).perform(click());
 
-        onView(withText(R.string.cancel)).perform(click());
+//        onView(withText(R.string.cancel)).perform(click());
 
     }
 
@@ -269,8 +268,8 @@ public class MiscTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
 
@@ -335,14 +334,14 @@ public class MiscTest {
 
         Espresso.pressBack();
 
-        onView(withText(R.string.language)).perform(click());
+//        onView(withText(R.string.language)).perform(click());
 
-        mDevice.waitForWindowUpdate("", 1000);
+//        mDevice.waitForWindowUpdate("", 1000);
 
         //Language Dialog
-        takeScreenshot();
+//        takeScreenshot();
 
-        onView(withId(android.R.id.button2)).perform(click());
+//        onView(withId(android.R.id.button2)).perform(click());
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 

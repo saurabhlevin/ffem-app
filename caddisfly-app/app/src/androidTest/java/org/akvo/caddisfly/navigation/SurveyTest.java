@@ -179,9 +179,9 @@ public class SurveyTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(0);
+        nextSurveyPage(3, "Water Tests 1");
 
-        clickExternalSourceButton(0);
+        clickExternalSourceButton(2);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
