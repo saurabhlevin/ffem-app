@@ -120,8 +120,9 @@ public class SurveyTest {
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 
         onView(allOf(withId(R.id.calibrationList),
-                childAtPosition(withClassName(is("android.widget.RelativeLayout")),
-                        3))).perform(actionOnItemAtPosition(4, click()));
+                childAtPosition(
+                        withClassName(is("android.widget.RelativeLayout")),
+                        0))).perform(actionOnItemAtPosition(4, click()));
 
 //        onView(withText("0" + dfs.getDecimalSeparator() + "0 mg/l")).check(matches(isDisplayed()));
 
@@ -135,7 +136,7 @@ public class SurveyTest {
 
 //        onView(withText(currentHashMap.get("chlorine"))).perform(click());
 
-        onView(withText("Caddisfly, 0 - 3.0")).perform(click());
+        onView(withText("Caddisfly, 0 - 3")).perform(click());
 
         onView(withText("1" + dfs.getDecimalSeparator() + "0")).check(matches(isDisplayed()));
 

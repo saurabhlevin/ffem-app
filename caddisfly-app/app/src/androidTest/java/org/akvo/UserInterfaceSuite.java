@@ -5,7 +5,6 @@ import org.akvo.caddisfly.misc.MiscTest;
 import org.akvo.caddisfly.navigation.NavigationTest;
 import org.akvo.caddisfly.navigation.StripTestNavigation;
 import org.akvo.caddisfly.ui.CalibrationTest;
-import org.akvo.caddisfly.ui.SensorsUiTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -15,7 +14,6 @@ import org.junit.runners.Suite;
         DiagnosticTest.class,
         MiscTest.class,
         NavigationTest.class,
-        SensorsUiTest.class,
         StripTestNavigation.class})
 public class UserInterfaceSuite {
 }

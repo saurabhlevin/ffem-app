@@ -49,7 +49,6 @@ import java.util.Calendar;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -68,7 +67,6 @@ import static org.akvo.caddisfly.util.TestHelper.leaveDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
@@ -104,7 +102,7 @@ public class CalibrationTest {
                 PreferenceManager.getDefaultSharedPreferences(mActivityRule.getActivity());
         prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -212,11 +210,11 @@ public class CalibrationTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(clearText(), closeSoftKeyboard());
-
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("    "), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(clearText(), closeSoftKeyboard());
+//
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("    "), closeSoftKeyboard());
 
         onView(withText(R.string.save)).perform(click());
 
@@ -232,10 +230,10 @@ public class CalibrationTest {
 
         onView(withText(R.string.save)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
-
-        onView(withText(R.string.save)).perform(click());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
+//
+//        onView(withText(R.string.save)).perform(click());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             onView(withText((String.format("%s. %s", mActivityRule.getActivity().getString(R.string.expired),

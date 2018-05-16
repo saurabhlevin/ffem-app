@@ -281,8 +281,9 @@ public class MiscTest {
         onView(withText(R.string.save)).perform(click());
 
         onView(allOf(withId(R.id.calibrationList),
-                childAtPosition(withClassName(is("android.widget.RelativeLayout")),
-                        3))).perform(actionOnItemAtPosition(4, click()));
+                childAtPosition(
+                        withClassName(is("android.widget.RelativeLayout")),
+                        0))).perform(actionOnItemAtPosition(4, click()));
 
 //        onView(withText("2" + dfs.getDecimalSeparator() + "0 mg/l")).perform(click());
 
