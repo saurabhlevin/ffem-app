@@ -20,7 +20,9 @@
 package org.akvo.caddisfly.app;
 
 import android.app.Application;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -28,6 +30,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 
 import org.akvo.caddisfly.BuildConfig;
@@ -41,6 +44,21 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public class CaddisflyApp extends Application {
+
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN image TEXT");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN croppedImage TEXT");
+        }
+    };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE CalibrationDetail" + " ADD COLUMN cuvetteType TEXT");
+        }
+    };
 
     private static final String DATABASE_NAME = "calibration";
     private static CalibrationDatabase database;
@@ -104,7 +122,7 @@ public class CaddisflyApp extends Application {
         database = Room.databaseBuilder(getApplicationContext(),
                 CalibrationDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
     }
 

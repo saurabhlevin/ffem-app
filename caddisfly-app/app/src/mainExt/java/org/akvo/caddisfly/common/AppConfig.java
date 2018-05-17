@@ -28,11 +28,11 @@ public final class AppConfig {
 
     /**
      * Date on which the app version will expire.
-     * This is to ensure that installs from apk meant for testing only is not used for too long.
+     * This is to ensure that installs from apk meant for testing only are not used for too long.
      */
     public static final boolean APP_EXPIRY = true;
     public static final int APP_EXPIRY_DAY = 15;
-    public static final int APP_EXPIRY_MONTH = 5;
+    public static final int APP_EXPIRY_MONTH = 6;
     public static final int APP_EXPIRY_YEAR = 2018;
 
     /**
@@ -53,8 +53,7 @@ public final class AppConfig {
     /**
      * The url to check for version updates.
      */
-    public static final String UPDATE_CHECK_URL
-            = "http://ffem.io/app/ffem-app-version";
+    public static final String UPDATE_CHECK_URL = "http://ffem.io/app/ffem-app-version";
 
     private AppConfig() {
     }

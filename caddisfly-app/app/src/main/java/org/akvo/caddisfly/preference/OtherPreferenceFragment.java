@@ -20,16 +20,21 @@
 package org.akvo.caddisfly.preference;
 
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +51,12 @@ import org.akvo.caddisfly.ui.AboutActivity;
 import org.akvo.caddisfly.util.ListViewUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class OtherPreferenceFragment extends PreferenceFragment {
 
-    Uri URI = null;
+    static StringBuilder message = new StringBuilder();
     private ListView list;
 
     @Override
@@ -73,52 +79,56 @@ public class OtherPreferenceFragment extends PreferenceFragment {
             });
         }
 
-        StringBuilder message = new StringBuilder();
-
         Preference emailSupportPreference = findPreference("emailSupport");
         if (emailSupportPreference != null) {
-            emailSupportPreference.setSummary("Send details to support for troubleshooting");
+            emailSupportPreference.setSummary("Send details to support for assistance");
             emailSupportPreference.setOnPreferenceClickListener(preference -> {
 
-                final TestListViewModel viewModel =
-                        ViewModelProviders.of((FragmentActivity) getActivity()).get(TestListViewModel.class);
+                message.setLength(0);
 
-                List<TestInfo> testList = viewModel.getTests(TestType.CHAMBER_TEST);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.emailSupport);
+                builder.setMessage("If you need assistance with using the app then choose continue. " +
+                        "An email with information required by support will be generated.\n\n" +
+                        "Please select your email app in the next step and send the generated email.")
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+                        .setPositiveButton(R.string.continue_send, (dialog, id) -> {
 
-                for (TestInfo testInfo : testList) {
+                            dialog.dismiss();
 
-                    if (testInfo.getIsGroup()) {
-                        continue;
-                    }
+                            final ProgressDialog progressDialog =
+                                    new ProgressDialog(getActivity(), android.R.style.Theme_DeviceDefault_Light_Dialog);
 
-                    testInfo = viewModel.getTestInfo(testInfo.getUuid());
+                            // START AsyncTask
+                            GenerateMessageAsyncTask generateMessageAsyncTask = new GenerateMessageAsyncTask(this);
+                            generateMessageAsyncTask.setListener(value -> {
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
 
-                    boolean calibrated = false;
-                    for (Calibration calibration :
-                            testInfo.getCalibrations()) {
-                        if (calibration.color != Color.TRANSPARENT &&
-                                calibration.color != Color.BLACK) {
-                            calibrated = true;
-                            break;
-                        }
-                    }
+                                sendEmail(getActivity(), message.toString());
 
-                    if (calibrated) {
-                        message.append(SwatchHelper.generateCalibrationFile(getActivity(), testInfo, false));
+                            });
 
-                        message.append("\n");
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setTitle(R.string.appName);
+                            progressDialog.setMessage(getString(R.string.just_a_moment));
+                            progressDialog.setCancelable(false);
 
-                        message.append("-------------------------------------------------");
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && progressDialog.getWindow() != null) {
+                                progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            }
+                            progressDialog.show();
 
-                        message.append("\n");
-                    }
-                }
+                            generateMessageAsyncTask.execute();
 
-                sendEmail(getActivity(), message.toString());
+                        }).show();
+
                 return true;
             });
         }
-
 
         return rootView;
     }
@@ -139,17 +149,84 @@ public class OtherPreferenceFragment extends PreferenceFragment {
         try {
             String email = "devices@ternup.com";
             String subject = "Support request";
-            final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.setType("plain/text");
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-            if (URI != null) {
-                emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
-            }
-            emailIntent.putExtra(Intent.EXTRA_TEXT, message);
-            this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri data = Uri.parse("mailto:?to=" + email + "&subject=" + subject + "&body=" + message);
+            intent.setData(data);
+            startActivity(intent);
+
         } catch (Throwable t) {
             Toast.makeText(context, "Request failed try again: " + t.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    static class GenerateMessageAsyncTask extends AsyncTask<Void, Void, Integer> {
+        private ExampleAsyncTaskListener listener;
+
+        private WeakReference<OtherPreferenceFragment> activityReference;
+
+        // only retain a weak reference to the activity
+        GenerateMessageAsyncTask(OtherPreferenceFragment fragment) {
+            activityReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            final TestListViewModel viewModel =
+                    ViewModelProviders.of((FragmentActivity) activityReference.get().getActivity()).get(TestListViewModel.class);
+
+            List<TestInfo> testList = viewModel.getTests(TestType.CHAMBER_TEST);
+
+            for (TestInfo testInfo : testList) {
+
+                if (testInfo.getIsGroup()) {
+                    continue;
+                }
+
+                testInfo = viewModel.getTestInfo(testInfo.getUuid());
+
+                boolean calibrated = false;
+                for (Calibration calibration :
+                        testInfo.getCalibrations()) {
+                    if (calibration.color != Color.TRANSPARENT &&
+                            calibration.color != Color.BLACK) {
+                        calibrated = true;
+                        break;
+                    }
+                }
+
+                if (calibrated) {
+                    message.append(SwatchHelper.generateCalibrationFile(activityReference.get().getActivity(), testInfo, false));
+
+                    message.append("\n");
+
+                    message.append("-------------------------------------------------");
+
+                    message.append("\n");
+                }
+            }
+
+            if (message.toString().isEmpty()) {
+                message.append("No calibrations found");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer value) {
+            super.onPostExecute(value);
+            if (listener != null) {
+                listener.onExampleAsyncTaskFinished(value);
+            }
+        }
+
+        public void setListener(ExampleAsyncTaskListener listener) {
+            this.listener = listener;
+        }
+
+        public interface ExampleAsyncTaskListener {
+            void onExampleAsyncTaskFinished(Integer value);
         }
     }
 }
