@@ -50,8 +50,6 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -182,7 +180,7 @@ public class CalibrationTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        sleep(4000);
+        sleep(500);
 
         onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
 
@@ -196,11 +194,11 @@ public class CalibrationTest {
 
         onView(withId(R.id.menuLoad)).perform(click());
 
-        sleep(2000);
+        sleep(500);
 
         onData(hasToString(startsWith("TestValid"))).perform(click());
 
-        sleep(2000);
+        sleep(500);
 
         leaveDiagnosticMode();
 
@@ -245,17 +243,15 @@ public class CalibrationTest {
 
         mDevice.pressBack();
 
-        onView(withId(android.R.id.button2)).perform(click());
-
         goToMainScreen();
 
         gotoSurveyForm();
 
-        nextSurveyPage(0);
+        nextSurveyPage(3, "Water Tests 1");
 
-        clickExternalSourceButton(0);
+        clickExternalSourceButton(2);
 
-        sleep(2000);
+        sleep(500);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String message = String.format("%s%n%n%s",
@@ -273,8 +269,8 @@ public class CalibrationTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("NEW BATCH"), closeSoftKeyboard());
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("NEW BATCH"), closeSoftKeyboard());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
 
@@ -293,9 +289,11 @@ public class CalibrationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(0);
+        nextSurveyPage(3, "Water Tests 1");
 
-        sleep(2000);
+        clickExternalSourceButton(2);
+
+        sleep(500);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
