@@ -57,6 +57,7 @@ import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static org.akvo.caddisfly.common.Constants.DEGREES_180;
 import static org.akvo.caddisfly.common.Constants.DEGREES_270;
@@ -72,6 +73,16 @@ public class BaseRunTest extends Fragment implements RunTest {
     protected FragmentRunTestBinding binding;
     protected boolean cameraStarted;
     protected int pictureCount = 0;
+    int timeDelay = 0;
+    private SoundPoolPlayer sound;
+    private Handler mHandler;
+    private AlertDialog alertDialogToBeDestroyed;
+    private TestInfo mTestInfo;
+    private Calibration mCalibration;
+    private int dilution;
+    private Camera mCamera;
+    private OnResultListener mListener;
+    private ChamberCameraPreview mCameraPreview;
     private final Runnable mRunnableCode = () -> {
         if (pictureCount < AppPreferences.getSamplingTimes()) {
             pictureCount++;
@@ -81,14 +92,6 @@ public class BaseRunTest extends Fragment implements RunTest {
             releaseResources();
         }
     };
-    private SoundPoolPlayer sound;
-    private Handler mHandler;
-    private AlertDialog alertDialogToBeDestroyed;
-    private TestInfo mTestInfo;
-    private Calibration mCalibration;
-    private int dilution;
-    private Camera mCamera;
-    private OnResultListener mListener;
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -108,20 +111,37 @@ public class BaseRunTest extends Fragment implements RunTest {
             }
         }
     };
-    private ChamberCameraPreview mCameraPreview;
-    int timeDelay = 0;
     private Runnable mCountdown = this::setCountDown;
+
+    private static String timeConversion(int seconds) {
+
+        final int MINUTES_IN_AN_HOUR = 60;
+        final int SECONDS_IN_A_MINUTE = 60;
+
+        int minutes = seconds / SECONDS_IN_A_MINUTE;
+        seconds -= minutes * SECONDS_IN_A_MINUTE;
+
+        int hours = minutes / MINUTES_IN_AN_HOUR;
+        minutes -= hours * MINUTES_IN_AN_HOUR;
+
+        return String.format(Locale.US, "%02d", hours) + ":" +
+                String.format(Locale.US, "%02d", minutes) + ":" +
+                String.format(Locale.US, "%02d", seconds);
+    }
 
     private void setCountDown() {
         if (countdown[0] < timeDelay) {
             binding.timeLayout.setVisibility(View.VISIBLE);
-            binding.layoutWait.setVisibility(View.GONE);
+//            binding.layoutWait.setVisibility(View.GONE);
 
-            binding.countdownTimer.setProgress(timeDelay - countdown[0]++, timeDelay);
+            countdown[0]++;
 
-            if ((timeDelay - countdown[0] + 1) % 15 == 0) {
+            if ((timeDelay - countdown[0]) % 15 == 0) {
                 sound.playShortResource(R.raw.beep);
             }
+
+//            binding.countdownTimer.setProgress(timeDelay - countdown[0], timeDelay);
+            binding.textTimeRemaining.setText(timeConversion(timeDelay - countdown[0]));
 
             delayHandler.postDelayed(mCountdown, 1000);
         } else {
@@ -132,7 +152,6 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     protected void waitForStillness() {
-
     }
 
     @Override
@@ -220,7 +239,7 @@ public class BaseRunTest extends Fragment implements RunTest {
             timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
 
             binding.timeLayout.setVisibility(View.VISIBLE);
-            binding.layoutWait.setVisibility(View.GONE);
+//            binding.layoutWait.setVisibility(View.GONE);
             binding.countdownTimer.setProgress(timeDelay, timeDelay);
 
             setCountDown();
@@ -398,7 +417,6 @@ public class BaseRunTest extends Fragment implements RunTest {
 
         mCamera.setParameters(parameters);
     }
-
 
     protected void releaseResources() {
 

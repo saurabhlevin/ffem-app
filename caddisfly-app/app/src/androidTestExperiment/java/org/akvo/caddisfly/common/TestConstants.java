@@ -22,9 +22,9 @@ package org.akvo.caddisfly.common;
 public final class TestConstants {
 
     /**
-     * To launch Flow app.
+     * To launch survey app.
      */
-    public static final String EXTERNAL_SURVEY_PACKAGE_NAME = "org.koboc.collect.android";
+    public static final String EXTERNAL_SURVEY_PACKAGE_NAME = "io.ffem.collect.android";
 
     public static final int SENSOR_TESTS_COUNT = 3;
     public static final int STRIP_TESTS_COUNT = 21;

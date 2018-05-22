@@ -18,6 +18,5 @@ public class ConstantKey {
 
     public static final String NEXT_UPDATE_CHECK = NAMESPACE_PREFIX + "lastUpdateCheck";
 
-    public static final String START_TIME = NAMESPACE_PREFIX + "startTime";
 }
 

@@ -20,7 +20,6 @@
 package org.akvo.caddisfly.sensor.chamber;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
@@ -44,7 +43,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -83,7 +81,6 @@ import java.util.UUID;
 import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
-import static android.view.View.GONE;
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
@@ -125,8 +122,6 @@ public class ChamberTestActivity extends BaseActivity implements
 
         setContentView(R.layout.activity_chamber_test);
 
-        TextView elapsedTimeText = findViewById(R.id.elapsedTimeText);
-
         sound = new SoundPoolPlayer(this);
 
         fragmentManager = getSupportFragmentManager();
@@ -146,8 +141,6 @@ public class ChamberTestActivity extends BaseActivity implements
                 runTestFragment = ChamberAboveFragment.newInstance(testInfo);
             }
 
-            startTime = getIntent().getLongExtra(ConstantKey.START_TIME, 0);
-
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                 start();
             } else {
@@ -156,22 +149,6 @@ public class ChamberTestActivity extends BaseActivity implements
                 goToFragment(calibrationItemFragment);
             }
         }
-
-        if (startTime > 0) {
-            final Handler someHandler = new Handler(getMainLooper());
-            someHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    elapsedTimeText.setText(formatDuration(System.currentTimeMillis() - startTime));
-
-                    someHandler.postDelayed(this, 1000);
-                }
-            }, 10);
-        } else {
-            findViewById(R.id.elapsedTimeLayout).setVisibility(GONE);
-        }
-
     }
 
     private void goToFragment(Fragment fragment) {
@@ -718,27 +695,5 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onDetailsSaved(int type, String comment) {
         ConfigDownloader.sendDataToCloudDatabase(this, testInfo, type, comment);
-    }
-
-    public boolean isAppInLockTaskMode() {
-        ActivityManager activityManager;
-
-        activityManager = (ActivityManager)
-                this.getSystemService(Context.ACTIVITY_SERVICE);
-
-        if (activityManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // For SDK version 23 and above.
-                return activityManager.getLockTaskModeState()
-                        != ActivityManager.LOCK_TASK_MODE_NONE;
-            }
-
-            // When SDK version >= 21. This API is deprecated in 23.
-            //noinspection deprecation
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-                    activityManager.isInLockTaskMode();
-        }
-
-        return false;
     }
 }
