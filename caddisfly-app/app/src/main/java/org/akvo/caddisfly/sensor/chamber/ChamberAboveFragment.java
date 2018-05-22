@@ -92,6 +92,7 @@ public class ChamberAboveFragment extends BaseRunTest implements RunTest {
         }
     }
 
+    @Override
     protected void initializeTest() {
         super.initializeTest();
 
@@ -104,7 +105,9 @@ public class ChamberAboveFragment extends BaseRunTest implements RunTest {
         mIgnoreShake = false;
 
         mWaitingForStillness = true;
+    }
 
+    protected void waitForStillness() {
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,
                 SensorManager.SENSOR_DELAY_UI);
     }

@@ -20,6 +20,7 @@
 package org.akvo.caddisfly.sensor.chamber;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
@@ -28,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -42,6 +44,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -74,11 +77,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
+import static android.view.View.GONE;
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
@@ -99,6 +104,19 @@ public class ChamberTestActivity extends BaseActivity implements
     private int currentDilution = 1;
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
+    private long startTime;
+    private boolean backDisabled = false;
+
+    private static String formatDuration(long millis) {
+
+        int seconds = (int) (millis / 1000);
+        String positive = String.format(Locale.US,
+                "%d:%02d:%02d",
+                seconds / 3600,
+                (seconds % 3600) / 60,
+                seconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +124,8 @@ public class ChamberTestActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_chamber_test);
+
+        TextView elapsedTimeText = findViewById(R.id.elapsedTimeText);
 
         sound = new SoundPoolPlayer(this);
 
@@ -126,6 +146,8 @@ public class ChamberTestActivity extends BaseActivity implements
                 runTestFragment = ChamberAboveFragment.newInstance(testInfo);
             }
 
+            startTime = getIntent().getLongExtra(ConstantKey.START_TIME, 0);
+
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                 start();
             } else {
@@ -134,6 +156,22 @@ public class ChamberTestActivity extends BaseActivity implements
                 goToFragment(calibrationItemFragment);
             }
         }
+
+        if (startTime > 0) {
+            final Handler someHandler = new Handler(getMainLooper());
+            someHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    elapsedTimeText.setText(formatDuration(System.currentTimeMillis() - startTime));
+
+                    someHandler.postDelayed(this, 1000);
+                }
+            }, 10);
+        } else {
+            findViewById(R.id.elapsedTimeLayout).setVisibility(GONE);
+        }
+
     }
 
     private void goToFragment(Fragment fragment) {
@@ -164,6 +202,12 @@ public class ChamberTestActivity extends BaseActivity implements
 
     private void runTest() {
         if (cameraIsOk) {
+            backDisabled = true;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startLockTask();
+            }
+
             runTestFragment.setDilution(currentDilution);
             goToFragment((Fragment) runTestFragment);
         } else {
@@ -212,10 +256,16 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onBackPressed() {
 
-        if (!fragmentManager.popBackStackImmediate()) {
-            super.onBackPressed();
+        if (!backDisabled) {
+            if (!fragmentManager.popBackStackImmediate()) {
+                super.onBackPressed();
+            }
         }
 
+        refreshTitle();
+    }
+
+    private void refreshTitle() {
         if (fragmentManager.getBackStackEntryCount() == 0) {
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                 setTitle(R.string.analyze);
@@ -268,7 +318,15 @@ public class ChamberTestActivity extends BaseActivity implements
                 showEditCalibrationDetailsDialog(false);
                 return true;
             case android.R.id.home:
-                onBackPressed();
+                backDisabled = false;
+                releaseResources();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    stopLockTask();
+                }
+                if (!fragmentManager.popBackStackImmediate()) {
+                    super.onBackPressed();
+                }
+                refreshTitle();
                 return true;
             default:
                 break;
@@ -385,6 +443,10 @@ public class ChamberTestActivity extends BaseActivity implements
             double value = resultDetail.getResult();
 
             if (value > -1) {
+
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
 
                 Result result = testInfo.getResults().get(0);
                 result.setResult(value, dilution, testInfo.getMaxDilution());
@@ -528,6 +590,10 @@ public class ChamberTestActivity extends BaseActivity implements
 
         setResult(Activity.RESULT_OK, resultIntent);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask();
+        }
+
         finish();
     }
 
@@ -538,6 +604,10 @@ public class ChamberTestActivity extends BaseActivity implements
      * @param bitmap  any bitmap image to displayed along with error message
      */
     private void showError(String message, final Bitmap bitmap) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask();
+        }
 
         sound.playShortResource(R.raw.err);
 
@@ -571,6 +641,11 @@ public class ChamberTestActivity extends BaseActivity implements
      */
     @SuppressWarnings("unused")
     public void onTestWithDilution(View view) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask();
+        }
+
         if (!fragmentManager.popBackStackImmediate("dilution", 0)) {
             super.onBackPressed();
         }
@@ -643,5 +718,27 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onDetailsSaved(int type, String comment) {
         ConfigDownloader.sendDataToCloudDatabase(this, testInfo, type, comment);
+    }
+
+    public boolean isAppInLockTaskMode() {
+        ActivityManager activityManager;
+
+        activityManager = (ActivityManager)
+                this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (activityManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // For SDK version 23 and above.
+                return activityManager.getLockTaskModeState()
+                        != ActivityManager.LOCK_TASK_MODE_NONE;
+            }
+
+            // When SDK version >= 21. This API is deprecated in 23.
+            //noinspection deprecation
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                    activityManager.isInLockTaskMode();
+        }
+
+        return false;
     }
 }
