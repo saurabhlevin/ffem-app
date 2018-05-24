@@ -29,6 +29,7 @@ public class Constants {
     public static final String FLUORIDE_ID = "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf";
     public static final String FLUORIDE_1_ID = "f0f3c1dd-89af-49f1-83e7-bcc31c3006cg";
     public static final String CBT_ID = "e40d4764-e73f-46dd-a598-ed4db0fd3386";
+    public static final String TITRATION_ID = "52ec4ca0-d691-4f2b-b17a-232c2966974a";
 
     public static final String MPN_TABLE_FILENAME = "most-probable-number.json";
 

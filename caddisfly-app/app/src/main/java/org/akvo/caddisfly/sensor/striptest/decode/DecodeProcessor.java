@@ -5,14 +5,14 @@ import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.sensor.qrdetector.BitMatrix;
+import org.akvo.caddisfly.sensor.qrdetector.BitMatrixCreator;
+import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
+import org.akvo.caddisfly.sensor.qrdetector.PerspectiveTransform;
 import org.akvo.caddisfly.sensor.striptest.models.CalibrationCardData;
 import org.akvo.caddisfly.sensor.striptest.models.DecodeData;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.BitMatrix;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.BitMatrixCreator;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPattern;
 import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPatternFinder;
 import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPatternInfo;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.PerspectiveTransform;
 import org.akvo.caddisfly.sensor.striptest.ui.StriptestHandler;
 import org.akvo.caddisfly.sensor.striptest.utils.CalibrationCardUtils;
 import org.akvo.caddisfly.sensor.striptest.utils.CalibrationUtils;

@@ -36,7 +36,7 @@ import android.widget.ViewSwitcher;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.sensor.striptest.utils.Constants;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
-import org.akvo.caddisfly.sensor.striptest.widget.PercentageMeterView;
+import org.akvo.caddisfly.widget.PercentageMeterView;
 
 /**
  * Created by markwestra on 19/07/2017

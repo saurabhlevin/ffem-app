@@ -215,4 +215,7 @@
     <string name="remindLater">Remind later</string>
     <string name="continue_send">Continue</string>
 
+
+    <string name="detecting_card">Looking for card</string>
+
 </resources>
