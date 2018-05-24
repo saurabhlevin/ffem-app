@@ -36,7 +36,6 @@ import android.widget.DatePicker;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.ui.MainActivity;
-import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -52,8 +51,6 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
@@ -70,10 +67,10 @@ import static org.akvo.caddisfly.util.TestHelper.leaveDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
+import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -108,7 +105,7 @@ public class NavigationTest {
                 PreferenceManager.getDefaultSharedPreferences(mActivityRule.getActivity());
         prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -146,14 +143,14 @@ public class NavigationTest {
 
         Espresso.pressBack();
 
-        onView(withText(R.string.language)).perform(click());
+//        onView(withText(R.string.language)).perform(click());
 
-        mDevice.waitForWindowUpdate("", 1000);
+//        mDevice.waitForWindowUpdate("", 1000);
 
         //Language Dialog
-        takeScreenshot();
+//        takeScreenshot();
 
-        onView(withId(android.R.id.button2)).perform(click());
+//        onView(withId(android.R.id.button2)).perform(click());
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
 
@@ -167,7 +164,7 @@ public class NavigationTest {
 
         onView(withText(currentHashMap.get("fluoride"))).perform(click());
 
-        if (TestUtil.isEmulator()){
+        if (TestUtil.isEmulator()) {
 
             onView(withText(R.string.errorCameraFlashRequired))
                     .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow()
@@ -205,9 +202,9 @@ public class NavigationTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withId(R.id.editBatchCode))
-                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
-
+//        onView(withId(R.id.editBatchCode))
+//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
+//
         onView(withId(R.id.editExpiryDate)).perform(click());
 
         onView(withClassName((Matchers.equalTo(DatePicker.class.getName()))))
@@ -217,15 +214,14 @@ public class NavigationTest {
 
         onView(withText(R.string.save)).perform(click());
 
-
         ViewInteraction recyclerView3 = onView(
                 allOf(withId(R.id.calibrationList),
                         childAtPosition(
                                 withClassName(is("android.widget.RelativeLayout")),
-                                3)));
+                                0)));
         recyclerView3.perform(actionOnItemAtPosition(4, click()));
 
-       // onView(withText("2" + dfs.getDecimalSeparator() + "0 mg/l")).perform(click());
+        // onView(withText("2" + dfs.getDecimalSeparator() + "0 mg/l")).perform(click());
 
         //onView(withId(R.id.buttonStart)).perform(click());
 
@@ -302,7 +298,9 @@ public class NavigationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(0);
+        nextSurveyPage(3, "Water Tests 1");
+
+        clickExternalSourceButton(2);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -319,7 +317,9 @@ public class NavigationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(1);
+        nextSurveyPage(3, "Water Tests 1");
+
+        clickExternalSourceButton(2);
 
         onView(withText(R.string.fluoride)).check(matches(isDisplayed()));
 
@@ -333,49 +333,35 @@ public class NavigationTest {
 
         mDevice.pressBack();
 
-        clickExternalSourceButton(TestConstant.NEXT);
+        nextSurveyPage(3, "Water Tests 1");
 
-        clickExternalSourceButton(TestConstant.NEXT);
+        mDevice.waitForWindowUpdate("", 2000);
 
-        clickExternalSourceButton(0);
+        clickExternalSourceButton(1);
 
-        onView(withText(R.string.chromium)).check(matches(isDisplayed()));
+//        onView(withText(R.string.chromium)).check(matches(isDisplayed()));
 
-//        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
+        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
 
         //Connect EC Sensor Screen
         takeScreenshot();
 
         mDevice.pressBack();
 
-        TestUtil.nextSurveyPage(5);
+//        TestUtil.nextSurveyPage(3);
+//
+//        //Unknown test
+//        clickExternalSourceButton(0, TestConstant.USE_EXTERNAL_SOURCE);
+//
+//        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
+//
+//        mDevice.pressBack();
 
-        clickExternalSourceButton(0, TestConstant.USE_EXTERNAL_SOURCE);
-
-        onView(withText(R.string.electricalConductivity)).check(matches(isDisplayed()));
-
-        mDevice.pressBack();
-
-        clickExternalSourceButton(0);
-
-        onView(withText(R.string.electricalConductivity)).check(matches(isDisplayed()));
-
-        mDevice.pressBack();
-
-        TestUtil.nextSurveyPage(3);
-
-        //Unknown test
-        clickExternalSourceButton(0, TestConstant.USE_EXTERNAL_SOURCE);
-
-        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
-
-        mDevice.pressBack();
-
-        TestUtil.swipeRight(7);
-
-        clickExternalSourceButton(0); //Iron
-
-        onView(withText(R.string.prepare_test)).check(matches(isDisplayed()));
+//        TestUtil.swipeRight(7);
+//
+//        clickExternalSourceButton(0); //Iron
+//
+//        onView(withText(R.string.prepare_test)).check(matches(isDisplayed()));
 
         //onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
 

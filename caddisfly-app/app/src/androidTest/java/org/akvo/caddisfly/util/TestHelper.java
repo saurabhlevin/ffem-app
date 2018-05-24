@@ -330,7 +330,7 @@ public final class TestHelper {
         sleep(2000);
 
         UiObject addButton = mDevice.findObject(new UiSelector()
-                .resourceId("org.koboc.collect.android:id/enter_data"));
+                .resourceId(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/enter_data"));
 
         try {
             if (addButton.exists() && addButton.isEnabled()) {
@@ -347,7 +347,7 @@ public final class TestHelper {
         mDevice.waitForIdle();
 
         UiObject goToStartButton = mDevice.findObject(new UiSelector()
-                .resourceId("org.koboc.collect.android:id/jumpBeginningButton"));
+                .resourceId(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/jumpBeginningButton"));
 
         try {
             if (goToStartButton.exists() && goToStartButton.isEnabled()) {

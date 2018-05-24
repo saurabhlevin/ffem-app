@@ -28,8 +28,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 225
-        versionName "1.0 Beta 1.66"
-        resConfigs "en", "en_US"
+        versionName "1.0 Beta 1.67"
+        resConfigs "en", "en_US", "or"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -58,28 +58,28 @@ android {
     buildTypes {
         debug {
             debuggable true
-            multiDexEnabled true
+//            multiDexEnabled true
         }
     }
 
-//    signingConfigs {
-//        appRelease {
-//            storeFile file(FFEM_CADDISFLY_RELEASE_STORE_FILE)
-//            storePassword FFEM_CADDISFLY_RELEASE_STORE_PASSWORD
-//            keyAlias FFEM_CADDISFLY_RELEASE_KEY_ALIAS
-//            keyPassword FFEM_CADDISFLY_RELEASE_KEY_PASSWORD
-//        }
-//    }
-//
-//    buildTypes {
-//        release {
-//            signingConfig signingConfigs.appRelease
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            zipAlignEnabled true
-//        }
-//    }
+    signingConfigs {
+        appRelease {
+            storeFile file(FFEM_CADDISFLY_RELEASE_STORE_FILE)
+            storePassword FFEM_CADDISFLY_RELEASE_STORE_PASSWORD
+            keyAlias FFEM_CADDISFLY_RELEASE_KEY_ALIAS
+            keyPassword FFEM_CADDISFLY_RELEASE_KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.appRelease
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+        }
+    }
 
     lintOptions {
         checkReleaseBuilds true
@@ -103,7 +103,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.android.support:multidex:1.0.3'
+//    implementation 'com.android.support:multidex:1.0.3'
 
     // Support
     implementation 'com.android.support:support-v4:28.0.0-alpha1'

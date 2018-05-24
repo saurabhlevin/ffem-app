@@ -59,7 +59,6 @@ import static org.akvo.caddisfly.util.TestHelper.gotoSurveyForm;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.resetLanguage;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
 import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
@@ -97,7 +96,7 @@ public class SurveyTest {
                 PreferenceManager.getDefaultSharedPreferences(mActivityRule.getActivity());
         prefs.edit().clear().apply();
 
-        resetLanguage();
+//        resetLanguage();
     }
 
     @Test
@@ -121,8 +120,9 @@ public class SurveyTest {
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 
         onView(allOf(withId(R.id.calibrationList),
-                childAtPosition(withClassName(is("android.widget.RelativeLayout")),
-                        3))).perform(actionOnItemAtPosition(4, click()));
+                childAtPosition(
+                        withClassName(is("android.widget.RelativeLayout")),
+                        0))).perform(actionOnItemAtPosition(4, click()));
 
 //        onView(withText("0" + dfs.getDecimalSeparator() + "0 mg/l")).check(matches(isDisplayed()));
 
@@ -136,7 +136,7 @@ public class SurveyTest {
 
 //        onView(withText(currentHashMap.get("chlorine"))).perform(click());
 
-        onView(withText("Caddisfly, 0 - 3.0")).perform(click());
+        onView(withText("Caddisfly, 0 - 3")).perform(click());
 
         onView(withText("1" + dfs.getDecimalSeparator() + "0")).check(matches(isDisplayed()));
 
@@ -180,9 +180,9 @@ public class SurveyTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(0);
+        nextSurveyPage(3, "Water Tests 1");
 
-        clickExternalSourceButton(0);
+        clickExternalSourceButton(2);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 

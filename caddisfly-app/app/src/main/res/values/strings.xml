@@ -54,10 +54,10 @@
     <string name="stage_one"><b>Stage 1:</b></string>
     <string name="stage_two"><b>Stage 2:</b></string>
     <string name="analyze">Analyse</string>
-
-    <!--External-->
-    <string name="sensor">Sensor</string>
-    <string name="sensors">Sensors</string>
+    <string name="acceptResult">Accept Result</string>
+    <string name="go">Go</string>
+    <string name="next">Next</string>
+    <string name="saving">Saving</string>
 
     <!--Calibration Screen-->
     <string name="calibrationIsInvalid">Invalid calibration</string>
@@ -70,6 +70,7 @@
 
     <!--Dilution Selection Dialog-->
     <string name="dilution">Dilution</string>
+    <string name="testWithDilution">Test with Dilution</string>
     <string name="selectDilution">Select amount of dilution</string>
     <plurals name="dilutions">
         <item quantity="one">No Dilution</item>
@@ -80,18 +81,9 @@
     <string name="timesDilution" tools:ignore="PluralsCandidate">%1$d Times Dilution</string>
     <string name="customDilution">Custom Dilution</string>
     <string name="enterDilutionFactor">Enter Dilution Factor</string>
-
-    <!--Sensor Details Screen-->
-    <string name="deviceConnecting">Connecting to Device</string>
-    <string name="acceptResult">Accept Result</string>
-
-    <!--EC Sensor Calibration-->
-    <string name="deviceConnectSensor">Connect sensor</string>
-    <string name="calibratePoint">Calibrate %.0f μS/cm</string>
-    <string name="calibrationSuccessful">Calibration Successful</string>
-    <string name="sensorCalibrated">EC Sensor has been calibrated</string>
-    <string name="celsius">°Celsius</string>
-    <string name="dipSensorInSample">Dip sensor in sample</string>
+    <string name="errorCalibrationExpired">Calibration is past its reagent expiry date</string>
+    <string name="orderFreshBatch">Please order a fresh batch of reagent and recalibrate</string>
+    <string name="highLevelRecommendation">Due to high level of contamination, it is recommended to test with dilution</string>
 
     <!--About Screen-->
     <string name="waterQualitySystem">Water &amp; Soil Quality System</string>
@@ -103,16 +95,6 @@
     <string name="calibrationDetails">Calibration Details</string>
 
     <string name="customTests">Custom tests</string>
-
-    <string name="deviceConnected">Device connected</string>
-    <string name="go">Go</string>
-    <string name="next">Next</string>
-    <string name="saving">Saving</string>
-    <string name="sensorDetails">Sensor Details</string>
-    <string name="verifySensorDetails">Verify sensor details</string>
-    <string name="enterAnIdForSensor">Enter an Id for this sensor</string>
-    <string name="ecSensorId">EC Sensor Id</string>
-    <string name="testWithDilution">Test with Dilution</string>
 
     <!--StripTest-->
     <string name="brightness">Brightness</string>
@@ -159,11 +141,6 @@
     <string name="storagePermission">Storage permission is required</string>
     <string name="cameraAndStoragePermissions">Camera &amp; storage permissions are required</string>
 
-    <!--Sensor-->
-    <string name="incorrectDevice">Incorrect Device</string>
-    <string name="expectedDeviceNotFound">The expected sensor was not found.</string>
-    <string name="connectCorrectSensor"><Data><![CDATA[Connect the <b>%s</b> sensor.]]></Data></string>
-
     <!--Messages-->
     <string name="phoneDoesNotSupport">This feature is not supported by this device</string>
     <string name="cannotUseCamera">Can\'t use camera. Make sure flashlight is off and close any apps that may be using the camera</string>
@@ -190,17 +167,6 @@
     <!--Result Screen-->
     <string name="highLevelsFound">High level of contamination</string>
     <string name="tryWithDilutedSample" tools:ignore="PluralsCandidate">Try again with %1$d times dilution</string>
-
-    <!--EC Sensor Calibration-->
-    <string name="incorrectCalibrationCanAffect">Incorrect calibration can affect the proper functioning of the sensor</string>
-    <string name="sensorNotFound">Sensor not found</string>
-    <string name="cleanTheEcSensor">Clean the EC Sensor properly</string>
-    <string name="getEcSolutionReady">Get ready the fluid with EC of %.0f μS/cm</string>
-    <string name="dipEcSensorInSolution">Dip EC Sensor in the fluid and press Go</string>
-    <string name="errorCalibrationExpired">Calibration is past its reagent expiry date</string>
-    <string name="orderFreshBatch">Please order a fresh batch of reagent and recalibrate</string>
-    <string name="highLevelRecommendation">Due to high level of contamination, it is recommended to test with dilution</string>
-    <string name="prepareSolutionsForCalibration">Prepare 6 solutions with these EC values</string>
 
     <!--Bluetooth-->
     <string name="nearby_devices">Nearby devices</string>

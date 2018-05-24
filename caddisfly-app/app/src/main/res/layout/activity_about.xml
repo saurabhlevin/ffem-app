@@ -66,25 +66,22 @@
 
                 <TextView
                     android:id="@+id/textVersion"
-                    android:onClick="switchToDiagnosticMode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
+                    android:onClick="switchToDiagnosticMode"
                     android:padding="10dp"
                     android:textSize="14sp"
                     android:textStyle="normal"
                     tools:text="Version 1.0" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|top"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@null"
-                    android:minHeight="80dp"
-                    android:minWidth="80dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/logo" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -99,9 +96,9 @@
                 <TextView
                     android:id="@+id/textLinkSoftwareNotices"
                     android:layout_width="wrap_content"
-                    android:onClick="onSoftwareNoticesClick"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
+                    android:onClick="onSoftwareNoticesClick"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:text="@string/legalInformation"
@@ -136,13 +133,13 @@
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fabDisableDiagnostics"
-                android:onClick="disableDiagnosticsMode"
                 style="@style/floating_action_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/textDiagnostics"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="0dp"
+                android:onClick="disableDiagnosticsMode"
                 android:src="@drawable/ic_revert_24dp"
                 app:backgroundTint="@color/diagnostic"
                 tools:ignore="RelativeOverlap" />
