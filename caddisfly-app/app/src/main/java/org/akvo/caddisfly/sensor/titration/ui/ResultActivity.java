@@ -30,6 +30,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -253,8 +254,17 @@ public class ResultActivity extends BaseActivity {
                         measurePixel = totalImage.getPixel(col, measureLine);
 //                        Log.e("TITRATION", i + " : " + String.valueOf(Color.red(measurePixel)));
                     }
-                    col += 15;
                     measureCount++;
+
+                    if (measureCount == 1) {
+                        measureStart = col;
+                    } else if (measureCount == 16) {
+                        measureEnd = col;
+                    }
+
+
+                    col += 15;
+
 //                    Log.e("TITRATION", col + "MEASURE COUNT : " + measureCount);
                 }
             }
@@ -271,27 +281,46 @@ public class ResultActivity extends BaseActivity {
 
 //            Log.e("TITRATION", "Measure threshold: " + measureThreshold);
 
-            for (int x = 20; x < totalImage.getWidth() / 8; x++) {
-                int measurePixel = totalImage.getPixel(x, measureLine);
-                if (Color.red(measurePixel) < measureThreshold) {
-                    measureStart = x;
-                    break;
-                }
-            }
+//            for (int x = 20; x < totalImage.getWidth() / 8; x++) {
+//                int measurePixel = totalImage.getPixel(x, measureLine);
+//                if (Color.red(measurePixel) < measureThreshold) {
+//                    measureStart = x;
+//                    break;
+//                }
+//            }
+//
+//            for (int x = totalImage.getWidth() - 20; x >= (totalImage.getWidth() - totalImage.getWidth() / 8); x--) {
+//                int measurePixel = totalImage.getPixel(x, measureLine);
+//                if (Color.red(measurePixel) < measureThreshold) {
+//                    measureEnd = x;
+//                    break;
+//                }
+//            }
 
-            for (int x = totalImage.getWidth() - 20; x >= (totalImage.getWidth() - totalImage.getWidth() / 8); x--) {
-                int measurePixel = totalImage.getPixel(x, measureLine);
-                if (Color.red(measurePixel) < measureThreshold) {
-                    measureEnd = x;
-                    break;
-                }
-            }
+//            int count = 0;
+//            for (int x = measureStart; x < totalImage.getWidth(); x++) {
+//                int pixel = totalImage.getPixel(x, center);
+//
+//                if (Color.red(pixel) < threshold) {
+//                    if (count == 0) {
+//                        liquidLevelStart = x;
+//                    }
+//                    count++;
+//                } else {
+//                    count = 0;
+//                }
+//
+//                if (count > 80) {
+//                    break;
+//                }
+//                Log.e("TITRATION", String.valueOf(Color.red(pixel)));
+//            }
 
             int count = 0;
-            for (int x = measureStart; x < totalImage.getWidth(); x++) {
+            for (int x = measureEnd; x >= measureStart; x--) {
                 int pixel = totalImage.getPixel(x, center);
 
-                if (Color.red(pixel) < threshold) {
+                if (Color.red(pixel) > threshold) {
                     if (count == 0) {
                         liquidLevelStart = x;
                     }
@@ -300,10 +329,10 @@ public class ResultActivity extends BaseActivity {
                     count = 0;
                 }
 
-                if (count > 80) {
+                if (count > 30) {
                     break;
                 }
-//            Log.e("TITRATION", String.valueOf(Color.red(pixel)));
+                Log.e("TITRATION", String.valueOf(Color.red(pixel)));
             }
 
             try {
@@ -328,23 +357,22 @@ public class ResultActivity extends BaseActivity {
 
         mDecodeData.addStripImage(pixels, 0);
 
-        Bitmap resized = Bitmap.createScaledBitmap(finalImage, (int) (finalImage.getWidth() * 0.8), (int) (finalImage.getHeight() * 0.8), true);
-
-        Bitmap canvasBitmap = Bitmap.createBitmap(resized.getWidth(), resized.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap canvasBitmap = Bitmap.createBitmap(finalImage.getWidth(), finalImage.getHeight(), Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(canvasBitmap);
-        canvas.drawBitmap(resized, 0, 0, null);
+        canvas.drawBitmap(finalImage, 0, 0, null);
 
-        if (liquidLevel > 0) {
-            Paint bluePaint = new Paint();
-            bluePaint.setAntiAlias(true);
-            bluePaint.setColor(Color.BLACK);
-//            canvas.drawCircle(measureStart, measureLine, 25, bluePaint);
+        Paint bluePaint = new Paint();
+        bluePaint.setAntiAlias(true);
+        bluePaint.setColor(Color.BLACK);
+
+        if (measureStart > 0) {
             drawTriangle(canvas, bluePaint, measureStart, center - 90, 30);
-
-//            canvas.drawCircle(measureEnd, measureLine, 25, redPaint);
+        }
+        if (measureEnd > 0) {
             drawTriangle(canvas, bluePaint, measureEnd, center - 90, 30);
-
+        }
+        if (liquidLevel > 0) {
             Paint greenPaint = new Paint();
             greenPaint.setAntiAlias(true);
             greenPaint.setColor(Color.rgb(0, 153, 0));
@@ -352,11 +380,12 @@ public class ResultActivity extends BaseActivity {
             drawTriangle(canvas, greenPaint, liquidLevelStart, center - 110, 60);
 //            canvas.drawCircle(liquidLevelStart, center, 25, greenPaint);
         }
-        finalImage = canvasBitmap;
+
+        finalImage = Bitmap.createScaledBitmap(canvasBitmap, (int) (finalImage.getWidth() * 0.8),
+                (int) (finalImage.getHeight() * 0.8), true);
         tempFinalImage.recycle();
         totalImage.recycle();
         tempImage.recycle();
-        resized.recycle();
     }
 
     // displays results and creates image to send to database

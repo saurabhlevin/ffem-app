@@ -357,6 +357,10 @@ public final class TitrationTestHandler extends Handler {
                         currentTestStage++;
                         mListener.moveToInstructions(currentTestStage);
                     } else {
+
+                        //TODO: remove debug stuff
+                        //                       mDecodeData.saveImage();
+
                         // we are done
                         mListener.moveToResults();
                     }
