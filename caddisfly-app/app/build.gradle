@@ -29,7 +29,7 @@ android {
         targetSdkVersion 27
         versionCode 225
         versionName "1.0 Beta 1.67"
-        resConfigs "en", "en_US"
+        resConfigs "en", "en_US", "or"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

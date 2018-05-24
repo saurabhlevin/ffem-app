@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) Stichting Akvo (Akvo Foundation)
+  ~
+  ~ This file is part of Akvo Caddisfly.
+  ~
+  ~ Akvo Caddisfly is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Akvo Caddisfly is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!--External-->
+    <string name="sensor">Sensor</string>
+    <string name="sensors">Sensors</string>
+
+    <!--Sensor Details Screen-->
+    <string name="deviceConnecting">Connecting to Device</string>
+    <string name="deviceConnected">Device connected</string>
+    <string name="sensorDetails">Sensor Details</string>
+    <string name="verifySensorDetails">Verify sensor details</string>
+    <string name="enterAnIdForSensor">Enter an Id for this sensor</string>
+    <string name="ecSensorId">EC Sensor Id</string>
+
+    <!--EC Sensor Calibration-->
+    <string name="incorrectCalibrationCanAffect">Incorrect calibration can affect the proper functioning of the sensor</string>
+    <string name="sensorNotFound">Sensor not found</string>
+    <string name="cleanTheEcSensor">Clean the EC Sensor properly</string>
+    <string name="getEcSolutionReady">Get ready the fluid with EC of %.0f μS/cm</string>
+    <string name="dipEcSensorInSolution">Dip EC Sensor in the fluid and press Go</string>
+    <string name="prepareSolutionsForCalibration">Prepare 6 solutions with these EC values</string>
+    <string name="deviceConnectSensor">Connect sensor</string>
+    <string name="calibratePoint">Calibrate %.0f μS/cm</string>
+    <string name="calibrationSuccessful">Calibration Successful</string>
+    <string name="sensorCalibrated">EC Sensor has been calibrated</string>
+    <string name="celsius">°Celsius</string>
+    <string name="dipSensorInSample">Dip sensor in sample</string>
+
+    <!--Sensor Messages-->
+    <string name="incorrectDevice">Incorrect Device</string>
+    <string name="expectedDeviceNotFound">The expected sensor was not found.</string>
+    <string name="connectCorrectSensor"><Data><![CDATA[Connect the <b>%s</b> sensor.]]></Data></string>
+
+</resources>

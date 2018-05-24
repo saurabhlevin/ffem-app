@@ -23,10 +23,12 @@
 
     <string-array name="languages">
         <item>English</item>
+        <item>ଓଡ଼ିଆ</item>
     </string-array>
 
     <string-array name="language_codes">
         <item>en</item>
+        <item>or</item>
     </string-array>
 
     <string name="saveImages">Save images and data</string>
