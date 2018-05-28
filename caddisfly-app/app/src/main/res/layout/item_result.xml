@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingStart="@dimen/activity_horizontal_margin"
@@ -71,9 +71,12 @@
     <ImageView
         android:id="@+id/image_result"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@null"
+        android:maxHeight="280dp"
         android:scaleType="centerInside" />
 
 </LinearLayout>

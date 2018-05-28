@@ -1,7 +1,7 @@
 package org.akvo.caddisfly.sensor.striptest.utils;
 
+import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
 import org.akvo.caddisfly.sensor.striptest.models.DecodeData;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPattern;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;

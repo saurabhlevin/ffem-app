@@ -87,16 +87,16 @@
                     android:theme="?longButtonStyle" />
 
                 <Button
-                    android:id="@+id/buttonBluetooth"
+                    android:id="@+id/buttonTitration"
                     style="@style/ListButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|start"
                     android:minHeight="80dp"
-                    android:onClick="onBluetoothDeviceClick"
+                    android:onClick="onTitrationClick"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
-                    android:text="@string/md610_photometer"
+                    android:text="Titration"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
                     android:theme="?longButtonStyle" />
@@ -127,6 +127,21 @@
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:text="@string/calibrate"
+                    android:textAlignment="viewStart"
+                    android:textColor="?longButtonText"
+                    android:theme="?longButtonStyle" />
+
+                <Button
+                    android:id="@+id/buttonBluetooth"
+                    style="@style/ListButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|start"
+                    android:minHeight="80dp"
+                    android:onClick="onBluetoothDeviceClick"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:text="@string/md610_photometer"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
                     android:theme="?longButtonStyle" />

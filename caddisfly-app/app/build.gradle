@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Exp 1.0 Beta 1.67"
+            versionName "Titration Test 2"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
@@ -164,4 +164,5 @@ dependencies {
     experimentImplementation 'com.google.firebase:firebase-storage:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-auth:16.0.1'
 }
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.getkeepsafe.dexcount'

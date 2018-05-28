@@ -4,10 +4,10 @@ import android.media.Image;
 
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
+import org.akvo.caddisfly.sensor.qrdetector.PerspectiveTransform;
 import org.akvo.caddisfly.sensor.striptest.decode.DecodeProcessor;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPattern;
 import org.akvo.caddisfly.sensor.striptest.qrdetector.FinderPatternInfo;
-import org.akvo.caddisfly.sensor.striptest.qrdetector.PerspectiveTransform;
 import org.akvo.caddisfly.util.ImageUtil;
 import org.apache.commons.math3.linear.RealMatrix;
 

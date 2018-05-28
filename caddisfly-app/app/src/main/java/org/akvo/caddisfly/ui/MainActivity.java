@@ -41,11 +41,14 @@ import android.widget.Toast;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
+import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.NavigationController;
 import org.akvo.caddisfly.databinding.ActivityMainBinding;
 import org.akvo.caddisfly.helper.ApkHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
+import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
@@ -236,6 +239,20 @@ public class MainActivity extends BaseActivity {
 
     public void onColiformCountClick(View view) {
         navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+    }
+
+    public void onTitrationClick(View view) {
+
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+
+        TestInfo testInfo = viewModel.getTestInfo(Constants.TITRATION_ID);
+
+        final Intent intent = new Intent(this, TestActivity.class);
+        intent.putExtra("internal", true);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivity(intent);
+
     }
 
     /**
