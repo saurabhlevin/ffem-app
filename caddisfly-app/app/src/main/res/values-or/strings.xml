@@ -1,20 +1,20 @@
 <!--
-  ~ Copyright (C) FFEM (Foundation for Environment Monitoring)
+  ~ Copyright (C) ffem (Foundation for Environment Monitoring)
   ~
-  ~ This file is part of FFEM Caddisfly.
+  ~ This file is part of ffem Caddisfly.
   ~
-  ~ FFEM Caddisfly is free software: you can redistribute it and/or modify
+  ~ ffem Caddisfly is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
   ~ the Free Software Foundation, either version 3 of the License, or
   ~ (at your option) any later version.
   ~
-  ~ FFEM Caddisfly is distributed in the hope that it will be useful,
+  ~ ffem Caddisfly is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU General Public License for more details.
   ~
   ~ You should have received a copy of the GNU General Public License
-  ~ along with FFEM Caddisfly. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with ffem Caddisfly. If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--Common-->
@@ -93,7 +93,7 @@
 
     <!--About Screen-->
     <string name="waterQualitySystem">"Water &amp; Soil Quality System"</string>
-    <string name="copyrightMessage">"Copyright © FFEM"</string>
+    <string name="copyrightMessage">"Copyright © ffem"</string>
     <string name="legalInformation">"Legal Information"</string>
 
     <string name="selectTest">"Select Test"</string>
@@ -241,7 +241,7 @@
 
     <!--Update-->
     <string name="update">"ଅଦ୍ୟତନ କରନ୍ତୁ"</string>
-    <string name="updateTitle">"ଅଦ୍ୟତନ କରନ୍ତୁ FFEM Caddisfly"</string>
+    <string name="updateTitle">"ଅଦ୍ୟତନ କରନ୍ତୁ ffem Caddisfly"</string>
     <string name="updateAvailable">"ନୂଆ ସଂସ୍କରଣ ଉପଲବ୍ଧ. ସର୍ବୋତ୍ତମ ଅନୁଭୂତି ପାଇଁ ଆପ୍ଲିକେସନ୍ ଅଦ୍ୟତନ କରନ୍ତୁ"</string>
     <string name="remindLater">"ପରେ ମନେ ପକାନ୍ତୁ"</string>
     <string name="continue_send">"ଆଗକୁ"</string>

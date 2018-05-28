@@ -49,7 +49,7 @@ public class FinderPatternIndicatorView extends View {
     private final int GRID_H = 15;
     private final int GRID_V = 15;
     private final Paint paint;
-    private final Paint paint1;
+    private final Paint greenPaint;
     private final Paint paint2;
     //    private final Paint paint3;
     private final Bitmap arrowBitmap;
@@ -94,9 +94,9 @@ public class FinderPatternIndicatorView extends View {
 //        paint3.setColor(Color.RED);
 //        paint3.setAntiAlias(false);
 
-        paint1 = new Paint();
-        paint1.setColor(Color.GREEN);
-        paint1.setAntiAlias(false);
+        greenPaint = new Paint();
+        greenPaint.setColor(Color.GREEN);
+        greenPaint.setAntiAlias(false);
 
         paint2 = new Paint();
         paint2.setColor(Color.BLUE);
@@ -229,7 +229,7 @@ public class FinderPatternIndicatorView extends View {
 //                }
 
 //                canvas.drawCircle(x, y, 10, paint);
-                canvas.drawRect(x - 8, y - 8, x + 8, y + 8, paint1);
+                canvas.drawRect(x - 8, y - 8, x + 8, y + 8, greenPaint);
                 canvas.drawRect(x - 18, y - 18, x + 18, y + 18, paint);
             }
 
@@ -257,6 +257,7 @@ public class FinderPatternIndicatorView extends View {
 
             canvas.drawLine(points.get(1).x, points.get(1).y, points.get(pointIndex).x, points.get(pointIndex).y, paint);
 
+//            canvas.drawCircle(points.get(1).x, points.get(1).y - 100, 50, greenPaint);
 
 //            canvas.drawRect(x1, y1, x2, y2, paint3);
         }
