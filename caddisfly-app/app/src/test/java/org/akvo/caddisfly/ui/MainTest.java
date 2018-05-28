@@ -56,10 +56,10 @@ public class MainTest {
     @Test
     public void titleIsCorrect() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
-        assertEquals(activity.getTitle(), "FFEM Caddisfly");
+        assertEquals(activity.getTitle(), "ffem Caddisfly");
 
         TextView textView = activity.findViewById(R.id.textToolbarTitle);
-        assertEquals(textView.getText(), "FFEM Caddisfly");
+        assertEquals(textView.getText(), "ffem Caddisfly");
 
     }
 

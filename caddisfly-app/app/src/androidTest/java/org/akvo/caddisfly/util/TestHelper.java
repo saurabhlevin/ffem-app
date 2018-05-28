@@ -272,7 +272,7 @@ public final class TestHelper {
 //                && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
 //                || text.equals(TestConstant.GO_TO_TEST))) {
 //            sleep(1000);
-//            mDevice.findObject(By.text("FFEM Caddisfly")).click();
+//            mDevice.findObject(By.text("ffem Caddisfly")).click();
 //            sleep(1000);
 //        }
 //
@@ -299,7 +299,7 @@ public final class TestHelper {
                     && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
                     || text.equals(TestConstant.GO_TO_TEST))) {
                 sleep(1000);
-                mDevice.findObject(By.text("FFEM Caddisfly")).click();
+                mDevice.findObject(By.text("ffem Caddisfly")).click();
                 sleep(1000);
             }
 
