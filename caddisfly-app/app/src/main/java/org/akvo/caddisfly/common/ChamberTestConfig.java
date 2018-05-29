@@ -24,7 +24,7 @@ public final class ChamberTestConfig {
     /**
      * The delay before starting the test
      */
-    public static final int DELAY_INITIAL = 4;
+    public static final int DELAY_INITIAL = 11;
 
     /**
      * The delay seconds between each photo taken by the camera during the analysis.
