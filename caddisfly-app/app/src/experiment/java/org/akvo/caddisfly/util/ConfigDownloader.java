@@ -205,7 +205,7 @@ public class ConfigDownloader {
                     //noinspection ResultOfMethodCallIgnored
                     imagePath.delete();
 
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Uri downloadUrl = storageReference1.getDownloadUrl().getResult();
                     Uri file1 = Uri.fromFile(croppedImagePath);
                     StorageReference storageReference2 = storageReference.child("calibration-images/" + croppedImageName);
 
@@ -216,7 +216,7 @@ public class ConfigDownloader {
                                 croppedImagePath.delete();
 
                                 // Get a URL to the uploaded content
-                                Uri downloadUrl1 = taskSnapshot1.getDownloadUrl();
+                                Uri downloadUrl1 = storageReference1.getDownloadUrl().getResult();
                                 // Create a new calibration with a first and last name
                                 Map<String, Object> cal = new HashMap<>();
                                 cal.put("deviceId", deviceId);
@@ -264,7 +264,7 @@ public class ConfigDownloader {
                                             Toast.makeText(context,
                                                     "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
 
-                                            Timber.w("Error adding document", e);
+                                            Timber.w("Error adding document");
                                         });
                             })
                             .addOnFailureListener(exception -> {
