@@ -148,7 +148,9 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     protected void stopPreview() {
-        mCamera.stopPreview();
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
     }
 
     @Override
@@ -354,7 +356,6 @@ public class BaseRunTest extends Fragment implements RunTest {
         mCamera.setParameters(parameters);
     }
 
-
     protected void releaseResources() {
 
         if (mCamera != null) {
@@ -394,13 +395,12 @@ public class BaseRunTest extends Fragment implements RunTest {
         sound.playShortResource(R.raw.err);
 
         alertDialogToBeDestroyed = AlertUtil.showError(activity,
-                R.string.error, message, bitmap, R.string.retry,
-                (dialogInterface, i) -> initializeTest(),
+                R.string.error, message, bitmap, R.string.ok,
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     activity.setResult(Activity.RESULT_CANCELED);
                     activity.finish();
-                }, null
+                }, null, null
         );
     }
 
