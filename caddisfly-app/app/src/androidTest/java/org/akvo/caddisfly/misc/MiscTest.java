@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.RequiresDevice;
@@ -36,6 +37,7 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.akvo.caddisfly.ui.TestActivity;
 import org.akvo.caddisfly.ui.TestListActivity;
+import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -140,7 +142,15 @@ public class MiscTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.list_types),
+                        childAtPosition(
+                                withClassName(is("android.widget.LinearLayout")),
+                                0)));
+
+        recyclerView.perform(actionOnItemAtPosition(13, click()));
+
+//        onView(withText(currentHashMap.get("fluoride"))).perform(click());
 
         if (TestUtil.isEmulator()) {
 
@@ -254,7 +264,11 @@ public class MiscTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -354,7 +368,11 @@ public class MiscTest {
 
         sleep(4000);
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
             onView(withText(R.string.errorCameraFlashRequired)).perform(click());

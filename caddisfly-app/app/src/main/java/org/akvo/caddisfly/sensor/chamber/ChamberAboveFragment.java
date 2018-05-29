@@ -92,6 +92,7 @@ public class ChamberAboveFragment extends BaseRunTest implements RunTest {
         }
     }
 
+    @Override
     protected void initializeTest() {
         super.initializeTest();
 

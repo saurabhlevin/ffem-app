@@ -20,7 +20,7 @@ import org.akvo.caddisfly.R;
 
 public class DiagnosticSendDialogFragment extends DialogFragment {
 
-    private DiagnosticSendDialogFragment.OnDetailsSavedListener mListener;
+    private OnDetailsSavedListener mListener;
 
     public DiagnosticSendDialogFragment() {
         // Required empty public constructor
@@ -90,8 +90,8 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DiagnosticSendDialogFragment.OnDetailsSavedListener) {
-            mListener = (DiagnosticSendDialogFragment.OnDetailsSavedListener) context;
+        if (context instanceof OnDetailsSavedListener) {
+            mListener = (OnDetailsSavedListener) context;
         } else {
             throw new IllegalArgumentException(context.toString()
                     + " must implement OnDetailsSavedListener");
