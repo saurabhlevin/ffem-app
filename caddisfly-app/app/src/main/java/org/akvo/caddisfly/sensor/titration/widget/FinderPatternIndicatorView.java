@@ -50,6 +50,8 @@ public class FinderPatternIndicatorView extends View {
     private final int GRID_V = 15;
     private final Paint paint;
     private final Paint greenPaint;
+    private final Paint greenPaintStroke;
+    private final Paint yellowPaintStroke;
     private final Paint paint2;
     //    private final Paint paint3;
     private final Bitmap arrowBitmap;
@@ -97,6 +99,18 @@ public class FinderPatternIndicatorView extends View {
         greenPaint = new Paint();
         greenPaint.setColor(Color.GREEN);
         greenPaint.setAntiAlias(false);
+
+        greenPaintStroke = new Paint();
+        greenPaintStroke.setStyle(Paint.Style.STROKE);
+        greenPaintStroke.setStrokeWidth(4);
+        greenPaintStroke.setColor(Color.GREEN);
+        greenPaintStroke.setAntiAlias(true);
+
+        yellowPaintStroke = new Paint();
+        yellowPaintStroke.setStyle(Paint.Style.STROKE);
+        yellowPaintStroke.setStrokeWidth(1);
+        yellowPaintStroke.setColor(Color.YELLOW);
+        yellowPaintStroke.setAntiAlias(true);
 
         paint2 = new Paint();
         paint2.setColor(Color.BLUE);
@@ -193,6 +207,10 @@ public class FinderPatternIndicatorView extends View {
 
     @Override
     public void onDraw(@NonNull Canvas canvas) {
+
+        canvas.drawLine(150, canvas.getWidth() - 150
+                , 150, canvas.getWidth() - 250, yellowPaintStroke);
+
         if (patterns != null) {
             // The canvas has a rotation of 90 degrees with respect to the camera preview
             //Camera preview size is in landscape mode, canvas is in portrait mode
@@ -257,7 +275,12 @@ public class FinderPatternIndicatorView extends View {
 
             canvas.drawLine(points.get(1).x, points.get(1).y, points.get(pointIndex).x, points.get(pointIndex).y, paint);
 
-//            canvas.drawCircle(points.get(1).x, points.get(1).y - 100, 50, greenPaint);
+
+//            Log.e("TEST", points.get(1).y + " : " + points.get(pointIndex).y);
+
+            int diff = points.get(1).y - points.get(pointIndex).y;
+            canvas.drawLine(150, canvas.getWidth() - 150,
+                    150 - diff, canvas.getWidth() - 200, greenPaintStroke);
 
 //            canvas.drawRect(x1, y1, x2, y2, paint3);
         }
