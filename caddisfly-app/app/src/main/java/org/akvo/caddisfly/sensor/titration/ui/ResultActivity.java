@@ -224,7 +224,7 @@ public class ResultActivity extends BaseActivity {
                     distance = ColorUtil.getColorDistance(pixel, foundPixel);
                 }
 
-                if (distance > 10) {
+                if (distance > 15) {
                     if (count == 0) {
                         foundPixel = pixel;
                         liquidLevelStart = x;

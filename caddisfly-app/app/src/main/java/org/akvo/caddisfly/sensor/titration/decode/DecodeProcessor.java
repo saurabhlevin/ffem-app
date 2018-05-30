@@ -25,14 +25,16 @@ public class DecodeProcessor {
     private static final int DEGREES_180 = 180;
     private static final int DEGREES_0 = 0;
     // holds reference to the titrationTestHandler, which we need to pass messages
-    private final TitrationTestHandler titrationTestHandler;
+    private TitrationTestHandler titrationTestHandler;
 
     /********************************** check exposure ******************************************/
     private final Runnable runExposureQualityCheck = () -> {
         try {
             checkExposureQuality();
         } catch (Exception e) {
-            // TODO find out how we gracefully get out in this case
+            if (titrationTestHandler != null) {
+                MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
+            }
         }
     };
     /*********************************** check shadow quality ***********************************/
@@ -227,7 +229,7 @@ public class DecodeProcessor {
             }
 
             // compute and store tilt and distance check
-            decodeData.setTilt(getDegrees(getTilt(patternInfo)));
+//            decodeData.setTilt(getDegrees(getTilt(patternInfo)));
             decodeData.setDistanceOk(distanceOk(patternInfo, decodeHeight));
 
             // store finder patterns
@@ -256,20 +258,12 @@ public class DecodeProcessor {
     }
 
     private boolean distanceOk(@Nullable FinderPatternInfo info, int decodeHeight) {
-        float leftStop = TitrationConstants.MAX_CLOSER_DIFF * decodeHeight;
-        float rightStop = (1 - TitrationConstants.MAX_CLOSER_DIFF) * decodeHeight;
-
         if (info != null && info.getBottomRight().getY() > 0) {
-            int cardWidth = (int) (info.getBottomRight().getY() - info.getTopRight().getY());
-            return !(cardWidth < decodeHeight * .54);
+            int cardWidth = (int) Math.abs((info.getBottomRight().getY() - info.getTopLeft().getY()));
+            return !(cardWidth < decodeHeight * .64);
         }
 
         return true;
-//        return info != null &&
-//                (info.getBottomLeft().getY() > rightStop &&
-//                        info.getTopLeft().getY() < leftStop &&
-//                        info.getBottomRight().getY() > rightStop &&
-//                        info.getTopRight().getY() < leftStop);
     }
 
     private int getDegrees(float[] tiltValues) {
@@ -321,7 +315,10 @@ public class DecodeProcessor {
         int left = (int) decodeData.getPatternInfo().getBottomLeft().getX();
         int right = (int) decodeData.getPatternInfo().getTopRight().getX();
 
-        Bitmap totalImage = Bitmap.createBitmap(tempImage, left, top, right - left, bottom - top, null, false);
+
+        Bitmap totalImage = Bitmap.createBitmap(tempImage, left, top,
+                Math.abs(right - left), Math.abs(bottom - top), null, false);
+        tempImage.recycle();
 
         int measureLine = (int) (totalImage.getHeight() * 0.7);
         int measureCount = 0;
@@ -344,6 +341,8 @@ public class DecodeProcessor {
         } else {
             MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
         }
+
+        totalImage.recycle();
 
 //        int maxY;
 //        int maxMaxY = 0;

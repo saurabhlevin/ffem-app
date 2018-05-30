@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
@@ -48,7 +49,7 @@ public class FinderPatternIndicatorView extends View {
     private static double mScore = 0.0f;
     private final int GRID_H = 15;
     private final int GRID_V = 15;
-    private final Paint paint;
+    private final Paint patternPaint;
     private final Paint greenPaint;
     private final Paint greenPaintStroke;
     private final Paint yellowPaintStroke;
@@ -61,6 +62,9 @@ public class FinderPatternIndicatorView extends View {
     Point point2 = new Point(0, 0);
     Point point3 = new Point(0, 0);
     Point point4 = new Point(0, 0);
+    RectF bounds;
+    float meterLeft = 0;
+    float meterBottom = 0;
     private Matrix matrix = new Matrix();
     private List<FinderPattern> patterns;
     private boolean shadowGrid[][];
@@ -84,33 +88,27 @@ public class FinderPatternIndicatorView extends View {
 
     public FinderPatternIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
-        paint.setColor(Color.GREEN);
-        paint.setAntiAlias(false);
-
-//        paint3 = new Paint();
-//        paint3.setStyle(Paint.Style.STROKE);
-//        paint3.setStrokeWidth(5);
-//        paint3.setColor(Color.RED);
-//        paint3.setAntiAlias(false);
+        patternPaint = new Paint();
+        patternPaint.setStyle(Paint.Style.STROKE);
+        patternPaint.setStrokeWidth(5);
+        patternPaint.setColor(getResources().getColor(R.color.spring_green));
+        patternPaint.setAntiAlias(false);
 
         greenPaint = new Paint();
-        greenPaint.setColor(Color.GREEN);
+        greenPaint.setColor(getResources().getColor(R.color.spring_green));
         greenPaint.setAntiAlias(false);
 
         greenPaintStroke = new Paint();
         greenPaintStroke.setStyle(Paint.Style.STROKE);
-        greenPaintStroke.setStrokeWidth(4);
-        greenPaintStroke.setColor(Color.GREEN);
+        greenPaintStroke.setStrokeWidth(6);
+        greenPaintStroke.setColor(getResources().getColor(R.color.spring_green));
         greenPaintStroke.setAntiAlias(true);
 
         yellowPaintStroke = new Paint();
         yellowPaintStroke.setStyle(Paint.Style.STROKE);
-        yellowPaintStroke.setStrokeWidth(1);
+        yellowPaintStroke.setStrokeWidth(2);
         yellowPaintStroke.setColor(Color.YELLOW);
-        yellowPaintStroke.setAntiAlias(true);
+        yellowPaintStroke.setAntiAlias(false);
 
         paint2 = new Paint();
         paint2.setColor(Color.BLUE);
@@ -202,53 +200,45 @@ public class FinderPatternIndicatorView extends View {
     }
 
     public void setColor(int color) {
-        paint.setColor(color);
+        patternPaint.setColor(color);
     }
 
     @Override
     public void onDraw(@NonNull Canvas canvas) {
 
-        canvas.drawLine(150, canvas.getWidth() - 150
-                , 150, canvas.getWidth() - 250, yellowPaintStroke);
+        if (bounds == null) {
+            meterLeft = previewScreenWidth * 0.75f;
+            meterBottom = (previewScreenHeight * 0.41f);
+
+            bounds = new RectF(meterLeft - 60,
+                    meterBottom - 60,
+                    meterLeft + 60,
+                    meterBottom + 60);
+        }
+
+        canvas.drawArc(bounds, 170, 200, false, greenPaintStroke);
+        canvas.drawLine(meterLeft, meterBottom - 70,
+                meterLeft, meterBottom - 50, yellowPaintStroke);
 
         if (patterns != null) {
             // The canvas has a rotation of 90 degrees with respect to the camera preview
             //Camera preview size is in landscape mode, canvas is in portrait mode
             //the width of the canvas corresponds to the height of the decodeSize.
             //float ratio = 1.0f * canvas.getWidth() / decodeHeight;
-            float hratio = 1.0f * previewScreenWidth / decodeHeight;
-            float vratio = 1.0f * previewScreenHeight / decodeWidth;
-
-            float x1 = Integer.MAX_VALUE, x2 = 0, y1 = Integer.MAX_VALUE, y2 = 0;
+            float hRatio = 1.0f * previewScreenWidth / decodeHeight;
+            float vRatio = 1.0f * previewScreenHeight / decodeWidth;
 
             for (int i = 0; i < patterns.size(); i++) {
                 //The x of the canvas corresponds to the y of the pattern,
                 //The y of the canvas corresponds to the x of the pattern.
-                float x = previewScreenWidth - patterns.get(i).getY() * hratio;
-                float y = patterns.get(i).getX() * vratio;
+                float x = previewScreenWidth - patterns.get(i).getY() * hRatio;
+                float y = patterns.get(i).getX() * vRatio;
 
                 points.get(i).x = (int) x;
                 points.get(i).y = (int) y;
 
-//                if (x < x1) {
-//                    x1 = x;
-//                }
-//
-//                if (y < y1) {
-//                    y1 = y;
-//                }
-//
-//                if (x > x2) {
-//                    x2 = x;
-//                }
-//
-//                if (y > y2) {
-//                    y2 = y;
-//                }
-
-//                canvas.drawCircle(x, y, 10, paint);
-                canvas.drawRect(x - 8, y - 8, x + 8, y + 8, greenPaint);
-                canvas.drawRect(x - 18, y - 18, x + 18, y + 18, paint);
+                canvas.drawRect(x - 8, y - 8, x + 8, y + 8, patternPaint);
+                canvas.drawRect(x - 18, y - 18, x + 18, y + 18, patternPaint);
             }
 
             int minDistance = Integer.MAX_VALUE;
@@ -261,7 +251,7 @@ public class FinderPatternIndicatorView extends View {
                 }
             }
 
-            canvas.drawLine(points.get(0).x, points.get(0).y, points.get(pointIndex).x, points.get(pointIndex).y, paint);
+            canvas.drawLine(points.get(0).x, points.get(0).y, points.get(pointIndex).x, points.get(pointIndex).y, patternPaint);
 
             minDistance = Integer.MAX_VALUE;
             pointIndex = 0;
@@ -273,16 +263,11 @@ public class FinderPatternIndicatorView extends View {
                 }
             }
 
-            canvas.drawLine(points.get(1).x, points.get(1).y, points.get(pointIndex).x, points.get(pointIndex).y, paint);
-
-
-//            Log.e("TEST", points.get(1).y + " : " + points.get(pointIndex).y);
+            canvas.drawLine(points.get(1).x, points.get(1).y, points.get(pointIndex).x, points.get(pointIndex).y, patternPaint);
 
             int diff = points.get(1).y - points.get(pointIndex).y;
-            canvas.drawLine(150, canvas.getWidth() - 150,
-                    150 - diff, canvas.getWidth() - 200, greenPaintStroke);
-
-//            canvas.drawRect(x1, y1, x2, y2, paint3);
+            canvas.drawLine(meterLeft - diff, meterBottom - 60,
+                    meterLeft, meterBottom, greenPaintStroke);
         }
 
         if (showTiltMessage) {
@@ -301,17 +286,17 @@ public class FinderPatternIndicatorView extends View {
         }
 
         if (shadowGrid != null) {
-            float hratio = 1.0f * previewScreenWidth / decodeHeight;
-            float vratio = 1.0f * previewScreenHeight / decodeWidth;
-            float ratioRatio = vratio / hratio;
-            int xtop;
-            int ytop;
+            float hRatio = 1.0f * previewScreenWidth / decodeHeight;
+            float vRatio = 1.0f * previewScreenHeight / decodeWidth;
+            float ratioRatio = vRatio / hRatio;
+            int xTop;
+            int yTop;
             for (int i = 0; i < GRID_H; i++) {
                 for (int j = 0; j < GRID_V; j++) {
                     if (shadowGrid[i][j]) {
-                        xtop = Math.round(i * mGridStepDisplay);
-                        ytop = Math.round(j * mGridStepDisplay * ratioRatio);
-                        canvas.drawRect(xtop, ytop, xtop + mGridStepDisplay, ytop + mGridStepDisplay, paint2);
+                        xTop = Math.round(i * mGridStepDisplay);
+                        yTop = Math.round(j * mGridStepDisplay * ratioRatio);
+                        canvas.drawRect(xTop, yTop, xTop + mGridStepDisplay, yTop + mGridStepDisplay, paint2);
                     }
                 }
             }

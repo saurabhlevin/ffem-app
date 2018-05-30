@@ -29,7 +29,6 @@ import android.widget.TextSwitcher;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPatternInfo;
-import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
 import org.akvo.caddisfly.sensor.striptest.utils.Constants;
 import org.akvo.caddisfly.sensor.titration.camera.CameraOperationsManager;
 import org.akvo.caddisfly.sensor.titration.decode.DecodeProcessor;
@@ -183,15 +182,15 @@ public final class TitrationTestHandler extends Handler {
                 boolean showDistanceMessage = false;
                 decodeFailedCount = 0;
 
-                if (mDecodeData.getTilt() != DecodeProcessor.NO_TILT) {
-                    tiltFailedCount = Math.min(8, tiltFailedCount + 1);
-                    if (tiltFailedCount > 4) showTiltMessage = true;
-                    else {
-                        if (tiltFailedCount < 4) showTiltMessage = false;
-                    }
-                } else {
-                    tiltFailedCount = Math.max(0, tiltFailedCount - 1);
-                }
+//                if (mDecodeData.getTilt() != DecodeProcessor.NO_TILT) {
+//                    tiltFailedCount = Math.min(8, tiltFailedCount + 1);
+//                    if (tiltFailedCount > 4) showTiltMessage = true;
+//                    else {
+//                        if (tiltFailedCount < 4) showTiltMessage = false;
+//                    }
+//                } else {
+//                    tiltFailedCount = Math.max(0, tiltFailedCount - 1);
+//                }
 
                 if (!mDecodeData.getDistanceOk()) {
                     distanceFailedCount = Math.min(8, distanceFailedCount + 1);
@@ -203,14 +202,15 @@ public final class TitrationTestHandler extends Handler {
                     distanceFailedCount = Math.max(0, distanceFailedCount - 1);
                 }
 
-                if (showTiltMessage) {
-                    newMessage = context.getString(R.string.tilt_camera_in_direction);
-                    showDistanceMessage = false;
-                } else {
-                    if (showDistanceMessage) {
-                        newMessage = context.getString(R.string.move_camera_closer);
-                    }
+                if (showDistanceMessage) {
+                    newMessage = context.getString(R.string.move_camera_closer);
                 }
+//
+//                if (showTiltMessage) {
+//                    newMessage = context.getString(R.string.tilt_camera_in_direction);
+//                    showDistanceMessage = false;
+//                } else {
+//                }
 
                 if (!showTiltMessage && !showDistanceMessage) {
                     newMessage = defaultMessage;
@@ -255,7 +255,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case CHANGE_EXPOSURE_MESSAGE:
-                if (StripMeasureActivity.DEBUG) {
+                if (TitrationMeasureActivity.DEBUG) {
                     Log.d(TAG, "exposure - CHANGE_EXPOSURE_MESSAGE received in striptest handler, with argument:" + message.arg1);
                 }
 
@@ -268,7 +268,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case EXPOSURE_OK_MESSAGE:
-                if (StripMeasureActivity.DEBUG) {
+                if (TitrationMeasureActivity.DEBUG) {
                     Log.d(TAG, "exposure - EXPOSURE_OK_MESSAGE received in striptest handler");
                 }
 
@@ -279,7 +279,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case SHADOW_QUALITY_FAILED_MESSAGE:
-                if (StripMeasureActivity.DEBUG) {
+                if (TitrationMeasureActivity.DEBUG) {
                     Log.d(TAG, "SHADOW_QUALITY_FAILED_MESSAGE received in striptest handler");
                 }
 
@@ -306,7 +306,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case SHADOW_QUALITY_OK_MESSAGE:
-                if (StripMeasureActivity.DEBUG) {
+                if (TitrationMeasureActivity.DEBUG) {
                     Log.d(TAG, "SHADOW_QUALITY_OK_MESSAGE received in striptest handler");
                 }
 
