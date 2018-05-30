@@ -41,7 +41,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Titration Test 2"
+            versionName "Titration Test 3"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
