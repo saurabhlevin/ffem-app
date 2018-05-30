@@ -64,7 +64,7 @@ import org.akvo.caddisfly.sensor.cbt.CbtActivity;
 import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.sensor.manual.ManualTestActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
-import org.akvo.caddisfly.sensor.titration.ui.TitrationMeasureActivity;
+import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ApiUtil;
@@ -193,8 +193,9 @@ public class TestActivity extends BaseActivity {
                 testInfo = viewModel.getTestInfo(uuid);
 
                 if (testInfo != null && intent.getExtras() != null) {
-                    for (int i = 1; i < intent.getExtras().keySet().size(); i++) {
-                        testInfo.getResults().get(intent.getExtras().keySet().size() - i - 1)
+                    for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
+                            testInfo.getResults().size()); i++) {
+                        testInfo.getResults().get(i - 1)
                                 .setCode(intent.getExtras().keySet().toArray()[i].toString());
                     }
                 }
@@ -307,7 +308,7 @@ public class TestActivity extends BaseActivity {
 
     private void startTitrationTest() {
         Intent intent;
-        intent = new Intent(this, TitrationMeasureActivity.class);
+        intent = new Intent(this, TitrationTestActivity.class);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivityForResult(intent, REQUEST_TEST);
     }
