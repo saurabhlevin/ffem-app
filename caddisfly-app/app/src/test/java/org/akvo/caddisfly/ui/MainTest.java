@@ -56,15 +56,15 @@ public class MainTest {
     @Test
     public void titleIsCorrect() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
-        assertEquals(activity.getTitle(), "FFEM Caddisfly");
+        assertEquals(activity.getTitle(), "ffem Caddisfly");
 
         TextView textView = activity.findViewById(R.id.textToolbarTitle);
-        assertEquals(textView.getText(), "FFEM Caddisfly");
+        assertEquals(textView.getText(), "ffem Caddisfly");
 
     }
 
     @Test
-    public void onCreateShouldInflateTheMenu() throws Exception {
+    public void onCreateShouldInflateTheMenu() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
@@ -75,7 +75,7 @@ public class MainTest {
     }
 
     @Test
-    public void onClickSettings() throws Exception {
+    public void onClickSettings() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         ActionMenuItemView button = activity.findViewById(R.id.actionSettings);
@@ -89,7 +89,7 @@ public class MainTest {
     }
 
     @Test
-    public void sensors() throws Exception {
+    public void sensors() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         Button button = activity.findViewById(R.id.buttonSensors);
@@ -111,7 +111,7 @@ public class MainTest {
     }
 
     @Test
-    public void stripTest() throws Exception {
+    public void stripTest() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         Button button = activity.findViewById(R.id.buttonStripTest);
@@ -125,7 +125,7 @@ public class MainTest {
     }
 
     @Test
-    public void md610() throws Exception {
+    public void md610() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         Button button = activity.findViewById(R.id.buttonBluetooth);
@@ -140,7 +140,7 @@ public class MainTest {
 
     @Ignore
     @Test
-    public void cbt() throws Exception {
+    public void cbt() {
         Activity activity = Robolectric.setupActivity(MainActivity.class);
 
         Button button = activity.findViewById(R.id.buttonCbt);
@@ -156,7 +156,7 @@ public class MainTest {
     }
 
     @Test
-    public void clickingCalibrate() throws Exception {
+    public void clickingCalibrate() {
 
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 

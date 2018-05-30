@@ -19,7 +19,7 @@
 
 <resources>
 
-    <string name="appName">"FFEM Caddisfly"</string>
+    <string name="appName">"ffem Caddisfly"</string>
 
     <string-array name="languages">
         <item>English</item>
