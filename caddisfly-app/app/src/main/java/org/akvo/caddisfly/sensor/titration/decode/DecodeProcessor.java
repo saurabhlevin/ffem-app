@@ -10,6 +10,7 @@ import org.akvo.caddisfly.sensor.qrdetector.BitMatrix;
 import org.akvo.caddisfly.sensor.qrdetector.BitMatrixCreator;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPatternInfo;
+import org.akvo.caddisfly.sensor.striptest.utils.Constants;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
 import org.akvo.caddisfly.sensor.titration.TitrationConstants;
 import org.akvo.caddisfly.sensor.titration.models.DecodeData;
@@ -336,39 +337,37 @@ public class DecodeProcessor {
             col++;
         }
 
+        totalImage.recycle();
+
         if (measureCount == 16) {
             MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);
         } else {
-            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
+            int maxY;
+            int maxMaxY = 0;
+            if (decodeData.getFinderPatternsFound() != null) {
+                for (FinderPattern fp : decodeData.getFinderPatternsFound()) {
+                    maxY = maxY(decodeData, fp);
+                    if (maxY > maxMaxY) {
+                        maxMaxY = maxY;
+                    }
+                }
+            }
+
+            if (maxMaxY < Constants.MAX_LUM_LOWER) {
+                // send the message that the Exposure should be changed upwards
+                MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
+                return;
+            }
+
+            if (maxMaxY > Constants.MAX_LUM_UPPER) {
+                // send the message that the Exposure should be changed downwards
+                MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, -2);
+                return;
+            }
+
+            // send the message that the Exposure is ok
+            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);
         }
-
-        totalImage.recycle();
-
-//        int maxY;
-//        int maxMaxY = 0;
-//        if (decodeData.getFinderPatternsFound() != null) {
-//            for (FinderPattern fp : decodeData.getFinderPatternsFound()) {
-//                maxY = maxY(decodeData, fp);
-//                if (maxY > maxMaxY) {
-//                    maxMaxY = maxY;
-//                }
-//            }
-//        }
-//
-//        if (maxMaxY < Constants.MAX_LUM_LOWER) {
-//            // send the message that the Exposure should be changed upwards
-//            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
-//            return;
-//        }
-//
-//        if (maxMaxY > Constants.MAX_LUM_UPPER) {
-//            // send the message that the Exposure should be changed downwards
-//            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, -2);
-//            return;
-//        }
-//
-//        // send the message that the Exposure is ok
-//        MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);
     }
 
     public void startShadowQualityCheck() {

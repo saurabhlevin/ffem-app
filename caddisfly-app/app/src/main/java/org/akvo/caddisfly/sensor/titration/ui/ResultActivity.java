@@ -215,16 +215,16 @@ public class ResultActivity extends BaseActivity {
             int foundPixel = 0;
             for (int x = measureEnd; x >= measureStart; x--) {
                 int pixel = totalImage.getPixel(x, center);
-                int nextPixel = totalImage.getPixel(x - 3, center);
 
                 double distance;
                 if (count == 0) {
+                    int nextPixel = totalImage.getPixel(x - 3, center);
                     distance = ColorUtil.getColorDistance(pixel, nextPixel);
                 } else {
                     distance = ColorUtil.getColorDistance(pixel, foundPixel);
                 }
 
-                if (distance > 15) {
+                if (distance > 20) {
                     if (count == 0) {
                         foundPixel = pixel;
                         liquidLevelStart = x;

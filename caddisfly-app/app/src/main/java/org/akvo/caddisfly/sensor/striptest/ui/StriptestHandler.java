@@ -294,7 +294,7 @@ public final class StriptestHandler extends Handler {
                 int direction = message.arg1;
 
                 // change exposure
-//                mCameraOpsManager.changeExposure(direction);
+                mCameraOpsManager.changeExposure(direction);
                 mDecodeData.clearData();
                 mCameraOpsManager.setDecodeImageCaptureRequest();
                 break;

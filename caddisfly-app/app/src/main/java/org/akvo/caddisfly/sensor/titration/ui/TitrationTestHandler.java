@@ -126,7 +126,7 @@ public final class TitrationTestHandler extends Handler {
                     Log.d(TAG, "START_PREVIEW_MESSAGE received in striptest handler");
                 }
                 // start the image capture request.
-                mCameraOpsManager.startAutofocus();
+//                mCameraOpsManager.startAutofocus();
                 successCount = 0;
                 mQualityScore = 0;
 
