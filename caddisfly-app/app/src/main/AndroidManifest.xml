@@ -152,5 +152,19 @@
             android:screenOrientation="nosensor" />
         <!-- /Titration -->
 
+        <!-- Turbidity -->
+        <activity
+            android:name=".sensor.turbidity.AnalyzeActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".sensor.turbidity.TimeLapseActivity"
+            android:screenOrientation="nosensor" />
+
+        <receiver
+            android:name=".sensor.turbidity.TurbidityStartReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <!-- /Turbidity -->
+
     </application>
 </manifest>
