@@ -217,5 +217,6 @@
 
 
     <string name="detecting_card">Looking for card</string>
+    <string name="coliformTest">Coliform Test</string>
 
 </resources>

@@ -52,6 +52,7 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
+import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -239,6 +240,11 @@ public class MainActivity extends BaseActivity {
 
     public void onColiformCountClick(View view) {
         navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+    }
+
+    public void onColiformClick(View view) {
+        final Intent intent = new Intent(this, TimeLapseActivity.class);
+        startActivity(intent);
     }
 
     public void onTitrationClick(View view) {
