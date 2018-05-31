@@ -2,6 +2,19 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
+      "name": "Coliforms",
+      "subtype": "coliform",
+      "uuid": "df3d1009-2112-4d95-a6f9-fdc4b5633ec9",
+      "calibrate": false,
+      "results": [
+        {
+          "id": 1,
+          "name": "Coliforms",
+          "unit": "CFU/100 mL"
+        }
+      ]
+    },
+    {
       "name": "Soil - Available Boron",
       "type": "soil",
       "subtype": "cuvette",
