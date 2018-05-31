@@ -1,21 +1,17 @@
 package org.akvo.caddisfly.sensor.turbidity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -40,18 +36,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 public class TimeLapseActivity extends BaseActivity {
 
-    private static final String TAG = "TimeLapseActivity";
-
-    private static final int PERMISSION_ALL = 1;
     private static final int INITIAL_DELAY = 25000;
-    private static final float SNACK_BAR_LINE_SPACING = 1.4f;
 
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    private CoordinatorLayout coordinatorLayout;
     private SoundPoolPlayer sound;
     private View layoutWait;
     private LinearLayout layoutDetails;
@@ -122,7 +115,7 @@ public class TimeLapseActivity extends BaseActivity {
                                     "%02d:%02d:%02d", hours, minutes, seconds));
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, e.getMessage(), e);
+                        Timber.e(e);
                     }
                 }
             }
@@ -141,7 +134,6 @@ public class TimeLapseActivity extends BaseActivity {
 
         layoutWait = findViewById(R.id.layoutWait);
         layoutDetails = findViewById(R.id.layoutDetails);
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
         Fragment fragment;
         Bundle bundle = new Bundle();
@@ -179,8 +171,6 @@ public class TimeLapseActivity extends BaseActivity {
 
         textSampleCount = findViewById(R.id.textSampleCount);
 
-        final Activity activity = this;
-
         Button buttonStart = findViewById(R.id.buttonStart);
         buttonStart.setOnClickListener(v -> {
 
@@ -217,12 +207,8 @@ public class TimeLapseActivity extends BaseActivity {
                     + description;
 
             if (media.isEmpty() || volume.isEmpty() || description.isEmpty()) {
-                AlertUtil.showAlert(this, R.string.required, "All fields must be filled", R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                }, null, null);
+                AlertUtil.showAlert(this, R.string.required, "All fields must be filled", R.string.ok,
+                        (dialogInterface, i) -> finish(), null, null);
                 return;
             }
         }
@@ -260,10 +246,10 @@ public class TimeLapseActivity extends BaseActivity {
         if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
             startTest();
         } else {
-//            String message = getString(R.string.cameraAndStoragePermissions);
-//
-//            AlertUtil.showSettingsSnackbar(this,
-//                    getWindow().getDecorView().getRootView(), message);
+            String message = getString(R.string.cameraAndStoragePermissions);
+
+            AlertUtil.showSettingsSnackbar(this,
+                    getWindow().getDecorView().getRootView(), message);
         }
     }
 
