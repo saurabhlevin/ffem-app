@@ -22,6 +22,7 @@ package org.akvo.caddisfly.util;
 public final class TestConstant {
 
     public static final String FLUORIDE = "fluoride";
+    public static final int FLUORIDE_INDEX = 10;
     public static final String LANGUAGE = "language";
     public static final String USE_EXTERNAL_SOURCE = "useExternalSource";
     public static final String GO_TO_TEST = "goToTest";

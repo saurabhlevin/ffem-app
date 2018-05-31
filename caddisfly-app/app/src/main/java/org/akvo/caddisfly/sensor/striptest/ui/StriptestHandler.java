@@ -57,6 +57,11 @@ public final class StriptestHandler extends Handler {
     private static final int DECODE_IMAGE_CAPTURE_FAILED_MESSAGE = 3;
     private static final CalibrationCardData mCalCardData = new CalibrationCardData();
     private static State mState;
+    private static int decodeFailedCount = 0;
+    private static int successCount = 0;
+    private static int nextPatch;
+    private static int numPatches;
+    private static boolean captureNextImage;
     private final List<TimeDelayDetail> mPatchTimeDelays = new ArrayList<>();
     private final String TAG = "Caddisfly - handler";
     // camera manager instance
@@ -73,11 +78,6 @@ public final class StriptestHandler extends Handler {
     private int shadowQualityFailedCount = 0;
     private int tiltFailedCount = 0;
     private int distanceFailedCount = 0;
-    private static int decodeFailedCount = 0;
-    private static int successCount = 0;
-    private static int nextPatch;
-    private static int numPatches;
-    private static boolean captureNextImage;
     private String currentMessage = "";
     private String currentShadowMessage = "";
     private String newMessage = "";

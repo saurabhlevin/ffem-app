@@ -35,8 +35,8 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ChamberTestConfig;
 import org.akvo.caddisfly.common.Constants;
-import org.akvo.caddisfly.common.TestConstantKeys;
 import org.akvo.caddisfly.ui.MainActivity;
+import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -62,7 +62,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
-import static org.akvo.caddisfly.util.TestHelper.currentHashMap;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
 import static org.akvo.caddisfly.util.TestHelper.gotoSurveyForm;
@@ -145,7 +144,11 @@ public class ChamberTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get(TestConstantKeys.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -171,7 +174,11 @@ public class ChamberTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get(TestConstantKeys.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -408,7 +415,11 @@ public class ChamberTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get(TestConstantKeys.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -432,7 +443,11 @@ public class ChamberTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get(TestConstantKeys.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 

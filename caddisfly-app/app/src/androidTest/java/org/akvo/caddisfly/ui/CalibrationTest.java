@@ -51,6 +51,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -66,9 +67,11 @@ import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
+import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
 import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.object.HasToString.hasToString;
@@ -124,9 +127,13 @@ public class CalibrationTest {
 
         sleep(4000);
 
-        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
-        if (TestUtil.isEmulator()){
+        if (TestUtil.isEmulator()) {
 
             onView(withText(R.string.errorCameraFlashRequired))
                     .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow()
@@ -182,9 +189,13 @@ public class CalibrationTest {
 
         sleep(500);
 
-        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
-        if (TestUtil.isEmulator()){
+        if (TestUtil.isEmulator()) {
 
             onView(withText(R.string.errorCameraFlashRequired))
                     .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow()
@@ -204,7 +215,11 @@ public class CalibrationTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -265,7 +280,13 @@ public class CalibrationTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
+//        onView(withText(currentHashMap.get(TestConstant.FLUORIDE))).perform(click());
+
+        onView(allOf(withId(R.id.list_types),
+                childAtPosition(
+                        withClassName(is("android.widget.LinearLayout")),
+                        0))).perform(actionOnItemAtPosition(
+                TestConstant.FLUORIDE_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 

@@ -1,5 +1,7 @@
 package org.akvo.caddisfly.sensor.titration.decode;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
@@ -8,6 +10,7 @@ import org.akvo.caddisfly.sensor.qrdetector.BitMatrix;
 import org.akvo.caddisfly.sensor.qrdetector.BitMatrixCreator;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPatternInfo;
+import org.akvo.caddisfly.sensor.striptest.utils.Constants;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
 import org.akvo.caddisfly.sensor.titration.TitrationConstants;
 import org.akvo.caddisfly.sensor.titration.models.DecodeData;
@@ -23,14 +26,16 @@ public class DecodeProcessor {
     private static final int DEGREES_180 = 180;
     private static final int DEGREES_0 = 0;
     // holds reference to the titrationTestHandler, which we need to pass messages
-    private final TitrationTestHandler titrationTestHandler;
+    private TitrationTestHandler titrationTestHandler;
 
     /********************************** check exposure ******************************************/
     private final Runnable runExposureQualityCheck = () -> {
         try {
             checkExposureQuality();
         } catch (Exception e) {
-            // TODO find out how we gracefully get out in this case
+            if (titrationTestHandler != null) {
+                MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
+            }
         }
     };
     /*********************************** check shadow quality ***********************************/
@@ -225,7 +230,7 @@ public class DecodeProcessor {
             }
 
             // compute and store tilt and distance check
-            decodeData.setTilt(getDegrees(getTilt(patternInfo)));
+//            decodeData.setTilt(getDegrees(getTilt(patternInfo)));
             decodeData.setDistanceOk(distanceOk(patternInfo, decodeHeight));
 
             // store finder patterns
@@ -254,20 +259,12 @@ public class DecodeProcessor {
     }
 
     private boolean distanceOk(@Nullable FinderPatternInfo info, int decodeHeight) {
-        float leftStop = TitrationConstants.MAX_CLOSER_DIFF * decodeHeight;
-        float rightStop = (1 - TitrationConstants.MAX_CLOSER_DIFF) * decodeHeight;
-
         if (info != null && info.getBottomRight().getY() > 0) {
-            int cardWidth = (int) (info.getBottomRight().getY() - info.getTopRight().getY());
-            return !(cardWidth < decodeHeight * .54);
+            int cardWidth = (int) Math.abs((info.getBottomRight().getY() - info.getTopLeft().getY()));
+            return !(cardWidth < decodeHeight * .64);
         }
 
         return true;
-//        return info != null &&
-//                (info.getBottomLeft().getY() > rightStop &&
-//                        info.getTopLeft().getY() < leftStop &&
-//                        info.getBottomRight().getY() > rightStop &&
-//                        info.getTopRight().getY() < leftStop);
     }
 
     private int getDegrees(float[] tiltValues) {
@@ -304,34 +301,73 @@ public class DecodeProcessor {
      */
     private void checkExposureQuality() {
 
-        MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.SHADOW_QUALITY_OK_MESSAGE, 0);
+        DecodeData decodeData = TitrationTestHandler.getDecodeData();
 
-//        DecodeData decodeData = TitrationTestHandler.getDecodeData();
-//        int maxY;
-//        int maxMaxY = 0;
-//        if (decodeData.getFinderPatternsFound() != null) {
-//            for (FinderPattern fp : decodeData.getFinderPatternsFound()) {
-//                maxY = maxY(decodeData, fp);
-//                if (maxY > maxMaxY) {
-//                    maxMaxY = maxY;
-//                }
-//            }
-//        }
-//
-//        if (maxMaxY < Constants.MAX_LUM_LOWER) {
-//            // send the message that the Exposure should be changed upwards
-//            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
-//            return;
-//        }
-//
-//        if (maxMaxY > Constants.MAX_LUM_UPPER) {
-//            // send the message that the Exposure should be changed downwards
-//            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, -2);
-//            return;
-//        }
-//
-//        // send the message that the Exposure is ok
-//        MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);
+        byte[] iDataArray = decodeData.getDecodeImageByteArray();
+        int width = decodeData.getDecodeWidth();
+        int height = decodeData.getDecodeHeight();
+
+        int[] pixels = applyGrayScale(iDataArray, width, height);
+
+        Bitmap tempImage = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
+
+        int top = (int) decodeData.getPatternInfo().getTopLeft().getY();
+        int bottom = (int) decodeData.getPatternInfo().getBottomLeft().getY();
+        int left = (int) decodeData.getPatternInfo().getBottomLeft().getX();
+        int right = (int) decodeData.getPatternInfo().getTopRight().getX();
+
+
+        Bitmap totalImage = Bitmap.createBitmap(tempImage, left, top,
+                Math.abs(right - left), Math.abs(bottom - top), null, false);
+        tempImage.recycle();
+
+        int measureLine = (int) (totalImage.getHeight() * 0.7);
+        int measureCount = 0;
+
+        int col = 30;
+        while (col < totalImage.getWidth() - 30) {
+            int measurePixel = totalImage.getPixel(col, measureLine);
+            int measurePixelCompare = totalImage.getPixel(col - 15, measureLine);
+            if (Math.abs(Color.red(measurePixel) - Color.red(measurePixelCompare)) > 50) {
+                if (Color.red(measurePixel) < Color.red(measurePixelCompare)) {
+                    measureCount++;
+                    col += 15;
+                }
+            }
+            col++;
+        }
+
+        totalImage.recycle();
+
+        if (measureCount == 16) {
+            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);
+        } else {
+            int maxY;
+            int maxMaxY = 0;
+            if (decodeData.getFinderPatternsFound() != null) {
+                for (FinderPattern fp : decodeData.getFinderPatternsFound()) {
+                    maxY = maxY(decodeData, fp);
+                    if (maxY > maxMaxY) {
+                        maxMaxY = maxY;
+                    }
+                }
+            }
+
+            if (maxMaxY < Constants.MAX_LUM_LOWER) {
+                // send the message that the Exposure should be changed upwards
+                MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, 2);
+                return;
+            }
+
+            if (maxMaxY > Constants.MAX_LUM_UPPER) {
+                // send the message that the Exposure should be changed downwards
+                MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.CHANGE_EXPOSURE_MESSAGE, -2);
+                return;
+            }
+
+            // send the message that the Exposure is ok
+            MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);
+        }
     }
 
     public void startShadowQualityCheck() {

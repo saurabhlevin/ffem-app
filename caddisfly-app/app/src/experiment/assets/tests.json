@@ -155,23 +155,36 @@
       "type": "soil",
       "subtype": "titration",
       "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
-      "brand": "ffem Titration",
+      "brand": "Caddisfly",
       "imageScale": "centerCrop",
       "results": [
         {
           "id": 1,
           "name": "Exchangeable Calcium",
-          "unit": "mm"
+          "unit": "mg/kg"
         },
         {
           "id": 2,
           "name": "Exchangeable Magnesium",
-          "unit": "mm"
-        },
+          "unit": "mg/kg"
+        }
+      ]
+    },
+    {
+      "name": "Water - Aluminum",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "af112e3c-4fc1-45c1-a8d0-1ec75a2b789e",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.1,0.2,0.3",
+      "monthsValid": 12,
+      "results": [
         {
-          "id": 3,
-          "name": "Titration Photo",
-          "unit": ""
+          "id": 1,
+          "name": "Aluminum",
+          "unit": "mg/l"
         }
       ]
     },

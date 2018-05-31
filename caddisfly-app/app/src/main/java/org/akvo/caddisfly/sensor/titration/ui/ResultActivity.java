@@ -30,8 +30,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -45,83 +43,28 @@ import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.titration.models.DecodeData;
 import org.akvo.caddisfly.ui.BaseActivity;
+import org.akvo.caddisfly.util.ColorUtil;
 import org.akvo.caddisfly.util.ImageUtil;
 
 import static org.akvo.caddisfly.sensor.titration.decode.DecodeProcessor.applyGrayScale;
+import static org.akvo.caddisfly.util.ImageUtil.convertYUV420_NV21toRGB8888;
 
 /**
  * Activity that displays the results.
  */
 public class ResultActivity extends BaseActivity {
-    private static final int IMG_WIDTH = 500;
     private static DecodeData mDecodeData;
-    private final SparseArray<String> resultStringValues = new SparseArray<>();
-    private final SparseArray<String> brackets = new SparseArray<>();
     int measureStart = 0;
     int measureEnd = 0;
     float liquidLevel = -1;
     private Button buttonSave;
-    private Button buttonCancel;
-    private Bitmap totalImage;
     private Bitmap finalImage;
-    //    private String totalImageUrl;
     private LinearLayout layout;
 
     private TestInfo testInfo;
 
     public static void setDecodeData(DecodeData decodeData) {
         mDecodeData = decodeData;
-    }
-
-    /**
-     * Converts YUV420 NV21 to RGB8888
-     *
-     * @param data   byte array on YUV420 NV21 format.
-     * @param width  pixels width
-     * @param height pixels height
-     * @return a RGB8888 pixels int array. Where each int is a pixels ARGB.
-     */
-    public static int[] convertYUV420_NV21toRGB8888(byte[] data, int width, int height) {
-        int size = width * height;
-        int offset = size;
-        int[] pixels = new int[size];
-        int u, v, y1, y2, y3, y4;
-
-        // i percorre os Y and the final pixels
-        // k percorre os pixles U e V
-        for (int i = 0, k = 0; i < size; i += 2, k += 2) {
-            y1 = data[i] & 0xff;
-            y2 = data[i + 1] & 0xff;
-            y3 = data[width + i] & 0xff;
-            y4 = data[width + i + 1] & 0xff;
-
-            u = data[offset + k] & 0xff;
-            v = data[offset + k + 1] & 0xff;
-            u = u - 128;
-            v = v - 128;
-
-            pixels[i] = convertYUVtoRGB(y1, u, v);
-            pixels[i + 1] = convertYUVtoRGB(y2, u, v);
-            pixels[width + i] = convertYUVtoRGB(y3, u, v);
-            pixels[width + i + 1] = convertYUVtoRGB(y4, u, v);
-
-            if (i != 0 && (i + 2) % width == 0)
-                i += width;
-        }
-
-        return pixels;
-    }
-
-    private static int convertYUVtoRGB(int y, int u, int v) {
-        int r, g, b;
-
-        r = y + (int) (1.402f * v);
-        g = y - (int) (0.344f * u + 0.714f * v);
-        b = y + (int) (1.772f * u);
-        r = r > 255 ? 255 : r < 0 ? 0 : r;
-        g = g > 255 ? 255 : g < 0 ? 0 : g;
-        b = b > 255 ? 255 : b < 0 ? 0 : b;
-        return 0xff000000 | (b << 16) | (g << 8) | r;
     }
 
     @Override
@@ -169,13 +112,6 @@ public class ResultActivity extends BaseActivity {
 //                    resultStringValues, brackets, -1, totalImageUrl);
 
         });
-
-        buttonCancel = findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> {
-            Intent intent = new Intent(getIntent());
-            setResult(RESULT_CANCELED, intent);
-            finish();
-        });
     }
 
     @Override
@@ -208,8 +144,6 @@ public class ResultActivity extends BaseActivity {
     private void computeResults(TestInfo testInfo) {
 
         byte[] iDataArray = mDecodeData.getDecodeImageByteArray();
-        int rowStride = mDecodeData.getDecodeWidth();
-        int frameSize = rowStride * mDecodeData.getDecodeHeight();
 
         int width = mDecodeData.getDecodeWidth();
         int height = mDecodeData.getDecodeHeight();
@@ -222,21 +156,20 @@ public class ResultActivity extends BaseActivity {
 
         Bitmap tempFinalImage = Bitmap.createBitmap(finalPixels, width, height, Bitmap.Config.ARGB_8888);
 
-//        Log.e("TITRATION", "Start ***************************************************");
-
         int top = (int) mDecodeData.getPatternInfo().getTopLeft().getY();
         int bottom = (int) mDecodeData.getPatternInfo().getBottomLeft().getY();
         int left = (int) mDecodeData.getPatternInfo().getBottomLeft().getX();
         int right = (int) mDecodeData.getPatternInfo().getTopRight().getX();
 
-        totalImage = Bitmap.createBitmap(tempImage, left, top, right - left, bottom - top, null, false);
+        Bitmap totalImage = Bitmap.createBitmap(tempImage, left, top, right - left,
+                bottom - top, null, false);
 
-        finalImage = Bitmap.createBitmap(tempFinalImage, left, top, right - left, bottom - top, null, false);
+        finalImage = Bitmap.createBitmap(tempFinalImage, left, top, right - left,
+                bottom - top, null, false);
 
         int center = totalImage.getHeight() / 2;
         int measureLine = (int) (totalImage.getHeight() * 0.7);
 
-        int threshold = 110;
         int measureThreshold = 255;
         int measureCount = 0;
 
@@ -250,10 +183,6 @@ public class ResultActivity extends BaseActivity {
                         measureThreshold = Color.red(measurePixel);
                     }
 
-                    for (int i = col; i < col + 15; i++) {
-                        measurePixel = totalImage.getPixel(col, measureLine);
-//                        Log.e("TITRATION", i + " : " + String.valueOf(Color.red(measurePixel)));
-                    }
                     measureCount++;
 
                     if (measureCount == 1) {
@@ -262,66 +191,42 @@ public class ResultActivity extends BaseActivity {
                         measureEnd = col;
                     }
 
-
                     col += 15;
-
-//                    Log.e("TITRATION", col + "MEASURE COUNT : " + measureCount);
                 }
             }
             col++;
-//            Log.e("TITRATION", col + " : " + String.valueOf(Color.red(measurePixel)));
         }
 
+        Bitmap canvasBitmap = Bitmap.createBitmap(finalImage.getWidth(), finalImage.getHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(canvasBitmap);
+        canvas.drawBitmap(finalImage, 0, 0, null);
+
+        Paint blackPaint = new Paint();
+        blackPaint.setAntiAlias(true);
+        blackPaint.setColor(Color.BLACK);
 
         int liquidLevelStart = 0;
 
         if (measureCount == 16) {
 
-            measureThreshold = measureThreshold + 20;
-
-//            Log.e("TITRATION", "Measure threshold: " + measureThreshold);
-
-//            for (int x = 20; x < totalImage.getWidth() / 8; x++) {
-//                int measurePixel = totalImage.getPixel(x, measureLine);
-//                if (Color.red(measurePixel) < measureThreshold) {
-//                    measureStart = x;
-//                    break;
-//                }
-//            }
-//
-//            for (int x = totalImage.getWidth() - 20; x >= (totalImage.getWidth() - totalImage.getWidth() / 8); x--) {
-//                int measurePixel = totalImage.getPixel(x, measureLine);
-//                if (Color.red(measurePixel) < measureThreshold) {
-//                    measureEnd = x;
-//                    break;
-//                }
-//            }
-
-//            int count = 0;
-//            for (int x = measureStart; x < totalImage.getWidth(); x++) {
-//                int pixel = totalImage.getPixel(x, center);
-//
-//                if (Color.red(pixel) < threshold) {
-//                    if (count == 0) {
-//                        liquidLevelStart = x;
-//                    }
-//                    count++;
-//                } else {
-//                    count = 0;
-//                }
-//
-//                if (count > 80) {
-//                    break;
-//                }
-//                Log.e("TITRATION", String.valueOf(Color.red(pixel)));
-//            }
-
             int count = 0;
+            int foundPixel = 0;
             for (int x = measureEnd; x >= measureStart; x--) {
                 int pixel = totalImage.getPixel(x, center);
 
-                if (Color.red(pixel) > threshold) {
+                double distance;
+                if (count == 0) {
+                    int nextPixel = totalImage.getPixel(x - 3, center);
+                    distance = ColorUtil.getColorDistance(pixel, nextPixel);
+                } else {
+                    distance = ColorUtil.getColorDistance(pixel, foundPixel);
+                }
+
+                if (distance > 20) {
                     if (count == 0) {
+                        foundPixel = pixel;
                         liquidLevelStart = x;
                     }
                     count++;
@@ -332,7 +237,6 @@ public class ResultActivity extends BaseActivity {
                 if (count > 30) {
                     break;
                 }
-                Log.e("TITRATION", String.valueOf(Color.red(pixel)));
             }
 
             try {
@@ -352,25 +256,14 @@ public class ResultActivity extends BaseActivity {
         testInfo.getResults().get(0).setResult(liquidLevel, 0, 0);
         testInfo.getResults().get(1).setResult(liquidLevel, 0, 0);
 
-//        Log.e("TITRATION", "End ***************************************************");
-//        Log.e("TITRATION", "");
-
         mDecodeData.addStripImage(pixels, 0);
 
-        Bitmap canvasBitmap = Bitmap.createBitmap(finalImage.getWidth(), finalImage.getHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(canvasBitmap);
-        canvas.drawBitmap(finalImage, 0, 0, null);
-
-        Paint bluePaint = new Paint();
-        bluePaint.setAntiAlias(true);
-        bluePaint.setColor(Color.BLACK);
 
         if (measureStart > 0) {
-            drawTriangle(canvas, bluePaint, measureStart, center - 90, 30);
+            drawTriangle(canvas, blackPaint, measureStart, center - 90, 30);
         }
         if (measureEnd > 0) {
-            drawTriangle(canvas, bluePaint, measureEnd, center - 90, 30);
+            drawTriangle(canvas, blackPaint, measureEnd, center - 90, 30);
         }
         if (liquidLevel > 0) {
             Paint greenPaint = new Paint();
@@ -378,7 +271,6 @@ public class ResultActivity extends BaseActivity {
             greenPaint.setColor(Color.rgb(0, 153, 0));
 
             drawTriangle(canvas, greenPaint, liquidLevelStart, center - 110, 60);
-//            canvas.drawCircle(liquidLevelStart, center, 25, greenPaint);
         }
 
         finalImage = Bitmap.createScaledBitmap(canvasBitmap, (int) (finalImage.getWidth() * 0.8),
@@ -399,7 +291,6 @@ public class ResultActivity extends BaseActivity {
 
         // show buttons
         buttonSave.setVisibility(View.VISIBLE);
-        buttonCancel.setVisibility(View.VISIBLE);
     }
 
     private void createView(TestInfo testInfo) {
@@ -410,7 +301,8 @@ public class ResultActivity extends BaseActivity {
             } else {
                 if (liquidLevel > 0) {
                     // create image to display on screen
-                    inflateView(result.getName(), result.getResult() + " " + result.getUnit(), null);
+                    inflateView(result.getName(), result.getResult() + " " +
+                            result.getUnit(), null);
                 } else {
                     inflateView(result.getName(), "No Result", null);
                 }

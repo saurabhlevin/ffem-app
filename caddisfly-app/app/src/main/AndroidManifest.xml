@@ -140,7 +140,7 @@
             android:screenOrientation="nosensor" />
         <!-- /Diagnostic -->
 
-        <!--Titration-->
+        <!-- Titration -->
         <activity
             android:name=".sensor.titration.TitrationTestActivity"
             android:screenOrientation="nosensor" />
@@ -150,7 +150,7 @@
         <activity
             android:name=".sensor.titration.ui.ResultActivity"
             android:screenOrientation="nosensor" />
-        <!-- /Titration-->
+        <!-- /Titration -->
 
     </application>
 </manifest>

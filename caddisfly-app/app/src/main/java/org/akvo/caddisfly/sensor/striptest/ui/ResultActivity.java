@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +71,6 @@ public class ResultActivity extends BaseActivity {
     private final SparseArray<String> resultStringValues = new SparseArray<>();
     private final SparseArray<String> brackets = new SparseArray<>();
     private Button buttonSave;
-    private Button buttonCancel;
     private Bitmap totalImage;
     //    private String totalImageUrl;
     private LinearLayout layout;
@@ -112,13 +110,6 @@ public class ResultActivity extends BaseActivity {
 
             intent.putExtra(SensorConstants.VALUE, resultStringValues.get(1));
             setResult(RESULT_OK, intent);
-            finish();
-        });
-
-        buttonCancel = findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> {
-            Intent intent = new Intent(getIntent());
-            setResult(RESULT_CANCELED, intent);
             finish();
         });
     }
@@ -165,7 +156,6 @@ public class ResultActivity extends BaseActivity {
 
             // check if we have the corresponding image
             if (!patchImageMap.containsKey(delay)) {
-                Log.d("Caddisfly", "patch not found!");
                 patchResult.setMeasured(false);
                 return null;
             }
@@ -250,7 +240,6 @@ public class ResultActivity extends BaseActivity {
 
         // show buttons
         buttonSave.setVisibility(View.VISIBLE);
-        buttonCancel.setVisibility(View.VISIBLE);
     }
 
     private void createView(TestInfo testInfo, List<PatchResult> patchResultList) {

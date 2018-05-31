@@ -156,7 +156,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //preview size
         assert bestSize != null;
         parameters.setPreviewSize(bestSize.width, bestSize.height);
-        Log.d("Caddisfly", "Preview size set to:" + bestSize.width + "," + bestSize.height);
+//        Log.d("Caddisfly", "Preview size set to:" + bestSize.width + "," + bestSize.height);
 
         // default focus mode
         String focusMode = Camera.Parameters.FOCUS_MODE_AUTO;

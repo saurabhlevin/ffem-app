@@ -154,7 +154,7 @@ public class FinderPatternFinder {
 //      iSkip = MIN_SKIP;
 //    }
 
-        int iSkip = 2;
+        int iSkip = 1;
 
         boolean done = false;
         int[] stateCount = new int[5];

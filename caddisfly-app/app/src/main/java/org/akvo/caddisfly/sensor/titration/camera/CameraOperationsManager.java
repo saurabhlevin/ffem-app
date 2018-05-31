@@ -134,14 +134,14 @@ public class CameraOperationsManager {
                 newSetting >= mCamera.getParameters().getMinExposureCompensation()) {
             changingExposure = true;
             mCamera.stopPreview();
-            mCamera.cancelAutoFocus();
-            stopAutofocus();
+//            mCamera.cancelAutoFocus();
+//            stopAutofocus();
             Camera.Parameters cameraParam = mCamera.getParameters();
             cameraParam.setExposureCompensation(newSetting);
             mCamera.setParameters(cameraParam);
             mCamera.startPreview();
             changingExposure = false;
-            startAutofocus();
+//            startAutofocus();
         }
     }
 
