@@ -193,8 +193,9 @@ public class TestActivity extends BaseActivity {
                 testInfo = viewModel.getTestInfo(uuid);
 
                 if (testInfo != null && intent.getExtras() != null) {
-                    for (int i = 1; i < intent.getExtras().keySet().size(); i++) {
-                        testInfo.getResults().get(intent.getExtras().keySet().size() - i - 1)
+                    for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
+                            testInfo.getResults().size()); i++) {
+                        testInfo.getResults().get(i - 1)
                                 .setCode(intent.getExtras().keySet().toArray()[i].toString());
                     }
                 }
