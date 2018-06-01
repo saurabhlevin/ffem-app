@@ -67,21 +67,21 @@
                     android:background="@android:color/black" />
 
                 <ImageView
-                    android:layout_height="40dp"
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="45dp"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/qr_shape">
-                </ImageView>
+                    android:contentDescription="@null"
+                    android:src="@drawable/qr_shape" />
 
                 <ImageView
-                    android:layout_height="40dp"
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="end"
                     android:layout_marginEnd="45dp"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/qr_shape">
-                </ImageView>
+                    android:contentDescription="@null"
+                    android:src="@drawable/qr_shape" />
 
                 <TextView
                     android:layout_width="2dp"
@@ -102,22 +102,22 @@
                     android:background="@android:color/holo_red_dark" />
 
                 <ImageView
-                    android:layout_height="40dp"
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="bottom"
-                    android:layout_marginStart="45dp"
                     android:layout_marginBottom="10dp"
-                    android:src="@drawable/qr_shape">
-                </ImageView>
+                    android:layout_marginStart="45dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/qr_shape" />
 
                 <ImageView
-                    android:layout_height="40dp"
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="45dp"
                     android:layout_marginBottom="10dp"
-                    android:src="@drawable/qr_shape">
-                </ImageView>
+                    android:layout_marginEnd="45dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/qr_shape" />
 
                 <TextView
                     android:layout_width="45dp"

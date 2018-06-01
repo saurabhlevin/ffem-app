@@ -16,6 +16,9 @@
 
 package org.akvo.caddisfly.sensor.qrdetector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * <p>Encapsulates information about finder patterns in an image, including the location of
  * the three finder patterns, and their estimated module size.</p>
@@ -24,27 +27,56 @@ package org.akvo.caddisfly.sensor.qrdetector;
  */
 public final class FinderPatternInfo {
 
-    private final FinderPattern bottomLeft;
-    private final FinderPattern topLeft;
-    private final FinderPattern topRight;
-    private final FinderPattern bottomRight;
+    private FinderPattern bottomLeft;
+    private FinderPattern topLeft;
+    private FinderPattern topRight;
+    private FinderPattern bottomRight;
 
-    public FinderPatternInfo(FinderPattern[] patternCenters) {
-        if (Math.abs(patternCenters[0].getX() - patternCenters[1].getX()) < 5 ||
-                Math.abs(patternCenters[0].getX() - patternCenters[2].getX()) < 5 ||
-                Math.abs(patternCenters[1].getX() - patternCenters[2].getX()) < 5) {
-            this.bottomLeft = patternCenters[0];
-            this.topLeft = patternCenters[1];
-            this.topRight = patternCenters[2];
-            this.bottomRight = patternCenters[3];
+    public FinderPatternInfo(FinderPattern[] patternInfo) {
 
-        } else {
+        ArrayList<FinderPattern> patternArrayList = new ArrayList<>(Arrays.asList(patternInfo));
+
+        float currentValue = Float.MAX_VALUE;
+        for (FinderPattern patternCenter : patternArrayList) {
+            float temp = patternCenter.getX() + patternCenter.getY();
+            if (temp < currentValue) {
+                currentValue = temp;
+                topLeft = patternCenter;
+            }
+        }
+
+        patternArrayList.remove(topLeft);
+
+        currentValue = 0;
+        for (FinderPattern patternCenter : patternArrayList) {
+            float temp = patternCenter.getX() + patternCenter.getY();
+            if (temp > currentValue) {
+                currentValue = temp;
+                bottomRight = patternCenter;
+            }
+        }
+
+        patternArrayList.remove(bottomRight);
+
+        currentValue = 0;
+        for (FinderPattern patternCenter : patternArrayList) {
+            if (patternCenter.getX() > currentValue) {
+                currentValue = patternCenter.getX();
+                topRight = patternCenter;
+            }
+        }
+
+        patternArrayList.remove(topRight);
+
+        bottomLeft = patternArrayList.get(0);
+
+        if (Math.abs(topLeft.getX() - bottomLeft.getX()) > 20 ||
+                Math.abs(topLeft.getY() - topRight.getY()) > 20) {
             topLeft = new FinderPattern(0, 0, 0);
             bottomRight = new FinderPattern(0, 0, 0);
             topRight = new FinderPattern(0, 0, 0);
             bottomLeft = new FinderPattern(0, 0, 0);
         }
-
     }
 
     public FinderPattern getBottomLeft() {

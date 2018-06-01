@@ -303,41 +303,42 @@ public class DecodeProcessor {
 
         DecodeData decodeData = TitrationTestHandler.getDecodeData();
 
-        byte[] iDataArray = decodeData.getDecodeImageByteArray();
-        int width = decodeData.getDecodeWidth();
-        int height = decodeData.getDecodeHeight();
-
-        int[] pixels = applyGrayScale(iDataArray, width, height);
-
-        Bitmap tempImage = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
-
         int top = (int) decodeData.getPatternInfo().getTopLeft().getY();
         int bottom = (int) decodeData.getPatternInfo().getBottomLeft().getY();
         int left = (int) decodeData.getPatternInfo().getBottomLeft().getX();
         int right = (int) decodeData.getPatternInfo().getTopRight().getX();
 
-
-        Bitmap totalImage = Bitmap.createBitmap(tempImage, left, top,
-                Math.abs(right - left), Math.abs(bottom - top), null, false);
-        tempImage.recycle();
-
-        int measureLine = (int) (totalImage.getHeight() * 0.7);
         int measureCount = 0;
 
-        int col = 30;
-        while (col < totalImage.getWidth() - 30) {
-            int measurePixel = totalImage.getPixel(col, measureLine);
-            int measurePixelCompare = totalImage.getPixel(col - 15, measureLine);
-            if (Math.abs(Color.red(measurePixel) - Color.red(measurePixelCompare)) > 50) {
-                if (Color.red(measurePixel) < Color.red(measurePixelCompare)) {
-                    measureCount++;
-                    col += 15;
-                }
-            }
-            col++;
-        }
+        if ((left - right > 400) && (bottom - top > 500)) {
+            byte[] iDataArray = decodeData.getDecodeImageByteArray();
+            int width = decodeData.getDecodeWidth();
+            int height = decodeData.getDecodeHeight();
 
-        totalImage.recycle();
+            int[] pixels = applyGrayScale(iDataArray, width, height);
+
+            Bitmap tempImage = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
+            Bitmap totalImage = Bitmap.createBitmap(tempImage, left, top,
+                    Math.abs(right - left), Math.abs(bottom - top), null, false);
+            tempImage.recycle();
+
+            int measureLine = (int) (totalImage.getHeight() * 0.7);
+
+            int col = 30;
+            while (col < totalImage.getWidth() - 30) {
+                int measurePixel = totalImage.getPixel(col, measureLine);
+                int measurePixelCompare = totalImage.getPixel(col - 15, measureLine);
+                if (Math.abs(Color.red(measurePixel) - Color.red(measurePixelCompare)) > 50) {
+                    if (Color.red(measurePixel) < Color.red(measurePixelCompare)) {
+                        measureCount++;
+                        col += 15;
+                    }
+                }
+                col++;
+            }
+
+            totalImage.recycle();
+        }
 
         if (measureCount == 16) {
             MessageUtils.sendMessage(titrationTestHandler, TitrationTestHandler.EXPOSURE_OK_MESSAGE, 0);

@@ -23,7 +23,6 @@ package org.akvo.caddisfly.sensor.titration.ui;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.TextSwitcher;
 
 import org.akvo.caddisfly.R;
@@ -36,6 +35,8 @@ import org.akvo.caddisfly.sensor.titration.models.DecodeData;
 import org.akvo.caddisfly.sensor.titration.models.TimeDelayDetail;
 import org.akvo.caddisfly.sensor.titration.widget.FinderPatternIndicatorView;
 
+import timber.log.Timber;
+
 public final class TitrationTestHandler extends Handler {
     // Message types
     public static final int START_PREVIEW_MESSAGE = 1;
@@ -45,10 +46,10 @@ public final class TitrationTestHandler extends Handler {
     public static final int EXPOSURE_OK_MESSAGE = 6;
     public static final int CHANGE_EXPOSURE_MESSAGE = 7;
     public static final int SHADOW_QUALITY_OK_MESSAGE = 8;
-    public static final int SHADOW_QUALITY_FAILED_MESSAGE = 9;
-    public static final int CALIBRATION_DONE_MESSAGE = 10;
+    //    public static final int CALIBRATION_DONE_MESSAGE = 10;
     public static final int IMAGE_SAVED_MESSAGE = 11;
     public static final DecodeData mDecodeData = new DecodeData();
+    private static final int SHADOW_QUALITY_FAILED_MESSAGE = 9;
     private static final int DECODE_IMAGE_CAPTURE_FAILED_MESSAGE = 3;
     private static State mState;
     private static int decodeFailedCount = 0;
@@ -56,7 +57,6 @@ public final class TitrationTestHandler extends Handler {
     private static int nextPatch;
     private static int numPatches;
     private static boolean captureNextImage;
-    private final String TAG = "Caddisfly - handler";
     // camera manager instance
     private final CameraOperationsManager mCameraOpsManager;
     // finder pattern indicator view
@@ -68,23 +68,19 @@ public final class TitrationTestHandler extends Handler {
     private TitrationMeasureFragment mFragment;
     private TextSwitcher mTextSwitcher;
     private int shadowQualityFailedCount = 0;
-    private int tiltFailedCount = 0;
+    //    private int tiltFailedCount = 0;
     private int distanceFailedCount = 0;
     private String currentMessage = "";
     private String currentShadowMessage = "";
     private String newMessage = "";
     private String defaultMessage;
     private int mQualityScore = 0;
-    private long startTimeMillis;
+    //    private long startTimeMillis;
     private int currentTestStage = 1;
-    private int totalTestStages = 1;
     private TimeDelayDetail mPatchTimeDelaysUnfiltered;
 
     TitrationTestHandler(Context context1, Context context, CameraOperationsManager cameraOpsManager,
                          FinderPatternIndicatorView finderPatternIndicatorView, TestInfo testInfo) {
-        if (TitrationMeasureActivity.DEBUG) {
-            Log.d(TAG, "in constructor striptestHandler");
-        }
 
         mListener = (TitrationMeasureListener) context1;
         this.mCameraOpsManager = cameraOpsManager;
@@ -122,15 +118,13 @@ public final class TitrationTestHandler extends Handler {
     public void handleMessage(Message message) {
         switch (message.what) {
             case START_PREVIEW_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "START_PREVIEW_MESSAGE received in striptest handler");
-                }
+                Timber.d("START_PREVIEW_MESSAGE received in striptest handler");
                 // start the image capture request.
 //                mCameraOpsManager.startAutofocus();
                 successCount = 0;
                 mQualityScore = 0;
 
-                startTimeMillis = System.currentTimeMillis();
+//                startTimeMillis = System.currentTimeMillis();
                 nextPatch = 0;
                 numPatches = 1;
 
@@ -140,9 +134,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case DECODE_IMAGE_CAPTURED_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "DECODE_IMAGE_CAPTURED_MESSAGE received in striptest handler");
-                }
+                Timber.d("DECODE_IMAGE_CAPTURED_MESSAGE received in striptest handler");
 
                 captureNextImage = true;
 
@@ -159,7 +151,7 @@ public final class TitrationTestHandler extends Handler {
 
             case DECODE_IMAGE_CAPTURE_FAILED_MESSAGE:
                 if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "DECODE_IMAGE_CAPTURE_FAILED_MESSAGE received in titration test handler");
+                    Timber.d("DECODE_IMAGE_CAPTURE_FAILED_MESSAGE received in titration test handler");
                     mDecodeData.clearData();
                     mFinderPatternIndicatorView.clearAll();
                     mCameraOpsManager.setDecodeImageCaptureRequest();
@@ -168,10 +160,10 @@ public final class TitrationTestHandler extends Handler {
 
             case DECODE_SUCCEEDED_MESSAGE:
                 if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "DECODE_SUCCEEDED_MESSAGE received in titration test handler");
+                    Timber.d("DECODE_SUCCEEDED_MESSAGE received in titration test handler");
                     FinderPatternInfo fpInfo = mDecodeData.getPatternInfo();
                     if (fpInfo != null) {
-                        Log.d(TAG, "found codes:" + fpInfo.getBottomLeft().toString() + "," +
+                        Timber.d("found codes:" + fpInfo.getBottomLeft().toString() + "," +
                                 fpInfo.getBottomRight().toString() + "," +
                                 fpInfo.getTopLeft().toString() + "," +
                                 fpInfo.getTopRight().toString() + ",");
@@ -241,9 +233,9 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case DECODE_FAILED_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "DECODE_FAILED_MESSAGE received in titration test handler");
-                }
+
+                Timber.d("DECODE_FAILED_MESSAGE received in titration test handler");
+
                 decodeFailedCount++;
                 mDecodeData.clearData();
                 if (decodeFailedCount > 5) {
@@ -255,9 +247,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case CHANGE_EXPOSURE_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "exposure - CHANGE_EXPOSURE_MESSAGE received in striptest handler, with argument:" + message.arg1);
-                }
+                Timber.d("exposure - CHANGE_EXPOSURE_MESSAGE received in striptest handler, with argument:%s", message.arg1);
 
                 int direction = message.arg1;
 
@@ -268,20 +258,24 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case EXPOSURE_OK_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "exposure - EXPOSURE_OK_MESSAGE received in striptest handler");
-                }
+                Timber.d("exposure - EXPOSURE_OK_MESSAGE received in striptest handler");
 
                 // if we arrive here, we both have loaded a valid calibration card file,
                 // and the exposure is ok. So we can proceed to the next step: checking shadows.
-                mDecodeProcessor.startShadowQualityCheck();
+//                mDecodeProcessor.startShadowQualityCheck();
+
+                if (mState.equals(State.MEASURE) && captureNextImage) {
+                    captureNextImage = false;
+                    mDecodeProcessor.storeImageData(mPatchTimeDelaysUnfiltered.getTimeDelay());
+
+//                    mDecodeData.clearData();
+//                    mCameraOpsManager.setDecodeImageCaptureRequest();
+                }
 
                 break;
 
             case SHADOW_QUALITY_FAILED_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "SHADOW_QUALITY_FAILED_MESSAGE received in striptest handler");
-                }
+                Timber.d("SHADOW_QUALITY_FAILED_MESSAGE received in striptest handler");
 
                 shadowQualityFailedCount = Math.min(8, shadowQualityFailedCount + 1);
                 String newShadowMessage;
@@ -306,9 +300,7 @@ public final class TitrationTestHandler extends Handler {
                 break;
 
             case SHADOW_QUALITY_OK_MESSAGE:
-                if (TitrationMeasureActivity.DEBUG) {
-                    Log.d(TAG, "SHADOW_QUALITY_OK_MESSAGE received in striptest handler");
-                }
+                Timber.d("SHADOW_QUALITY_OK_MESSAGE received in striptest handler");
 
                 shadowQualityFailedCount = Math.max(0, shadowQualityFailedCount - 1);
                 if (shadowQualityFailedCount > 4) {
@@ -353,6 +345,7 @@ public final class TitrationTestHandler extends Handler {
                     mDecodeData.clearData();
                     mCameraOpsManager.setDecodeImageCaptureRequest();
                 } else {
+                    int totalTestStages = 1;
                     if (currentTestStage < totalTestStages) {
                         // if all are stages are not completed then show next instructions
                         currentTestStage++;
@@ -389,9 +382,9 @@ public final class TitrationTestHandler extends Handler {
         return mQualityScore;
     }
 
-    private int timeElapsedSeconds() {
-        return (int) Math.floor((Constants.MEASURE_TIME_COMPENSATION_MILLIS + System.currentTimeMillis() - startTimeMillis) / 1000);
-    }
+//    private int timeElapsedSeconds() {
+//        return (int) Math.floor((Constants.MEASURE_TIME_COMPENSATION_MILLIS + System.currentTimeMillis() - startTimeMillis) / 1000);
+//    }
 
     public void quitSynchronously() {
         mDecodeProcessor.stopDecodeThread();

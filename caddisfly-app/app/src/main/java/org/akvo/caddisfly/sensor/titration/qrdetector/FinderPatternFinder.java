@@ -228,7 +228,7 @@ public class FinderPatternFinder {
         }
 
         FinderPattern[] patternInfo = selectBestPatterns();
-        ResultPoint.orderBestPatterns(patternInfo);
+//        ResultPoint.orderBestPatterns(patternInfo);
 
         return new FinderPatternInfo(patternInfo);
     }
