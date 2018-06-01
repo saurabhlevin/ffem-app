@@ -27,13 +27,11 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
         // Required empty public constructor
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                          String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         String[] keys = {
                 getString(R.string.colif_brothMediaKey),
-                getString(R.string.colif_volumeKey),
-                getString(R.string.colif_testDescriptionKey)};
+                getString(R.string.colif_volumeKey)};
 
         String format = "%s";
         if (Arrays.asList(keys).contains(key)) {
@@ -111,110 +109,17 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
             volumePreference.setSummary(String.format("%s ml", volumePreference.getText()));
         }
 
-        final EditTextPreference testDescription =
-                (EditTextPreference) findPreference(getString(R.string.colif_testDescriptionKey));
-        if (testDescription != null) {
-            testDescription.setSummary(testDescription.getText());
+        final EditTextPreference notificationEmails =
+                (EditTextPreference) findPreference(getString(R.string.colif_emails));
+        if (notificationEmails != null) {
+            notificationEmails.setSummary(notificationEmails.getText());
+            notificationEmails.setOnPreferenceChangeListener((preference, newValue) -> {
+                notificationEmails.setText(newValue.toString().trim());
+                notificationEmails.setSummary(newValue.toString().trim());
+                return false;
+            });
         }
-
     }
-
-//    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View rootView = inflater.inflate(R.layout.card_row, container, false);
-//
-//        final EditTextPreference sampleIntervalPreference =
-//                (EditTextPreference) findPreference(getString(R.string.colif_IntervalMinutesKey));
-//        if (sampleIntervalPreference != null) {
-//
-//            sampleIntervalPreference.setSummary(String.format("Every %s minutes", sampleIntervalPreference.getText()));
-//
-//            sampleIntervalPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//                @Override
-//                public boolean onPreferenceChange(Preference preference, Object newValue) {
-//                    try {
-//                        if (Integer.parseInt(String.valueOf(newValue)) > 360) {
-//                            newValue = 360;
-//                        }
-//
-//                        if (Integer.parseInt(String.valueOf(newValue)) < 1) {
-//                            newValue = 1;
-//                        }
-//                    } catch (Exception e) {
-//                        newValue = 2;
-//                    }
-//
-//                    sampleIntervalPreference.setText(String.valueOf(newValue));
-//                    sampleIntervalPreference.setSummary(String.format("Every %s minutes", newValue));
-//                    return false;
-//                }
-//            });
-//        }
-//
-//        final EditTextPreference samplesPreference =
-//                (EditTextPreference) findPreference(getString(R.string.colif_NumberOfSamplesKey));
-//        if (samplesPreference != null) {
-//            samplesPreference.setSummary(samplesPreference.getText());
-//
-//            samplesPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//                @Override
-//                public boolean onPreferenceChange(Preference preference, Object newValue) {
-//                    try {
-//                        if (Integer.parseInt(String.valueOf(newValue)) > 50) {
-//                            newValue = 50;
-//                        }
-//
-//                        if (Integer.parseInt(String.valueOf(newValue)) < 1) {
-//                            newValue = 1;
-//                        }
-//                    } catch (Exception e) {
-//                        newValue = 1;
-//                    }
-//                    samplesPreference.setText(String.valueOf(newValue));
-//                    samplesPreference.setSummary(String.valueOf(newValue));
-//                    return false;
-//                }
-//            });
-//        }
-//
-//        final EditTextPreference rgbPreference =
-//                (EditTextPreference) findPreference(getString(R.string.turbidityLedRgbKey));
-//        if (rgbPreference != null) {
-//            rgbPreference.setSummary(rgbPreference.getText());
-//        }
-//
-//        final EditTextPreference testIdPreference =
-//                (EditTextPreference) findPreference(getString(R.string.colif_TestIdKey));
-//        if (testIdPreference != null) {
-//            testIdPreference.setSummary(testIdPreference.getText());
-//        }
-//
-//        final EditTextPreference phoneIdPreference =
-//                (EditTextPreference) findPreference(getString(R.string.colif_PhoneIdKey));
-//        if (phoneIdPreference != null) {
-//            phoneIdPreference.setSummary(phoneIdPreference.getText());
-//        }
-//
-//        final EditTextPreference chamberPreference =
-//                (EditTextPreference) findPreference(getString(R.string.colif_chamberVersionKey));
-//        if (chamberPreference != null) {
-//            chamberPreference.setSummary(chamberPreference.getText());
-//        }
-//
-//        final EditTextPreference brothPreference =
-//                (EditTextPreference) findPreference(getString(R.string.colif_brothMediumKey));
-//        if (brothPreference != null) {
-//            brothPreference.setSummary(brothPreference.getText());
-//        }
-//
-//        final EditTextPreference testDescription =
-//                (EditTextPreference) findPreference(getString(R.string.colif_testDescriptionKey));
-//        if (testDescription != null) {
-//            testDescription.setSummary(testDescription.getText());
-//        }
-//
-//        return rootView;
-//    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

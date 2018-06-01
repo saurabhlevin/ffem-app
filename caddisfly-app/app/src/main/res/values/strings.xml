@@ -218,5 +218,10 @@
 
     <string name="detecting_card">Looking for card</string>
     <string name="coliformTest">Coliform Test</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="senderEmailDetails">Sender email details</string>
+    <string name="invalidEmailAddress">Invalid email address</string>
+    <string name="password">Password</string>
 
 </resources>

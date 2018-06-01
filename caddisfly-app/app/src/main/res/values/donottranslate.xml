@@ -80,11 +80,11 @@
 
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
-    <string name="colif_testDescriptionKey">colif_testDescription</string>
     <string name="colif_volumeKey">colif_volume</string>
     <string name="colif_brothMediaKey">colif_brothMedia</string>
     <string name="colif_IntervalMinutesKey">colif_IntervalMinutes</string>
     <string name="colif_NumberOfSamplesKey">colif_NumberOfSamples</string>
+    <string name="colif_emails">colif_emails</string>
     <string name="turbiditySavePathKey">turbiditySavePath</string>
 
     <!--Diagnostic-->

@@ -10,7 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -188,7 +190,19 @@ public class TimeLapseActivity extends BaseActivity {
         textCountdown = findViewById(R.id.textCountdown);
     }
 
+    private void showAuthDialog() {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        AuthDialogFragment authDialogFragment = AuthDialogFragment.newInstance();
+        authDialogFragment.show(ft, "");
+    }
+
     private void startTest() {
+
+        if (PreferencesUtil.getString(this, "username", "").isEmpty() ||
+                PreferencesUtil.getString(this, "password", "").isEmpty()) {
+            showAuthDialog();
+            return;
+        }
 
         layoutWait.setVisibility(View.GONE);
         layoutDetails.setVisibility(View.VISIBLE);
@@ -200,14 +214,12 @@ public class TimeLapseActivity extends BaseActivity {
 
             String media = PreferencesUtil.getString(this, getString(R.string.colif_brothMediaKey), "");
             String volume = PreferencesUtil.getString(this, getString(R.string.colif_volumeKey), "");
-            String description = PreferencesUtil.getString(this, getString(R.string.colif_testDescriptionKey), "");
 
             details = "_" + Build.MODEL.replace("_", "-") + "-"
                     + media + "_"
-                    + volume + "ml_"
-                    + description;
+                    + volume + "ml_";
 
-            if (media.isEmpty() || volume.isEmpty() || description.isEmpty()) {
+            if (media.isEmpty() || volume.isEmpty()) {
                 AlertUtil.showAlert(this, R.string.required, "All fields must be filled", R.string.ok,
                         (dialogInterface, i) -> finish(), null, null);
                 return;
@@ -308,5 +320,16 @@ public class TimeLapseActivity extends BaseActivity {
             AlertUtil.showSettingsSnackbar(this,
                     getWindow().getDecorView().getRootView(), message);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_timelapse, menu);
+        return true;
+    }
+
+    public void onUserDetailsClick(MenuItem item) {
+        showAuthDialog();
     }
 }
