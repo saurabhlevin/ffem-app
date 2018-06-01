@@ -220,7 +220,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onColiformCountClick(View view) {
-        navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+        navigationController.navigateToTestType(TestType.COLIFORM);
     }
 
     public void onColiformClick(View view) {
