@@ -199,24 +199,22 @@ public class ConfigDownloader {
         Uri file = Uri.fromFile(imagePath);
         StorageReference storageReference1 = storageReference.child("calibration-images/" + imageName);
 
-        storageReference1.putFile(file)
-                .addOnSuccessListener(taskSnapshot -> {
+        storageReference1.putFile(file).addOnSuccessListener(taskSnapshot ->
+                storageReference1.getDownloadUrl().addOnSuccessListener(uri -> {
 
                     //noinspection ResultOfMethodCallIgnored
                     imagePath.delete();
 
-                    Uri downloadUrl = storageReference1.getDownloadUrl().getResult();
-                    Uri file1 = Uri.fromFile(croppedImagePath);
+                    Uri file2 = Uri.fromFile(croppedImagePath);
                     StorageReference storageReference2 = storageReference.child("calibration-images/" + croppedImageName);
 
-                    storageReference2.putFile(file1)
-                            .addOnSuccessListener(taskSnapshot1 -> {
+                    storageReference2.putFile(file2).addOnSuccessListener(taskSnapshot2 ->
+                            storageReference2.getDownloadUrl().addOnSuccessListener(uri2 -> {
 
                                 //noinspection ResultOfMethodCallIgnored
                                 croppedImagePath.delete();
 
                                 // Get a URL to the uploaded content
-                                Uri downloadUrl1 = storageReference1.getDownloadUrl().getResult();
                                 // Create a new calibration with a first and last name
                                 Map<String, Object> cal = new HashMap<>();
                                 cal.put("deviceId", deviceId);
@@ -239,11 +237,11 @@ public class ConfigDownloader {
                                 cal.put("appName", context.getString(R.string.appName));
                                 cal.put("appVersion", CaddisflyApp.getAppVersion(true));
 
-                                if (downloadUrl != null) {
-                                    cal.put("image", downloadUrl.toString());
+                                if (uri != null) {
+                                    cal.put("image", uri.toString());
                                 }
-                                if (downloadUrl1 != null) {
-                                    cal.put("croppedImage", downloadUrl1.toString());
+                                if (uri2 != null) {
+                                    cal.put("croppedImage", uri2.toString());
                                 }
 
                                 db.collection(uuid)
@@ -266,7 +264,8 @@ public class ConfigDownloader {
 
                                             Timber.w("Error adding document");
                                         });
-                            })
+
+                            }))
                             .addOnFailureListener(exception -> {
                                 if (pd.isShowing()) {
                                     pd.dismiss();
@@ -274,7 +273,8 @@ public class ConfigDownloader {
                                 Toast.makeText(context,
                                         "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
                             });
-                })
+
+                }))
                 .addOnFailureListener(exception -> {
                     if (pd.isShowing()) {
                         pd.dismiss();
@@ -283,5 +283,6 @@ public class ConfigDownloader {
                     Toast.makeText(context,
                             "Unable to send. Check connection", Toast.LENGTH_SHORT).show();
                 });
+
     }
 }

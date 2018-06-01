@@ -26,12 +26,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 
@@ -40,6 +43,8 @@ import org.akvo.caddisfly.R;
  */
 @SuppressWarnings({"SameParameterValue", "UnusedReturnValue"})
 public final class AlertUtil {
+
+    private static final float SNACK_BAR_LINE_SPACING = 1.4f;
 
     private AlertUtil() {
     }
@@ -231,4 +236,27 @@ public final class AlertUtil {
         return alertDialog;
     }
 
+    /**
+     * Displays snackbar with settings button and {@param message}
+     *
+     * @param rootView The root view of the activity.
+     * @param message  The text to show.
+     */
+    public static void showSettingsSnackbar(Activity activity, View rootView, String message) {
+        Snackbar snackbar = Snackbar
+                .make(rootView, message.trim(), Snackbar.LENGTH_LONG)
+                .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(activity));
+
+        View snackbarView = snackbar.getView();
+
+        TextView textView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+
+        textView.setTextColor(Color.WHITE);
+
+        textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
+
+        snackbar.setActionTextColor(Color.YELLOW);
+
+        snackbar.show();
+    }
 }

@@ -21,6 +21,7 @@ package org.akvo.caddisfly.diagnostic;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.RequiresDevice;
 import android.support.test.rule.ActivityTestRule;
@@ -40,15 +41,18 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.akvo.caddisfly.util.TestHelper.currentHashMap;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
+import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -102,9 +106,22 @@ public class DiagnosticTest {
 
         onView(withText(R.string.calibrate)).perform(click());
 
-        onView(withText(currentHashMap.get("fluoride"))).perform(click());
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.list_types),
+                        childAtPosition(
+                                withClassName(is("android.widget.LinearLayout")),
+                                0)));
 
-        if (TestUtil.isEmulator()){
+        recyclerView.perform(actionOnItemAtPosition(13, click()));
+
+        mDevice.waitForIdle();
+
+//        onView(withText(currentHashMap.get("fluoride"))).perform(scrollTo()).perform(click());
+
+//        onView(withId(R.id.list_types)).perform(RecyclerViewActions
+//                .actionOnItem(first(hasDescendant(withText(currentHashMap.get("fluoride")))), click()));
+
+        if (TestUtil.isEmulator()) {
 
             onView(withText(R.string.errorCameraFlashRequired))
                     .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow()

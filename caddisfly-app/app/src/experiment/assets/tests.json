@@ -176,6 +176,24 @@
       ]
     },
     {
+      "name": "Water - Aluminum",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "af112e3c-4fc1-45c1-a8d0-1ec75a2b789e",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.1,0.2,0.3",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Aluminum",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
       "name": "Water - Arsenic (III)",
       "type": "water",
       "subtype": "cuvette",
