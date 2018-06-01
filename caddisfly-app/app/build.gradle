@@ -58,7 +58,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            multiDexEnabled true
+//            multiDexEnabled true
         }
     }
 
@@ -103,7 +103,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.android.support:multidex:1.0.3'
+//    implementation 'com.android.support:multidex:1.0.3'
 
     // Support
     implementation 'com.android.support:support-v4:27.1.1'
