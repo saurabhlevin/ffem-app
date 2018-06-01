@@ -14,6 +14,11 @@
           "id": 1,
           "name": "Coliforms",
           "unit": "CFU/100 mL"
+        },
+        {
+          "id": 2,
+          "name": "Photo",
+          "unit": ""
         }
       ]
     },

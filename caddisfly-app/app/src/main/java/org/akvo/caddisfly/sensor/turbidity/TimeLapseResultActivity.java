@@ -38,13 +38,18 @@ import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.BaseActivity;
+import org.akvo.caddisfly.util.GMailSender;
 import org.akvo.caddisfly.util.ImageUtil;
+import org.akvo.caddisfly.util.PreferencesUtil;
+
+import java.io.File;
+
+import timber.log.Timber;
 
 /**
  * Activity that displays the results.
  */
 public class TimeLapseResultActivity extends BaseActivity {
-    float liquidLevel = -1;
     private Button buttonSave;
     private LinearLayout layout;
 
@@ -67,28 +72,11 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             setResult(Activity.RESULT_OK, resultIntent);
 
+            File imageFile = new File(PreferencesUtil.getString(this, "firstFile", ""));
+
+            sendEmail(imageFile, "", "");
+
             finish();
-
-//            String path;
-
-//            if (totalImage != null) {
-//
-//                // store image on sd card
-//                path = FileUtil.writeBitmapToExternalStorage(totalImage,
-//                        FileHelper.FileType.RESULT_IMAGE, totalImageUrl);
-//
-//                intent.putExtra(ConstantKey.IMAGE, path);
-//
-//                if (path.length() == 0) {
-//                    totalImageUrl = "";
-//                }
-//            } else {
-//                totalImageUrl = "";
-//            }
-
-//            JSONObject resultJsonObj = TestConfigHelper.getJsonResult(testInfo,
-//                    resultStringValues, brackets, -1, totalImageUrl);
-
         });
     }
 
@@ -139,19 +127,12 @@ public class TimeLapseResultActivity extends BaseActivity {
     private void createView(TestInfo testInfo) {
 
         for (Result result : testInfo.getResults()) {
-            if (result.getName().equals("Titration Photo")) {
+            if (result.getName().equals("Photo")) {
                 inflateView(result.getName(), "", null);
             } else {
-                if (liquidLevel > 0) {
-                    // create image to display on screen
-                    inflateView(result.getName(), result.getResult() + " " +
-                            result.getUnit(), null);
-                } else {
-                    inflateView(result.getName(), "No Result", null);
-                }
+                inflateView(result.getName(), "No Result", null);
             }
         }
-
     }
 
     @SuppressLint("InflateParams")
@@ -179,5 +160,17 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             layout.addView(itemResult);
         }
+    }
+
+    private void sendEmail(File imageFile, String from, String to) {
+        new Thread(() -> {
+            try {
+                GMailSender sender = new GMailSender(from, to);
+                sender.sendMail("Result", "<b>Contaminated</b><img src=\"cid:" +
+                        imageFile.getName() + "\" />", imageFile, from, to);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
+        }).start();
     }
 }

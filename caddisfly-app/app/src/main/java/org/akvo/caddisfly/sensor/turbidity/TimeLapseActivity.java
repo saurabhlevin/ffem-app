@@ -21,6 +21,7 @@ import android.widget.Toast;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
@@ -55,15 +56,12 @@ public class TimeLapseActivity extends BaseActivity {
     private Calendar futureDate;
     private Runnable runnable;
     private Handler handler;
-    private String uuid;
     private TestInfo testInfo;
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             sound.playShortResource(R.raw.beep);
-
-            uuid = "df3d1009-2112-4d95-a6f9-fdc4b5633ec9";
 
             int delayMinute;
 
@@ -79,7 +77,10 @@ public class TimeLapseActivity extends BaseActivity {
             File[] files = folder.listFiles();
             if (files != null) {
                 if (files.length >= numberOfSamples) {
-                    TurbidityConfig.stopRepeatingAlarm(context, uuid);
+                    TurbidityConfig.stopRepeatingAlarm(context, Constants.COLIFORM_ID);
+
+                    PreferencesUtil.setString(context, "firstFile", files[0].getAbsolutePath());
+
                     showResult();
                     finish();
                 } else {
@@ -132,8 +133,6 @@ public class TimeLapseActivity extends BaseActivity {
 
         sound = new SoundPoolPlayer(this);
 
-        uuid = "df3d1009-2112-4d95-a6f9-fdc4b5633ec9";
-
         layoutWait = findViewById(R.id.layoutWait);
         layoutDetails = findViewById(R.id.layoutDetails);
         textInterval = findViewById(R.id.textInterval);
@@ -147,7 +146,7 @@ public class TimeLapseActivity extends BaseActivity {
 
         fragment = new TimeLapsePreferenceFragment();
 
-        bundle.putString("uuid", uuid);
+        bundle.putString("uuid", testInfo.getUuid());
         fragment.setArguments(bundle);
 
         textTitle.setText(testInfo.getName());
@@ -270,7 +269,7 @@ public class TimeLapseActivity extends BaseActivity {
         showTimer = false;
         handler.removeCallbacks(runnable);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        TurbidityConfig.stopRepeatingAlarm(this, uuid);
+        TurbidityConfig.stopRepeatingAlarm(this, Constants.COLIFORM_ID);
     }
 
     @Override
@@ -295,7 +294,7 @@ public class TimeLapseActivity extends BaseActivity {
 
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        TurbidityConfig.stopRepeatingAlarm(this, uuid);
+        TurbidityConfig.stopRepeatingAlarm(this, Constants.COLIFORM_ID);
     }
 
     @Override

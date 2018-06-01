@@ -224,7 +224,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onColiformClick(View view) {
+
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+        TestInfo testInfo = viewModel.getTestInfo(Constants.COLIFORM_ID);
+
         final Intent intent = new Intent(this, TimeLapseActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivity(intent);
     }
 
