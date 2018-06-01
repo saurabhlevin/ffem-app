@@ -82,6 +82,9 @@ public class AuthDialogFragment extends DialogFragment {
                 );
 
         b.setView(view);
+
+        editEmail.setText(PreferencesUtil.getString(getActivity(), "username", ""));
+
         return b.create();
     }
 

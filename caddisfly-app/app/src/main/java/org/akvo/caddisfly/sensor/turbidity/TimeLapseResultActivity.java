@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +44,9 @@ import org.akvo.caddisfly.util.ImageUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -63,6 +67,25 @@ public class TimeLapseResultActivity extends BaseActivity {
 
         testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
+        File imageFile = new File(PreferencesUtil.getString(this, "firstFile", ""));
+
+        String emails = PreferencesUtil.getString(this, R.string.colif_emails, "");
+        String[] emailArray = emails.split("\n");
+        StringBuilder notificationEmail = new StringBuilder();
+        for (String email : emailArray) {
+            email = email.trim();
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                notificationEmail.append(email);
+                notificationEmail.append(",");
+            }
+        }
+
+        String email = PreferencesUtil.getString(this, "username", "");
+        String password = PreferencesUtil.getString(this, "password", "");
+        if (!email.isEmpty() && !password.isEmpty() && !notificationEmail.toString().isEmpty()) {
+            sendEmail(imageFile, email, notificationEmail.toString(), password);
+        }
+
         buttonSave = findViewById(R.id.button_save);
         buttonSave.setOnClickListener(v -> {
 
@@ -71,10 +94,6 @@ public class TimeLapseResultActivity extends BaseActivity {
             resultIntent.putExtra(testInfo.getResults().get(0).getCode(), "Contaminated");
 
             setResult(Activity.RESULT_OK, resultIntent);
-
-            File imageFile = new File(PreferencesUtil.getString(this, "firstFile", ""));
-
-            sendEmail(imageFile, "", "");
 
             finish();
         });
@@ -162,11 +181,16 @@ public class TimeLapseResultActivity extends BaseActivity {
         }
     }
 
-    private void sendEmail(File imageFile, String from, String to) {
+    private void sendEmail(File imageFile, String from, String to, String password) {
         new Thread(() -> {
             try {
-                GMailSender sender = new GMailSender(from, to);
-                sender.sendMail("Result", "<b>Contaminated</b><img src=\"cid:" +
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat mdformat = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+
+                GMailSender sender = new GMailSender(from, password);
+                sender.sendMail("Coliform test result. Completed at " +
+                                mdformat.format(calendar.getTime()),
+                        "<b>Contaminated</b><img src=\"cid:" +
                         imageFile.getName() + "\" />", imageFile, from, to);
             } catch (Exception e) {
                 Timber.e(e);
