@@ -84,8 +84,6 @@ public class ResultActivity extends BaseActivity {
                     testInfo.getResults().get(0).getResult());
             resultIntent.putExtra(testInfo.getResults().get(1).getCode(),
                     testInfo.getResults().get(1).getResult());
-            resultIntent.putExtra(testInfo.getResults().get(2).getCode(),
-                    ImageUtil.encodeImage(finalImage));
 
             setResult(Activity.RESULT_OK, resultIntent);
 
@@ -257,7 +255,6 @@ public class ResultActivity extends BaseActivity {
         testInfo.getResults().get(1).setResult(liquidLevel, 0, 0);
 
         mDecodeData.addStripImage(pixels, 0);
-
 
         if (measureStart > 0) {
             drawTriangle(canvas, blackPaint, measureStart, center - 90, 30);

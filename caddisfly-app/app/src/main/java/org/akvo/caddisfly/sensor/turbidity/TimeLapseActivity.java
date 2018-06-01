@@ -2,7 +2,6 @@ package org.akvo.caddisfly.sensor.turbidity;
 
 import android.Manifest;
 import android.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,15 +20,17 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
+import org.akvo.caddisfly.sensor.titration.ui.ResultActivity;
+import org.akvo.caddisfly.sensor.titration.ui.TitrationTestHandler;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
-import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -44,16 +45,18 @@ public class TimeLapseActivity extends BaseActivity {
 
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
+    TextView textInterval;
+    int interval = 0;
+    int numberOfSamples;
     private SoundPoolPlayer sound;
     private View layoutWait;
     private LinearLayout layoutDetails;
-    private TextView textSampleCount;
     private TextView textCountdown;
     private Calendar futureDate;
     private Runnable runnable;
     private Handler handler;
     private String uuid;
+    private TestInfo testInfo;
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -63,7 +66,6 @@ public class TimeLapseActivity extends BaseActivity {
             uuid = "df3d1009-2112-4d95-a6f9-fdc4b5633ec9";
 
             int delayMinute;
-            int numberOfSamples;
 
             File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE,
                     intent.getStringExtra("savePath"));
@@ -78,17 +80,17 @@ public class TimeLapseActivity extends BaseActivity {
             if (files != null) {
                 if (files.length >= numberOfSamples) {
                     TurbidityConfig.stopRepeatingAlarm(context, uuid);
+                    showResult();
                     finish();
                 } else {
-                    textSampleCount.setText(String.format(Locale.getDefault(), "%s: %d of %d",
-                            "Samples done", files.length, numberOfSamples));
+                    textInterval.setText(String.format(Locale.getDefault(),
+                            "Done: %d of %d", files.length, numberOfSamples));
                     futureDate = Calendar.getInstance();
                     futureDate.add(Calendar.MINUTE, delayMinute);
                 }
             }
         }
     };
-    private TestInfo testInfo;
     private boolean showTimer = true;
 
     private void startCountdownTimer() {
@@ -134,15 +136,14 @@ public class TimeLapseActivity extends BaseActivity {
 
         layoutWait = findViewById(R.id.layoutWait);
         layoutDetails = findViewById(R.id.layoutDetails);
+        textInterval = findViewById(R.id.textInterval);
 
         Fragment fragment;
         Bundle bundle = new Bundle();
 
         final TextView textTitle = findViewById(R.id.textTitle);
 
-        final TestListViewModel viewModel =
-                ViewModelProviders.of(this).get(TestListViewModel.class);
-        testInfo = viewModel.getTestInfo(uuid);
+        testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
         fragment = new TimeLapsePreferenceFragment();
 
@@ -169,10 +170,11 @@ public class TimeLapseActivity extends BaseActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("custom-event-name"));
 
-        textSampleCount = findViewById(R.id.textSampleCount);
-
         Button buttonStart = findViewById(R.id.buttonStart);
         buttonStart.setOnClickListener(v -> {
+
+            numberOfSamples = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
+                    "colif_NumberOfSamples", "1"));
 
             if (AppPreferences.useExternalCamera()) {
                 permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -231,26 +233,22 @@ public class TimeLapseActivity extends BaseActivity {
         futureDate = Calendar.getInstance();
         futureDate.add(Calendar.MILLISECOND, INITIAL_DELAY);
 
-        TextView textInterval = findViewById(R.id.textInterval);
-        int interval = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
+        interval = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
                 "colif_IntervalMinutes", "1"));
 
-        textInterval.setText(String.format(Locale.getDefault(), "Every %d minutes", interval));
+        textInterval.setText(String.format(Locale.getDefault(), "Done: %d of %d", 0, numberOfSamples));
 
         startCountdownTimer();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
-            startTest();
-        } else {
-            String message = getString(R.string.cameraAndStoragePermissions);
-
-            AlertUtil.showSettingsSnackbar(this,
-                    getWindow().getDecorView().getRootView(), message);
-        }
+    public void showResult() {
+        Intent resultIntent = new Intent(getIntent());
+        resultIntent.setClass(this, TimeLapseResultActivity.class);
+        resultIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(resultIntent);
+        ResultActivity.setDecodeData(TitrationTestHandler.getDecodeData());
+        finish();
     }
 
     @Override
@@ -287,13 +285,29 @@ public class TimeLapseActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+
+        if (layoutDetails.getVisibility() == View.VISIBLE) {
+            Toast.makeText(this, "Test cancelled", Toast.LENGTH_LONG).show();
+        }
+
         showTimer = false;
         handler.removeCallbacks(runnable);
-
-        Toast.makeText(this, "Test cancelled", Toast.LENGTH_LONG).show();
 
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         TurbidityConfig.stopRepeatingAlarm(this, uuid);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
+            startTest();
+        } else {
+            String message = getString(R.string.cameraAndStoragePermissions);
+
+            AlertUtil.showSettingsSnackbar(this,
+                    getWindow().getDecorView().getRootView(), message);
+        }
     }
 }

@@ -185,7 +185,7 @@ public class TestActivity extends BaseActivity {
 
                 if (testInfo != null && intent.getExtras() != null) {
                     for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
-                            testInfo.getResults().size()); i++) {
+                            testInfo.getResults().size() + 1); i++) {
                         testInfo.getResults().get(i - 1)
                                 .setCode(intent.getExtras().keySet().toArray()[i].toString());
                     }
