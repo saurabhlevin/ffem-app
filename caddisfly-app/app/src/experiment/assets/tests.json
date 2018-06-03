@@ -6783,7 +6783,7 @@
         {
           "section": [
             "1.put_on_gloves",
-            "2.collect_100ml_water_sample. avoid_touching_with_bare_hands",
+            "2.collect_100ml_water_sample_thio. avoid_touching_with_bare_hands_thio",
             "3.open_growth_medium_sachet",
             "image:1"
           ]

@@ -20,6 +20,36 @@
           "name": "Photo",
           "unit": ""
         }
+      ],
+      "instructions": [
+        {
+          "section": [
+            "1.put_on_gloves",
+            "2.collect_100ml_water_sample. avoid_touching_with_bare_hands",
+            "3.add_growth_medium_sachet",
+            "4.dissolve_growth_medium",
+            "5.slowly_pour_sample_into_chamber",
+            "6.close_test_chamber"
+          ]
+        },
+        {
+          "section": [
+            "7.launch_coliform_test",
+            "8.enter_test_settings",
+            "9.start_coliform_test",
+            "10.place_phone_flat",
+            "11.attach_incubator"
+          ]
+        },
+        {
+          "section": [
+            "12.place_test_chamber_incubator",
+            "13.switch_on_incubator",
+            "14.test_starts_taking_photos",
+            "15.wait_for_test_notification",
+            "16.dispose_test_chamber"
+          ]
+        }
       ]
     },
     {
