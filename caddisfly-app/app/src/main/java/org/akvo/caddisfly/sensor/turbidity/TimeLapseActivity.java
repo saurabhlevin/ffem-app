@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ import org.akvo.caddisfly.sensor.titration.ui.ResultActivity;
 import org.akvo.caddisfly.sensor.titration.ui.TitrationTestHandler;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
+import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
@@ -59,6 +61,8 @@ public class TimeLapseActivity extends BaseActivity {
     private Runnable runnable;
     private Handler handler;
     private TestInfo testInfo;
+    private String folderName;
+
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -67,8 +71,8 @@ public class TimeLapseActivity extends BaseActivity {
 
             int delayMinute;
 
-            File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE,
-                    intent.getStringExtra("savePath"));
+            folderName = intent.getStringExtra(ConstantKey.SAVE_FOLDER);
+            File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, folderName);
 
             delayMinute = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
                     "colif_IntervalMinutes", "1"));
@@ -81,7 +85,9 @@ public class TimeLapseActivity extends BaseActivity {
                 if (files.length >= numberOfSamples) {
                     TurbidityConfig.stopRepeatingAlarm(context, Constants.COLIFORM_ID);
 
-                    PreferencesUtil.setString(context, "firstFile", files[0].getAbsolutePath());
+                    PreferencesUtil.setString(context, "firstImage", files[0].getAbsolutePath());
+                    PreferencesUtil.setString(context, "turbidImage", files[files.length / 2].getAbsolutePath());
+                    PreferencesUtil.setString(context, "lastImage", files[files.length - 1].getAbsolutePath());
 
                     showResult();
                     finish();
@@ -95,6 +101,7 @@ public class TimeLapseActivity extends BaseActivity {
         }
     };
     private boolean showTimer = true;
+    private Menu menu;
 
     private void startCountdownTimer() {
         showTimer = true;
@@ -198,11 +205,27 @@ public class TimeLapseActivity extends BaseActivity {
 
     private void startTest() {
 
-        if (PreferencesUtil.getString(this, "username", "").isEmpty() ||
-                PreferencesUtil.getString(this, "password", "").isEmpty()) {
-            showAuthDialog();
-            return;
+        if (!AppPreferences.getNotificationEmails().isEmpty()) {
+            if (PreferencesUtil.getString(this, "username", "").isEmpty() ||
+                    PreferencesUtil.getString(this, "password", "").isEmpty()) {
+                showAuthDialog();
+                return;
+            }
+
+            if (!NetUtil.isNetworkAvailable(this)) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Data connection required to send notifications. Connect to the internet and try again.", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 250);
+                toast.show();
+
+                return;
+            }
         }
+
+        PreferencesUtil.setLong(this, ConstantKey.TEST_START_TIME, Calendar.getInstance().getTimeInMillis());
+
+        MenuItem item = menu.findItem(R.id.menu_item_auth);
+        item.setVisible(false);
 
         layoutWait.setVisibility(View.GONE);
         layoutDetails.setVisibility(View.VISIBLE);
@@ -256,6 +279,7 @@ public class TimeLapseActivity extends BaseActivity {
         Intent resultIntent = new Intent(getIntent());
         resultIntent.setClass(this, TimeLapseResultActivity.class);
         resultIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        resultIntent.putExtra(ConstantKey.SAVE_FOLDER, folderName);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(resultIntent);
         ResultActivity.setDecodeData(TitrationTestHandler.getDecodeData());
@@ -326,6 +350,7 @@ public class TimeLapseActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_timelapse, menu);
+        this.menu = menu;
         return true;
     }
 

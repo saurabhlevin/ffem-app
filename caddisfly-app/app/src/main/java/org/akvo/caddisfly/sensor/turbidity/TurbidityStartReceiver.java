@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import org.akvo.caddisfly.common.ConstantKey;
+
 public class TurbidityStartReceiver extends BroadcastReceiver {
 
     public TurbidityStartReceiver() {
@@ -20,7 +22,7 @@ public class TurbidityStartReceiver extends BroadcastReceiver {
                 TurbidityConfig.setRepeatingAlarm(context, -1, uuid);
             }
 
-            String folderName = intent.getStringExtra("savePath");
+            String folderName = intent.getStringExtra(ConstantKey.SAVE_FOLDER);
 
             CameraHandler cameraHandler = new CameraHandler(context);
             cameraHandler.takePicture(folderName);

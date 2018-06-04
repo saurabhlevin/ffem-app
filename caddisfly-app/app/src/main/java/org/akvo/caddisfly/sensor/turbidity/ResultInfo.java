@@ -15,5 +15,5 @@ public class ResultInfo implements Serializable {
     public String totalTime;
     public String result;
     public int version;
-
+    public boolean resultBoolean;
 }

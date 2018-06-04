@@ -45,8 +45,8 @@ public class GMailSender extends javax.mail.Authenticator {
         return new PasswordAuthentication(user, password);
     }
 
-    public synchronized void sendMail(String subject, String body, File image,
-                                      String sender, String recipients) throws Exception {
+    public synchronized void sendMail(String subject, String body, File firstImage, File turbidImage,
+                                      File lastImage, String sender, String recipients) throws Exception {
         MimeMessage message = new MimeMessage(session);
 
         MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -55,11 +55,25 @@ public class GMailSender extends javax.mail.Authenticator {
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
 
-        MimeBodyPart imagePart = new MimeBodyPart();
-        imagePart.setHeader("Content-ID", "<" + image.getName() + ">");
-        imagePart.setDisposition(MimeBodyPart.INLINE);
-        imagePart.attachFile(image);
-        multipart.addBodyPart(imagePart);
+        MimeBodyPart imagePart1 = new MimeBodyPart();
+        imagePart1.addHeader("Content-ID", "<firstImage>");
+        imagePart1.setDisposition(MimeBodyPart.INLINE);
+        imagePart1.attachFile(firstImage);
+        multipart.addBodyPart(imagePart1);
+
+        if (turbidImage != null) {
+            MimeBodyPart imagePart2 = new MimeBodyPart();
+            imagePart2.addHeader("Content-ID", "<turbidImage>");
+            imagePart2.setDisposition(MimeBodyPart.INLINE);
+            imagePart2.attachFile(turbidImage);
+            multipart.addBodyPart(imagePart2);
+        }
+
+        MimeBodyPart imagePart3 = new MimeBodyPart();
+        imagePart3.addHeader("Content-ID", "<lastImage>");
+        imagePart3.setDisposition(MimeBodyPart.INLINE);
+        imagePart3.attachFile(lastImage);
+        multipart.addBodyPart(imagePart3);
 
         message.setSender(new InternetAddress(sender));
         message.setSubject(subject);

@@ -10,6 +10,7 @@ import android.text.format.DateUtils;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 final class TurbidityConfig {
@@ -47,7 +48,7 @@ final class TurbidityConfig {
         Intent intent = new Intent(context, TurbidityStartReceiver.class);
         intent.setAction(TurbidityConfig.ACTION_ALARM_RECEIVER);
         String savePath = PreferencesUtil.getString(context, R.string.turbiditySavePathKey, "");
-        intent.putExtra("savePath", savePath);
+        intent.putExtra(ConstantKey.SAVE_FOLDER, savePath);
         intent.putExtra("uuid", uuid);
 
         return PendingIntent.getBroadcast(context, TurbidityConfig.INTENT_REQUEST_CODE, intent, flag);

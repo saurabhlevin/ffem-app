@@ -5,24 +5,19 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.ApiUtil;
-import org.akvo.caddisfly.util.FileUtil;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,7 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static org.akvo.caddisfly.util.FileUtil.saveToFile;
 
 public class AnalyzeActivity extends BaseActivity {
 
@@ -162,40 +157,6 @@ public class AnalyzeActivity extends BaseActivity {
 //        return true;
 //    }
 
-    public static void saveToFile(File folder, String name, String data) {
-        if (!folder.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            folder.mkdirs();
-        }
-
-        File file = new File(folder, name);
-
-        try {
-            if (!file.exists()) {
-                try {
-                    //noinspection ResultOfMethodCallIgnored
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            FileWriter filewriter = new FileWriter(file);
-            BufferedWriter out = new BufferedWriter(filewriter);
-
-            out.write(data);
-
-            out.close();
-            filewriter.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,58 +179,7 @@ public class AnalyzeActivity extends BaseActivity {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_ALL) {
-            // If request is cancelled, the result arrays are empty.
-            boolean granted = false;
-            for (int grantResult : grantResults) {
-                if (grantResult != PERMISSION_GRANTED) {
-                    granted = false;
-                    break;
-                } else {
-                    granted = true;
-                }
-            }
-            if (granted) {
-                startAnalysis();
-            } else {
-                Toast.makeText(this, getString(R.string.storagePermission), Toast.LENGTH_LONG).show();
-                ApiUtil.startInstalledAppDetailsActivity(this);
-                finish();
-            }
-        }
-    }
-
-    private void moveColiformsFolder() {
-        final File sourcePath = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
-                + File.separator + "Akvo Caddisfly" + File.separator + "image" + File.separator + "Coliforms");
-        final File destinationPath = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
-                + FileHelper.ROOT_DIRECTORY + File.separator + "image" + File.separator + "Coliforms");
-
-        if (sourcePath.exists() && sourcePath.isDirectory()) {
-            File[] sourceFiles = sourcePath.listFiles();
-            if (sourceFiles != null) {
-                for (File file : sourceFiles) {
-                    File destinationFile = new File(destinationPath + File.separator + file.getName());
-                    //noinspection ResultOfMethodCallIgnored
-                    file.renameTo(destinationFile);
-                }
-
-                sourceFiles = sourcePath.listFiles();
-                if (sourceFiles != null && sourceFiles.length == 0) {
-                    //noinspection ResultOfMethodCallIgnored
-                    sourcePath.delete();
-                }
-            }
-        }
-    }
-
-
     private void startAnalysis() {
-
-        moveColiformsFolder();
 
         File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, "Coliforms");
         if (folder.isDirectory()) {
@@ -748,7 +658,6 @@ public class AnalyzeActivity extends BaseActivity {
                 fragments.add(AnalyzeDetailFragment.newInstance(resultInfo));
                 pagerAdapter.notifyDataSetChanged();
             }
-
         }
     }
 

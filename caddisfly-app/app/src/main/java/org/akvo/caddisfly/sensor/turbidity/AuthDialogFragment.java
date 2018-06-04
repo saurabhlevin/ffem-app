@@ -84,6 +84,7 @@ public class AuthDialogFragment extends DialogFragment {
         b.setView(view);
 
         editEmail.setText(PreferencesUtil.getString(getActivity(), "username", ""));
+        editPassword.setText(PreferencesUtil.getString(getActivity(), "password", ""));
 
         return b.create();
     }
@@ -118,12 +119,14 @@ public class AuthDialogFragment extends DialogFragment {
 
                     String email = editEmail.getText().toString().trim();
                     if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        editEmail.requestFocus();
                         editEmail.setError(getString(R.string.invalidEmailAddress));
                         return false;
                     }
 
                     String password = editPassword.getText().toString().trim();
                     if (password.isEmpty()) {
+                        editPassword.requestFocus();
                         editPassword.setError(getString(R.string.required));
                         return false;
                     }

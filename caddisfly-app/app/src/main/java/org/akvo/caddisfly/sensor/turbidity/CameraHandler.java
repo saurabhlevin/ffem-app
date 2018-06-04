@@ -17,6 +17,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.util.ColorUtil;
 
@@ -245,7 +246,7 @@ class CameraHandler implements Camera.PictureCallback {
         }
 
         Intent intent = new Intent("custom-event-name");
-        intent.putExtra("savePath", mSavePath);
+        intent.putExtra(ConstantKey.SAVE_FOLDER, mSavePath);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
     }
 
