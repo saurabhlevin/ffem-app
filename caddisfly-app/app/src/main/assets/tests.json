@@ -17,8 +17,15 @@
         },
         {
           "id": 2,
-          "name": "Photo",
-          "unit": ""
+          "name": "Last Image"
+        },
+        {
+          "id": 3,
+          "name": "Turbid Image"
+        },
+        {
+          "id": 4,
+          "name": "First Image"
         }
       ],
       "instructions": [

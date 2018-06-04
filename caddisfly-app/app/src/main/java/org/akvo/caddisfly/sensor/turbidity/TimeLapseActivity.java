@@ -85,6 +85,9 @@ public class TimeLapseActivity extends BaseActivity {
                 if (files.length >= numberOfSamples) {
                     TurbidityConfig.stopRepeatingAlarm(context, Constants.COLIFORM_ID);
 
+                    PreferencesUtil.removeKey(context, "firstImage");
+                    PreferencesUtil.removeKey(context, "turbidImage");
+                    PreferencesUtil.removeKey(context, "lastImage");
                     PreferencesUtil.setString(context, "firstImage", files[0].getAbsolutePath());
                     PreferencesUtil.setString(context, "turbidImage", files[files.length / 2].getAbsolutePath());
                     PreferencesUtil.setString(context, "lastImage", files[files.length - 1].getAbsolutePath());

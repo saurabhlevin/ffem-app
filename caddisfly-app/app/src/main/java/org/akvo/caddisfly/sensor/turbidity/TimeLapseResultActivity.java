@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -46,6 +47,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -127,7 +129,8 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             Intent resultIntent = new Intent();
 
-            resultIntent.putExtra(testInfo.getResults().get(0).getCode(), "Contaminated");
+            resultIntent.putExtra(testInfo.getResults().get(0).getCode(),
+                    testInfo.getResults().get(0).getResult());
 
             setResult(Activity.RESULT_OK, resultIntent);
 
@@ -155,34 +158,9 @@ public class TimeLapseResultActivity extends BaseActivity {
         layout = findViewById(R.id.layout_results);
         layout.removeAllViews();
 
-        TestInfo testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
-
         startAnalysis();
-        showResults(testInfo);
-    }
 
-    // displays results and creates image to send to database
-    // if patchResultList is null, it means that the strip was not found.
-    // In that case, we show a default error image.
-    private void showResults(TestInfo testInfo) {
-
-        // create and display view with results
-        // here, the total result image is also created
-        createView(testInfo);
-
-        // show buttons
         buttonSave.setVisibility(View.VISIBLE);
-    }
-
-    private void createView(TestInfo testInfo) {
-
-        for (Result result : testInfo.getResults()) {
-            if (result.getName().equals("Photo")) {
-                inflateView(result.getName(), "", null);
-            } else {
-                inflateView(result.getName(), "No Result", null);
-            }
-        }
     }
 
     @SuppressLint("InflateParams")
@@ -217,12 +195,8 @@ public class TimeLapseResultActivity extends BaseActivity {
                            File lastImage, String from, String to, String password) {
         new Thread(() -> {
             try {
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat =
-                        new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
-
                 GMailSender sender = new GMailSender(from, password);
-                sender.sendMail("Coliform test result",
+                sender.sendMail("Coliform test: " + Calendar.getInstance().getTimeInMillis(),
                         body, firstImage, turbidImage, lastImage, from, to);
             } catch (Exception e) {
                 Timber.e(e);
@@ -232,22 +206,48 @@ public class TimeLapseResultActivity extends BaseActivity {
 
     private void startAnalysis() {
         if (folder.isDirectory()) {
-            ResultInfo resultInfo = readResult(new File(folder, "result"));
-
-            if (resultInfo == null) {
-                new AnalyzeTask(folder).execute();
-                return;
-            }
+//            ResultInfo resultInfo = readResult(new File(folder, "result"));
+//
+//            if (resultInfo == null) {
+//                new AnalyzeTask(folder).execute();
+//                return;
+//            }
 
 //            Toast.makeText(this, "No files to analyze", Toast.LENGTH_LONG).show();
 //            finish();
 
+            Random random = new Random(Calendar.getInstance().getTimeInMillis());
+
+            Boolean resultValue = random.nextBoolean();
+
             File firstImage = new File(PreferencesUtil.getString(this, "firstImage", ""));
             File lastImage = new File(PreferencesUtil.getString(this, "lastImage", ""));
-            File turbidImage = null;
+            File turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
+
+            for (Result result : testInfo.getResults()) {
+                switch (result.getName()) {
+                    case "First Image":
+                        inflateView(result.getName(), "", BitmapFactory.decodeFile(firstImage.getAbsolutePath()));
+                        break;
+                    case "Turbid Image":
+                        inflateView(result.getName(), "", BitmapFactory.decodeFile(turbidImage.getAbsolutePath()));
+                        break;
+                    case "Last Image":
+                        inflateView(result.getName(), "", BitmapFactory.decodeFile(lastImage.getAbsolutePath()));
+                        break;
+                    default:
+                        if (resultValue) {
+                            result.setResult("High Risk - Contaminated");
+                        } else {
+                            result.setResult("Low Risk - Possibly Safe");
+                        }
+                        inflateView(result.getName(), result.getResult(), null);
+                        break;
+                }
+            }
 
             String emailTemplate;
-            if (resultInfo.resultBoolean) {
+            if (resultValue) {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
                 turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
             } else {
@@ -277,8 +277,6 @@ public class TimeLapseResultActivity extends BaseActivity {
             if (!email.isEmpty() && !password.isEmpty() && !notificationEmails.isEmpty()) {
                 sendEmail(emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
             }
-
-            testInfo.getResults().get(0).setResult(1, 0, 0);
         }
     }
 
