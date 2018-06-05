@@ -28,7 +28,6 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.AssetsManager;
 import org.akvo.caddisfly.util.GMailSender;
-import org.akvo.caddisfly.util.ImageUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
@@ -175,7 +174,7 @@ public class TimeLapseResultActivity extends BaseActivity {
             textTitle.setText(title);
 
             if (resultImage != null) {
-                resultImage = ImageUtil.rotateImage(resultImage, 90);
+//                resultImage = ImageUtil.rotateImage(resultImage, 90);
                 ImageView imageResult = itemResult.findViewById(R.id.image_result);
                 imageResult.setImageBitmap(resultImage);
             }
@@ -222,7 +221,10 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             File firstImage = new File(PreferencesUtil.getString(this, "firstImage", ""));
             File lastImage = new File(PreferencesUtil.getString(this, "lastImage", ""));
-            File turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
+            File turbidImage = null;
+            if (resultValue) {
+                turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
+            }
 
             for (Result result : testInfo.getResults()) {
                 switch (result.getName()) {
@@ -230,7 +232,9 @@ public class TimeLapseResultActivity extends BaseActivity {
                         inflateView(result.getName(), "", BitmapFactory.decodeFile(firstImage.getAbsolutePath()));
                         break;
                     case "Turbid Image":
-                        inflateView(result.getName(), "", BitmapFactory.decodeFile(turbidImage.getAbsolutePath()));
+                        if (resultValue) {
+                            inflateView(result.getName(), "", BitmapFactory.decodeFile(turbidImage.getAbsolutePath()));
+                        }
                         break;
                     case "Last Image":
                         inflateView(result.getName(), "", BitmapFactory.decodeFile(lastImage.getAbsolutePath()));
@@ -249,7 +253,6 @@ public class TimeLapseResultActivity extends BaseActivity {
             String emailTemplate;
             if (resultValue) {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
-                turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
             } else {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
             }
