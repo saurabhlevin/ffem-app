@@ -43,3 +43,7 @@
 ##---------------End: proguard configuration for Gson  ----------
 
 -dontwarn okio.**
+
+-dontwarn java.awt.**
+-dontwarn javax.security.**
+-dontwarn java.beans.**
