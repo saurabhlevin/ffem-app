@@ -69,6 +69,7 @@ public class TimeLapseResultActivity extends BaseActivity {
     private Button buttonSave;
     private LinearLayout layout;
     private TestInfo testInfo;
+    String durationString;
 
     private static boolean isGreen(int color, int compareColor, String media) {
         float[] hsb = new float[3];
@@ -130,6 +131,10 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             resultIntent.putExtra(testInfo.getResults().get(0).getCode(),
                     testInfo.getResults().get(0).getResult());
+            resultIntent.putExtra(testInfo.getResults().get(1).getCode(),
+                    testInfo.getResults().get(1).getResult());
+            resultIntent.putExtra(testInfo.getResults().get(2).getCode(),
+                    testInfo.getResults().get(2).getResult());
 
             setResult(Activity.RESULT_OK, resultIntent);
 
@@ -226,8 +231,37 @@ public class TimeLapseResultActivity extends BaseActivity {
                 turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
             }
 
+            String emailTemplate;
+            if (resultValue) {
+                emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
+            } else {
+                emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
+            }
+
+            if (emailTemplate != null) {
+                long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
+                String date = simpleDateFormat.format(new Date(startTime));
+                emailTemplate = emailTemplate.replace("{startTime}", date);
+
+                long duration = Calendar.getInstance().getTimeInMillis() - startTime;
+
+                durationString = String.format(Locale.US, "%02d:%02d Hours", TimeUnit.MILLISECONDS.toHours(duration),
+                        TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
+
+                emailTemplate = emailTemplate.replace("{detectionDuration}", durationString);
+                emailTemplate = emailTemplate.replace("{detectionTime}",
+                        simpleDateFormat.format(Calendar.getInstance().getTime()));
+            }
+
             for (Result result : testInfo.getResults()) {
                 switch (result.getName()) {
+                    case "Broth":
+                        result.setResult("Hi Media");
+                        break;
+                    case "Time to detect":
+                        result.setResult(durationString);
+                        break;
                     case "First Image":
                         inflateView(result.getName(), "", BitmapFactory.decodeFile(firstImage.getAbsolutePath()));
                         break;
@@ -248,29 +282,6 @@ public class TimeLapseResultActivity extends BaseActivity {
                         inflateView(result.getName(), result.getResult(), null);
                         break;
                 }
-            }
-
-            String emailTemplate;
-            if (resultValue) {
-                emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
-            } else {
-                emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
-            }
-
-            if (emailTemplate != null) {
-                long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
-                String date = simpleDateFormat.format(new Date(startTime));
-                emailTemplate = emailTemplate.replace("{startTime}", date);
-
-                long duration = Calendar.getInstance().getTimeInMillis() - startTime;
-
-                String hms = String.format(Locale.US, "%02d:%02d Hours", TimeUnit.MILLISECONDS.toHours(duration),
-                        TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
-
-                emailTemplate = emailTemplate.replace("{detectionDuration}", hms);
-                emailTemplate = emailTemplate.replace("{detectionTime}",
-                        simpleDateFormat.format(Calendar.getInstance().getTime()));
             }
 
             String notificationEmails = AppPreferences.getNotificationEmails();
@@ -434,9 +445,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                 Integer startColor = 0;
                 Integer endColor = 0;
 
-
                 for (int i = 0; i < imageInfos.size(); i++) {
-
 
                     ImageInfo imageInfo = imageInfos.get(i);
 

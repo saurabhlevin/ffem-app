@@ -17,14 +17,22 @@
         },
         {
           "id": 2,
-          "name": "Last Image"
+          "name": "Broth"
         },
         {
           "id": 3,
-          "name": "Turbid Image"
+          "name": "Time to detect"
         },
         {
           "id": 4,
+          "name": "Last Image"
+        },
+        {
+          "id": 5,
+          "name": "Turbid Image"
+        },
+        {
+          "id": 6,
           "name": "First Image"
         }
       ],
