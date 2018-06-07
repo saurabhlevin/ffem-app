@@ -223,5 +223,6 @@
     <string name="senderEmailDetails">Sender email details</string>
     <string name="invalidEmailAddress">Invalid email address</string>
     <string name="password">Password</string>
+    <string name="useDevicesEmailDetails">Enter sign in details for Caddisfly Devices account</string>
 
 </resources>

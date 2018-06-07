@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Build;
 
 import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.preference.AppPreferences;
+import org.akvo.caddisfly.util.PreferencesUtil;
 
 public class TurbidityStartReceiver extends BroadcastReceiver {
 
@@ -22,8 +24,12 @@ public class TurbidityStartReceiver extends BroadcastReceiver {
                 TurbidityConfig.setRepeatingAlarm(context, -1, uuid);
             }
 
-            String folderName = intent.getStringExtra(ConstantKey.SAVE_FOLDER);
+            if (AppPreferences.isTestMode()) {
+                int imageCount = PreferencesUtil.getInt(context, "imageCount", 0);
+                PreferencesUtil.setInt(context, "imageCount", ++imageCount);
+            }
 
+            String folderName = intent.getStringExtra(ConstantKey.SAVE_FOLDER);
             CameraHandler cameraHandler = new CameraHandler(context);
             cameraHandler.takePicture(folderName);
         }

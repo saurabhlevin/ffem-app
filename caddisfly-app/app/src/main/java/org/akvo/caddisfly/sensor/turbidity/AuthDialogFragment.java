@@ -68,6 +68,7 @@ public class AuthDialogFragment extends DialogFragment {
 
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.senderEmailDetails)
+                .setMessage(R.string.useDevicesEmailDetails)
                 .setPositiveButton(R.string.save,
                         (dialog, whichButton) -> {
                             closeKeyboard(activity, editEmail);

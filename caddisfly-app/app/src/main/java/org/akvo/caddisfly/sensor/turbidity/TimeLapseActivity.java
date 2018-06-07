@@ -227,6 +227,10 @@ public class TimeLapseActivity extends BaseActivity {
 
         PreferencesUtil.setLong(this, ConstantKey.TEST_START_TIME, Calendar.getInstance().getTimeInMillis());
 
+        if (AppPreferences.isTestMode()) {
+            PreferencesUtil.setInt(this, "imageCount", 0);
+        }
+
         MenuItem item = menu.findItem(R.id.menu_item_auth);
         item.setVisible(false);
 
