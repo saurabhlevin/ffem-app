@@ -154,9 +154,6 @@
 
         <!-- Turbidity -->
         <activity
-            android:name=".sensor.turbidity.AnalyzeActivity"
-            android:screenOrientation="nosensor" />
-        <activity
             android:name=".sensor.turbidity.TimeLapseActivity"
             android:screenOrientation="nosensor" />
         <activity

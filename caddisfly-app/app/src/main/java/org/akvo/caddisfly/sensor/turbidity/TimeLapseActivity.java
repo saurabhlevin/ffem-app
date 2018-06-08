@@ -34,6 +34,7 @@ import org.akvo.caddisfly.sensor.titration.ui.ResultActivity;
 import org.akvo.caddisfly.sensor.titration.ui.TitrationTestHandler;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
+import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
@@ -84,14 +85,6 @@ public class TimeLapseActivity extends BaseActivity {
             if (files != null) {
                 if (files.length >= numberOfSamples) {
                     TurbidityConfig.stopRepeatingAlarm(context, Constants.COLIFORM_ID);
-
-                    PreferencesUtil.removeKey(context, "firstImage");
-                    PreferencesUtil.removeKey(context, "turbidImage");
-                    PreferencesUtil.removeKey(context, "lastImage");
-                    PreferencesUtil.setString(context, "firstImage", files[0].getAbsolutePath());
-                    PreferencesUtil.setString(context, "turbidImage", files[files.length / 2].getAbsolutePath());
-                    PreferencesUtil.setString(context, "lastImage", files[files.length - 1].getAbsolutePath());
-
                     showResult();
                     finish();
                 } else {
@@ -258,7 +251,7 @@ public class TimeLapseActivity extends BaseActivity {
 
         File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, testInfo.getName());
         if (folder.exists()) {
-//            FileUtil.deleteRecursive(folder);
+            FileUtil.deleteRecursive(folder);
         }
 
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,

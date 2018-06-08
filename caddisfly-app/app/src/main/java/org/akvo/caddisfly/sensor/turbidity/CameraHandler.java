@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -129,13 +130,15 @@ class CameraHandler implements Camera.PictureCallback {
             int imageCount = PreferencesUtil.getInt(mContext, "imageCount", 0);
             String demoFileName = "start.jpg";
 
-            switch (imageCount) {
-                case 2:
-                    demoFileName = "turbid.jpg";
-                    break;
-                case 3:
-                    demoFileName = "end.jpg";
-                    break;
+            if (!PreferencesUtil.getBoolean(mContext, R.string.coliformResultSafeKey, false)) {
+                switch (imageCount) {
+                    case 2:
+                        demoFileName = "turbid.jpg";
+                        break;
+                    case 3:
+                        demoFileName = "end.jpg";
+                        break;
+                }
             }
 
             String image = Constants.TEST_IMAGE_PATH + demoFileName;

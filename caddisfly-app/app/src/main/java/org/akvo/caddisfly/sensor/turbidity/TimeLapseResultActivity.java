@@ -50,7 +50,7 @@ public class TimeLapseResultActivity extends BaseActivity {
     File folder;
     boolean isTurbid;
     private Button buttonSave;
-    private LinearLayout layout;
+    private LinearLayout rootLayout;
     private TestInfo testInfo;
     String durationString;
 
@@ -100,8 +100,8 @@ public class TimeLapseResultActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        layout = findViewById(R.id.layout_results);
-        layout.removeAllViews();
+        rootLayout = findViewById(R.id.layout_results);
+        rootLayout.removeAllViews();
 
         startAnalysis();
 
@@ -109,13 +109,18 @@ public class TimeLapseResultActivity extends BaseActivity {
     }
 
     @SuppressLint("InflateParams")
-    private void inflateView(String title, String valueString, Bitmap resultImage) {
+    private void inflateView(String title, String valueString, Bitmap resultImage, int layout) {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout itemResult;
         if (inflater != null) {
-            itemResult = (LinearLayout) inflater.inflate(R.layout.item_result,
-                    null, false);
+
+            if (layout == 0) {
+                layout = R.layout.item_result;
+            }
+
+            itemResult = (LinearLayout) inflater.inflate(layout, null, false);
+
             TextView textTitle = itemResult.findViewById(R.id.text_title);
             textTitle.setText(title);
 
@@ -132,7 +137,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                 textResult.setText(valueString);
             }
 
-            layout.addView(itemResult);
+            rootLayout.addView(itemResult);
         }
     }
 
@@ -150,6 +155,11 @@ public class TimeLapseResultActivity extends BaseActivity {
     }
 
     private void startAnalysis() {
+
+        File firstImage = null;
+        File turbidImage = null;
+        File lastImage = null;
+
         if (folder.isDirectory()) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US);
 
@@ -174,7 +184,7 @@ public class TimeLapseResultActivity extends BaseActivity {
 
                     ImageInfo imageInfo = new ImageInfo();
                     imageInfo.setCount(blurCount);
-                    imageInfo.setImageName(file.getName());
+                    imageInfo.setImageFile(file);
                     imageInfos.add(imageInfo);
                 }
 
@@ -183,44 +193,38 @@ public class TimeLapseResultActivity extends BaseActivity {
                 int totalTime = 0;
                 try {
                     ImageInfo imageInfo = imageInfos.get(0);
-                    String date = imageInfo.getImageName().substring(0, 13);
+                    String date = imageInfo.getImageFile().getName().substring(0, 13);
                     start.setTime(sdf.parse(date));
+                    firstImageValue = imageInfo.getCount();
+
                     imageInfo = imageInfos.get(imageInfos.size() - 1);
-                    date = imageInfo.getImageName().substring(0, 13);
+                    date = imageInfo.getImageFile().getName().substring(0, 13);
                     end.setTime(sdf.parse(date));
 
                     totalTime = (int) ((end.getTimeInMillis() - start.getTimeInMillis()) / 1000 / 60);
-
-                    firstImageValue = imageInfo.getCount();
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
+                firstImage = imageInfos.get(0).imageFile;
+                lastImage = imageInfos.get(imageInfos.size() - 1).imageFile;
+
                 for (int i = 0; i < imageInfos.size(); i++) {
 
                     ImageInfo imageInfo = imageInfos.get(i);
 
-                    isTurbid = (firstImageValue < 50000 && (imageInfo.getCount() - firstImageValue) > 4000)
-                            || (firstImageValue > 5000 && imageInfo.getCount() < 2000)
-                            || (firstImageValue > 50000 && (imageInfo.getCount() - firstImageValue) > 6700)
-                            || (firstImageValue > 10000 && firstImageValue < 50000 && imageInfo.getCount() < 4000)
-                            || (firstImageValue < 5000 && firstImageValue > 3000 && imageInfo.getCount() < 3000);
+                    isTurbid = (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
+                            || (firstImageValue > 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 6700);
 
                     if (isTurbid) {
+                        turbidImage = imageInfo.imageFile;
                         break;
                     }
                 }
             }
 
             Boolean resultValue = isTurbid;
-
-            File firstImage = new File(PreferencesUtil.getString(this, "firstImage", ""));
-            File lastImage = new File(PreferencesUtil.getString(this, "lastImage", ""));
-            File turbidImage = null;
-            if (resultValue) {
-                turbidImage = new File(PreferencesUtil.getString(this, "turbidImage", ""));
-            }
 
             String emailTemplate;
             if (resultValue) {
@@ -254,23 +258,29 @@ public class TimeLapseResultActivity extends BaseActivity {
                         result.setResult(durationString);
                         break;
                     case "First Image":
-                        inflateView(result.getName(), "", BitmapFactory.decodeFile(firstImage.getAbsolutePath()));
+                        inflateView(result.getName(), "",
+                                BitmapFactory.decodeFile(firstImage.getAbsolutePath()), 0);
                         break;
                     case "Turbid Image":
                         if (resultValue) {
-                            inflateView(result.getName(), "", BitmapFactory.decodeFile(turbidImage.getAbsolutePath()));
+                            inflateView(result.getName(), "",
+                                    BitmapFactory.decodeFile(turbidImage.getAbsolutePath()), 0);
                         }
                         break;
                     case "Last Image":
-                        inflateView(result.getName(), "", BitmapFactory.decodeFile(lastImage.getAbsolutePath()));
+                        inflateView(result.getName(), "",
+                                BitmapFactory.decodeFile(lastImage.getAbsolutePath()), 0);
                         break;
                     default:
                         if (resultValue) {
                             result.setResult("High Risk - Contaminated");
+                            inflateView(result.getName(), result.getResult(), null,
+                                    R.layout.item_warning_result);
                         } else {
                             result.setResult("Low Risk - Possibly Safe");
+                            inflateView(result.getName(), result.getResult(), null,
+                                    R.layout.item_safe_result);
                         }
-                        inflateView(result.getName(), result.getResult(), null);
                         break;
                 }
             }
@@ -287,7 +297,7 @@ public class TimeLapseResultActivity extends BaseActivity {
 
     private static class ImageInfo {
 
-        private String imageName;
+        private File imageFile;
         private int count;
 
         public int getCount() {
@@ -298,12 +308,12 @@ public class TimeLapseResultActivity extends BaseActivity {
             this.count = count;
         }
 
-        String getImageName() {
-            return imageName;
+        File getImageFile() {
+            return imageFile;
         }
 
-        void setImageName(String imageName) {
-            this.imageName = imageName;
+        void setImageFile(File imageFile) {
+            this.imageFile = imageFile;
         }
 
     }

@@ -86,6 +86,7 @@
     <string name="colif_NumberOfSamplesKey">colif_NumberOfSamples</string>
     <string name="colif_emails">colif_emails</string>
     <string name="turbiditySavePathKey">turbiditySavePath</string>
+    <string name="coliformResultSafeKey">coliformResultSafe</string>
 
     <!--Diagnostic-->
     <string name="diagnostics">Diagnostics</string>
