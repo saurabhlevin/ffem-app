@@ -220,9 +220,9 @@
     <string name="coliformTest">Coliform Test</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
-    <string name="senderEmailDetails">Sender email details</string>
+    <string name="senderEmailDetails">Devices email details</string>
     <string name="invalidEmailAddress">Invalid email address</string>
     <string name="password">Password</string>
-    <string name="useDevicesEmailDetails">Enter sign in details for Caddisfly Devices account</string>
+    <string name="useDevicesEmailDetails">Enter the credentials for Caddisfly Devices account</string>
 
 </resources>

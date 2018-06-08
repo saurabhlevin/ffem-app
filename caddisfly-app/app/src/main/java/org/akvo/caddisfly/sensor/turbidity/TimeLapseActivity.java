@@ -302,6 +302,11 @@ public class TimeLapseActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        if (layoutDetails.getVisibility() == View.VISIBLE) {
+            Toast.makeText(this, "Test cancelled", Toast.LENGTH_LONG).show();
+        }
+
         showTimer = false;
         handler.removeCallbacks(runnable);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
@@ -320,10 +325,6 @@ public class TimeLapseActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-
-        if (layoutDetails.getVisibility() == View.VISIBLE) {
-            Toast.makeText(this, "Test cancelled", Toast.LENGTH_LONG).show();
-        }
 
         showTimer = false;
         handler.removeCallbacks(runnable);

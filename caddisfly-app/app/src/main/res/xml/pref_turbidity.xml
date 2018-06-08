@@ -26,9 +26,9 @@
         android:numeric="integer"
         android:title="Number of samples" />
     <EditTextPreference
-        android:dialogMessage="Enter list of email addresses for notification of test result"
+        android:dialogMessage="Email addresses to which result notification will be sent"
         android:key="@string/colif_emails"
         android:maxLines="5"
         android:singleLine="false"
-        android:title="Notification emails" />
+        android:title="Notification recipient email" />
 </PreferenceScreen>
