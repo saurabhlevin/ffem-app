@@ -12,8 +12,7 @@
       "results": [
         {
           "id": 1,
-          "name": "Coliforms",
-          "unit": "CFU/100 mL"
+          "name": "Coliforms"
         },
         {
           "id": 2,
