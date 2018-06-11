@@ -19,10 +19,8 @@
 
 package org.akvo.caddisfly.helper;
 
-import android.os.Build;
 import android.util.SparseArray;
 
-import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ConstantJsonKey;
 import org.akvo.caddisfly.common.Constants;
@@ -34,7 +32,6 @@ import org.akvo.caddisfly.model.MpnValue;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.util.AssetsManager;
-import org.akvo.caddisfly.util.PreferencesUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -174,13 +171,13 @@ public final class TestConfigHelper {
                     .format(Calendar.getInstance().getTime()));
 
             // Add user preference details to the result
-            resultJson.put(ConstantJsonKey.USER, TestConfigHelper.getUserPreferences());
+            // resultJson.put(ConstantJsonKey.USER, TestConfigHelper.getUserPreferences());
 
             // Add app details to the result
-            resultJson.put(ConstantJsonKey.APP, TestConfigHelper.getAppDetails());
+            // resultJson.put(ConstantJsonKey.APP, TestConfigHelper.getAppDetails());
 
             // Add standard diagnostic details to the result
-            resultJson.put(ConstantJsonKey.DEVICE, TestConfigHelper.getDeviceDetails());
+            // resultJson.put(ConstantJsonKey.DEVICE, TestConfigHelper.getDeviceDetails());
 
         } catch (JSONException e) {
             Timber.e(e);
@@ -188,29 +185,29 @@ public final class TestConfigHelper {
         return resultJson;
     }
 
-    private static JSONObject getDeviceDetails() throws JSONException {
-        JSONObject details = new JSONObject();
-        details.put("model", Build.MODEL);
-        details.put("product", Build.PRODUCT);
-        details.put("manufacturer", Build.MANUFACTURER);
-        details.put("os", "Android - " + Build.VERSION.RELEASE + " ("
-                + Build.VERSION.SDK_INT + ")");
-        details.put("country", Locale.getDefault().getCountry());
-        details.put("language", Locale.getDefault().getLanguage());
-        return details;
-    }
-
-    private static JSONObject getAppDetails() throws JSONException {
-        JSONObject details = new JSONObject();
-        details.put("appVersion", CaddisflyApp.getAppVersion(true));
-        // The current active language of the app
-        details.put("language", CaddisflyApp.getAppLanguage());
-        return details;
-    }
-
-    private static JSONObject getUserPreferences() throws JSONException {
-        JSONObject details = new JSONObject();
-        details.put("language", PreferencesUtil.getString(CaddisflyApp.getApp(), R.string.languageKey, ""));
-        return details;
-    }
+//    private static JSONObject getDeviceDetails() throws JSONException {
+//        JSONObject details = new JSONObject();
+//        details.put("model", Build.MODEL);
+//        details.put("product", Build.PRODUCT);
+//        details.put("manufacturer", Build.MANUFACTURER);
+//        details.put("os", "Android - " + Build.VERSION.RELEASE + " ("
+//                + Build.VERSION.SDK_INT + ")");
+//        details.put("country", Locale.getDefault().getCountry());
+//        details.put("language", Locale.getDefault().getLanguage());
+//        return details;
+//    }
+//
+//    private static JSONObject getAppDetails() throws JSONException {
+//        JSONObject details = new JSONObject();
+//        details.put("appVersion", CaddisflyApp.getAppVersion(true));
+//        // The current active language of the app
+//        details.put("language", CaddisflyApp.getAppLanguage());
+//        return details;
+//    }
+//
+//    private static JSONObject getUserPreferences() throws JSONException {
+//        JSONObject details = new JSONObject();
+//        details.put("language", PreferencesUtil.getString(CaddisflyApp.getApp(), R.string.languageKey, ""));
+//        return details;
+//    }
 }
