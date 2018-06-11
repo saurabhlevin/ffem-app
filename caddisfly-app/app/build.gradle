@@ -27,8 +27,8 @@ android {
         applicationId "io.ffem.caddisfly"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 224
-        versionName "1.0 Beta 1.66"
+        versionCode 225
+        versionName "1.0 Beta 1.67"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

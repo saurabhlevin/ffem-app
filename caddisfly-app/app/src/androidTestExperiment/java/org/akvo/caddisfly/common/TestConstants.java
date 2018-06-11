@@ -22,7 +22,7 @@ package org.akvo.caddisfly.common;
 public final class TestConstants {
 
     /**
-     * To launch Flow app.
+     * To launch survey app.
      */
     public static final String EXTERNAL_SURVEY_PACKAGE_NAME = "org.koboc.collect.android";
 

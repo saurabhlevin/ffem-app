@@ -148,7 +148,9 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     protected void stopPreview() {
-        mCamera.stopPreview();
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
     }
 
     @Override
@@ -353,7 +355,6 @@ public class BaseRunTest extends Fragment implements RunTest {
 
         mCamera.setParameters(parameters);
     }
-
 
     protected void releaseResources() {
 
