@@ -3,12 +3,14 @@
         android:dialogMessage="Volume (ml)"
         android:inputType="number"
         android:key="@string/colif_volumeKey"
+        android:selectAllOnFocus="true"
         android:maxLength="10"
         android:title="Volume (ml)" />
     <EditTextPreference
         android:capitalize="sentences"
         android:inputType="text"
         android:key="@string/colif_brothMediaKey"
+        android:selectAllOnFocus="true"
         android:maxLength="25"
         android:title="Broth media" />
     <EditTextPreference
@@ -16,6 +18,7 @@
         android:dialogMessage="Interval in minutes (max 360)"
         android:key="@string/colif_IntervalMinutesKey"
         android:maxLength="3"
+        android:selectAllOnFocus="true"
         android:numeric="integer"
         android:title="Sampling interval" />
     <EditTextPreference
@@ -23,6 +26,7 @@
         android:dialogMessage="Number of samples (max 100)"
         android:key="@string/colif_NumberOfSamplesKey"
         android:maxLength="3"
+        android:selectAllOnFocus="true"
         android:numeric="integer"
         android:title="Number of samples" />
     <EditTextPreference
