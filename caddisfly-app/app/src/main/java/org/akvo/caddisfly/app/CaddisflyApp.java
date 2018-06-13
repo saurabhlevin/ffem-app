@@ -19,7 +19,6 @@
 
 package org.akvo.caddisfly.app;
 
-import android.app.Application;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
@@ -31,6 +30,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDexApplication;
 import android.util.DisplayMetrics;
 
 import org.akvo.caddisfly.BuildConfig;
@@ -43,7 +43,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class CaddisflyApp extends Application {
+public class CaddisflyApp extends MultiDexApplication {
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override

@@ -76,20 +76,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#444"
+            android:gravity="center"
             android:paddingBottom="5dp"
             android:paddingTop="25dp"
             android:text="00:00:25"
-            android:gravity="center"
-            android:textSize="40sp"
-            android:textColor="#fff" />
+            android:textColor="#fff"
+            android:textSize="40sp" />
 
         <TextView
             android:id="@+id/textInterval"
             android:layout_width="match_parent"
-            android:background="#444"
-            android:paddingBottom="20dp"
             android:layout_height="wrap_content"
+            android:background="#444"
             android:gravity="center"
+            android:paddingBottom="20dp"
             android:textColor="#bbb"
             android:textSize="17dp"
             tools:ignore="HardcodedText,SpUsage"

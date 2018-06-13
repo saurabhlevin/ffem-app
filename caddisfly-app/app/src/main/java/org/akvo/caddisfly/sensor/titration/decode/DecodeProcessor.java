@@ -310,7 +310,7 @@ public class DecodeProcessor {
 
         int measureCount = 0;
 
-        if ((left - right > 400) && (bottom - top > 500)) {
+        if ((right - left > 700) && (bottom - top > 500)) {
             byte[] iDataArray = decodeData.getDecodeImageByteArray();
             int width = decodeData.getDecodeWidth();
             int height = decodeData.getDecodeHeight();

@@ -7,7 +7,6 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPattern;
 import org.akvo.caddisfly.sensor.qrdetector.FinderPatternInfo;
 import org.akvo.caddisfly.sensor.qrdetector.PerspectiveTransform;
-import org.akvo.caddisfly.sensor.titration.decode.DecodeProcessor;
 import org.akvo.caddisfly.util.ImageUtil;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -15,6 +14,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.akvo.caddisfly.sensor.titration.decode.DecodeProcessor.NO_TILT;
 
 public class DecodeData {
 
@@ -28,7 +29,7 @@ public class DecodeData {
     private int previewHeight;
     private FinderPatternInfo patternInfo;
     private List<FinderPattern> finderPatternsFound;
-    private int tilt;
+    private int tilt = NO_TILT;
     private boolean distanceOk;
     private PerspectiveTransform cardToImageTransform;
     private List<float[]> shadowPoints;
@@ -261,7 +262,7 @@ public class DecodeData {
         this.shadowPoints = null;
         this.measuredPatchRGB = null;
         this.calibrationPatchRGB = null;
-        this.tilt = DecodeProcessor.NO_TILT;
+        this.tilt = NO_TILT;
         this.distanceOk = true;
         calMatrix = null;
         illumData = null;

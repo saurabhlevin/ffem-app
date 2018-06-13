@@ -53,10 +53,10 @@ public class TimeLapseResultActivity extends BaseActivity {
     };
     File folder;
     boolean isTurbid;
+    String durationString;
     private Button buttonSave;
     private LinearLayout rootLayout;
     private TestInfo testInfo;
-    String durationString;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

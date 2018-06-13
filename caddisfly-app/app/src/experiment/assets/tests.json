@@ -2,6 +2,71 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
+      "name": "Coliforms",
+      "type": "coliform",
+      "subtype": "coliform",
+      "uuid": "df3d1009-2112-4d95-a6f9-fdc4b5633ec9",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": false,
+      "results": [
+        {
+          "id": 1,
+          "name": "Coliforms"
+        },
+        {
+          "id": 2,
+          "name": "Broth"
+        },
+        {
+          "id": 3,
+          "name": "Time to detect"
+        },
+        {
+          "id": 4,
+          "name": "Last Image"
+        },
+        {
+          "id": 5,
+          "name": "Turbid Image"
+        },
+        {
+          "id": 6,
+          "name": "First Image"
+        }
+      ],
+      "instructions": [
+        {
+          "section": [
+            "1.put_on_gloves",
+            "2.collect_100ml_water_sample. avoid_touching_with_bare_hands",
+            "3.add_growth_medium_sachet",
+            "4.dissolve_growth_medium",
+            "5.slowly_pour_sample_into_chamber",
+            "6.close_test_chamber"
+          ]
+        },
+        {
+          "section": [
+            "7.launch_coliform_test",
+            "8.enter_test_settings",
+            "9.start_coliform_test",
+            "10.place_phone_flat",
+            "11.attach_incubator"
+          ]
+        },
+        {
+          "section": [
+            "12.place_test_chamber_incubator",
+            "13.switch_on_incubator",
+            "14.test_starts_taking_photos",
+            "15.wait_for_test_notification",
+            "16.dispose_test_chamber"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Soil - Available Boron",
       "type": "soil",
       "subtype": "cuvette",
@@ -155,7 +220,7 @@
       "type": "soil",
       "subtype": "titration",
       "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
-      "brand": "FFEM Titration",
+      "brand": "ffem Titration",
       "imageScale": "centerCrop",
       "results": [
         {

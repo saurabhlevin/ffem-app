@@ -30,6 +30,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -39,12 +40,15 @@ import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.SensorConstants;
+import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.titration.models.DecodeData;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.ColorUtil;
 import org.akvo.caddisfly.util.ImageUtil;
+import org.json.JSONObject;
 
 import static org.akvo.caddisfly.sensor.titration.decode.DecodeProcessor.applyGrayScale;
 import static org.akvo.caddisfly.util.ImageUtil.convertYUV420_NV21toRGB8888;
@@ -87,6 +91,18 @@ public class ResultActivity extends BaseActivity {
             resultIntent.putExtra(testInfo.getResults().get(2).getCode(),
                     ImageUtil.encodeImage(finalImage));
 
+            final SparseArray<String> results = new SparseArray<>();
+
+            for (int i = 0; i < testInfo.getResults().size(); i++) {
+                Result result = testInfo.getResults().get(i);
+                results.put(i + 1, result.getResult());
+            }
+
+            JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
+                    results, null, -1, null);
+
+            resultIntent.putExtra(SensorConstants.VALUE, resultJson.toString());
+
             setResult(Activity.RESULT_OK, resultIntent);
 
             finish();
@@ -107,10 +123,6 @@ public class ResultActivity extends BaseActivity {
 //            } else {
 //                totalImageUrl = "";
 //            }
-
-//            JSONObject resultJsonObj = TestConfigHelper.getJsonResult(testInfo,
-//                    resultStringValues, brackets, -1, totalImageUrl);
-
         });
     }
 
@@ -258,7 +270,6 @@ public class ResultActivity extends BaseActivity {
 
         mDecodeData.addStripImage(pixels, 0);
 
-
         if (measureStart > 0) {
             drawTriangle(canvas, blackPaint, measureStart, center - 90, 30);
         }
@@ -308,7 +319,6 @@ public class ResultActivity extends BaseActivity {
                 }
             }
         }
-
     }
 
     @SuppressLint("InflateParams")
