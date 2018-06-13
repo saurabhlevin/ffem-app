@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:text="23 Nov 2016" />
+
+    <TextView
+        android:id="@+id/textResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textDate"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        tools:text="Present" />
+
+    <TextView
+        android:id="@+id/textTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textResult"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:textSize="50sp"
+        tools:text="5:00" />
+
+    <TextView
+        android:id="@+id/textTotalTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTime"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:paddingBottom="10dp"
+        android:textSize="18sp"
+        tools:text="Total Time: 8:00" />
+
+    <TableLayout
+        android:id="@+id/layoutImages"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/textTotalTime">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="98dp"
+            android:columnCount="3"
+            android:orientation="horizontal"
+            android:rowCount="1"
+            tools:ignore="UselessParent">
+
+            <ImageView
+                android:id="@+id/imageStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight=".3"
+                android:contentDescription="@null"
+                android:foregroundGravity="top" />
+
+            <ImageView
+                android:id="@+id/imageTurbid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight=".3"
+                android:contentDescription="@null"
+                android:foregroundGravity="top" />
+
+            <ImageView
+                android:id="@+id/imageEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight=".3"
+                android:contentDescription="@null"
+                android:foregroundGravity="top" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutImages"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin" />
+
+</RelativeLayout>

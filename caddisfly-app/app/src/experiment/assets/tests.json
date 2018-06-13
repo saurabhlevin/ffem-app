@@ -155,7 +155,7 @@
       "type": "soil",
       "subtype": "titration",
       "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
-      "brand": "ffem Titration",
+      "brand": "FFEM Titration",
       "imageScale": "centerCrop",
       "results": [
         {
@@ -6788,7 +6788,7 @@
         {
           "section": [
             "1.put_on_gloves",
-            "2.collect_100ml_water_sample. avoid_touching_with_bare_hands",
+            "2.collect_100ml_water_sample_thio. avoid_touching_with_bare_hands_thio",
             "3.open_growth_medium_sachet",
             "image:1"
           ]

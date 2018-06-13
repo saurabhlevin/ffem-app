@@ -254,6 +254,10 @@ public class Result implements Parcelable {
         return result;
     }
 
+    public void setResult(String value) {
+        result = value;
+    }
+
     public void setResult(double resultDouble, int dilution, Integer maxDilution) {
 
         if (resultDouble == -1) {

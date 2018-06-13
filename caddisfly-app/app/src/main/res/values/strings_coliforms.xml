@@ -29,8 +29,8 @@
     <string name="setCompartmentColors">Set compartment colors</string>
 
     <string name="put_on_gloves">Put on plastic gloves</string>
-    <string name="collect_100ml_water_sample">Collect <b>100 ml</b> water sample with bottle or Thio Bag.</string>
-    <string name="avoid_touching_with_bare_hands">Avoid touching the inside of the bottle, lid or Thio Bag with bare hands.</string>
+    <string name="collect_100ml_water_sample_thio">Collect <b>100 ml</b> water sample with bottle or Thio Bag.</string>
+    <string name="avoid_touching_with_bare_hands_thio">Avoid touching the inside of the bottle, lid or Thio Bag with bare hands.</string>
     <string name="open_growth_medium_sachet">Open growth medium sachet and add test bud straight to the sample from the sachet</string>
     <string name="dissolve_medium_in_sample">Dissolve medium in sample for 10 – 12 minutes maximum by periodically swirling the bottle or squeezing the test bud in the Thio Bag to promote release of the medium from its plastic carrier</string>
     <string name="medium_dissolves">The medium dissolves from its plastic carrier.</string>
@@ -68,5 +68,22 @@
     <string name="hours_40_48">40 – 48 hours</string>
     <string name="incubate_in_portable">Incubate in a portable incubator, preferably at 35 – 37 °C for 48 hours or put in or near another heat source.</string>
     <string name="in_addition_to_portable">In addition to portable incubators, samples can be maintained at 25°C to 44.5°C using: thermal coolers/bags; proximity to heat sources for humans and food; poultry or reptile incubator, or near refrigerator coils or room heating vents.</string>
+
+    <string name="collect_100ml_water_sample">Collect <b>100 ml</b> water sample with bottle</string>
+    <string name="avoid_touching_with_bare_hands">Avoid touching the inside of the bottle, lid with bare hands.</string>
+    <string name="add_growth_medium_sachet">Add the growth medium from the sachet into the sample</string>
+    <string name="dissolve_growth_medium">Dissolve medium in sample for 10 – 12 minutes maximum by periodically swirling the bottle</string>
+    <string name="slowly_pour_sample_into_chamber">Slowly pour sample mixed with growth medium into the test chamber</string>
+    <string name="close_test_chamber">Close the test chamber</string>
+    <string name="launch_coliform_test">Open the ffem Collect app and launch the relevant form and launch the test from the Coliform question</string>
+    <string name="enter_test_settings">Enter the test details including the email address where notification of test result should be sent to</string>
+    <string name="start_coliform_test">Tap the start button</string>
+    <string name="place_phone_flat">Place the phone on a flat surface with the screen facing down</string>
+    <string name="attach_incubator">Attach the provided compact incubator to the phone</string>
+    <string name="place_test_chamber_incubator">Place the test chamber inside the compact incubator</string>
+    <string name="switch_on_incubator">Switch on the compact incubator. A red indicator light on the incubator should glow</string>
+    <string name="test_starts_taking_photos">The test starts and an occasional beep sound is heard depending on the sampling rate</string>
+    <string name="wait_for_test_notification">Wait for notification by email for result of the test</string>
+    <string name="dispose_test_chamber">Clean and dispose off the test chamber following proper procedures</string>
 
 </resources>

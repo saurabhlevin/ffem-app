@@ -395,4 +395,18 @@ public final class FileUtil {
         bb.putInt(i);
         return bb.array();
     }
+
+    public static void deleteRecursive(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File child : files) {
+                    deleteRecursive(child);
+                }
+            }
+        }
+
+        //noinspection ResultOfMethodCallIgnored
+        file.delete();
+    }
 }

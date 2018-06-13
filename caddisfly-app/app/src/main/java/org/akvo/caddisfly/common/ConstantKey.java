@@ -18,5 +18,8 @@ public class ConstantKey {
 
     public static final String NEXT_UPDATE_CHECK = NAMESPACE_PREFIX + "lastUpdateCheck";
     public static final String VALUE = NAMESPACE_PREFIX + "value";
+
+    public static final String SAVE_FOLDER = NAMESPACE_PREFIX + "saveFolder";
+    public static final String TEST_START_TIME = NAMESPACE_PREFIX + "testStartTime";
 }
 
