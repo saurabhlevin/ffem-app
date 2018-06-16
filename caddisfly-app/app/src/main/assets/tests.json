@@ -250,6 +250,42 @@
       ]
     },
     {
+      "name": "Water - Dissolved Oxygen (Low range)",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "5d533d99-9b96-406c-a559-9be856e1665b",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,8",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Dissolved Oxygen",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Water - Dissolved Oxygen (High range)",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "8551ce6b-9a67-4d2f-927e-c48f7ab970ac",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,40",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Dissolved Oxygen",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
       "name": "Water - Fluoride",
       "type": "water",
       "subtype": "cuvette",
