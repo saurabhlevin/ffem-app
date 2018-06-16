@@ -21,7 +21,9 @@ package org.akvo.caddisfly.diagnostic;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +32,11 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.model.TestInfo;
 
 @SuppressWarnings("WeakerAccess")
-public class DiagnosticSwatchFragment extends ListFragment {
+public class DiagnosticSwatchFragment extends Fragment {
 
     private static final String ARG_TEST_INFO = "testInfo";
     TestInfo testInfo;
+    private RecyclerView recyclerView;
 
     public static DiagnosticSwatchFragment newInstance(TestInfo testInfo) {
         DiagnosticSwatchFragment fragment = new DiagnosticSwatchFragment();
@@ -66,10 +69,13 @@ public class DiagnosticSwatchFragment extends ListFragment {
             getActivity().setTitle(R.string.swatches);
         }
 
+        recyclerView = view.findViewById(R.id.swatchRecyclerView);
+
         if (testInfo.getSwatches().size() > 0) {
             DiagnosticSwatchesAdapter diagnosticSwatchesAdapter =
-                    new DiagnosticSwatchesAdapter(getActivity(), testInfo.getSwatches());
-            setListAdapter(diagnosticSwatchesAdapter);
+                    new DiagnosticSwatchesAdapter(testInfo.getSwatches());
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(diagnosticSwatchesAdapter);
         }
     }
 }

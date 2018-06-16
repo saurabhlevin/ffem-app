@@ -25,7 +25,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.NotificationScheduler;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -121,8 +120,8 @@ public class UpdateCheckTask extends AsyncTask<String, String, String> {
             if (serverVersion > versionCode) {
 
                 NotificationScheduler.showNotification(context,
-                        contextRef.get().getString(R.string.updateTitle),
-                        contextRef.get().getString(R.string.updateAvailable));
+                        context.getString(R.string.updateTitle),
+                        context.getString(R.string.updateAvailable));
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

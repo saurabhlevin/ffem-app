@@ -198,6 +198,11 @@
       "calibrate": true,
       "ranges": "0,0.1,0.2,0.3,0.4,0.5",
       "monthsValid": 2,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
       "results": [
         {
           "id": 1,
@@ -241,6 +246,11 @@
       "calibrate": true,
       "ranges": "0,0.5,1,1.5,2",
       "monthsValid": 12,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
       "results": [
         {
           "id": 1,
@@ -520,6 +530,11 @@
       "calibrate": true,
       "ranges": "0,10,20,30,40",
       "monthsValid": 12,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
       "results": [
         {
           "id": 1,

@@ -52,16 +52,12 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,30 +73,26 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.BaseActivity;
-import org.akvo.caddisfly.util.ApiUtil;
+import org.akvo.caddisfly.util.AlertUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
 public class DeviceScanActivity extends BaseActivity implements DeviceConnectDialog.InterfaceCommunicator {
 
-    private static final int PERMISSION_ALL = 1;
-    private static final String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION};
-
-    private static final float SNACK_BAR_LINE_SPACING = 1.4f;
+    private static final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after scan period
     private static final long SCAN_PERIOD = 6000;
     private static final int REQUEST_CODE = 100;
     private static final long CONNECTING_DELAY = 2000;
-    private CoordinatorLayout coordinatorLayout;
+    private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
     private LeDeviceListAdapter mLeDeviceListAdapter;
@@ -117,7 +109,6 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
     private TextView textSubtitle;
     private ScanCallback mScanCallback;
     private DeviceConnectDialog deviceConnectDialog;
-    private Snackbar snackbar;
     private TestInfo testInfo;
 
     @Override
@@ -199,8 +190,6 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
 
         textSubtitle = findViewById(R.id.textSubtitle);
         textSubtitle.setText(R.string.searching_for_device);
-
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
     }
 
     private void showInstructionDialog() {
@@ -220,6 +209,7 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void connectToDevice(int position) {
 
         if (!mBluetoothAdapter.isEnabled()) {
@@ -261,35 +251,10 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
 
-        final Activity activity = this;
-        if (requestCode == PERMISSION_ALL) {
-            // If request is cancelled, the result arrays are empty.
-            boolean granted = false;
-            for (int grantResult : grantResults) {
-                if (grantResult != PERMISSION_GRANTED) {
-                    granted = false;
-                    break;
-                } else {
-                    granted = true;
-                }
-            }
-            if (!granted) {
-                snackbar = Snackbar
-                        .make(coordinatorLayout, getString(R.string.location_permission),
-                                Snackbar.LENGTH_INDEFINITE)
-                        .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(activity));
-
-                TypedValue typedValue = new TypedValue();
-                getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
-
-                snackbar.setActionTextColor(typedValue.data);
-                View snackView = snackbar.getView();
-                TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
-                textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
-                textView.setTextColor(Color.WHITE);
-                snackbar.show();
-            }
+        if (!permissionsDelegate.resultGranted(requestCode, grantResults)) {
+            AlertUtil.showSettingsSnackbar(this,
+                    getWindow().getDecorView().getRootView(),
+                    getString(R.string.location_permission));
         }
     }
 
@@ -300,13 +265,10 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
         layoutDevices.setVisibility(View.GONE);
         layoutInfo.setVisibility(View.VISIBLE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PERMISSION_GRANTED) {
-            if (snackbar == null || !snackbar.isShownOrQueued()) {
-                requestPermissions(PERMISSIONS, PERMISSION_ALL);
-            }
-        } else {
+        if (permissionsDelegate.hasPermissions(permissions)) {
             scanLeDevice(true);
+        } else {
+            permissionsDelegate.requestPermissions(permissions);
         }
 
         // Initializes list view adapter.
@@ -367,6 +329,7 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
         mLeDeviceListAdapter.clear();
     }
 
+    @SuppressLint("MissingPermission")
     private void scanLeDevice(final boolean enable) {
 
         progressBar.setVisibility(View.VISIBLE);
@@ -467,6 +430,7 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
             mInflater = DeviceScanActivity.this.getLayoutInflater();
         }
 
+        @SuppressLint("MissingPermission")
         private void addDevice(BluetoothDevice device) {
             if (!mLeDevices.contains(device)
                     && device.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC
@@ -522,16 +486,14 @@ public class DeviceScanActivity extends BaseActivity implements DeviceConnectDia
 
                 Button buttonConnect = view.findViewById(R.id.button_connect);
 
-                buttonConnect.setOnClickListener(v -> {
-                    connectToDevice(position);
-                });
+                buttonConnect.setOnClickListener(v -> connectToDevice(position));
 
             } else {
                 viewHolder = (ViewHolder) view.getTag();
             }
 
             BluetoothDevice device = mLeDevices.get(position);
-            final String deviceName = device.getName();
+            @SuppressLint("MissingPermission") final String deviceName = device.getName();
             if (deviceName != null && deviceName.length() > 0) {
                 viewHolder.deviceName.setText(R.string.md610_photometer);
             } else {

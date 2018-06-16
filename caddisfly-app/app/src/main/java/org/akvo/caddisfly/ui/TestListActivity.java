@@ -22,15 +22,10 @@ package org.akvo.caddisfly.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
@@ -44,13 +39,12 @@ import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.repository.TestConfigRepository;
 import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
-import org.akvo.caddisfly.util.ApiUtil;
+import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
 
 public class TestListActivity extends BaseActivity
         implements TestListFragment.OnListFragmentInteractionListener {
 
-    private static final float SNACK_BAR_LINE_SPACING = 1.4f;
     private static final int REQUEST_SYNC_PERMISSION = 101;
 
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
@@ -58,7 +52,6 @@ public class TestListActivity extends BaseActivity
     private final String[] storagePermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private TestListFragment fragment;
     private TestInfo testInfo;
-    private ActivityTestListBinding b;
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -80,21 +73,8 @@ public class TestListActivity extends BaseActivity
                 message = getString(R.string.cameraAndStoragePermissions);
             }
 
-            Snackbar snackbar = Snackbar
-                    .make(b.mainLayout, message,
-                            Snackbar.LENGTH_LONG)
-                    .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(this));
-
-            TypedValue typedValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
-
-            snackbar.setActionTextColor(typedValue.data);
-            View snackView = snackbar.getView();
-            TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
-            textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
-            textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
-            textView.setTextColor(Color.WHITE);
-            snackbar.show();
+            AlertUtil.showSettingsSnackbar(this,
+                    getWindow().getDecorView().getRootView(), message);
         }
     }
 
@@ -102,7 +82,7 @@ public class TestListActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        b = DataBindingUtil.setContentView(this, R.layout.activity_test_list);
+        ActivityTestListBinding b = DataBindingUtil.setContentView(this, R.layout.activity_test_list);
 
         setTitle(R.string.selectTest);
 
