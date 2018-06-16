@@ -19,15 +19,12 @@
 
 package org.akvo.caddisfly.diagnostic;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.model.Swatch;
@@ -39,54 +36,50 @@ import java.util.Locale;
 /**
  * List of swatches including the generated gradient swatches.
  */
-class DiagnosticSwatchesAdapter extends ArrayAdapter<Swatch> {
+class DiagnosticSwatchesAdapter extends RecyclerView.Adapter<StateViewHolder> {
 
-    private final Activity activity;
-    private final List<Swatch> colorArray;
+    private final List<Swatch> swatchList;
 
-    DiagnosticSwatchesAdapter(Activity activity, List<Swatch> colorArray) {
-        super(activity, -1, colorArray);
-        this.activity = activity;
-        this.colorArray = colorArray;
+    DiagnosticSwatchesAdapter(List<Swatch> swatchList) {
+        this.swatchList = swatchList;
     }
 
     @NonNull
     @Override
-    public View getView(final int position, View view, @NonNull ViewGroup parent) {
+    public StateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View swatchView = inflater.inflate(R.layout.row_swatch, parent, false);
+        return new StateViewHolder(swatchView);
+    }
 
-        LayoutInflater inflater = activity.getLayoutInflater();
+    @Override
+    public void onBindViewHolder(@NonNull StateViewHolder holder, int position) {
 
-        @SuppressLint("ViewHolder")
-        View rowView = inflater.inflate(R.layout.row_swatch, parent, false);
+        int color = swatchList.get(position).getColor();
 
-        if (rowView != null) {
+        holder.swatch.findViewById(R.id.textSwatch).setBackgroundColor(color);
 
-            int color = colorArray.get(position).getColor();
+        holder.value.setText(String.format(Locale.getDefault(), "%.3f", swatchList.get(position).getValue()));
 
-            rowView.findViewById(R.id.textSwatch).setBackgroundColor(color);
-
-            //display unit value
-            ((TextView) rowView.findViewById(R.id.textName)).setText(
-                    String.format(Locale.getDefault(), "%.3f", colorArray.get(position).getValue()));
-
-            double distanceRgb = 0;
-            if (position > 0) {
-                int previousColor = colorArray.get(position - 1).getColor();
-                distanceRgb = ColorUtil.getColorDistance(previousColor, color);
-            }
-
-            float[] colorHsv = new float[3];
-            Color.colorToHSV(color, colorHsv);
-
-            ((TextView) rowView.findViewById(R.id.textRgb)).setText(
-                    String.format(Locale.getDefault(), "d:%.2f  %s: %s",
-                            distanceRgb, "rgb", ColorUtil.getColorRgbString(color)));
-            ((TextView) rowView.findViewById(R.id.textHsv)).setText(
-                    String.format(Locale.getDefault(), "d:%.2f  %s: %.0f  %.2f  %.2f",
-                            distanceRgb, "hsv", colorHsv[0], colorHsv[1], colorHsv[1]));
-        } else {
-            return view;
+        double distanceRgb = 0;
+        if (position > 0) {
+            int previousColor = swatchList.get(position - 1).getColor();
+            distanceRgb = ColorUtil.getColorDistance(previousColor, color);
         }
-        return rowView;
+
+        float[] colorHsv = new float[3];
+        Color.colorToHSV(color, colorHsv);
+
+        holder.rgb.setText(
+                String.format(Locale.getDefault(), "d:%.2f  %s: %s",
+                        distanceRgb, "rgb", ColorUtil.getColorRgbString(color)));
+        holder.hsv.setText(
+                String.format(Locale.getDefault(), "d:%.2f  %s: %.0f  %.2f  %.2f",
+                        distanceRgb, "hsv", colorHsv[0], colorHsv[1], colorHsv[1]));
+    }
+
+    @Override
+    public int getItemCount() {
+        return swatchList != null ? swatchList.size() : 0;
     }
 }

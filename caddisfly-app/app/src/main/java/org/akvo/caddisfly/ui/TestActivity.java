@@ -24,24 +24,19 @@ import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
@@ -67,7 +62,6 @@ import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
 import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
-import org.akvo.caddisfly.util.ApiUtil;
 import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -99,7 +93,6 @@ public class TestActivity extends BaseActivity {
 
     private static final int REQUEST_TEST = 1;
     private static final String MESSAGE_TWO_LINE_FORMAT = "%s%n%n%s";
-    private static final float SNACK_BAR_LINE_SPACING = 1.4f;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -114,7 +107,6 @@ public class TestActivity extends BaseActivity {
 
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
-    private LinearLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +115,6 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        mainLayout = findViewById(R.id.mainLayout);
 
         // Add list fragment if this is first creation
         if (savedInstanceState == null) {
@@ -515,21 +505,8 @@ public class TestActivity extends BaseActivity {
                     break;
             }
 
-            Snackbar snackbar = Snackbar
-                    .make(mainLayout, message,
-                            Snackbar.LENGTH_LONG)
-                    .setAction("SETTINGS", view -> ApiUtil.startInstalledAppDetailsActivity(this));
-
-            TypedValue typedValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
-
-            snackbar.setActionTextColor(typedValue.data);
-            View snackView = snackbar.getView();
-            TextView textView = snackView.findViewById(android.support.design.R.id.snackbar_text);
-            textView.setHeight(getResources().getDimensionPixelSize(R.dimen.snackBarHeight));
-            textView.setLineSpacing(0, SNACK_BAR_LINE_SPACING);
-            textView.setTextColor(Color.WHITE);
-            snackbar.show();
+            AlertUtil.showSettingsSnackbar(this,
+                    getWindow().getDecorView().getRootView(), message);
         }
     }
 
