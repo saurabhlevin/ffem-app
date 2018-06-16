@@ -395,13 +395,12 @@ public class BaseRunTest extends Fragment implements RunTest {
         sound.playShortResource(R.raw.err);
 
         alertDialogToBeDestroyed = AlertUtil.showError(activity,
-                R.string.error, message, bitmap, R.string.retry,
-                (dialogInterface, i) -> initializeTest(),
+                R.string.error, message, bitmap, R.string.ok,
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     activity.setResult(Activity.RESULT_CANCELED);
                     activity.finish();
-                }, null
+                }, null, null
         );
     }
 

@@ -177,15 +177,29 @@ public class TestActivity extends BaseActivity {
         String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
 
         String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
-        if (uuid == null) {
-            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
-        }
-
         if (uuid != null) {
             //Get the test config by uuid
             final TestListViewModel viewModel =
                     ViewModelProviders.of(this).get(TestListViewModel.class);
             testInfo = viewModel.getTestInfo(uuid);
+        }
+
+        if (uuid == null) {
+            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+
+            if (uuid != null) {
+                final TestListViewModel viewModel =
+                        ViewModelProviders.of(this).get(TestListViewModel.class);
+                testInfo = viewModel.getTestInfo(uuid);
+
+                if (testInfo != null && intent.getExtras() != null) {
+                    for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
+                            testInfo.getResults().size()); i++) {
+                        testInfo.getResults().get(i - 1)
+                                .setCode(intent.getExtras().keySet().toArray()[i].toString());
+                    }
+                }
+            }
         }
 
         if (testInfo == null) {
@@ -390,6 +404,8 @@ public class TestActivity extends BaseActivity {
 //            }
 
             this.setResult(Activity.RESULT_OK, intent);
+            finish();
+        } else {
             finish();
         }
     }
