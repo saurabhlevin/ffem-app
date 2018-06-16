@@ -31,6 +31,7 @@ public class Constants {
     public static final String CBT_ID = "e40d4764-e73f-46dd-a598-ed4db0fd3386";
     public static final String TITRATION_ID = "52ec4ca0-d691-4f2b-b17a-232c2966974a";
     public static final String COLIFORM_ID = "df3d1009-2112-4d95-a6f9-fdc4b5633ec9";
+    public static final String CUVETTE_BLUETOOTH_ID = "dae64f91-f3ae-450e-a7d2-1d5a320d19de";
 
     public static final String MPN_TABLE_FILENAME = "most-probable-number.json";
 

@@ -33,19 +33,28 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.hardware.Camera.Parameters.FLASH_MODE_OFF;
+
 @SuppressWarnings("deprecation")
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "CameraPreview";
     private static final int MIN_CAMERA_WIDTH = 1300;
     private final Camera mCamera;
+    private final String flashMode;
     private OnSurfaceChangedListener mListener;
     private int mPreviewWidth;
     private int mPreviewHeight;
 
     public CameraPreview(Context context) {
+        this(context, FLASH_MODE_OFF);
+    }
+
+    public CameraPreview(Context context, String flashModeTorch) {
         // create surfaceView
         super(context);
+
+        this.flashMode = flashModeTorch;
 
         // Create an instance of Camera
         mCamera = TheCamera.getCameraInstance();
@@ -192,7 +201,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //white balance
         if (parameters.getFlashMode() != null) {
             //Check if this optimise the code
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            parameters.setFlashMode(flashMode);
         }
 
         try {

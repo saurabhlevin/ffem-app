@@ -229,7 +229,6 @@ public class MainActivity extends BaseActivity {
         intent.putExtra("internal", true);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivity(intent);
-
     }
 
     /**

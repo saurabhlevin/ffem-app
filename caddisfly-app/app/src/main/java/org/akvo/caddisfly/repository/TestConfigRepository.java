@@ -169,7 +169,8 @@ public class TestConfigRepository {
                 for (TestInfo testInfo : testInfoList) {
                     if (testInfo.getUuid().equalsIgnoreCase(id)) {
 
-                        if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
+                        if (testInfo.getSubtype() == TestType.CHAMBER_TEST ||
+                                testInfo.getSubtype() == TestType.CUVETTE_BLUETOOTH) {
 
                             CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
 

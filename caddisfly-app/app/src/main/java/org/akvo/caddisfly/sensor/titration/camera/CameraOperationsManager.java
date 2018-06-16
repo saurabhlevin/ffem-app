@@ -97,7 +97,7 @@ public class CameraOperationsManager {
         startCameraThread();
 
         // open the camera and create a preview surface for it
-        CameraPreview cameraPreview = new CameraPreview(context);
+        CameraPreview cameraPreview = new CameraPreview(context, Camera.Parameters.FLASH_MODE_OFF);
         mCamera = cameraPreview.getCamera();
         return cameraPreview;
     }
