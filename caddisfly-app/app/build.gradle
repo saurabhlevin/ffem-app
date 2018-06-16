@@ -28,7 +28,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 226
-        versionName "1.0 Beta 1.68"
+        versionName "1.0 Beta 1.69"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
