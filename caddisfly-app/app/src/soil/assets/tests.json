@@ -2,7 +2,7 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
-      "name": "Soil - Available Boron",
+      "name": "Available Boron",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "29e609a0-0f57-4365-a4eb-4eb84c61c9ab",
@@ -28,7 +28,7 @@
       ]
     },
     {
-      "name": "Soil - Available Iron",
+      "name": "Available Iron",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
@@ -54,7 +54,7 @@
       ]
     },
     {
-      "name": "Soil - Available Nitrogen",
+      "name": "Available Nitrogen",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "8e7badf4-3c7e-4c45-9cb2-0810ffaa8c26",
@@ -80,7 +80,7 @@
       ]
     },
     {
-      "name": "Soil - Available Phosphorous",
+      "name": "Available Phosphorous",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "ddd64497-43e0-4289-a84f-6890ff80cf20",
@@ -106,7 +106,7 @@
       ]
     },
     {
-      "name": "Soil - Available Potassium",
+      "name": "Available Potassium",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "0035a4fc-6b9b-4b12-975f-3459c7fdcda3",
@@ -133,7 +133,7 @@
       ]
     },
     {
-      "name": "Soil - pH",
+      "name": "pH",
       "type": "soil",
       "subtype": "cuvette",
       "uuid": "485a0c0a-0af5-40bc-baee-f5f0b03ff739",
@@ -151,7 +151,7 @@
       ]
     },
     {
-      "name": "Soil - Exchangeable Calcium and Magnesium",
+      "name": "Exchangeable Calcium and Magnesium",
       "type": "soil",
       "subtype": "titration",
       "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
@@ -171,25 +171,7 @@
       ]
     },
     {
-      "name": "Water - Aluminum",
-      "type": "water",
-      "subtype": "cuvette",
-      "uuid": "af112e3c-4fc1-45c1-a8d0-1ec75a2b789e",
-      "brand": "Caddisfly",
-      "imageScale": "centerCrop",
-      "calibrate": true,
-      "ranges": "0,0.1,0.2,0.3",
-      "monthsValid": 12,
-      "results": [
-        {
-          "id": 1,
-          "name": "Aluminum",
-          "unit": "mg/l"
-        }
-      ]
-    },
-    {
-      "name": "Soil - Potassium",
+      "name": "Potassium",
       "type": "soil",
       "subtype": "striptest",
       "uuid": "ac533acc-8ffc-48e1-a66e-2394f9a54050",
