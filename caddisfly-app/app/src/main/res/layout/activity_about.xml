@@ -58,7 +58,7 @@
                     android:alpha="0.7"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
-                    android:text="@string/waterQualitySystem"
+                    android:text="@string/app_slogan"
                     android:textAllCaps="true"
                     android:textSize="14dp"
                     android:textStyle="bold"
