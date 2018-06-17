@@ -44,7 +44,6 @@ import android.util.DisplayMetrics;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
-import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.hamcrest.Matchers;
 
@@ -267,21 +266,12 @@ public final class TestHelper {
         List<UiObject2> buttons = mDevice.findObjects(By.text(buttonText));
         buttons.get(index).click();
 
-        // New Android OS seems to popup a button for external app
-//        if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M
-//                && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
-//                || text.equals(TestConstant.GO_TO_TEST))) {
-//            sleep(1000);
-//            mDevice.findObject(By.text("ffem Caddisfly")).click();
-//            sleep(1000);
-//        }
-//
         mDevice.waitForWindowUpdate("", 2000);
 
         sleep(4000);
     }
 
-    public static void clickExternalSourceButton(String text) {
+    public static void clickExternalSourceButton(Context context, String text) {
         try {
 
             String buttonText = currentHashMap.get(text);
@@ -299,7 +289,7 @@ public final class TestHelper {
                     && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
                     || text.equals(TestConstant.GO_TO_TEST))) {
                 sleep(1000);
-                mDevice.findObject(By.text("ffem Caddisfly")).click();
+                mDevice.findObject(By.text(context.getString(R.string.appName))).click();
                 sleep(1000);
             }
 

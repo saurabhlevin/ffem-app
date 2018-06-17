@@ -40,10 +40,10 @@ android {
 
     sourceSets {
         soil {
-            java.srcDirs = ['src/mainExt/java']
+            java.srcDirs = ['src/mainExt/java', 'src/soil/java']
         }
         water {
-            java.srcDirs = ['src/mainExt/java']
+            java.srcDirs = ['src/mainExt/java', 'src/water/java']
         }
     }
 
