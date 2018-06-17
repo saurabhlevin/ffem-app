@@ -21,11 +21,7 @@ package org.akvo.caddisfly.common;
 
 public final class TestConstants {
 
-    /**
-     * To launch survey app.
-     */
-    public static final String EXTERNAL_SURVEY_PACKAGE_NAME = "org.koboc.collect.android";
-
     public static final int STRIP_TESTS_COUNT = 1;
+    public static final int CUVETTE_TESTS_COUNT = 13;
 
 }

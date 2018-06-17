@@ -21,6 +21,11 @@ package org.akvo.caddisfly.util;
 
 public final class TestConstant {
 
+    /**
+     * To launch survey app.
+     */
+    public static final String EXTERNAL_SURVEY_PACKAGE_NAME = "io.ffem.collect";
+
     public static final String FLUORIDE = "fluoride";
     public static final int FLUORIDE_INDEX = 10;
     public static final String LANGUAGE = "language";

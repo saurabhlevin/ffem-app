@@ -319,7 +319,7 @@ public final class TestHelper {
     public static void gotoSurveyForm() {
 
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME);
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME);
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
@@ -330,7 +330,7 @@ public final class TestHelper {
         sleep(2000);
 
         UiObject addButton = mDevice.findObject(new UiSelector()
-                .resourceId(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/enter_data"));
+                .resourceId(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/enter_data"));
 
         try {
             if (addButton.exists() && addButton.isEnabled()) {
@@ -342,12 +342,12 @@ public final class TestHelper {
 
         mDevice.waitForIdle();
 
-        clickListViewItem("Test All Tests");
+        clickListViewItem("Automated Testing");
 
         mDevice.waitForIdle();
 
         UiObject goToStartButton = mDevice.findObject(new UiSelector()
-                .resourceId(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/jumpBeginningButton"));
+                .resourceId(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/jumpBeginningButton"));
 
         try {
             if (goToStartButton.exists() && goToStartButton.isEnabled()) {
