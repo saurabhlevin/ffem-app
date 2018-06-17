@@ -1,24 +1,7 @@
-/*
- * Copyright (C) Stichting Akvo (Akvo Foundation)
- *
- * This file is part of Akvo Caddisfly.
- *
- * Akvo Caddisfly is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Akvo Caddisfly is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
- */
-
 apply plugin: 'com.android.application'
 apply plugin: 'de.mobilej.unmock'
+
+def isExperiment
 
 android {
     compileSdkVersion 27
@@ -39,15 +22,19 @@ android {
         soil {
             applicationIdSuffix ".soil"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
+            isExperiment = false
         }
         water {
             applicationIdSuffix ".water"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
+            isExperiment = false
         }
         experiment {
             applicationIdSuffix ".experiment"
             versionName "Exp Beta 1.0"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
+            multiDexEnabled true
+            isExperiment = true
         }
     }
 
@@ -72,7 +59,9 @@ android {
     buildTypes {
         debug {
             debuggable true
-//            multiDexEnabled true
+            if (isExperiment) {
+                multiDexEnabled true
+            }
         }
     }
 
@@ -116,8 +105,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
-//    implementation 'com.android.support:multidex:1.0.3'
 
     // Support
     implementation 'com.android.support:support-v4:27.1.1'
@@ -176,9 +163,13 @@ dependencies {
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
 
     // Firebase (Experiment Flavor)
+    experimentImplementation 'com.android.support:multidex:1.0.3'
+    experimentImplementation 'com.google.firebase:firebase-core:16.0.0'
     experimentImplementation 'com.google.firebase:firebase-database:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-firestore:17.0.1'
     experimentImplementation 'com.google.firebase:firebase-storage:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-auth:16.0.1'
 }
-//apply plugin: 'com.google.gms.google-services'
+if (isExperiment) {
+    apply plugin: 'com.google.gms.google-services'
+}
