@@ -51,6 +51,15 @@ android {
         }
     }
 
+    sourceSets {
+        soil {
+            java.srcDirs = ['src/mainExt/java']
+        }
+        water {
+            java.srcDirs = ['src/mainExt/java']
+        }
+    }
+
     dataBinding {
         enabled = true
     }
