@@ -38,9 +38,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
-import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.SensorConstants;
@@ -112,7 +112,7 @@ public class TestActivity extends BaseActivity {
 
         Intent intent = getIntent();
 
-        if (AppConfig.EXTERNAL_APP_ACTION.equals(intent.getAction())) {
+        if (BuildConfig.APPLICATION_ID.equals(intent.getAction())) {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }

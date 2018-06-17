@@ -28,8 +28,8 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -186,9 +186,9 @@ public class ChamberTest {
     }
 
     @Test
-    public void textExternalWithoutPermission() {
+    public void testExternalWithoutPermission() {
 
-        Intent intent = new Intent(AppConfig.EXTERNAL_APP_ACTION);
+        Intent intent = new Intent(BuildConfig.APPLICATION_ID);
 
         Bundle data = new Bundle();
         data.putString(CADDISFLY_RESOURCE_ID, Constants.FLUORIDE_ID);
