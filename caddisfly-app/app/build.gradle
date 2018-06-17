@@ -24,11 +24,11 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "io.ffem.caddisfly"
+        applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 226
-        versionName "1.0 Beta 1.69"
+        versionName "Beta 1.0"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -36,12 +36,17 @@ android {
     flavorDimensions "default"
 
     productFlavors {
-        mainExt {
+        soil {
+            applicationIdSuffix ".soil"
+            buildConfigField 'boolean', 'showExperimentalTests', 'false'
+        }
+        water {
+            applicationIdSuffix ".water"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Exp 1.0 Beta 1.68"
+            versionName "Exp Beta 1.0"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
