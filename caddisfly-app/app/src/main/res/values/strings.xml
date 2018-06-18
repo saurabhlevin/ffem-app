@@ -245,5 +245,6 @@
     <string name="updateAvailable">New version available. Update to get the most out of your app</string>
     <string name="remindLater">Remind later</string>
     <string name="continue_send">Continue</string>
+    <string name="creatingMessage">Creating message</string>
 
 </resources>
