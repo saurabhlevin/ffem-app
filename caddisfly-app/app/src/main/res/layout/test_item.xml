@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingBottom="7dp"
-                android:text="@{(testInfo.brand == null ? `` : testInfo.brand) + (testInfo.minMaxRange.isEmpty() ? `` : `, ` + testInfo.minMaxRange)}"
+                android:text="@{(testInfo.brand == null ? `` : testInfo.brand + `, `) + (testInfo.minMaxRange.isEmpty() ? `` : testInfo.minMaxRange)}"
                 android:textColor="#797979"
                 android:textSize="14sp"
                 tools:text="BRAND 23426435" />

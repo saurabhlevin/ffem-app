@@ -329,29 +329,30 @@ public class TestInfo implements Parcelable {
                     if (ranges != null) {
                         String[] rangeArray = ranges.split(",");
                         if (rangeArray.length > 1) {
-                            return rangeArray[0].trim() + " - " + rangeArray[rangeArray.length - 1].trim();
-                        } else {
-                            return "";
+                            if (minMaxRange.length() > 0) {
+                                minMaxRange.append(", ");
+                            }
+                            minMaxRange.append(rangeArray[0].trim()).append(" - ")
+                                    .append(rangeArray[rangeArray.length - 1].trim());
+                            minMaxRange.append(" ");
+                            minMaxRange.append(result.getUnit());
                         }
-                    } else {
-                        return "";
                     }
                 }
             }
 
             if (dilutions.size() > 1) {
                 int maxDilution = dilutions.get(Math.min(dilutions.size() - 1, 2));
-                int maxColors = results.get(0).getColors().size() - 1;
+                double maxRangeValue = getMaxRangeValue();
                 String text = String.format(" (Upto %s with dilution)",
-                        maxDilution * results.get(0).getColors().get(maxColors).getValue());
+                        maxDilution * maxRangeValue);
                 return minMaxRange.toString() + text;
             }
 
-            return minMaxRange.toString();
+            return String.format("%s", minMaxRange.toString());
         }
         return "";
     }
-
 
     public String getMd610Id() {
         return md610Id;
