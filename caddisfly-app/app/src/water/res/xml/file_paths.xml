@@ -19,6 +19,6 @@
 
 <paths>
     <external-path
-        name="my_images"
-        path="Android/data/io.ffem.experiment/files/Pictures" />
+        name="ffem_images"
+        path="Android/data/io.ffem.water/files/Pictures" />
 </paths>

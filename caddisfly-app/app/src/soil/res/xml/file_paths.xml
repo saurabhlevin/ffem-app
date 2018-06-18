@@ -20,5 +20,5 @@
 <paths>
     <external-path
         name="ffem_images"
-        path="Android/data/io.ffem.caddisfly/files/Pictures" />
+        path="Android/data/io.ffem.soil/files/Pictures" />
 </paths>
