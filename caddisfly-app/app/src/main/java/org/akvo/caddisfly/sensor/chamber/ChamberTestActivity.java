@@ -298,7 +298,10 @@ public class ChamberTestActivity extends BaseActivity implements
                 backDisabled = false;
                 releaseResources();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    stopLockTask();
+                    try {
+                        stopLockTask();
+                    } catch (Exception ignored) {
+                    }
                 }
                 if (!fragmentManager.popBackStackImmediate()) {
                     super.onBackPressed();
