@@ -1,4 +1,4 @@
-package io.ffem.caddisfly.experiment;
+package io.ffem.experiment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
