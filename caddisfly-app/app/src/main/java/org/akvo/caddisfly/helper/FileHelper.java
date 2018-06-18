@@ -27,6 +27,7 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.FileUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class FileHelper {
 
@@ -34,7 +35,7 @@ public final class FileHelper {
      * The user created configuration file name.
      */
     // Folders
-    public static final String ROOT_DIRECTORY = File.separator + AppConstants.APP_FOLDER;
+    private static final String ROOT_DIRECTORY = File.separator + AppConstants.APP_FOLDER;
 
     private static final String DIR_CALIBRATION = ROOT_DIRECTORY
             + File.separator + "calibration"; // Calibration files
@@ -83,6 +84,10 @@ public final class FileHelper {
      * @return File representing the root directory for the given FileType.
      */
     public static File getFilesDir(FileType type, String subPath) {
+
+        //TODO remove migration at some point in future
+        migrateFolders();
+
         String path;
         switch (type) {
             case CALIBRATION:
@@ -125,11 +130,26 @@ public final class FileHelper {
         return dir;
     }
 
+    private static void migrateFolders() {
+        File appFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(),
+                false) + ROOT_DIRECTORY);
+        if (!appFolder.exists()) {
+            File oldAppFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(),
+                    false) + File.separator + AppConstants.APP_FOLDER_DEPRECATED);
+            if (oldAppFolder.exists() && oldAppFolder.isDirectory()) {
+                try {
+                    FileUtil.copyFolder(oldAppFolder, appFolder);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     /**
      * The different types of files.
      */
     public enum FileType {
         CALIBRATION, CUSTOM_CONFIG, EXP_CONFIG, CARD, TEST_IMAGE, DIAGNOSTIC_IMAGE, RESULT_IMAGE
     }
-
 }

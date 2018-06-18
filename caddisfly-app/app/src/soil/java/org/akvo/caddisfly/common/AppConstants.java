@@ -6,6 +6,7 @@ package org.akvo.caddisfly.common;
 public final class AppConstants {
 
     public static final String APP_FOLDER = "ffem Soil";
+    public static final String APP_FOLDER_DEPRECATED = "ffem Caddisfly";
 
     private AppConstants() {
     }
