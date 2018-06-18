@@ -42,6 +42,7 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.util.DisplayMetrics;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -196,9 +197,10 @@ public final class TestHelper {
     }
 
     public static void takeScreenshot() {
-        if (TAKE_SCREENSHOTS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (TAKE_SCREENSHOTS) {
             File path = new File(Environment.getExternalStorageDirectory().getPath()
-                    + "/Akvo Caddisfly/screenshots/screen-" + mCounter++ + "-" + mCurrentLanguage + ".png");
+                    + "/" + BuildConfig.APPLICATION_ID + "/screenshots/"
+                    + "screen-" + mCounter++ + "-" + mCurrentLanguage + ".png");
             mDevice.takeScreenshot(path, 0.5f, 60);
         }
     }
@@ -208,10 +210,12 @@ public final class TestHelper {
             File path;
             if (page < 0) {
                 path = new File(Environment.getExternalStorageDirectory().getPath()
-                        + "/Akvo Caddisfly/screenshots/" + name + "-" + mCurrentLanguage + ".png");
+                        + "/" + BuildConfig.APPLICATION_ID + "/screenshots/"
+                        + name + "-" + mCurrentLanguage + ".png");
             } else {
                 path = new File(Environment.getExternalStorageDirectory().getPath()
-                        + "/Akvo Caddisfly/screenshots/" + name + "-" + page + "-" + mCurrentLanguage + ".png");
+                        + "/" + BuildConfig.APPLICATION_ID + "/screenshots/"
+                        + name + "-" + page + "-" + mCurrentLanguage + ".png");
             }
             mDevice.takeScreenshot(path, 0.2f, 40);
         }

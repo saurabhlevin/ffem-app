@@ -30,6 +30,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.model.TestInfo;
@@ -103,7 +104,8 @@ public class BluetoothInstructions {
     @Ignore
     public void testInstructionsAll() {
 
-        String path = Environment.getExternalStorageDirectory().getPath() + "/Akvo Caddisfly/screenshots";
+        String path = Environment.getExternalStorageDirectory().getPath() + "/"
+                + BuildConfig.APPLICATION_ID + "/screenshots";
 
         File folder = new File(path);
         if (!folder.exists()) {

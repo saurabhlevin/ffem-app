@@ -33,6 +33,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.widget.DatePicker;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.ui.MainActivity;
@@ -46,7 +47,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.text.DecimalFormatSymbols;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
@@ -114,7 +114,8 @@ public class NavigationTest {
 
         saveCalibration("TestInvalid", Constants.FLUORIDE_ID);
 
-        String path = Environment.getExternalStorageDirectory().getPath() + "/Akvo Caddisfly/screenshots";
+        String path = Environment.getExternalStorageDirectory().getPath()
+                + "/" + BuildConfig.APPLICATION_ID + "/screenshots";
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -206,7 +207,7 @@ public class NavigationTest {
         //Calibrate Swatches Screen
         takeScreenshot();
 
-        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+//        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
