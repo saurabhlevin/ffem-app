@@ -284,21 +284,27 @@ public class TestInfo implements Parcelable {
     }
 
     public double getMinRangeValue() {
-        String[] array = ranges.split(",");
-
-        try {
-            return Double.valueOf(array[0]);
-        } catch (NumberFormatException e) {
+        if (ranges != null) {
+            try {
+                String[] array = ranges.split(",");
+                return Double.valueOf(array[0]);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        } else {
             return -1;
         }
     }
 
     public double getMaxRangeValue() {
-        String[] array = ranges.split(",");
-
-        try {
-            return Double.valueOf(array[array.length - 1]);
-        } catch (NumberFormatException e) {
+        if (ranges != null) {
+            try {
+                String[] array = ranges.split(",");
+                return Double.valueOf(array[array.length - 1]);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        } else {
             return -1;
         }
     }

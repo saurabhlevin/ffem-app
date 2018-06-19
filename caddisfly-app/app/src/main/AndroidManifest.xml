@@ -65,6 +65,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.TestActivity"
+            android:screenOrientation="nosensor" />
+        <activity
             android:name=".ui.TestListActivity"
             android:screenOrientation="nosensor" />
         <activity

@@ -17,7 +17,7 @@
  * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.akvo.caddisfly.sensor.striptest.camera;
+package org.akvo.caddisfly.util;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -28,37 +28,42 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import org.akvo.caddisfly.common.Constants;
-import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by linda on 7/7/15
- */
+import static android.hardware.Camera.Parameters.FLASH_MODE_OFF;
+
 @SuppressWarnings("deprecation")
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "CameraPreview";
-
     private static final int MIN_CAMERA_WIDTH = 1300;
     private final Camera mCamera;
-    private final StripMeasureActivity activity;
+    private final String flashMode;
+    private OnSurfaceChangedListener mListener;
     private int mPreviewWidth;
     private int mPreviewHeight;
 
     public CameraPreview(Context context) {
+        this(context, FLASH_MODE_OFF);
+    }
+
+    public CameraPreview(Context context, String flashModeTorch) {
         // create surfaceView
         super(context);
+
+        this.flashMode = flashModeTorch;
 
         // Create an instance of Camera
         mCamera = TheCamera.getCameraInstance();
 
         try {
-            activity = (StripMeasureActivity) context;
+            mListener = (OnSurfaceChangedListener) context;
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException("must have CameraActivity as Context.", e);
+            throw new IllegalArgumentException(context.toString()
+                    + " must implement OnSurfaceChangedListener");
         }
         // SurfaceHolder callback to track when underlying surface is created and destroyed.
         SurfaceHolder mHolder = getHolder();
@@ -112,10 +117,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setPreviewDisplay(holder);
             mPreviewWidth = bestSize.width;
             mPreviewHeight = bestSize.height;
-            Log.e(TAG, "Preview width in cameraPreview: " + mPreviewWidth);
+//            Log.e(TAG, "Preview width in cameraPreview: " + mPreviewWidth);
 
-            activity.setPreviewProperties(w, h, mPreviewWidth, mPreviewHeight);
-            activity.initPreviewFragment();
+            mListener.onSurfaceChanged(w, h, mPreviewWidth, mPreviewHeight);
+
             mCamera.startPreview();
             // if we are in FOCUS_MODE_AUTO, we have to start the autofocus here.
             if (mCamera.getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
@@ -160,7 +165,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //preview size
         assert bestSize != null;
         parameters.setPreviewSize(bestSize.width, bestSize.height);
-        Log.d("Caddisfly", "Preview size set to:" + bestSize.width + "," + bestSize.height);
+//        Log.d("Caddisfly", "Preview size set to:" + bestSize.width + "," + bestSize.height);
 
         // default focus mode
         String focusMode = Camera.Parameters.FOCUS_MODE_AUTO;
@@ -196,7 +201,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //white balance
         if (parameters.getFlashMode() != null) {
             //Check if this optimise the code
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            parameters.setFlashMode(flashMode);
         }
 
         try {
@@ -222,5 +227,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public Camera getCamera() {
         return mCamera;
+    }
+
+    public interface OnSurfaceChangedListener {
+        void onSurfaceChanged(int w, int h, int previewWidth, int previewHeight);
     }
 }

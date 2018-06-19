@@ -35,7 +35,7 @@ import org.akvo.caddisfly.helper.SoundPoolPlayer;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.striptest.camera.CameraOperationsManager;
-import org.akvo.caddisfly.sensor.striptest.camera.CameraPreview;
+import org.akvo.caddisfly.util.CameraPreview;
 import org.akvo.caddisfly.sensor.striptest.models.TimeDelayDetail;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
 import org.akvo.caddisfly.sensor.striptest.widget.FinderPatternIndicatorView;

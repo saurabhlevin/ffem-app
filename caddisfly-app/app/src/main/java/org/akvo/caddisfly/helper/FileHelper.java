@@ -118,6 +118,11 @@ public final class FileHelper {
             dir = new File(dir, subPath);
         }
 
+        try {
+            migrateFolders();
+        } catch (Exception ignored) {
+        }
+
         // create folder if it does not exist
         if (!dir.exists() && !dir.mkdirs() && AppPreferences.getShowDebugInfo()) {
             Toast.makeText(CaddisflyApp.getApp(),
