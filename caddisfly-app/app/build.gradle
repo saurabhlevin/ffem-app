@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'de.mobilej.unmock'
 
+def isExperiment
+
 android {
     compileSdkVersion 27
 
@@ -8,7 +10,7 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 227
+        versionCode 228
         versionName "Beta 1.0"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,16 +22,19 @@ android {
         soil {
             applicationIdSuffix ".soil"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
+            isExperiment = false
         }
         water {
             applicationIdSuffix ".water"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
+            isExperiment = false
         }
         experiment {
             applicationIdSuffix ".experiment"
             versionName "Exp Beta 1.0"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
             multiDexEnabled true
+            isExperiment = true
         }
     }
 
@@ -54,7 +59,9 @@ android {
     buildTypes {
         debug {
             debuggable true
-//            multiDexEnabled true
+            if (isExperiment) {
+                multiDexEnabled true
+            }
         }
     }
 

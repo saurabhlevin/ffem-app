@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.SparseArray;
 import android.view.MenuItem;
-import android.view.View;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
@@ -22,10 +21,8 @@ public class TitrationTestActivity extends BaseActivity
         implements TitrationInputFragment.OnSubmitResultListener {
 
     private static final int MANUAL_TEST = 2;
-    //    SparseArray<String> results = new SparseArray<>();
     private TestInfo testInfo;
     private FragmentManager fragmentManager;
-//    private String imageFileName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +47,6 @@ public class TitrationTestActivity extends BaseActivity
                 TitrationInputFragment.newInstance(testInfo), "tubeFragment")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .commit();
-
     }
 
     @Override
@@ -97,31 +93,7 @@ public class TitrationTestActivity extends BaseActivity
         setResult(Activity.RESULT_OK, resultIntent);
 
         finish();
-
-
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.fragment_container, ResultFragment.newInstance(testInfo), "resultFragment")
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-//                .addToBackStack(null)
-//                .commit();
-
-//        results.put(1, result1);
     }
-
-    public void onClickAcceptResult(View view) {
-
-        Intent resultIntent = new Intent();
-
-        resultIntent.putExtra(testInfo.getResults().get(0).getName().replace(" ", "_"),
-                testInfo.getResults().get(0).getResult());
-        resultIntent.putExtra(testInfo.getResults().get(1).getName().replace(" ", "_"),
-                testInfo.getResults().get(1).getResult());
-
-        setResult(Activity.RESULT_OK, resultIntent);
-
-        finish();
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
