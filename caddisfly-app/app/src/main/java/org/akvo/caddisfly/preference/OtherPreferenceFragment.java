@@ -113,7 +113,7 @@ public class OtherPreferenceFragment extends PreferenceFragment {
 
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.setIndeterminate(true);
-                            progressDialog.setTitle(R.string.appName);
+                            progressDialog.setTitle(R.string.creatingMessage);
                             progressDialog.setMessage(getString(R.string.just_a_moment));
                             progressDialog.setCancelable(false);
 

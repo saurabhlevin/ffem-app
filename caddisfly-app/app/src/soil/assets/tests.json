@@ -1,0 +1,271 @@
+{
+  "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
+  "tests": [
+    {
+      "name": "Available Boron",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "29e609a0-0f57-4365-a4eb-4eb84c61c9ab",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.25,0.5,1.0,1.5,2",
+      "monthsValid": 3,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Boron",
+          "unit": "mg/l",
+          "timeDelay": 600,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Available Iron",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "3353f5cf-1cd2-4bf5-b47f-15d3db917add",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1.0,1.5,2",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Iron",
+          "unit": "mg/l",
+          "timeDelay": 180,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Available Nitrogen",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "8e7badf4-3c7e-4c45-9cb2-0810ffaa8c26",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,1.0,2.5,5,7.5,10,15,20,30,40",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Nitrogen",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Available Phosphorous",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "ddd64497-43e0-4289-a84f-6890ff80cf20",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,5,10,15,20,25",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Phosphorous",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)"
+        }
+      ]
+    },
+    {
+      "name": "Available Potassium",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "0035a4fc-6b9b-4b12-975f-3459c7fdcda3",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,10,20,30,40",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5,
+        -1
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Available Potassium",
+          "unit": "mg/l",
+          "timeDelay": 300,
+          "formula": "(%1$f * 5)",
+          "grayScale": true
+        }
+      ]
+    },
+    {
+      "name": "pH",
+      "type": "soil",
+      "subtype": "cuvette",
+      "uuid": "485a0c0a-0af5-40bc-baee-f5f0b03ff739",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 6,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "timeDelay": 30
+        }
+      ]
+    },
+    {
+      "name": "Exchangeable Calcium and Magnesium",
+      "type": "soil",
+      "subtype": "titration",
+      "uuid": "52ec4ca0-d691-4f2b-b17a-232c2966974a",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "results": [
+        {
+          "id": 1,
+          "name": "Exchangeable Calcium",
+          "unit": "mg/kg"
+        },
+        {
+          "id": 2,
+          "name": "Exchangeable Magnesium",
+          "unit": "mg/kg"
+        }
+      ]
+    },
+    {
+      "name": "Potassium",
+      "type": "soil",
+      "subtype": "striptest",
+      "uuid": "ac533acc-8ffc-48e1-a66e-2394f9a54050",
+      "brand": "MERCK 117985",
+      "imageScale": "centerCrop",
+      "groupingType": "INDIVIDUAL",
+      "length": 74,
+      "height": 6,
+      "instructions": [
+        {
+          "section": [
+            "collect_mehlich_extraction_sample"
+          ]
+        },
+        {
+          "section": [
+            "immerse_reaction_zone"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "add_reagent_k1"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "place_strip_clr",
+            "image:place_clr"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Potassium",
+          "unit": "mg/l",
+          "formula": "(%1$f * 5)",
+          "timeDelay": 60,
+          "patchPos": 4.5,
+          "patchWidth": 7,
+          "colors": [
+            {
+              "value": 0,
+              "lab": [
+                78.90,
+                12.62,
+                47.41
+              ]
+            },
+            {
+              "value": 250,
+              "lab": [
+                73.59,
+                24.18,
+                53.73
+              ]
+            },
+            {
+              "value": 450,
+              "lab": [
+                65.05,
+                41.19,
+                55.50
+              ]
+            },
+            {
+              "value": 700,
+              "lab": [
+                59.62,
+                50.94,
+                54.60
+              ]
+            },
+            {
+              "value": 1000,
+              "lab": [
+                53.77,
+                58.94,
+                52.64
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

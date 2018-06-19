@@ -20,6 +20,7 @@
 package org.akvo.caddisfly.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
@@ -281,8 +282,8 @@ public final class TestUtil {
         mDevice.waitForIdle();
     }
 
-    public static void nextSurveyPage() {
-        clickExternalSourceButton(TestConstantKeys.NEXT);
+    public static void nextSurveyPage(Context context) {
+        clickExternalSourceButton(context, TestConstantKeys.NEXT);
     }
 
     public static void nextSurveyPage(int times) {

@@ -94,7 +94,6 @@
     <string name="dipSensorInSample">Dip sensor in sample</string>
 
     <!--About Screen-->
-    <string name="waterQualitySystem">Water &amp; Soil Quality System</string>
     <string name="copyrightMessage">Copyright © ffem</string>
     <string name="legalInformation">Legal Information</string>
 
@@ -153,7 +152,6 @@
     <string name="versionExpired">Version expired</string>
     <string name="thisVersionHasExpired">This version of the app has expired.</string>
     <string name="uninstallAndInstallFromStore">Please uninstall and then install the latest version from Play Store.</string>
-    <string name="restartSurveyApp">Please save and restart the survey to continue.</string>
 
     <!--Permission-->
     <string name="storagePermission">Storage permission is required</string>
@@ -244,9 +242,9 @@
 
     <!--Update-->
     <string name="update">Update</string>
-    <string name="updateTitle">Update ffem Caddisfly</string>
-    <string name="updateAvailable">New version available. Update to get the most out of your Caddisfly app</string>
+    <string name="updateAvailable">New version available. Update to get the most out of your app</string>
     <string name="remindLater">Remind later</string>
     <string name="continue_send">Continue</string>
+    <string name="creatingMessage">Creating message</string>
 
 </resources>

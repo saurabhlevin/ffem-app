@@ -32,9 +32,9 @@ public class ConfigDownloader {
         // do nothing
     }
 
-    public static void syncFfemExperimentalConfig(TestListActivity testListActivity) {
-        // do nothing
-    }
+//    public static void syncFfemExperimentalConfig(TestListActivity testListActivity) {
+//        // do nothing
+//    }
 
     public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
         // do nothing

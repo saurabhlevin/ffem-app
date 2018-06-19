@@ -24,9 +24,9 @@ package org.akvo.caddisfly.common;
  */
 public final class AppConstants {
 
-    public static final String APP_FOLDER = "ffem Caddisfly Experiment";
+    public static final String APP_FOLDER_DEPRECATED = "ffem Caddisfly Experiment";
 
-    public static final String FFEM_FOLDER = "ffem Caddisfly";
+    public static final String APP_FOLDER = "ffem Experiment";
 
     private AppConstants() {
     }

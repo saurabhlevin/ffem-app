@@ -88,22 +88,22 @@ public class ConfigDownloader {
         }
     }
 
-    /**
-     * Download latest version of the experimental config file.
-     *
-     * @param activity the activity
-     */
-    public static void syncFfemExperimentalConfig(Activity activity) {
-
-        if (NetUtil.isNetworkAvailable(activity)) {
-            Date todayDate = Calendar.getInstance().getTime();
-            ConfigTask configTask = new ConfigTask(activity, null);
-
-            configTask.execute(AppConfig.EXPERIMENT_TESTS_FFEM_URL + "?" + todayDate.getTime(),
-                    FileHelper.FileType.FFEM_EXP_CONFIG.toString());
-
-        }
-    }
+//    /**
+//     * Download latest version of the experimental config file.
+//     *
+//     * @param activity the activity
+//     */
+//    public static void syncFfemExperimentalConfig(Activity activity) {
+//
+//        if (NetUtil.isNetworkAvailable(activity)) {
+//            Date todayDate = Calendar.getInstance().getTime();
+//            ConfigTask configTask = new ConfigTask(activity, null);
+//
+//            configTask.execute(AppConfig.EXPERIMENT_TESTS_FFEM_URL + "?" + todayDate.getTime(),
+//                    FileHelper.FileType.FFEM_EXP_CONFIG.toString());
+//
+//        }
+//    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {

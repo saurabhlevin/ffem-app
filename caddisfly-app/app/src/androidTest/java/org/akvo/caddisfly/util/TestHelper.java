@@ -42,9 +42,9 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.util.DisplayMetrics;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
-import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.hamcrest.Matchers;
 
@@ -197,9 +197,10 @@ public final class TestHelper {
     }
 
     public static void takeScreenshot() {
-        if (TAKE_SCREENSHOTS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (TAKE_SCREENSHOTS) {
             File path = new File(Environment.getExternalStorageDirectory().getPath()
-                    + "/Akvo Caddisfly/screenshots/screen-" + mCounter++ + "-" + mCurrentLanguage + ".png");
+                    + "/" + BuildConfig.APPLICATION_ID + "/screenshots/"
+                    + "screen-" + mCounter++ + "-" + mCurrentLanguage + ".png");
             mDevice.takeScreenshot(path, 0.5f, 60);
         }
     }
@@ -209,10 +210,12 @@ public final class TestHelper {
             File path;
             if (page < 0) {
                 path = new File(Environment.getExternalStorageDirectory().getPath()
-                        + "/Akvo Caddisfly/screenshots/" + name + "-" + mCurrentLanguage + ".png");
+                        + "/" + BuildConfig.APPLICATION_ID + "/screenshots/"
+                        + name + "-" + mCurrentLanguage + ".png");
             } else {
                 path = new File(Environment.getExternalStorageDirectory().getPath()
-                        + "/Akvo Caddisfly/screenshots/" + name + "-" + page + "-" + mCurrentLanguage + ".png");
+                        + "/" + BuildConfig.APPLICATION_ID + "/screenshots/"
+                        + name + "-" + page + "-" + mCurrentLanguage + ".png");
             }
             mDevice.takeScreenshot(path, 0.2f, 40);
         }
@@ -267,21 +270,12 @@ public final class TestHelper {
         List<UiObject2> buttons = mDevice.findObjects(By.text(buttonText));
         buttons.get(index).click();
 
-        // New Android OS seems to popup a button for external app
-//        if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M
-//                && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
-//                || text.equals(TestConstant.GO_TO_TEST))) {
-//            sleep(1000);
-//            mDevice.findObject(By.text("ffem Caddisfly")).click();
-//            sleep(1000);
-//        }
-//
         mDevice.waitForWindowUpdate("", 2000);
 
         sleep(4000);
     }
 
-    public static void clickExternalSourceButton(String text) {
+    public static void clickExternalSourceButton(Context context, String text) {
         try {
 
             String buttonText = currentHashMap.get(text);
@@ -299,7 +293,7 @@ public final class TestHelper {
                     && (text.equals(TestConstant.USE_EXTERNAL_SOURCE)
                     || text.equals(TestConstant.GO_TO_TEST))) {
                 sleep(1000);
-                mDevice.findObject(By.text("ffem Caddisfly")).click();
+                mDevice.findObject(By.text(context.getString(R.string.appName))).click();
                 sleep(1000);
             }
 
@@ -319,7 +313,7 @@ public final class TestHelper {
     public static void gotoSurveyForm() {
 
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME);
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME);
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
@@ -330,7 +324,7 @@ public final class TestHelper {
         sleep(2000);
 
         UiObject addButton = mDevice.findObject(new UiSelector()
-                .resourceId(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/enter_data"));
+                .resourceId(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/enter_data"));
 
         try {
             if (addButton.exists() && addButton.isEnabled()) {
@@ -342,12 +336,12 @@ public final class TestHelper {
 
         mDevice.waitForIdle();
 
-        clickListViewItem("Test All Tests");
+        clickListViewItem("Automated Testing");
 
         mDevice.waitForIdle();
 
         UiObject goToStartButton = mDevice.findObject(new UiSelector()
-                .resourceId(TestConstants.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/jumpBeginningButton"));
+                .resourceId(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/jumpBeginningButton"));
 
         try {
             if (goToStartButton.exists() && goToStartButton.isEnabled()) {

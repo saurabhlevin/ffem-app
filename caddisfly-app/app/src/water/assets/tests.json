@@ -1,0 +1,499 @@
+{
+  "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
+  "tests": [
+    {
+      "name": "Aluminum",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "af112e3c-4fc1-45c1-a8d0-1ec75a2b789e",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.1,0.2,0.3",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Aluminum",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Arsenic (III)",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "93c259c5-f8b5-4317-828b-adfa324a2918",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.1,0.2,0.3,0.4,0.5",
+      "monthsValid": 2,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Arsenic (III)",
+          "unit": "mg/l",
+          "timeDelay": 600
+        }
+      ]
+    },
+    {
+      "name": "Chromium",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "d488672f-9a4c-4aa4-82eb-8a95c40d0296",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.1,0.5,1,2,3",
+      "monthsValid": 3,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Chromium",
+          "unit": "mg/l",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Copper",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "4828ff51-0f2d-4a20-913b-896d6c947d8a",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 12,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Copper",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Dissolved Oxygen (Low range)",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "5d533d99-9b96-406c-a559-9be856e1665b",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,8",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Dissolved Oxygen",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Dissolved Oxygen (High range)",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "8551ce6b-9a67-4d2f-927e-c48f7ab970ac",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,40",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Dissolved Oxygen",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Fluoride",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 12,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "instructions": [
+        {
+          "section": [
+            "bc_rinse",
+            "image:bc_rinse"
+          ]
+        },
+        {
+          "section": [
+            "bc_fill",
+            "image:bc_fill"
+          ]
+        },
+        {
+          "section": [
+            "bc_add_capsule",
+            "image:bc_add_capsule"
+          ]
+        },
+        {
+          "section": [
+            "bc_screw",
+            "image:bc_screw"
+          ]
+        },
+        {
+          "section": [
+            "bc_shake",
+            "image:bc_shake"
+          ]
+        },
+        {
+          "section": [
+            "bc_wipe_bottom",
+            "image:bc_wipe_bottom"
+          ]
+        },
+        {
+          "section": [
+            "bc_wipe_camera",
+            "image:bc_wipe_camera"
+          ]
+        },
+        {
+          "section": [
+            "bc_place_chamber",
+            "image:bc_place_chamber"
+          ]
+        },
+        {
+          "section": [
+            "bc_select_dilution",
+            "image:bc_select_dilution"
+          ]
+        },
+        {
+          "section": [
+            "bc_place_phone",
+            "image:bc_place_phone"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Fluoride",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Free Chlorine",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "a2413119-38eb-4959-92ee-cc169fdbb0fc",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1,1.5,2,2.5,3",
+      "monthsValid": 24,
+      "instructions": [
+        {
+          "section": [
+            "bc_rinse",
+            "image:bc_rinse"
+          ]
+        },
+        {
+          "section": [
+            "bc_frc_1",
+            "image:bc_add_powder"
+          ]
+        },
+        {
+          "section": [
+            "bc_frc_2",
+            "image:bc_fill"
+          ]
+        },
+        {
+          "section": [
+            "bc_screw",
+            "image:bc_screw_frc"
+          ]
+        },
+        {
+          "section": [
+            "bc_shake",
+            "image:bc_shake"
+          ]
+        },
+        {
+          "section": [
+            "bc_wipe_bottom",
+            "image:bc_wipe_bottom"
+          ]
+        },
+        {
+          "section": [
+            "bc_wipe_camera",
+            "image:bc_wipe_camera"
+          ]
+        },
+        {
+          "section": [
+            "bc_place_chamber",
+            "image:bc_place_chamber"
+          ]
+        },
+        {
+          "section": [
+            "bc_place_phone",
+            "image:bc_place_phone"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Free Chlorine",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Nitrate",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,10,25,50,75,100",
+      "monthsValid": 24,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Nitrate",
+          "unit": "mg/l",
+          "timeDelay": 360
+        }
+      ]
+    },
+    {
+      "name": "pH",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "4,5,6,7,8,9,10",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "pH",
+          "timeDelay": 45
+        }
+      ]
+    },
+    {
+      "name": "Phosphate",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.3,0.6,0.9,1.2,1.5,2",
+      "monthsValid": 24,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Phosphate",
+          "unit": "mg/l",
+          "timeDelay": 600
+        }
+      ]
+    },
+    {
+      "name": "Sulphate",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "0b542432-5574-411d-944c-a9a958454e68",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,10,20,30,40",
+      "monthsValid": 12,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Sulphate",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
+      "name": "Total Iron",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 6,
+      "dilutions": [
+        1,
+        2,
+        5
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Total Iron",
+          "unit": "mg/l",
+          "timeDelay": 300
+        }
+      ]
+    },
+    {
+      "name": "Potassium",
+      "subtype": "striptest",
+      "uuid": "a18118e7-6382-4d16-b5fb-55f97cd99083",
+      "brand": "MERCK 117985",
+      "groupingType": "INDIVIDUAL",
+      "hasImage": true,
+      "length": 74,
+      "height": 6,
+      "instructions": [
+        {
+          "section": [
+            "collect_water_sample",
+            "image:collect_sample"
+          ]
+        },
+        {
+          "section": [
+            "immerse_reaction_zone",
+            "image:dip_sample_1"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "add_reagent_k1",
+            "image:add_k_1"
+          ]
+        },
+        {
+          "section": [
+            "allow_excess_liquid_to_run_off"
+          ]
+        },
+        {
+          "section": [
+            "place_strip_clr",
+            "image:place_clr"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "id": 1,
+          "name": "Potassium",
+          "unit": "mg/l",
+          "patchPos": 4.5,
+          "patchWidth": 7,
+          "colors": [
+            {
+              "value": 0,
+              "lab": [
+                78.90,
+                12.62,
+                47.41
+              ]
+            },
+            {
+              "value": 250,
+              "lab": [
+                73.59,
+                24.18,
+                53.73
+              ]
+            },
+            {
+              "value": 450,
+              "lab": [
+                65.05,
+                41.19,
+                55.50
+              ]
+            },
+            {
+              "value": 700,
+              "lab": [
+                59.62,
+                50.94,
+                54.60
+              ]
+            },
+            {
+              "value": 1000,
+              "lab": [
+                53.77,
+                58.94,
+                52.64
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

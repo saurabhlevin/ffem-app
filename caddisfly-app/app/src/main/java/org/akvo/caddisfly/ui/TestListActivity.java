@@ -199,7 +199,7 @@ public class TestListActivity extends BaseActivity
                 fragment.refresh();
             }
         });
-        ConfigDownloader.syncFfemExperimentalConfig(this);
+//        ConfigDownloader.syncFfemExperimentalConfig(this);
     }
 
     public interface SyncCallbackInterface {

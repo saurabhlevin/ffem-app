@@ -65,16 +65,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.TestActivity"
-            android:screenOrientation="nosensor">
-            <intent-filter>
-                <action android:name="io.ffem.app.caddisfly" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".ui.TestListActivity"
             android:screenOrientation="nosensor" />
         <activity

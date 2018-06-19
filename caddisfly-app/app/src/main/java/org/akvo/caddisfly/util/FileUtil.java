@@ -36,7 +36,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -394,5 +396,34 @@ public final class FileUtil {
         bb.order(ByteOrder.LITTLE_ENDIAN);
         bb.putInt(i);
         return bb.array();
+    }
+
+    // https://www.mkyong.com/java/how-to-copy-directory-in-java/
+    public static void copyFolder(File source, File destination) throws IOException {
+
+        if (source.isDirectory()) {
+            if (!destination.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                destination.mkdir();
+            }
+
+            String files[] = source.list();
+            for (String file : files) {
+                File srcFile = new File(source, file);
+                File destFile = new File(destination, file);
+                copyFolder(srcFile, destFile);
+            }
+        } else {
+            InputStream in = new FileInputStream(source);
+            OutputStream out = new FileOutputStream(destination);
+
+            byte[] buf = new byte[1024];
+            int length;
+            while ((length = in.read(buf)) > 0) {
+                out.write(buf, 0, length);
+            }
+            in.close();
+            out.close();
+        }
     }
 }

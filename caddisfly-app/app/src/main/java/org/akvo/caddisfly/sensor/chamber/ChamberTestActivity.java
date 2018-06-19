@@ -76,7 +76,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import io.ffem.caddisfly.experiment.DiagnosticSendDialogFragment;
+import io.ffem.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
