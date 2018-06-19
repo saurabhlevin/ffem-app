@@ -2,6 +2,24 @@
   "comment": "This file contains the metadata for tests. IMPORTANT: *DO NOT* change the uuid values",
   "tests": [
     {
+      "name": "Water - Fluoride",
+      "type": "water",
+      "subtype": "cuvette-bluetooth",
+      "uuid": "dae64f91-f3ae-450e-a7d2-1d5a320d19de",
+      "brand": "Caddisfly",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0,0.5,1,1.5,2",
+      "monthsValid": 12,
+      "results": [
+        {
+          "id": 1,
+          "name": "Fluoride",
+          "unit": "mg/l"
+        }
+      ]
+    },
+    {
       "name": "Available Boron",
       "type": "soil",
       "subtype": "cuvette",

@@ -27,8 +27,8 @@ public class Constants {
     public static final String FREE_CHLORINE_ID = "c3535e72-ff77-4225-9f4a-41d3288780c6";
     public static final String FREE_CHLORINE_ID_2 = "a2413119-38eb-4959-92ee-cc169fdbb0fc";
     public static final String FLUORIDE_ID = "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf";
-    public static final String FLUORIDE_1_ID = "f0f3c1dd-89af-49f1-83e7-bcc31c3006cg";
     public static final String CBT_ID = "e40d4764-e73f-46dd-a598-ed4db0fd3386";
+    public static final String CUVETTE_BLUETOOTH_ID = "dae64f91-f3ae-450e-a7d2-1d5a320d19de";
 
     public static final String MPN_TABLE_FILENAME = "most-probable-number.json";
 
