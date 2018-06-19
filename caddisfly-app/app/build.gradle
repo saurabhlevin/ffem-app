@@ -10,7 +10,7 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 229
+        versionCode 231
         versionName "Beta 1.0"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

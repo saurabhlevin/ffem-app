@@ -85,9 +85,6 @@ public final class FileHelper {
      */
     public static File getFilesDir(FileType type, String subPath) {
 
-        //TODO remove migration at some point in future
-        migrateFolders();
-
         String path;
         switch (type) {
             case CALIBRATION:
@@ -130,7 +127,8 @@ public final class FileHelper {
         return dir;
     }
 
-    private static void migrateFolders() {
+    //TODO remove migration at some point in future
+    public static void migrateFolders() {
         File appFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(),
                 false) + ROOT_DIRECTORY);
         if (!appFolder.exists()) {

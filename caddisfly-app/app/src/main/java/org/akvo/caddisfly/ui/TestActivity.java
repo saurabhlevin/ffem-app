@@ -48,6 +48,7 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.ApkHelper;
 import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
+import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.TestInfo;
@@ -83,9 +84,9 @@ public class TestActivity extends BaseActivity {
     private final WeakRefHandler handler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
 
+    private final String[] storagePermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] bluetoothPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
-    private final String[] noPermissions = {};
 
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
@@ -115,29 +116,6 @@ public class TestActivity extends BaseActivity {
         if (BuildConfig.APPLICATION_ID.equals(intent.getAction())) {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
-        }
-
-        if (testInfo != null) {
-            if (testInfo.getSubtype() == TestType.SENSOR
-                    && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
-                ErrorMessages.alertFeatureNotSupported(this, true);
-            } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
-
-                if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
-                    return;
-                }
-
-                CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
-                        .calibrationDao().getCalibrationDetails(testInfo.getUuid());
-
-                if (calibrationDetail != null) {
-                    long milliseconds = calibrationDetail.expiry;
-                    if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
-                        ErrorMessages.alertCalibrationExpired(this);
-                    }
-                }
-            }
         }
     }
 
@@ -216,16 +194,20 @@ public class TestActivity extends BaseActivity {
 
         switch (testInfo.getSubtype()) {
             case SENSOR:
-                checkPermissions = noPermissions;
-                break;
+                startTest();
+                return;
             case MANUAL:
                 if (!testInfo.getHasImage()) {
-                    checkPermissions = noPermissions;
+                    startTest();
+                    return;
                 }
                 break;
             case BLUETOOTH:
                 checkPermissions = bluetoothPermissions;
                 break;
+            case TITRATION:
+                startTest();
+                return;
             default:
         }
 
@@ -237,36 +219,64 @@ public class TestActivity extends BaseActivity {
     }
 
     private void startTest() {
-        switch (testInfo.getSubtype()) {
-            case BLUETOOTH:
-                startBluetoothTest();
-                break;
-            case CBT:
-                startCbtTest();
-                break;
-            case CHAMBER_TEST:
-                startChamberTest();
-                break;
-            case COLIFORM_COUNT:
-                startColiformCountTest();
-                break;
-            case MANUAL:
-                startManualTest();
-                break;
-            case SENSOR:
-                startSensorTest();
-                break;
-            case STRIP_TEST:
-                if (cameraIsOk) {
-                    startStripTest();
-                } else {
-                    checkCameraMegaPixel();
+
+        if (permissionsDelegate.hasPermissions(storagePermissions)) {
+            FileHelper.migrateFolders();
+        }
+
+        if (testInfo != null) {
+            if (testInfo.getSubtype() == TestType.SENSOR
+                    && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
+                ErrorMessages.alertFeatureNotSupported(this, true);
+            } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
+
+                if (!SwatchHelper.isSwatchListValid(testInfo)) {
+                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                    return;
                 }
-                break;
-            case TITRATION:
-                startTitrationTest();
-                break;
-            default:
+
+                CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                        .calibrationDao().getCalibrationDetails(testInfo.getUuid());
+
+                if (calibrationDetail != null) {
+                    long milliseconds = calibrationDetail.expiry;
+                    if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
+                        ErrorMessages.alertCalibrationExpired(this);
+                    }
+                }
+            }
+
+            switch (testInfo.getSubtype()) {
+                case BLUETOOTH:
+                    startBluetoothTest();
+                    break;
+                case CBT:
+                    startCbtTest();
+                    break;
+                case CHAMBER_TEST:
+                    startChamberTest();
+                    break;
+                case COLIFORM_COUNT:
+                    startColiformCountTest();
+                    break;
+                case MANUAL:
+                    startManualTest();
+                    break;
+                case SENSOR:
+                    startSensorTest();
+                    break;
+                case STRIP_TEST:
+                    if (cameraIsOk) {
+                        startStripTest();
+                    } else {
+                        checkCameraMegaPixel();
+                    }
+                    break;
+                case TITRATION:
+                    startTitrationTest();
+                    break;
+                default:
+            }
         }
     }
 
@@ -466,6 +476,7 @@ public class TestActivity extends BaseActivity {
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
+            FileHelper.migrateFolders();
             startTest();
         } else {
 
