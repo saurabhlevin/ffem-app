@@ -37,15 +37,23 @@ import android.widget.Toast;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
+import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.NavigationController;
 import org.akvo.caddisfly.databinding.ActivityMainBinding;
+import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.ApkHelper;
+import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
+import org.akvo.caddisfly.helper.SwatchHelper;
+import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
+import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteMeasureActivity;
+import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteResultActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -54,6 +62,7 @@ import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import static org.akvo.caddisfly.model.TestType.CHAMBER_TEST;
@@ -219,6 +228,38 @@ public class MainActivity extends BaseActivity {
 
     public void onColiformCountClick(View view) {
         navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+    }
+
+    public void onSendResult(MenuItem item) {
+        //Only start the colorimetry calibration if the device has a camera flash
+        if (CameraHelper.hasFeatureCameraFlash(this,
+                R.string.cannotStartTest, R.string.ok, null)) {
+
+            final TestListViewModel viewModel =
+                    ViewModelProviders.of(this).get(TestListViewModel.class);
+
+            TestInfo testInfo = viewModel.getTestInfo(Constants.CUVETTE_BLUETOOTH_ID);
+
+            List<Calibration> calibrations = CaddisflyApp.getApp().getDb()
+                    .calibrationDao().getAll(Constants.FLUORIDE_ID);
+
+            testInfo.setCalibrations(calibrations);
+
+            if (!SwatchHelper.isSwatchListValid(testInfo)) {
+                ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                return;
+            }
+
+            final Intent intent = new Intent(this, CuvetteMeasureActivity.class);
+            intent.putExtra("internal", true);
+            intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+            startActivity(intent);
+        }
+    }
+
+    public void onReceiveResult(MenuItem item) {
+        final Intent intent = new Intent(this, CuvetteResultActivity.class);
+        startActivity(intent);
     }
 
     /**
