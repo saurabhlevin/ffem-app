@@ -8,7 +8,7 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 231
+        versionCode 232
         versionName "Beta 1.0"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,7 +29,6 @@ android {
             applicationIdSuffix ".experiment"
             versionName "Exp Beta 1.0"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
-//            multiDexEnabled true
         }
     }
 
@@ -54,6 +53,11 @@ android {
     buildTypes {
         debug {
             debuggable true
+        }
+
+        multidex {
+            initWith buildTypes.debug
+            multiDexEnabled true
         }
     }
 

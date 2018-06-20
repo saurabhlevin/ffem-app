@@ -3,6 +3,10 @@ package org.akvo.caddisfly.sensor.cuvette.camera;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -15,9 +19,11 @@ import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
-import org.akvo.caddisfly.util.CameraPreview;
+import org.akvo.caddisfly.sensor.chamber.ChamberCameraPreview;
 import org.akvo.caddisfly.util.ColorUtil;
 import org.akvo.caddisfly.util.ImageUtil;
+
+import java.io.ByteArrayOutputStream;
 
 public class CuvetteCameraManager {
     private final TestInfo testInfo;
@@ -34,11 +40,13 @@ public class CuvetteCameraManager {
                 // Use dialog_device_list image if we are in dialog_device_list mode
 
             } else {
-                int width = camera.getParameters().getPreviewSize().width;
-                int height = camera.getParameters().getPreviewSize().height;
-                int[] finalPixels = ImageUtil.convertYUV420_NV21toRGB8888(imageData, width, height);
+                Camera.Parameters parameters = camera.getParameters();
+                YuvImage im = new YuvImage(imageData, ImageFormat.NV21, parameters.getPreviewSize().width, parameters.getPreviewSize().height, null);
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                im.compressToJpeg(new Rect(0,0,parameters.getPreviewSize().width, parameters.getPreviewSize().height), 100, out);
+                byte[] imageBytes = out.toByteArray();
+                Bitmap tempFinalImage = BitmapFactory.decodeByteArray(imageBytes, 0, out.size());
 
-                Bitmap tempFinalImage = Bitmap.createBitmap(finalPixels, width, height, Bitmap.Config.ARGB_8888);
                 Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(tempFinalImage,
                         ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
@@ -49,8 +57,9 @@ public class CuvetteCameraManager {
                         photoColor, testInfo.getSwatches());
 
                 Intent localIntent = new Intent("CUVETTE_RESULT_ACTION");
-                localIntent.putExtra("cuvette_result", String.valueOf(resultDetail.getResult()) + "\n" +
-                        ColorUtil.getColorRgbString(resultDetail.getColor()));
+                localIntent.putExtra("cuvette_result",
+                        String.valueOf(resultDetail.getResult())
+                                + "," + resultDetail.getColor());
 
                 localBroadcastManager.sendBroadcast(localIntent);
             }
@@ -66,12 +75,13 @@ public class CuvetteCameraManager {
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
     }
 
-    public CameraPreview initCamera(Context context) {
+    public ChamberCameraPreview initCamera(Context context) {
         startCameraThread();
 
         // open the camera and create a preview surface for it
-        CameraPreview cameraPreview = new CameraPreview(context, Camera.Parameters.FLASH_MODE_TORCH);
+        ChamberCameraPreview cameraPreview = new ChamberCameraPreview(context);
         mCamera = cameraPreview.getCamera();
+        cameraPreview.setupCamera(mCamera);
 
         return cameraPreview;
     }

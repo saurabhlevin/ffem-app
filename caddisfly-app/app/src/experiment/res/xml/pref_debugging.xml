@@ -5,14 +5,5 @@
         <CheckBoxPreference
             android:key="@string/showDebugMessagesKey"
             android:title="@string/debuggingOn" />
-
-        <Preference
-            android:key="bluetoothSendTest"
-            android:title="Send results via bluetooth" />
-
-        <Preference
-            android:key="bluetoothReceiveTest"
-            android:title="Receive results via bluetooth" />
-
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>

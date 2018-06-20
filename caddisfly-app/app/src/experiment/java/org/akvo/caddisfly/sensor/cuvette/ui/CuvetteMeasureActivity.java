@@ -25,11 +25,11 @@ import android.widget.Toast;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.sensor.chamber.ChamberCameraPreview;
 import org.akvo.caddisfly.sensor.cuvette.bluetooth.Constants;
 import org.akvo.caddisfly.sensor.cuvette.camera.CuvetteCameraManager;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.BluetoothChatService;
-import org.akvo.caddisfly.util.CameraPreview;
 
 import java.lang.ref.WeakReference;
 
@@ -37,12 +37,8 @@ import timber.log.Timber;
 
 @SuppressWarnings("deprecation")
 public class CuvetteMeasureActivity extends BaseActivity
-        implements CameraPreview.OnSurfaceChangedListener,
-        DeviceListDialog.OnDeviceSelectedListener {
+        implements DeviceListDialog.OnDeviceSelectedListener {
 
-    // Intent request codes
-//    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-//    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
     /**
      * The Handler that gets information back from the BluetoothChatService
@@ -51,9 +47,8 @@ public class CuvetteMeasureActivity extends BaseActivity
     @Nullable
     private WeakReference<Camera> wrCamera;
     private Camera mCamera;
-    private CameraPreview mCameraPreview;
+    private ChamberCameraPreview mCameraPreview;
     private FrameLayout previewLayout;
-    //    private SoundPoolPlayer sound;
     private WeakReference<CuvetteMeasureActivity> mActivity;
     private CuvetteCameraManager cuvetteCameraManager;
     private Handler mCameraHandler;
@@ -63,7 +58,7 @@ public class CuvetteMeasureActivity extends BaseActivity
             try {
                 cuvetteCameraManager.setDecodeImageCaptureRequest();
             } finally {
-                mCameraHandler.postDelayed(mStatusChecker, 1000);
+                mCameraHandler.postDelayed(mStatusChecker, 2000);
             }
         }
     };
@@ -95,8 +90,6 @@ public class CuvetteMeasureActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        sound = new SoundPoolPlayer(this);
 
         setContentView(R.layout.fragment_run_cuvette_test);
 
@@ -176,6 +169,7 @@ public class CuvetteMeasureActivity extends BaseActivity
         mCameraPreview = cuvetteCameraManager.initCamera(this);
 
         mCamera = mCameraPreview.getCamera();
+
         if (mCamera == null) {
             Toast.makeText(this.getApplicationContext(), "Could not instantiate the camera",
                     Toast.LENGTH_SHORT).show();
@@ -186,10 +180,6 @@ public class CuvetteMeasureActivity extends BaseActivity
                 previewLayout.removeAllViews();
                 if (mCameraPreview != null) {
                     previewLayout.addView(mCameraPreview);
-
-                    mCameraHandler = new Handler();
-                    startRepeatingTask();
-
                 } else {
                     finish();
                 }
@@ -198,6 +188,21 @@ public class CuvetteMeasureActivity extends BaseActivity
                 Timber.e(e);
             }
         }
+    }
+
+    /**
+     * Turn flash on.
+     */
+    public void turnFlashOn() {
+        if (mCamera == null) {
+            return;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        String flashMode = Camera.Parameters.FLASH_MODE_TORCH;
+        parameters.setFlashMode(flashMode);
+
+        mCamera.setParameters(parameters);
     }
 
     private void releaseResources() {
@@ -247,18 +252,10 @@ public class CuvetteMeasureActivity extends BaseActivity
         stopRepeatingTask();
 
         releaseResources();
-//        if (!isFinishing()) {
-//            finish();
-//        }
 
         if (mChatService != null) {
             mChatService.stop();
         }
-    }
-
-    @Override
-    public void onSurfaceChanged(int w, int h, int previewWidth, int previewHeight) {
-
     }
 
     /**
@@ -267,7 +264,7 @@ public class CuvetteMeasureActivity extends BaseActivity
     private void setupChat() {
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothChatService(this, mHandler);
+        mChatService = new BluetoothChatService(mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
@@ -345,36 +342,24 @@ public class CuvetteMeasureActivity extends BaseActivity
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        mChatService.connect(device, secure);
+        try {
+            mChatService.connect(device, secure);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDeviceSelected(String address) {
-//        switch (requestCode) {
-//            case REQUEST_CONNECT_DEVICE_SECURE:
-        // When DeviceListDialog returns with a device to connect
         connectDevice(address, true);
 
-        startCameraPreview();
+        mCameraHandler = new Handler();
 
-//                break;
-//            case REQUEST_CONNECT_DEVICE_INSECURE:
-//                // When DeviceListDialog returns with a device to connect
-//                    connectDevice(address, false);
-//                break;
-//            case REQUEST_ENABLE_BT:
-//                // When the request to enable Bluetooth returns
-//                if (resultCode == Activity.RESULT_OK) {
-//                    // Bluetooth is now enabled, so set up a chat session
-//                    setupChat();
-//                } else {
-//                    // User did not enable Bluetooth or an error occurred
-//                    Timber.d("BT not enabled");
-//                    Toast.makeText(this, R.string.bt_not_enabled_leaving,
-//                            Toast.LENGTH_SHORT).show();
-//                    finish();
-//                }
-//        }
+        (new Handler()).postDelayed(() -> {
+            startCameraPreview();
+            turnFlashOn();
+            startRepeatingTask();
+        }, 8000);
     }
 
     static class MyInnerHandler extends Handler {
@@ -393,7 +378,6 @@ public class CuvetteMeasureActivity extends BaseActivity
                         case BluetoothChatService.STATE_CONNECTED:
                             activity.setStatus(activity.getString(R.string.title_connected_to,
                                     activity.mConnectedDeviceName));
-//                            mConversationArrayAdapter.clear();
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             activity.setStatus(R.string.deviceConnecting);
@@ -404,29 +388,11 @@ public class CuvetteMeasureActivity extends BaseActivity
                             break;
                     }
                     break;
-                case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) message.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-//                    mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
-                case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) message.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, message.arg1);
-//                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
-                    break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     activity.mConnectedDeviceName = message.getData().getString(Constants.DEVICE_NAME);
 //                    Toast.makeText(this, "Connected to "
 //                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case Constants.MESSAGE_TOAST:
-//                    if (null != this) {
-//                        Toast.makeText(this, msg.getData().getString(Constants.TOAST),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
                     break;
             }
         }

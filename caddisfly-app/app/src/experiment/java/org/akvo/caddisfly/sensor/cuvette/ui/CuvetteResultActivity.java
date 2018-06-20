@@ -16,19 +16,26 @@ import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.model.ResultDetail;
+import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.cuvette.bluetooth.Constants;
 import org.akvo.caddisfly.util.BluetoothChatService;
+import org.akvo.caddisfly.util.ResultAdapter;
 
 import java.lang.ref.WeakReference;
-
-import timber.log.Timber;
+import java.util.List;
+import java.util.Locale;
 
 public class CuvetteResultActivity extends AppCompatActivity
         implements DeviceListDialog.OnDeviceSelectedListener {
@@ -40,13 +47,15 @@ public class CuvetteResultActivity extends AppCompatActivity
     MyInnerHandler mHandler = new MyInnerHandler(this);
     private WeakReference<CuvetteResultActivity> mActivity;
 
+    private Button buttonPause;
+
     // Layout Views
-    private ListView mConversationView;
+    private RecyclerView mConversationView;
 
     /**
      * Array adapter for the conversation thread
      */
-    private ArrayAdapter<String> mConversationArrayAdapter;
+    private ResultAdapter mConversationArrayAdapter;
     /**
      * String buffer for outgoing messages
      */
@@ -70,6 +79,49 @@ public class CuvetteResultActivity extends AppCompatActivity
             sendMessage(intent.getStringExtra("cuvette_result"));
         }
     };
+    private TextView textResult;
+    private Handler resultHandler;
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            if (mConversationArrayAdapter != null) {
+                try {
+                    List<ResultDetail> list = mConversationArrayAdapter.getList();
+
+                    if (list != null) {
+                        int listSize = list.size();
+                        double total = 0;
+                        int distanceZeroCount = 0;
+                        int divisor = 0;
+                        for (int i = listSize - 1; i >= 0; i--) {
+                            ResultDetail resultDetail = list.get(i);
+                            if (resultDetail.getResult() > 0) {
+                                if (resultDetail.getDistance() <= AppPreferences.getColorDistanceTolerance()) {
+                                    distanceZeroCount++;
+                                }
+                                if (distanceZeroCount > 9) {
+                                    total += resultDetail.getResult();
+                                    divisor++;
+                                    distanceZeroCount = 0;
+                                }
+                            } else {
+                                distanceZeroCount = 0;
+                            }
+                        }
+                        if (divisor > 0) {
+                            textResult.setText(String.format(Locale.getDefault(),
+                                    "%.2f", total / divisor));
+                        }
+                    }
+
+                } finally {
+                    resultHandler.postDelayed(mStatusChecker, 1000);
+                }
+            }
+        }
+    };
+    private boolean readPaused;
+    private boolean ignoreNoResult;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -81,6 +133,8 @@ public class CuvetteResultActivity extends AppCompatActivity
         setContentView(R.layout.activity_cuvette_result);
 
         mConversationView = findViewById(R.id.in);
+        textResult = findViewById(R.id.textResult);
+        buttonPause = findViewById(R.id.buttonPause);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -96,20 +150,8 @@ public class CuvetteResultActivity extends AppCompatActivity
                 broadcastReceiver,
                 new IntentFilter("CUVETTE_RESULT_ACTION")
         );
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
-        } else if (mChatService == null) {
-            setupChat();
-        }
+        resultHandler = new Handler();
     }
 
     @Override
@@ -141,6 +183,8 @@ public class CuvetteResultActivity extends AppCompatActivity
     }
 
     private void releaseResources() {
+
+        stopRepeatingTask();
 
         if (mActivity != null) {
             mActivity.clear();
@@ -241,35 +285,77 @@ public class CuvetteResultActivity extends AppCompatActivity
         mChatService.connect(device, secure);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // If BT is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            // Otherwise, setup the chat session
+        } else if (mChatService == null) {
+            setupChat();
+            startRepeatingTask();
+        }
+    }
+
+    @Override
+    public void onDeviceSelected(String address) {
+        connectDevice(address, true);
+    }
+
     /**
      * Set up the UI and background operations for chat.
      */
     private void setupChat() {
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothChatService(this, mHandler);
+        mChatService = new BluetoothChatService(mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
 
-        Timber.d("setupChat()");
-
         // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<>(this, R.layout.message);
-
+        mConversationArrayAdapter = new ResultAdapter();
+//        mConversationArrayAdapter.setHasStableIds(true);
+        ((DefaultItemAnimator) mConversationView.getItemAnimator())
+                .setSupportsChangeAnimations(false);
+        mConversationView.setLayoutManager(new LinearLayoutManager(this));
         mConversationView.setAdapter(mConversationArrayAdapter);
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothChatService(this, mHandler);
+        mChatService = new BluetoothChatService(mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
     }
 
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
 
-    @Override
-    public void onDeviceSelected(String address) {
-        connectDevice(address, true);
+    void stopRepeatingTask() {
+        resultHandler.removeCallbacks(mStatusChecker);
+    }
+
+    public void onResetClick(View view) {
+        mConversationArrayAdapter.clear();
+        textResult.setText("");
+        mConversationArrayAdapter.notifyDataSetChanged();
+    }
+
+    public void onPauseClick(View view) {
+        readPaused = !readPaused;
+        if (readPaused) {
+            buttonPause.setText("Resume");
+        } else {
+            buttonPause.setText("Pause");
+        }
+    }
+
+    public void onIgnoreNoResultClick(View view) {
+        ignoreNoResult = !ignoreNoResult;
     }
 
     static class MyInnerHandler extends Handler {
@@ -288,7 +374,6 @@ public class CuvetteResultActivity extends AppCompatActivity
                         case BluetoothChatService.STATE_CONNECTED:
                             activity.setStatus(activity.getString(R.string.title_connected_to,
                                     activity.mConnectedDeviceName));
-                            activity.mConversationArrayAdapter.clear();
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             activity.setStatus(R.string.deviceConnecting);
@@ -299,29 +384,21 @@ public class CuvetteResultActivity extends AppCompatActivity
                             break;
                     }
                     break;
-                case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) message.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    activity.mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
                 case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) message.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, message.arg1);
-                    activity.mConversationArrayAdapter.add(activity.mConnectedDeviceName + ":  " + readMessage);
+                    if (!activity.readPaused) {
+                        byte[] readBuf = (byte[]) message.obj;
+                        // construct a string from the valid bytes in the buffer
+                        String readMessage = new String(readBuf, 0, message.arg1);
+                        activity.mConversationArrayAdapter.add(readMessage, activity.ignoreNoResult);
+                        activity.mConversationArrayAdapter.notifyDataSetChanged();
+                        activity.mConversationView.scrollToPosition(0);
+                    }
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     activity.mConnectedDeviceName = message.getData().getString(Constants.DEVICE_NAME);
 //                    Toast.makeText(this, "Connected to "
 //                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case Constants.MESSAGE_TOAST:
-//                    if (null != this) {
-//                        Toast.makeText(this, msg.getData().getString(Constants.TOAST),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
                     break;
             }
         }
