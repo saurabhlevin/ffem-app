@@ -55,7 +55,8 @@ import timber.log.Timber;
  * Created by markwestra on 19/07/2017
  */
 @SuppressWarnings("deprecation")
-public class StripMeasureActivity extends BaseActivity implements StripMeasureListener {
+public class StripMeasureActivity extends BaseActivity implements
+        StripMeasureListener, CameraPreview.OnSurfaceChangedListener {
 
     public static final boolean DEBUG = false;
     // a handler to handle the state machine of the preview, capture, decode, fullCapture cycle
@@ -305,5 +306,10 @@ public class StripMeasureActivity extends BaseActivity implements StripMeasureLi
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSurfaceChanged(int w, int h, int previewWidth, int previewHeight) {
+
     }
 }
