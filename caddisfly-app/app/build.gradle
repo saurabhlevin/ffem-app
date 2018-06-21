@@ -132,6 +132,11 @@ dependencies {
     // Usb
     implementation 'com.github.felHR85:UsbSerial:4.5.1'
 
+    // Email
+    implementation files('libs/activation.jar')
+    implementation files('libs/additionnal.jar')
+    implementation files('libs/mail.jar')
+
     // Testing
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:3.8.0'

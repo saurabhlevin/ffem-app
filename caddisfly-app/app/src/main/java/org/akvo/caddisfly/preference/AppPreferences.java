@@ -19,6 +19,8 @@
 
 package org.akvo.caddisfly.preference;
 
+import android.util.Patterns;
+
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ChamberTestConfig;
@@ -123,5 +125,21 @@ public final class AppPreferences {
     public static boolean useMaxZoom() {
         return isDiagnosticMode()
                 && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.maxZoomKey, false);
+    }
+
+    public static String getNotificationEmails() {
+        String emails = PreferencesUtil.getString(CaddisflyApp.getApp(), R.string.colif_emails, "");
+        String[] emailArray = emails.split("\n");
+        StringBuilder emailList = new StringBuilder();
+        for (String email : emailArray) {
+            email = email.trim();
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (!emailList.toString().isEmpty()) {
+                    emailList.append(",");
+                }
+                emailList.append(email);
+            }
+        }
+        return emailList.toString();
     }
 }

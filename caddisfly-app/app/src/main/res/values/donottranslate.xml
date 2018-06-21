@@ -76,6 +76,14 @@
 
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
+    <string name="colif_volumeKey">colif_volume</string>
+    <string name="colif_brothMediaKey">colif_brothMedia</string>
+    <string name="colif_IntervalMinutesKey">colif_IntervalMinutes</string>
+    <string name="colif_NumberOfSamplesKey">colif_NumberOfSamples</string>
+    <string name="colif_emails">colif_emails</string>
+    <string name="turbiditySavePathKey">turbiditySavePath</string>
+    <string name="coliformResultSafeKey">coliformResultSafe</string>
+
     <!--Diagnostic-->
     <string name="diagnostics">Diagnostics</string>
     <string name="debuggingOn">Show debug info</string>
@@ -84,7 +92,7 @@
     <string name="ignoreTimeDelays">Ignore time delays</string>
     <string name="debugging">Debugging</string>
     <string name="download_experimental_tests">Download experimental tests</string>
-    <string name="testModeOn">Test Mode</string>
+    <string name="testModeOn">Demo / Test Mode</string>
     <string name="maxZoom">Max Zoom</string>
 
     <!--Diagnostic Mode: Messages -->
