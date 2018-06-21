@@ -54,6 +54,8 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
 import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteMeasureActivity;
 import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteResultActivity;
+import org.akvo.caddisfly.sensor.titration.ui.TitrationMeasureActivity;
+import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -226,10 +228,6 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    public void onColiformCountClick(View view) {
-        navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
-    }
-
     public void onSendResult(MenuItem item) {
         //Only start the colorimetry calibration if the device has a camera flash
         if (CameraHelper.hasFeatureCameraFlash(this,
@@ -251,7 +249,6 @@ public class MainActivity extends BaseActivity {
             }
 
             final Intent intent = new Intent(this, CuvetteMeasureActivity.class);
-            intent.putExtra("internal", true);
             intent.putExtra(ConstantKey.TEST_INFO, testInfo);
             startActivity(intent);
         }
@@ -259,6 +256,28 @@ public class MainActivity extends BaseActivity {
 
     public void onReceiveResult(MenuItem item) {
         final Intent intent = new Intent(this, CuvetteResultActivity.class);
+        startActivity(intent);
+    }
+
+    public void onColiformsClick(View view) {
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+
+        TestInfo testInfo = viewModel.getTestInfo(Constants.COLIFORM_ID);
+
+        final Intent intent = new Intent(this, TimeLapseActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivity(intent);
+    }
+
+    public void onTitrationClick(View view) {
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+
+        TestInfo testInfo = viewModel.getTestInfo(Constants.TITRATION2_ID);
+
+        final Intent intent = new Intent(this, TitrationMeasureActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivity(intent);
     }
 

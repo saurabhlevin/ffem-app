@@ -61,6 +61,7 @@ import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.sensor.manual.ManualTestActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
 import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
+import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -256,8 +257,8 @@ public class TestActivity extends BaseActivity {
                 case CHAMBER_TEST:
                     startChamberTest();
                     break;
-                case COLIFORM_COUNT:
-                    startColiformCountTest();
+                case COLIFORM:
+                    startColiformTest();
                     break;
                 case MANUAL:
                     startManualTest();
@@ -280,16 +281,16 @@ public class TestActivity extends BaseActivity {
         }
     }
 
-    private void startTitrationTest() {
-        Intent intent;
-        intent = new Intent(this, TitrationTestActivity.class);
+    private void startColiformTest() {
+        Intent intent = new Intent(this, TimeLapseActivity.class);
+        intent.putExtra(ConstantKey.RUN_TEST, true);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivityForResult(intent, REQUEST_TEST);
     }
 
-    private void startColiformCountTest() {
-        Intent intent = new Intent(this, ChamberTestActivity.class);
-        intent.putExtra(ConstantKey.RUN_TEST, true);
+    private void startTitrationTest() {
+        Intent intent;
+        intent = new Intent(this, TitrationTestActivity.class);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivityForResult(intent, REQUEST_TEST);
     }

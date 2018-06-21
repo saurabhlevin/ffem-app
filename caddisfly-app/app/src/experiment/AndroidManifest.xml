@@ -8,11 +8,21 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application>
+        <activity
+            android:name=".ui.TestActivity"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="io.ffem.experiment" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".sensor.bluetooth.BluetoothLeService"
             android:enabled="true" />
         <!-- /Bluetooth -->
-
 
         <!-- USB -->
         <activity

@@ -22,6 +22,7 @@ package org.akvo.caddisfly.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -105,6 +106,24 @@ public final class ImageUtil {
         croppedBitmap.setHasAlpha(true);
 
         return croppedBitmap;
+    }
+
+    public static ColorMatrix createGreyMatrix() {
+        return new ColorMatrix(new float[]{
+                0.2989f, 0.5870f, 0.1140f, 0, 0,
+                0.2989f, 0.5870f, 0.1140f, 0, 0,
+                0.2989f, 0.5870f, 0.1140f, 0, 0,
+                0, 0, 0, 1, 0
+        });
+    }
+
+    public static ColorMatrix createThresholdMatrix(int threshold) {
+        return new ColorMatrix(new float[]{
+                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+                0f, 0f, 0f, 1f, 0f
+        });
     }
 
     public static Bitmap getGrayscale(@NonNull Bitmap src) {
