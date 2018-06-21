@@ -38,7 +38,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class CuvetteResultActivity extends AppCompatActivity
-        implements DeviceListDialog.OnDeviceSelectedListener {
+        implements DeviceListDialog.OnDeviceSelectedListener,
+        DeviceListDialog.OnDeviceCancelListener{
 
     private static final int REQUEST_ENABLE_BT = 3;
     /**
@@ -174,12 +175,12 @@ public class CuvetteResultActivity extends AppCompatActivity
         }
     }
 
+    DialogFragment deviceDialog;
     private void showDeviceListDialog() {
-        DialogFragment resultFragment = DeviceListDialog.newInstance();
+        deviceDialog = DeviceListDialog.newInstance();
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        resultFragment.setCancelable(false);
-        resultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-        resultFragment.show(ft, "deviceList");
+        deviceDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        deviceDialog.show(ft, "deviceList");
     }
 
     private void releaseResources() {
@@ -200,6 +201,15 @@ public class CuvetteResultActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        if (deviceDialog.isVisible()) {
+//            deviceDialog.dismiss();
+//        }
+//        super.onBackPressed();
+//        finish();
+//    }
 
     @Override
     public void onDestroy() {
@@ -356,6 +366,11 @@ public class CuvetteResultActivity extends AppCompatActivity
 
     public void onIgnoreNoResultClick(View view) {
         ignoreNoResult = !ignoreNoResult;
+    }
+
+    @Override
+    public void onDeviceCancel() {
+        finish();
     }
 
     static class MyInnerHandler extends Handler {

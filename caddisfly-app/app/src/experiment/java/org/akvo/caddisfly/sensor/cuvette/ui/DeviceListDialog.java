@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -38,8 +39,6 @@ import org.akvo.caddisfly.R;
 import java.util.Objects;
 import java.util.Set;
 
-import timber.log.Timber;
-
 /**
  * This lists any paired devices and devices detected in the area after discovery.
  * When a device is chosen by the user, the MAC address of the device is sent back
@@ -47,6 +46,7 @@ import timber.log.Timber;
 public class DeviceListDialog extends DialogFragment {
 
     OnDeviceSelectedListener mListener;
+    OnDeviceCancelListener mCancelListener;
     /**
      * Member fields
      */
@@ -59,6 +59,9 @@ public class DeviceListDialog extends DialogFragment {
      * The BroadcastReceiver that listens for discovered devices and changes the title when
      * discovery is finished
      */
+
+    String address;
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -81,6 +84,7 @@ public class DeviceListDialog extends DialogFragment {
             }
         }
     };
+
     /**
      * The on-click listener for all devices in the ListViews
      */
@@ -92,7 +96,7 @@ public class DeviceListDialog extends DialogFragment {
 
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
-            String address = info.substring(info.length() - 17);
+            address = info.substring(info.length() - 17);
 
             // Send the MAC address
             mListener.onDeviceSelected(address);
@@ -187,7 +191,7 @@ public class DeviceListDialog extends DialogFragment {
      * Start device discover with the BluetoothAdapter
      */
     private void doDiscovery() {
-        Timber.d("doDiscovery()");
+//        Timber.d("doDiscovery()");
 
         // Indicate scanning in the title
         getDialog().setTitle(R.string.scanning);
@@ -207,13 +211,22 @@ public class DeviceListDialog extends DialogFragment {
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (address == null) {
+            mCancelListener.onDeviceCancel();
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof DeviceListDialog.OnDeviceSelectedListener) {
             mListener = (DeviceListDialog.OnDeviceSelectedListener) context;
+            mCancelListener = (DeviceListDialog.OnDeviceCancelListener) context;
         } else {
             throw new IllegalArgumentException(context.toString()
-                    + " must implement OnDeviceSelectedListener");
+                    + " must implement Listeners");
         }
     }
 
@@ -227,4 +240,7 @@ public class DeviceListDialog extends DialogFragment {
         void onDeviceSelected(String s);
     }
 
+    public interface OnDeviceCancelListener {
+        void onDeviceCancel();
+    }
 }

@@ -37,7 +37,8 @@ import timber.log.Timber;
 
 @SuppressWarnings("deprecation")
 public class CuvetteMeasureActivity extends BaseActivity
-        implements DeviceListDialog.OnDeviceSelectedListener {
+        implements DeviceListDialog.OnDeviceSelectedListener,
+        DeviceListDialog.OnDeviceCancelListener {
 
     private static final int REQUEST_ENABLE_BT = 3;
     /**
@@ -156,12 +157,12 @@ public class CuvetteMeasureActivity extends BaseActivity
         }
     }
 
+    DialogFragment deviceDialog;
     private void showDeviceListDialog() {
-        DialogFragment resultFragment = DeviceListDialog.newInstance();
+        deviceDialog = DeviceListDialog.newInstance();
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        resultFragment.setCancelable(false);
-        resultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-        resultFragment.show(ft, "deviceList");
+        deviceDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        deviceDialog.show(ft, "deviceList");
     }
 
     private void startCameraPreview() {
@@ -243,7 +244,9 @@ public class CuvetteMeasureActivity extends BaseActivity
     }
 
     void stopRepeatingTask() {
-        mCameraHandler.removeCallbacks(mStatusChecker);
+        if (mCameraHandler != null) {
+            mCameraHandler.removeCallbacks(mStatusChecker);
+        }
     }
 
     @Override
@@ -349,6 +352,15 @@ public class CuvetteMeasureActivity extends BaseActivity
         }
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        if (deviceDialog.isVisible()) {
+//            deviceDialog.dismiss();
+//        }
+//        super.onBackPressed();
+//        finish();
+//    }
+
     @Override
     public void onDeviceSelected(String address) {
         connectDevice(address, true);
@@ -360,6 +372,11 @@ public class CuvetteMeasureActivity extends BaseActivity
             turnFlashOn();
             startRepeatingTask();
         }, 8000);
+    }
+
+    @Override
+    public void onDeviceCancel() {
+        finish();
     }
 
     static class MyInnerHandler extends Handler {
