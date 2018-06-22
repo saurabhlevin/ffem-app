@@ -20,6 +20,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -132,6 +133,9 @@ public class CuvetteMeasureActivity extends BaseActivity
 
         if (testInfo != null && testInfo.getUuid() != null) {
             setTitle(testInfo.getName());
+
+            ((TextView)findViewById(R.id.textTitle)).setText(testInfo.getName());
+
         } else {
             finish();
         }
