@@ -310,9 +310,9 @@ public class TimeLapseResultActivity extends BaseActivity {
         }
     }
 
-    private static class ImageInfo {
+    public static class ImageInfo {
 
-        private File imageFile;
+        File imageFile;
         private int count;
 
         public int getCount() {

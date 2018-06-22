@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -126,18 +127,18 @@ class TimeLapseCameraHandler implements Camera.PictureCallback {
         }
 
         if (AppPreferences.isTestMode()) {
+            int numberOfSamples = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
+                    "colif_NumberOfSamples", "1"));
 
             int imageCount = PreferencesUtil.getInt(mContext, "imageCount", 0);
             String demoFileName = "start.jpg";
-
             if (!PreferencesUtil.getBoolean(mContext, R.string.coliformResultSafeKey, false)) {
-                switch (imageCount) {
-                    case 2:
-                        demoFileName = "turbid.jpg";
-                        break;
-                    case 3:
-                        demoFileName = "end.jpg";
-                        break;
+                if (imageCount <= 1) {
+                    demoFileName = "start.jpg";
+                } else if (imageCount >= numberOfSamples) {
+                    demoFileName = "end.jpg";
+                } else if (imageCount >= numberOfSamples / 2) {
+                    demoFileName = "turbid.jpg";
                 }
             }
 

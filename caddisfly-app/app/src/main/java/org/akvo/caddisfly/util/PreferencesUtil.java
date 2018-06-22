@@ -61,6 +61,12 @@ public final class PreferencesUtil {
         return sharedPreferences.getBoolean(getKey(context, keyId), defaultValue);
     }
 
+    public static boolean getBoolean(Context context, String keyId, boolean defaultValue) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(keyId, defaultValue);
+    }
+
     /**
      * Sets a boolean value to preferences.
      *
@@ -74,7 +80,14 @@ public final class PreferencesUtil {
         Editor editor = sharedPreferences.edit();
         editor.putBoolean(getKey(context, keyId), value);
         editor.apply();
+    }
 
+    public static void setBoolean(Context context, String keyId, boolean value) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        Editor editor = sharedPreferences.edit();
+        editor.putBoolean(keyId, value);
+        editor.apply();
     }
 
     /**

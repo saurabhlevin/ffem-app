@@ -21,5 +21,6 @@ public class ConstantKey {
 
     public static final String SAVE_FOLDER = NAMESPACE_PREFIX + "saveFolder";
     public static final String TEST_START_TIME = NAMESPACE_PREFIX + "testStartTime";
+    public static final String TURBID_EMAIL_SENT = NAMESPACE_PREFIX + "turbidEmailSent";
 }
 

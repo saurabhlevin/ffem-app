@@ -32,16 +32,25 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
+import org.akvo.caddisfly.util.AssetsManager;
 import org.akvo.caddisfly.util.FileUtil;
+import org.akvo.caddisfly.util.GMailSender;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
+
+import static org.akvo.caddisfly.sensor.turbidity.TimeLapseResultActivity.imageFilter;
 
 public class TimeLapseActivity extends BaseActivity {
 
@@ -61,6 +70,9 @@ public class TimeLapseActivity extends BaseActivity {
     private Handler handler;
     private TestInfo testInfo;
     private String folderName;
+
+    boolean isTurbid;
+    String durationString;
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -90,10 +102,135 @@ public class TimeLapseActivity extends BaseActivity {
                             "Done: %d of %d", files.length, numberOfSamples));
                     futureDate = Calendar.getInstance();
                     futureDate.add(Calendar.MINUTE, delayMinute);
+                    if (files.length > 1) {
+                        if (!PreferencesUtil.getBoolean(getBaseContext(),
+                                ConstantKey.TURBID_EMAIL_SENT, false)) {
+                            analyseLatestFile(folder);
+                        }
+                    } else {
+                        PreferencesUtil.setBoolean(getBaseContext(),
+                                ConstantKey.TURBID_EMAIL_SENT, false);
+                    }
                 }
             }
         }
     };
+
+    private void analyseLatestFile(File folder) {
+        File firstImage = null;
+        File turbidImage = null;
+        File lastImage = null;
+
+        if (folder.isDirectory()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US);
+
+            File[] files = folder.listFiles(imageFilter);
+            if (files != null) {
+
+                List<TimeLapseResultActivity.ImageInfo> imageInfos = new ArrayList<>();
+                Calendar start = Calendar.getInstance();
+                Calendar end = Calendar.getInstance();
+
+                for (File file : files) {
+
+                    String details[] = file.getName().split("_");
+
+                    if (details.length < 3) {
+                        return;
+                    }
+
+//                    String reportDate = details[1];
+
+                    int blurCount = Integer.parseInt(details[3]);
+
+                    TimeLapseResultActivity.ImageInfo imageInfo = new TimeLapseResultActivity.ImageInfo();
+                    imageInfo.setCount(blurCount);
+                    imageInfo.setImageFile(file);
+                    imageInfos.add(imageInfo);
+                }
+
+                int firstImageValue = 0;
+
+//                int totalTime = 0;
+                try {
+                    TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(0);
+                    String date = imageInfo.getImageFile().getName().substring(0, 13);
+                    start.setTime(sdf.parse(date));
+                    firstImageValue = imageInfo.getCount();
+
+                    imageInfo = imageInfos.get(imageInfos.size() - 1);
+                    date = imageInfo.getImageFile().getName().substring(0, 13);
+                    end.setTime(sdf.parse(date));
+
+//                    totalTime = (int) ((end.getTimeInMillis() - start.getTimeInMillis()) / 1000 / 60);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                firstImage = imageInfos.get(0).imageFile;
+                lastImage = imageInfos.get(imageInfos.size() - 1).imageFile;
+
+                for (int i = 0; i < imageInfos.size(); i++) {
+
+                    TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(i);
+
+                    isTurbid = (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
+                            || (firstImageValue > 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 6700);
+
+                    if (isTurbid) {
+                        turbidImage = imageInfo.imageFile;
+                        break;
+                    }
+                }
+            }
+
+            if (isTurbid) {
+                String emailTemplate;
+                emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
+
+                if (emailTemplate != null) {
+                    long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
+                    String date = simpleDateFormat.format(new Date(startTime));
+                    emailTemplate = emailTemplate.replace("{startTime}", date);
+
+                    long duration = Calendar.getInstance().getTimeInMillis() - startTime;
+
+                    durationString = String.format(Locale.US, "%02d:%02d Hours", TimeUnit.MILLISECONDS.toHours(duration),
+                            TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
+
+                    emailTemplate = emailTemplate.replace("display:block", "display:none");
+                    emailTemplate = emailTemplate.replace("{detectionDuration}", durationString);
+                    emailTemplate = emailTemplate.replace("{detectionTime}",
+                            simpleDateFormat.format(Calendar.getInstance().getTime()));
+                }
+
+                String notificationEmails = AppPreferences.getNotificationEmails();
+
+                String email = PreferencesUtil.getString(this, "username", "");
+                String password = PreferencesUtil.getString(this, "password", "");
+                if (!email.isEmpty() && !password.isEmpty() && !notificationEmails.isEmpty()) {
+                    sendEmail(emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
+                }
+            }
+        }
+    }
+
+    private void sendEmail(String body, File firstImage, File turbidImage,
+                           File lastImage, String from, String to, String password) {
+        new Thread(() -> {
+            try {
+                GMailSender sender = new GMailSender(from, password);
+                sender.sendMail("Coliform test: " + Calendar.getInstance().getTimeInMillis(),
+                        body, firstImage, turbidImage, lastImage, from, to);
+                PreferencesUtil.setBoolean(this, ConstantKey.TURBID_EMAIL_SENT, true);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
+        }).start();
+    }
+
     private boolean showTimer = true;
     private Menu menu;
 
