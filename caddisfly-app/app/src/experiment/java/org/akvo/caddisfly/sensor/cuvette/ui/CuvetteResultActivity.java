@@ -85,6 +85,9 @@ public class CuvetteResultActivity extends AppCompatActivity
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
+            if (isFinishing()) {
+                return;
+            }
             if (mConversationArrayAdapter != null) {
                 try {
                     List<ResultDetail> list = mConversationArrayAdapter.getList();
@@ -144,6 +147,7 @@ public class CuvetteResultActivity extends AppCompatActivity
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            releaseResources();
             finish();
         }
 
@@ -201,15 +205,6 @@ public class CuvetteResultActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        if (deviceDialog.isVisible()) {
-//            deviceDialog.dismiss();
-//        }
-//        super.onBackPressed();
-//        finish();
-//    }
 
     @Override
     public void onDestroy() {
@@ -299,14 +294,22 @@ public class CuvetteResultActivity extends AppCompatActivity
     public void onStart() {
         super.onStart();
         // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
         } else if (mChatService == null) {
             setupChat();
-            startRepeatingTask();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            setupChat();
+        } else {
+            releaseResources();
+            finish();
         }
     }
 
@@ -339,6 +342,8 @@ public class CuvetteResultActivity extends AppCompatActivity
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
+
+        startRepeatingTask();
     }
 
     void startRepeatingTask() {
@@ -370,6 +375,7 @@ public class CuvetteResultActivity extends AppCompatActivity
 
     @Override
     public void onDeviceCancel() {
+        releaseResources();
         finish();
     }
 

@@ -35,8 +35,7 @@ public class PermissionsDelegate {
 
     public boolean hasPermissions(String[] permissions) {
 
-        for (String permission :
-                permissions) {
+        for (String permission : permissions) {
             int permissionCheckResult = ContextCompat.checkSelfPermission(
                     activity, permission
             );
@@ -79,10 +78,6 @@ public class PermissionsDelegate {
     }
 
     public boolean resultGranted(int requestCode, int[] grantResults) {
-
-        if (requestCode != REQUEST_CODE) {
-            return false;
-        }
 
         if (grantResults.length < 1) {
             return false;
