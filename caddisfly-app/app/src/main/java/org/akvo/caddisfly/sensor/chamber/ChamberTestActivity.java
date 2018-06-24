@@ -75,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.ffem.experiment.DiagnosticSendDialogFragment;
@@ -100,7 +101,19 @@ public class ChamberTestActivity extends BaseActivity implements
     private int currentDilution = 1;
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
+    private long startTime;
     private boolean backDisabled = false;
+
+    private static String formatDuration(long millis) {
+
+        int seconds = (int) (millis / 1000);
+        String positive = String.format(Locale.US,
+                "%d:%02d:%02d",
+                seconds / 3600,
+                (seconds % 3600) / 60,
+                seconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,10 +298,7 @@ public class ChamberTestActivity extends BaseActivity implements
                 backDisabled = false;
                 releaseResources();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    try {
-                        stopLockTask();
-                    } catch (Exception ignored) {
-                    }
+                    stopLockTask();
                 }
                 if (!fragmentManager.popBackStackImmediate()) {
                     super.onBackPressed();

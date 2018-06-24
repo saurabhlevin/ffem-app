@@ -156,6 +156,7 @@
     <!--Permission-->
     <string name="storagePermission">Storage permission is required</string>
     <string name="cameraAndStoragePermissions">Camera &amp; storage permissions are required</string>
+    <string name="cameraAndLocationPermissions">Camera &amp; location permissions are required</string>
 
     <!--Sensor-->
     <string name="incorrectDevice">Incorrect Device</string>

@@ -54,16 +54,6 @@ public class CuvetteMeasureActivity extends BaseActivity
     private WeakReference<CuvetteMeasureActivity> mActivity;
     private CuvetteCameraManager cuvetteCameraManager;
     private Handler mCameraHandler;
-    Runnable mStatusChecker = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                cuvetteCameraManager.setDecodeImageCaptureRequest();
-            } finally {
-                mCameraHandler.postDelayed(mStatusChecker, 2000);
-            }
-        }
-    };
     /**
      * String buffer for outgoing messages
      */
@@ -87,6 +77,27 @@ public class CuvetteMeasureActivity extends BaseActivity
             sendMessage(intent.getStringExtra("cuvette_result"));
         }
     };
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            if (!isFinishing()) {
+                try {
+                    cuvetteCameraManager.setDecodeImageCaptureRequest();
+                } finally {
+                    mCameraHandler.postDelayed(mStatusChecker, 2000);
+                }
+            }
+        }
+    };
+    DialogFragment deviceDialog;
+    private Handler startHandler;
+    Runnable startTask = () -> {
+        if (!isFinishing()) {
+            startCameraPreview();
+            turnFlashOn();
+            startRepeatingTask();
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -102,6 +113,7 @@ public class CuvetteMeasureActivity extends BaseActivity
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            releaseResources();
             finish();
         }
 
@@ -115,14 +127,32 @@ public class CuvetteMeasureActivity extends BaseActivity
     public void onStart() {
         super.onStart();
         // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter.isEnabled()) {
+            if (mChatService == null) {
+                setupChat();
+            }
+        } else {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
-        } else if (mChatService == null) {
-            setupChat();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            setupChat();
+        } else {
+            releaseResources();
+            finish();
+        }
+    }
+
+    private void showDeviceListDialog() {
+        deviceDialog = DeviceListDialog.newInstance();
+        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        deviceDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        deviceDialog.show(ft, "deviceList");
     }
 
     @Override
@@ -137,6 +167,7 @@ public class CuvetteMeasureActivity extends BaseActivity
             ((TextView)findViewById(R.id.textTitle)).setText(testInfo.getName());
 
         } else {
+            releaseResources();
             finish();
         }
 
@@ -161,40 +192,6 @@ public class CuvetteMeasureActivity extends BaseActivity
         }
     }
 
-    DialogFragment deviceDialog;
-    private void showDeviceListDialog() {
-        deviceDialog = DeviceListDialog.newInstance();
-        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        deviceDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-        deviceDialog.show(ft, "deviceList");
-    }
-
-    private void startCameraPreview() {
-        previewLayout = findViewById(R.id.camera_preview);
-        mCameraPreview = cuvetteCameraManager.initCamera(this);
-
-        mCamera = mCameraPreview.getCamera();
-
-        if (mCamera == null) {
-            Toast.makeText(this.getApplicationContext(), "Could not instantiate the camera",
-                    Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            try {
-                wrCamera = new WeakReference<>(mCamera);
-                previewLayout.removeAllViews();
-                if (mCameraPreview != null) {
-                    previewLayout.addView(mCameraPreview);
-                } else {
-                    finish();
-                }
-
-            } catch (Exception e) {
-                Timber.e(e);
-            }
-        }
-    }
-
     /**
      * Turn flash on.
      */
@@ -210,27 +207,31 @@ public class CuvetteMeasureActivity extends BaseActivity
         mCamera.setParameters(parameters);
     }
 
-    private void releaseResources() {
-        if (mCamera != null) {
-            cuvetteCameraManager.stopCamera();
-            mCamera.setOneShotPreviewCallback(null);
-            mCamera.stopPreview();
-            mCamera.release();
-            mCamera = null;
-        }
+    private void startCameraPreview() {
+        previewLayout = findViewById(R.id.camera_preview);
+        mCameraPreview = cuvetteCameraManager.initCamera(this);
 
-        if (mActivity != null) {
-            mActivity.clear();
-            mActivity = null;
-        }
-        if (wrCamera != null) {
-            wrCamera.clear();
-            wrCamera = null;
-        }
+        mCamera = mCameraPreview.getCamera();
 
-        if (mCameraPreview != null && previewLayout != null) {
-//            previewLayout.removeView(mCameraPreview);
-            mCameraPreview = null;
+        if (mCamera == null) {
+            Toast.makeText(this.getApplicationContext(), "Could not instantiate the camera",
+                    Toast.LENGTH_SHORT).show();
+            releaseResources();
+            finish();
+        } else {
+            try {
+                wrCamera = new WeakReference<>(mCamera);
+                previewLayout.removeAllViews();
+                if (mCameraPreview != null) {
+                    previewLayout.addView(mCameraPreview);
+                } else {
+                    releaseResources();
+                    finish();
+                }
+
+            } catch (Exception e) {
+                Timber.e(e);
+            }
         }
     }
 
@@ -256,7 +257,6 @@ public class CuvetteMeasureActivity extends BaseActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopRepeatingTask();
 
         releaseResources();
 
@@ -356,14 +356,35 @@ public class CuvetteMeasureActivity extends BaseActivity
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (deviceDialog.isVisible()) {
-//            deviceDialog.dismiss();
-//        }
-//        super.onBackPressed();
-//        finish();
-//    }
+    private void releaseResources() {
+
+        if (startHandler != null) {
+            startHandler.removeCallbacks(startTask);
+        }
+        stopRepeatingTask();
+
+        if (mCamera != null) {
+            cuvetteCameraManager.stopCamera();
+            mCamera.setOneShotPreviewCallback(null);
+            mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
+        }
+
+        if (mActivity != null) {
+            mActivity.clear();
+            mActivity = null;
+        }
+        if (wrCamera != null) {
+            wrCamera.clear();
+            wrCamera = null;
+        }
+
+        if (mCameraPreview != null && previewLayout != null) {
+            previewLayout.removeView(mCameraPreview);
+            mCameraPreview = null;
+        }
+    }
 
     @Override
     public void onDeviceSelected(String address) {
@@ -371,15 +392,13 @@ public class CuvetteMeasureActivity extends BaseActivity
 
         mCameraHandler = new Handler();
 
-        (new Handler()).postDelayed(() -> {
-            startCameraPreview();
-            turnFlashOn();
-            startRepeatingTask();
-        }, 8000);
+        startHandler = new Handler();
+        startHandler.postDelayed(startTask, 8000);
     }
 
     @Override
     public void onDeviceCancel() {
+        releaseResources();
         finish();
     }
 

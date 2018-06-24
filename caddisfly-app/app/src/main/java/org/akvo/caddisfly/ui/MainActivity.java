@@ -67,13 +67,20 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import static org.akvo.caddisfly.model.TestType.BLUETOOTH;
 import static org.akvo.caddisfly.model.TestType.CHAMBER_TEST;
 
 public class MainActivity extends BaseActivity {
 
+    private final int STORAGE_PERMISSION = 1;
+    private final int BLUETOOTH_PERMISSION_SEND = 2;
+    private final int BLUETOOTH_PERMISSION_RECEIVE = 3;
+
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] cameraLocationPermissions = {Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
     private NavigationController navigationController;
 
     @Override
@@ -163,7 +170,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onBluetoothDeviceClick(View view) {
-        navigationController.navigateToTestType(TestType.BLUETOOTH);
+        navigationController.navigateToTestType(BLUETOOTH);
     }
 
     public void onSensorsClick(View view) {
@@ -180,7 +187,7 @@ public class MainActivity extends BaseActivity {
         if (permissionsDelegate.hasPermissions(permissions)) {
             startCalibrate();
         } else {
-            permissionsDelegate.requestPermissions(permissions);
+            permissionsDelegate.requestPermissions(permissions, STORAGE_PERMISSION);
         }
     }
 
@@ -189,13 +196,38 @@ public class MainActivity extends BaseActivity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
-            startCalibrate();
+            switch (requestCode) {
+                case BLUETOOTH_PERMISSION_SEND:
+                    startBluetoothSend();
+                    break;
+                case BLUETOOTH_PERMISSION_RECEIVE:
+                    startBluetoothReceive();
+                    break;
+                case STORAGE_PERMISSION:
+                    startCalibrate();
+                    break;
+            }
         } else {
+            String message = "";
+            switch (requestCode) {
+                case BLUETOOTH_PERMISSION_SEND:
+                case BLUETOOTH_PERMISSION_RECEIVE:
+                    message = getString(R.string.cameraAndLocationPermissions);
+                    break;
+                case STORAGE_PERMISSION:
+                    message = getString(R.string.storagePermission);
+                    break;
+            }
             AlertUtil.showSettingsSnackbar(this,
-                    getWindow().getDecorView().getRootView(),
-                    getString(R.string.storagePermission));
+                    getWindow().getDecorView().getRootView(), message);
         }
+    }
+
+    private void startBluetoothReceive() {
+        final Intent intent = new Intent(this, CuvetteResultActivity.class);
+        startActivity(intent);
     }
 
     private void startCalibrate() {
@@ -229,6 +261,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onSendResult(MenuItem item) {
+        if (permissionsDelegate.hasPermissions(cameraLocationPermissions)) {
+            startBluetoothSend();
+        } else {
+            permissionsDelegate.requestPermissions(cameraLocationPermissions,
+                    BLUETOOTH_PERMISSION_SEND);
+        }
+    }
+
+    private void startBluetoothSend() {
         //Only start the colorimetry calibration if the device has a camera flash
         if (CameraHelper.hasFeatureCameraFlash(this,
                 R.string.cannotStartTest, R.string.ok, null)) {
@@ -255,8 +296,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onReceiveResult(MenuItem item) {
-        final Intent intent = new Intent(this, CuvetteResultActivity.class);
-        startActivity(intent);
+        if (permissionsDelegate.hasPermissions(cameraLocationPermissions)) {
+            startBluetoothReceive();
+        } else {
+            permissionsDelegate.requestPermissions(cameraLocationPermissions,
+                    BLUETOOTH_PERMISSION_RECEIVE);
+        }
     }
 
     public void onColiformsClick(View view) {

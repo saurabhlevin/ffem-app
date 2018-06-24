@@ -57,6 +57,7 @@ import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static org.akvo.caddisfly.common.Constants.DEGREES_180;
 import static org.akvo.caddisfly.common.Constants.DEGREES_270;
@@ -66,11 +67,13 @@ import static org.akvo.caddisfly.common.Constants.DEGREES_90;
 
 public class BaseRunTest extends Fragment implements RunTest {
     private static final double SHORT_DELAY = 1;
+    final int[] countdown = {0};
     private final ArrayList<ResultDetail> results = new ArrayList<>();
     private final Handler delayHandler = new Handler();
     protected FragmentRunTestBinding binding;
     protected boolean cameraStarted;
     protected int pictureCount = 0;
+    int timeDelay = 0;
     private SoundPoolPlayer sound;
     private Handler mHandler;
     private AlertDialog alertDialogToBeDestroyed;
@@ -79,6 +82,16 @@ public class BaseRunTest extends Fragment implements RunTest {
     private int dilution;
     private Camera mCamera;
     private OnResultListener mListener;
+    private ChamberCameraPreview mCameraPreview;
+    private final Runnable mRunnableCode = () -> {
+        if (pictureCount < AppPreferences.getSamplingTimes()) {
+            pictureCount++;
+            sound.playShortResource(R.raw.beep);
+            takePicture();
+        } else {
+            releaseResources();
+        }
+    };
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -98,16 +111,48 @@ public class BaseRunTest extends Fragment implements RunTest {
             }
         }
     };
-    private ChamberCameraPreview mCameraPreview;
-    private final Runnable mRunnableCode = () -> {
-        if (pictureCount < AppPreferences.getSamplingTimes()) {
-            pictureCount++;
-            sound.playShortResource(R.raw.beep);
-            takePicture();
+    private Runnable mCountdown = this::setCountDown;
+
+    private static String timeConversion(int seconds) {
+
+        final int MINUTES_IN_AN_HOUR = 60;
+        final int SECONDS_IN_A_MINUTE = 60;
+
+        int minutes = seconds / SECONDS_IN_A_MINUTE;
+        seconds -= minutes * SECONDS_IN_A_MINUTE;
+
+        int hours = minutes / MINUTES_IN_AN_HOUR;
+        minutes -= hours * MINUTES_IN_AN_HOUR;
+
+        return String.format(Locale.US, "%02d", hours) + ":" +
+                String.format(Locale.US, "%02d", minutes) + ":" +
+                String.format(Locale.US, "%02d", seconds);
+    }
+
+    private void setCountDown() {
+        if (countdown[0] < timeDelay) {
+            binding.timeLayout.setVisibility(View.VISIBLE);
+//            binding.layoutWait.setVisibility(View.GONE);
+
+            countdown[0]++;
+
+            if ((timeDelay - countdown[0]) % 15 == 0) {
+                sound.playShortResource(R.raw.beep);
+            }
+
+//            binding.countdownTimer.setProgress(timeDelay - countdown[0], timeDelay);
+            binding.textTimeRemaining.setText(timeConversion(timeDelay - countdown[0]));
+
+            delayHandler.postDelayed(mCountdown, 1000);
         } else {
-            releaseResources();
+            binding.timeLayout.setVisibility(View.GONE);
+            binding.layoutWait.setVisibility(View.VISIBLE);
+            waitForStillness();
         }
-    };
+    }
+
+    protected void waitForStillness() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -185,6 +230,21 @@ public class BaseRunTest extends Fragment implements RunTest {
         } else {
             binding.textDilution.setText(getResources()
                     .getQuantityString(R.plurals.dilutions, dilution, dilution));
+        }
+
+        countdown[0] = 0;
+
+        // If the test has a time delay config then use that otherwise use standard delay
+        if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
+            timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+
+            binding.timeLayout.setVisibility(View.VISIBLE);
+//            binding.layoutWait.setVisibility(View.GONE);
+            binding.countdownTimer.setProgress(timeDelay, timeDelay);
+
+            setCountDown();
+        } else {
+            waitForStillness();
         }
 
         return binding.getRoot();
@@ -315,15 +375,16 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             sound.playShortResource(R.raw.futurebeep2);
 
-            int timeDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
+            int initialDelay = 0;
 
-            // If the test has a time delay config then use that otherwise use standard delay
-            if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
-                (new Handler()).postDelayed(this::stopPreview, 1000);
-                timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+            //If the test has a time delay config then use that otherwise use standard delay
+            if (mTestInfo.getResults().get(0).getTimeDelay() < 5) {
+                initialDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
             }
 
-            delayHandler.postDelayed(mRunnableCode, timeDelay * 1000);
+            binding.layoutWait.setVisibility(View.VISIBLE);
+
+            delayHandler.postDelayed(mRunnableCode, initialDelay * 1000);
         }
     }
 
