@@ -26,6 +26,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -389,6 +390,10 @@ public class BaseRunTest extends Fragment implements RunTest {
     protected void showError(String message,
                              @SuppressWarnings("SameParameterValue") final Bitmap bitmap,
                              Activity activity) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.stopLockTask();
+        }
 
         releaseResources();
 

@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -99,6 +100,7 @@ public class ChamberTestActivity extends BaseActivity implements
     private int currentDilution = 1;
     private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
+    private boolean backDisabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +166,12 @@ public class ChamberTestActivity extends BaseActivity implements
 
     private void runTest() {
         if (cameraIsOk) {
+            backDisabled = true;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startLockTask();
+            }
+
             runTestFragment.setDilution(currentDilution);
             goToFragment((Fragment) runTestFragment);
         } else {
@@ -212,10 +220,16 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onBackPressed() {
 
-        if (!fragmentManager.popBackStackImmediate()) {
-            super.onBackPressed();
+        if (!backDisabled) {
+            if (!fragmentManager.popBackStackImmediate()) {
+                super.onBackPressed();
+            }
         }
 
+        refreshTitle();
+    }
+
+    private void refreshTitle() {
         if (fragmentManager.getBackStackEntryCount() == 0) {
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                 setTitle(R.string.analyze);
@@ -268,7 +282,18 @@ public class ChamberTestActivity extends BaseActivity implements
                 showEditCalibrationDetailsDialog(false);
                 return true;
             case android.R.id.home:
-                onBackPressed();
+                backDisabled = false;
+                releaseResources();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    try {
+                        stopLockTask();
+                    } catch (Exception ignored) {
+                    }
+                }
+                if (!fragmentManager.popBackStackImmediate()) {
+                    super.onBackPressed();
+                }
+                refreshTitle();
                 return true;
             default:
                 break;
@@ -475,6 +500,11 @@ public class ChamberTestActivity extends BaseActivity implements
                     showDiagnosticResultDialog(false, resultDetail, resultDetails, true);
                 }
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                stopLockTask();
+            }
+            backDisabled = false;
             fragmentManager.popBackStackImmediate();
         }
     }
@@ -528,9 +558,14 @@ public class ChamberTestActivity extends BaseActivity implements
 
         // Return plain text result
 //        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
-        resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
 
+        resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
         setResult(Activity.RESULT_OK, resultIntent);
+
+        backDisabled = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask();
+        }
 
         finish();
     }
@@ -542,6 +577,11 @@ public class ChamberTestActivity extends BaseActivity implements
      * @param bitmap  any bitmap image to displayed along with error message
      */
     private void showError(String message, final Bitmap bitmap) {
+
+        backDisabled = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask();
+        }
 
         sound.playShortResource(R.raw.err);
 
@@ -575,6 +615,12 @@ public class ChamberTestActivity extends BaseActivity implements
      */
     @SuppressWarnings("unused")
     public void onTestWithDilution(View view) {
+
+        backDisabled = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask();
+        }
+
         if (!fragmentManager.popBackStackImmediate("dilution", 0)) {
             super.onBackPressed();
         }
