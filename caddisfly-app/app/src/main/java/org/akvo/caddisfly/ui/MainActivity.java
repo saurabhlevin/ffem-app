@@ -75,10 +75,11 @@ public class MainActivity extends BaseActivity {
     private final int STORAGE_PERMISSION = 1;
     private final int BLUETOOTH_PERMISSION_SEND = 2;
     private final int BLUETOOTH_PERMISSION_RECEIVE = 3;
+    private final int BLUETOOTH_STORAGE_PERMISSION = 4;
 
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
-    private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] storagePermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] cameraLocationPermissions = {Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION};
     private NavigationController navigationController;
@@ -184,10 +185,10 @@ public class MainActivity extends BaseActivity {
 
     public void onCalibrateClick(View view) {
 
-        if (permissionsDelegate.hasPermissions(permissions)) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
             startCalibrate();
         } else {
-            permissionsDelegate.requestPermissions(permissions, STORAGE_PERMISSION);
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
         }
     }
 
@@ -208,6 +209,9 @@ public class MainActivity extends BaseActivity {
                 case STORAGE_PERMISSION:
                     startCalibrate();
                     break;
+                case BLUETOOTH_STORAGE_PERMISSION:
+                    showCalibrationError();
+                    break;
             }
         } else {
             String message = "";
@@ -217,6 +221,7 @@ public class MainActivity extends BaseActivity {
                     message = getString(R.string.cameraAndLocationPermissions);
                     break;
                 case STORAGE_PERMISSION:
+                case BLUETOOTH_STORAGE_PERMISSION:
                     message = getString(R.string.storagePermission);
                     break;
             }
@@ -285,14 +290,25 @@ public class MainActivity extends BaseActivity {
             testInfo.setCalibrations(calibrations);
 
             if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                ErrorMessages.alertCalibrationIncomplete(this, testInfo);
-                return;
+                if (permissionsDelegate.hasPermissions(storagePermission)) {
+                    showCalibrationError();
+                } else {
+                    permissionsDelegate.requestPermissions(storagePermission,
+                            BLUETOOTH_STORAGE_PERMISSION);
+                }
+            } else {
+                final Intent intent = new Intent(this, CuvetteMeasureActivity.class);
+                intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                startActivity(intent);
             }
-
-            final Intent intent = new Intent(this, CuvetteMeasureActivity.class);
-            intent.putExtra(ConstantKey.TEST_INFO, testInfo);
-            startActivity(intent);
         }
+    }
+
+    private void showCalibrationError() {
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+        ErrorMessages.alertCalibrationIncomplete(this,
+                viewModel.getTestInfo(Constants.FLUORIDE_ID));
     }
 
     public void onReceiveResult(MenuItem item) {
