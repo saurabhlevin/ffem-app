@@ -49,6 +49,7 @@ import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
@@ -167,28 +168,19 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onStripTestsClick(View view) {
-        navigationController.navigateToTestType(TestType.STRIP_TEST);
+        navigationController.navigateToTestType(TestType.STRIP_TEST, TestSampleType.ALL);
     }
 
     public void onBluetoothDeviceClick(View view) {
-        navigationController.navigateToTestType(BLUETOOTH);
+        navigationController.navigateToTestType(BLUETOOTH, TestSampleType.ALL);
     }
 
     public void onSensorsClick(View view) {
         boolean hasOtg = getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST);
         if (hasOtg) {
-            navigationController.navigateToTestType(TestType.SENSOR);
+            navigationController.navigateToTestType(TestType.SENSOR, TestSampleType.ALL);
         } else {
             ErrorMessages.alertFeatureNotSupported(this, false);
-        }
-    }
-
-    public void onCalibrateClick(View view) {
-
-        if (permissionsDelegate.hasPermissions(storagePermission)) {
-            startCalibrate();
-        } else {
-            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
         }
     }
 
@@ -207,7 +199,7 @@ public class MainActivity extends BaseActivity {
                     startBluetoothReceive();
                     break;
                 case STORAGE_PERMISSION:
-                    startCalibrate();
+                    startCalibrate(TestSampleType.WATER);
                     break;
                 case BLUETOOTH_STORAGE_PERMISSION:
                     showCalibrationError();
@@ -235,13 +227,13 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    private void startCalibrate() {
+    private void startCalibrate(TestSampleType testSampleType) {
         FileHelper.migrateFolders();
-        navigationController.navigateToTestType(CHAMBER_TEST);
+        navigationController.navigateToTestType(CHAMBER_TEST, testSampleType);
     }
 
     public void onCbtClick(View view) {
-        navigationController.navigateToTestType(TestType.CBT);
+        navigationController.navigateToTestType(TestType.CBT, TestSampleType.ALL);
     }
 
     public void onSettingsClick(MenuItem item) {
@@ -340,6 +332,30 @@ public class MainActivity extends BaseActivity {
         final Intent intent = new Intent(this, TitrationMeasureActivity.class);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivity(intent);
+    }
+
+    public void onCalibrateSoilClick(View view) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
+            startCalibrate(TestSampleType.SOIL);
+        } else {
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+        }
+    }
+
+    public void onCalibrateWaterClick(View view) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
+            startCalibrate(TestSampleType.WATER);
+        } else {
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+        }
+    }
+
+    public void onCalibrateClick(View view) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
+            startCalibrate(TestSampleType.ALL);
+        } else {
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+        }
     }
 
     /**

@@ -40,6 +40,7 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.TestConstantKeys;
 import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.akvo.caddisfly.util.TestUtil;
@@ -149,7 +150,7 @@ public class ManualInstructions {
         final TestListViewModel viewModel =
                 ViewModelProviders.of(mActivityTestRule.getActivity()).get(TestListViewModel.class);
 
-        List<TestInfo> testList = viewModel.getTests(TestType.MANUAL);
+        List<TestInfo> testList = viewModel.getTests(TestType.MANUAL, TestSampleType.ALL);
 
         for (int i = 0; i < TestConstants.MANUAL_TESTS_COUNT; i++) {
 

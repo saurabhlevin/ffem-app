@@ -46,6 +46,7 @@ import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.ui.AboutActivity;
 import org.akvo.caddisfly.util.ListViewUtil;
@@ -173,9 +174,10 @@ public class OtherPreferenceFragment extends PreferenceFragment {
         @Override
         protected Integer doInBackground(Void... voids) {
             final TestListViewModel viewModel =
-                    ViewModelProviders.of((FragmentActivity) activityReference.get().getActivity()).get(TestListViewModel.class);
+                    ViewModelProviders.of((FragmentActivity) activityReference.get()
+                            .getActivity()).get(TestListViewModel.class);
 
-            List<TestInfo> testList = viewModel.getTests(TestType.CHAMBER_TEST);
+            List<TestInfo> testList = viewModel.getTests(TestType.CHAMBER_TEST, TestSampleType.ALL);
 
             for (TestInfo testInfo : testList) {
 

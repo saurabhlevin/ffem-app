@@ -1,8 +1,6 @@
 package org.akvo.caddisfly.sensor.chamber;
 
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +38,7 @@ public class CalibrationGraphActivity extends AppCompatActivity {
         seriesRed.setColor(Color.RED);
         seriesRed.setThickness(4);
         seriesRed.setDrawDataPoints(true);
-        seriesRed.setDataPointsRadius(8);
+        seriesRed.setDataPointsRadius(9);
         graphRed.addSeries(seriesRed);
 
         LineGraphSeries<DataPoint> seriesGreen =
@@ -48,7 +46,7 @@ public class CalibrationGraphActivity extends AppCompatActivity {
         seriesGreen.setColor(Color.GREEN);
         seriesGreen.setThickness(4);
         seriesGreen.setDrawDataPoints(true);
-        seriesGreen.setDataPointsRadius(8);
+        seriesGreen.setDataPointsRadius(9);
         graphGreen.addSeries(seriesGreen);
 
         LineGraphSeries<DataPoint> seriesBlue =
@@ -56,7 +54,7 @@ public class CalibrationGraphActivity extends AppCompatActivity {
         seriesBlue.setColor(Color.BLUE);
         seriesBlue.setThickness(4);
         seriesBlue.setDrawDataPoints(true);
-        seriesBlue.setDataPointsRadius(8);
+        seriesBlue.setDataPointsRadius(9);
         graphBlue.addSeries(seriesBlue);
 
         LineGraphSeries<DataPoint> seriesRed2 =

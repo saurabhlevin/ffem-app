@@ -22,15 +22,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".sensor.chamber.CalibrateListActivity">
     <item
-        android:id="@+id/menuGraph"
-        android:enabled="true"
-        android:icon="@drawable/ic_bar_chart"
-        android:orderInCategory="0"
-        android:title="@string/graph"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-
-    <item
         android:id="@+id/menuSave"
         android:enabled="true"
         android:icon="@drawable/ic_save_black_24dp"
@@ -43,15 +34,24 @@
         android:id="@+id/menuLoad"
         android:enabled="true"
         android:icon="@drawable/ic_file_upload_black_24dp"
-        android:orderInCategory="0"
+        android:orderInCategory="1"
         android:title="@string/load"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/menuGraph"
+        android:enabled="true"
+        android:icon="@drawable/ic_bar_chart"
+        android:orderInCategory="2"
+        android:title="@string/graph"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 
     <item
         android:id="@+id/actionSwatches"
         android:icon="@drawable/ic_style_black_24dp"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
         android:title="@string/swatches"
         app:showAsAction="always" />
 </menu>

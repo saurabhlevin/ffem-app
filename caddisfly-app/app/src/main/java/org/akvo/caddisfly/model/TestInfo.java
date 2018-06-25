@@ -65,6 +65,9 @@ public class TestInfo implements Parcelable {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("type")
+    @Expose
+    private TestSampleType sampleType = TestSampleType.ALL;
     @SerializedName("subtype")
     @Expose
     private TestType subtype;
@@ -172,6 +175,7 @@ public class TestInfo implements Parcelable {
         category = in.readString();
         name = in.readString();
         subtype = TestType.valueOf(in.readString());
+        sampleType = TestSampleType.valueOf(in.readString());
         description = in.readString();
         tags = in.createStringArrayList();
         reagents = new ArrayList<>();
@@ -269,6 +273,10 @@ public class TestInfo implements Parcelable {
 
     public TestType getSubtype() {
         return subtype;
+    }
+
+    public TestSampleType getSampleType() {
+        return sampleType;
     }
 
     public String getUuid() {
@@ -415,6 +423,7 @@ public class TestInfo implements Parcelable {
         parcel.writeString(category);
         parcel.writeString(name);
         parcel.writeString(subtype.name());
+        parcel.writeString(sampleType.name());
         parcel.writeString(description);
         parcel.writeStringList(tags);
         parcel.writeTypedList(reagents);
