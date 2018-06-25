@@ -526,7 +526,7 @@ public class TestInfo implements Parcelable {
                     newCalibration.date = calibration.date;
                     newCalibration.image = calibration.image;
                     newCalibration.croppedImage = calibration.croppedImage;
-                    colorItem.setRgb(calibration.color);
+                    colorItem.setRgbInt(calibration.color);
                 }
             }
 
@@ -595,5 +595,9 @@ public class TestInfo implements Parcelable {
 
     public void setResultDetail(ResultDetail resultDetail) {
         this.resultDetail = resultDetail;
+    }
+
+    public List<ColorItem> getPresetColors() {
+        return results.get(0).getPresetColors();
     }
 }
