@@ -19,7 +19,6 @@
 
 package org.akvo.caddisfly.app;
 
-import android.app.Application;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
@@ -43,7 +42,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class CaddisflyApp extends Application {
+public class CaddisflyApp extends BaseApplication {
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
