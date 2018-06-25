@@ -159,5 +159,8 @@
             android:screenOrientation="nosensor" />
         <!-- /Titration -->
 
+        <activity
+            android:name=".sensor.chamber.CalibrationGraphActivity"
+            android:screenOrientation="nosensor" />
     </application>
 </manifest>

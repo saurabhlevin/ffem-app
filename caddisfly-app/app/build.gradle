@@ -132,6 +132,8 @@ dependencies {
     // Usb
     implementation 'com.github.felHR85:UsbSerial:4.5.1'
 
+    implementation 'com.jjoe64:graphview:4.2.2'
+
     // Email
     implementation files('libs/activation.jar')
     implementation files('libs/additionnal.jar')
