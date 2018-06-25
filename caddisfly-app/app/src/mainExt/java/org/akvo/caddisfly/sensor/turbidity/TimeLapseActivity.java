@@ -1,4 +1,6 @@
 package org.akvo.caddisfly.sensor.turbidity;
 
-public class TimeLapseActivity {
+import android.support.v7.app.AppCompatActivity;
+
+public class TimeLapseActivity extends AppCompatActivity {
 }

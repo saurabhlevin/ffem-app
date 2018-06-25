@@ -36,11 +36,6 @@ public final class AppConfig {
     public static final int APP_EXPIRY_YEAR = 2018;
 
     /**
-     * The intent action string used by the caddisfly question type.
-     */
-    public static final String EXTERNAL_APP_ACTION = "io.ffem.app.caddisfly";
-
-    /**
      * Uri for photos from built in camera.
      */
     public static final String FILE_PROVIDER_AUTHORITY_URI = BuildConfig.APPLICATION_ID + ".fileprovider";
