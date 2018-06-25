@@ -57,6 +57,12 @@ public final class AppConfig {
 
     public static final String EXPERIMENT_TESTS_FFEM_URL = "https://raw.githubusercontent.com/foundation-for-environmental-monitoring/experimental-tests/ffem-app/experimental_tests.json";
 
+    /**
+     * The url to check for version updates.
+     */
+    public static final String UPDATE_CHECK_URL = "http://ffem.io/app/" +
+            BuildConfig.APPLICATION_ID.replace(".", "-") + "-version";
+
     private AppConfig() {
     }
 

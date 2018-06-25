@@ -159,8 +159,19 @@
             android:screenOrientation="nosensor" />
         <!-- /Titration -->
 
-        <activity
-            android:name=".sensor.chamber.CalibrationGraphActivity"
-            android:screenOrientation="nosensor" />
+        <service
+            android:name=".updater.AlarmService"
+            android:enabled="true" />
+
+        <receiver android:name=".updater.NotificationCancelReceiver" />
+        <receiver android:name=".updater.UpdateAppReceiver" />
+        <receiver
+            android:name=".updater.BootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>
