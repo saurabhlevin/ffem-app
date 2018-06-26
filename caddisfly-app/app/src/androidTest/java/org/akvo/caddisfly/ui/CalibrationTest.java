@@ -33,8 +33,7 @@ import android.support.test.uiautomator.UiDevice;
 import android.widget.DatePicker;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.common.Constants;
-import org.akvo.caddisfly.util.TestConstant;
+import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -111,7 +110,7 @@ public class CalibrationTest {
     @Ignore
     public void testOutOfSequence() {
 
-        saveCalibration("OutOfSequence", Constants.FLUORIDE_ID);
+        saveCalibration("OutOfSequence", TestConstants.CUVETTE_TEST_ID_1);
 
         goToMainScreen();
 
@@ -131,7 +130,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -193,7 +192,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -219,7 +218,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -262,9 +261,7 @@ public class CalibrationTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         sleep(500);
 
@@ -286,7 +283,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -310,9 +307,7 @@ public class CalibrationTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         sleep(500);
 

@@ -21,6 +21,7 @@ package org.akvo.caddisfly.navigation;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.test.espresso.AmbiguousViewMatcherException;
 import android.support.test.espresso.Espresso;
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.RequiresDevice;
@@ -29,9 +30,8 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.common.Constants;
+import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.ui.MainActivity;
-import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,6 +52,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.fail;
 import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
@@ -61,7 +62,6 @@ import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
-import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
@@ -111,7 +111,7 @@ public class SurveyTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -140,11 +140,24 @@ public class SurveyTest {
 
 //        onView(withText(currentHashMap.get("chlorine"))).perform(click());
 
-        onView(withText("Caddisfly, 0 - 3")).perform(click());
+        onView(withText("0 - 25 mg/l (Upto 125.0 with dilution)")).perform(click());
 
-        onView(withText("1" + dfs.getDecimalSeparator() + "0")).check(matches(isDisplayed()));
+        onView(withText("15")).check(matches(isDisplayed()));
 
-//        onView(withText("0" + dfs.getDecimalSeparator() + "5 mg/l")).check(matches(isDisplayed()));
+        try {
+            onView(withText("mg/l")).check(matches(isDisplayed()));
+            fail("Multiple matches not found");
+        } catch (AmbiguousViewMatcherException e) {
+            // multiple matches found
+        }
+
+        Espresso.pressBack();
+
+        onView(withText("4 - 10 ")).perform(click());
+
+        onView(withText("7")).check(matches(isDisplayed()));
+
+        //        onView(withText("0" + dfs.getDecimalSeparator() + "5 mg/l")).check(matches(isDisplayed()));
 
     }
 
@@ -152,7 +165,7 @@ public class SurveyTest {
     @RequiresDevice
     public void testStartASurvey() {
 
-        saveCalibration("TestValid", Constants.FLUORIDE_ID);
+        saveCalibration("TestValid", TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -168,7 +181,7 @@ public class SurveyTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -188,9 +201,7 @@ public class SurveyTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 

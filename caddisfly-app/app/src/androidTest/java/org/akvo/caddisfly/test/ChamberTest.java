@@ -35,8 +35,8 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ChamberTestConfig;
 import org.akvo.caddisfly.common.Constants;
+import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.ui.MainActivity;
-import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -74,7 +74,6 @@ import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
 import static org.akvo.caddisfly.util.TestUtil.clickListViewItem;
 import static org.akvo.caddisfly.util.TestUtil.getText;
-import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
@@ -128,7 +127,7 @@ public class ChamberTest {
     @RequiresDevice
     public void testStartHighLevelTest() {
 
-        saveCalibration("HighLevelTest", Constants.FLUORIDE_ID);
+        saveCalibration("HighLevelTest", TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -148,7 +147,7 @@ public class ChamberTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -178,7 +177,7 @@ public class ChamberTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -239,9 +238,7 @@ public class ChamberTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         sleep(1000);
 
@@ -284,7 +281,7 @@ public class ChamberTest {
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -332,7 +329,7 @@ public class ChamberTest {
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -399,7 +396,7 @@ public class ChamberTest {
     @RequiresDevice
     public void testStartNoDilutionTest() {
 
-        saveCalibration("TestValid", Constants.FLUORIDE_ID);
+        saveCalibration("TestValid", TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -419,7 +416,7 @@ public class ChamberTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -447,7 +444,7 @@ public class ChamberTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -509,9 +506,7 @@ public class ChamberTest {
 
         sleep(2000);
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         sleep(1000);
 

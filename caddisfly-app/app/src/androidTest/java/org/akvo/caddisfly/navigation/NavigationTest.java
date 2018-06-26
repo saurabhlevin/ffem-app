@@ -35,9 +35,8 @@ import android.widget.DatePicker;
 
 import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.common.Constants;
+import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.ui.MainActivity;
-import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -70,7 +69,6 @@ import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
-import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -112,7 +110,7 @@ public class NavigationTest {
     @RequiresDevice
     public void testNavigateAll() {
 
-        saveCalibration("TestInvalid", Constants.FLUORIDE_ID);
+        saveCalibration("TestInvalid", TestConstants.CUVETTE_TEST_ID_1);
 
         String path = Environment.getExternalStorageDirectory().getPath()
                 + "/" + BuildConfig.APPLICATION_ID + "/screenshots";
@@ -167,7 +165,7 @@ public class NavigationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -202,7 +200,7 @@ public class NavigationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         //Calibrate Swatches Screen
         takeScreenshot();
@@ -234,7 +232,7 @@ public class NavigationTest {
 
         //onView(withId(R.id.buttonStart)).perform(click());
 
-        saveCalibration("TestValid", Constants.FLUORIDE_ID);
+        saveCalibration("TestValid", TestConstants.CUVETTE_TEST_ID_1);
 
         goToMainScreen();
 
@@ -256,7 +254,7 @@ public class NavigationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         onView(withId(R.id.menuLoad)).perform(click());
 
@@ -311,9 +309,7 @@ public class NavigationTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -330,11 +326,9 @@ public class NavigationTest {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
-        clickExternalSourceButton(2);
-
-        onView(withText(R.string.fluoride)).check(matches(isDisplayed()));
+        onView(withText(R.string.testName)).check(matches(isDisplayed()));
 
 //        //Calibration incomplete
         takeScreenshot();
@@ -346,20 +340,17 @@ public class NavigationTest {
 
         mDevice.pressBack();
 
-        nextSurveyPage(3, "Water Tests 1");
-
         mDevice.waitForWindowUpdate("", 2000);
 
-        clickExternalSourceButton(1);
+//        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_2);
 
 //        onView(withText(R.string.chromium)).check(matches(isDisplayed()));
 
-        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
+//        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
 
-        //Connect EC Sensor Screen
-        takeScreenshot();
+//        takeScreenshot();
 
-        mDevice.pressBack();
+//        mDevice.pressBack();
 
 //        TestUtil.nextSurveyPage(3);
 //
