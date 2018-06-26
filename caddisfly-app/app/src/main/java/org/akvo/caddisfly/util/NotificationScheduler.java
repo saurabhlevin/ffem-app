@@ -24,8 +24,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -52,14 +51,13 @@ public class NotificationScheduler {
                 PendingIntent.getBroadcast(context, 0, snoozeIntent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notification = builder.setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                 .setContentText(content)
                 .setAutoCancel(true)
-                .setSound(alarmSound)
                 .setSmallIcon(R.mipmap.ic_notification)
-                .setColor(ContextCompat.getColor(context, R.color.primary))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
+                .setColor(ContextCompat.getColor(context, R.color.accentColor))
                 .addAction(0, "Later", snoozePendingIntent)
                 .addAction(0, "Update", pendingIntent)
                 .setContentIntent(pendingIntent).build();
@@ -69,7 +67,5 @@ public class NotificationScheduler {
         if (notificationManager != null) {
             notificationManager.notify(DAILY_REMINDER_REQUEST_CODE, notification);
         }
-
     }
-
 }

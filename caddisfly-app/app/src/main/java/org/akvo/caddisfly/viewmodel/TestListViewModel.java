@@ -21,6 +21,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.repository.TestConfigRepository;
 
@@ -35,8 +36,8 @@ public class TestListViewModel extends AndroidViewModel {
         testConfigRepository = new TestConfigRepository();
     }
 
-    public List<TestInfo> getTests(TestType testType) {
-        return testConfigRepository.getTests(testType);
+    public List<TestInfo> getTests(TestType testType, TestSampleType testSampleType) {
+        return testConfigRepository.getTests(testType, testSampleType);
     }
 
     public TestInfo getTestInfo(String uuid) {

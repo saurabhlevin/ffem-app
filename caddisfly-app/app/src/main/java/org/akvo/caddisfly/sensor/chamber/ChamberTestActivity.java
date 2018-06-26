@@ -270,6 +270,11 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuGraph:
+                final Intent graphIntent = new Intent(this, CalibrationGraphActivity.class);
+                graphIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                startActivity(graphIntent);
+                return true;
             case R.id.actionSwatches:
                 final Intent intent = new Intent(this, DiagnosticSwatchActivity.class);
                 intent.putExtra(ConstantKey.TEST_INFO, testInfo);

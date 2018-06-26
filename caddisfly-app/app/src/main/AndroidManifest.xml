@@ -159,6 +159,10 @@
             android:screenOrientation="nosensor" />
         <!-- /Titration -->
 
+        <activity
+            android:name=".sensor.chamber.CalibrationGraphActivity"
+            android:screenOrientation="nosensor" />
+
         <service
             android:name=".updater.AlarmService"
             android:enabled="true" />

@@ -4,7 +4,6 @@ package org.akvo.caddisfly.repository;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -18,6 +17,7 @@ import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.ColorItem;
 import org.akvo.caddisfly.model.TestConfig;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.AssetsManager;
@@ -30,9 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 public class TestConfigRepository {
 
-    private static final HashMap<TestType, List<TestInfo>> testMap = new HashMap<>();
+    private static final HashMap<String, List<TestInfo>> testMap = new HashMap<>();
 
     private final AssetsManager assetsManager;
 
@@ -46,12 +48,18 @@ public class TestConfigRepository {
      * @param testType the test type
      * @return the list of tests
      */
-    public List<TestInfo> getTests(TestType testType) {
+    public List<TestInfo> getTests(TestType testType, TestSampleType testSampleType) {
 
         List<TestInfo> testInfoList = new ArrayList<>();
 
-        if (testMap.containsKey(testType)) {
-            return testMap.get(testType);
+        if (testSampleType == TestSampleType.ALL) {
+            if (testMap.containsKey(testType.toString())) {
+                return testMap.get(testType.toString());
+            }
+        } else {
+            if (testMap.containsKey(testType.toString() + testSampleType.toString())) {
+                return testMap.get(testType.toString() + testSampleType.toString());
+            }
         }
 
         try {
@@ -59,6 +67,9 @@ public class TestConfigRepository {
 
             for (int i = testInfoList.size() - 1; i >= 0; i--) {
                 if (testInfoList.get(i).getSubtype() != testType) {
+                    testInfoList.remove(i);
+                } else if (testSampleType != TestSampleType.ALL
+                        && testInfoList.get(i).getSampleType() != testSampleType) {
                     testInfoList.remove(i);
                 }
             }
@@ -74,7 +85,7 @@ public class TestConfigRepository {
             }
 
             if (AppPreferences.isDiagnosticMode()) {
-                addExperimentalTests(testType, testInfoList);
+                addExperimentalTests(testType, testSampleType, testInfoList);
             }
 
             TestConfig testConfig = new Gson().fromJson(assetsManager.getCustomJson(), TestConfig.class);
@@ -83,6 +94,9 @@ public class TestConfigRepository {
 
                 for (int i = customList.size() - 1; i >= 0; i--) {
                     if (customList.get(i).getSubtype() != testType) {
+                        customList.remove(i);
+                    } else if (testSampleType != TestSampleType.ALL
+                            && customList.get(i).getSampleType() != testSampleType) {
                         customList.remove(i);
                     }
                 }
@@ -99,20 +113,27 @@ public class TestConfigRepository {
 
 
         } catch (Exception e) {
-            Log.e("error parsing", e.toString());
+            Timber.e(e);
         }
 
-        testMap.put(testType, testInfoList);
+        if (testSampleType == TestSampleType.ALL) {
+            testMap.put(testType.toString(), testInfoList);
+        } else {
+            testMap.put(testType.toString() + testSampleType.toString(), testInfoList);
+        }
         return testInfoList;
     }
 
-    private void addExperimentalTests(TestType testType, List<TestInfo> testInfoList) {
+    private void addExperimentalTests(TestType testType, TestSampleType testSampleType, List<TestInfo> testInfoList) {
         TestConfig testConfig = new Gson().fromJson(assetsManager.getExperimentalJson(), TestConfig.class);
         if (testConfig != null) {
             List<TestInfo> experimentalList = testConfig.getTests();
 
             for (int i = experimentalList.size() - 1; i >= 0; i--) {
                 if (experimentalList.get(i).getSubtype() != testType) {
+                    experimentalList.remove(i);
+                } else if (testSampleType != TestSampleType.ALL
+                        && experimentalList.get(i).getSampleType() != testSampleType) {
                     experimentalList.remove(i);
                 }
             }
