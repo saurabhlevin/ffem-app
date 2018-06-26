@@ -42,6 +42,10 @@ public class TestConfigRepository {
         assetsManager = new AssetsManager();
     }
 
+    public List<TestInfo> getTests(TestType testType) {
+        return getTests(testType, TestSampleType.ALL);
+    }
+
     /**
      * Get list of tests by type of test.
      *
