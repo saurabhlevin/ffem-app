@@ -65,6 +65,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.akvo.caddisfly.util.TestUtil.clickListViewItem;
 import static org.akvo.caddisfly.util.TestUtil.findButtonInScrollable;
+import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 
 public final class TestHelper {
@@ -127,17 +128,13 @@ public final class TestHelper {
 
         addString(TestConstant.LANGUAGE, "English", "Français", "Bahasa Indonesia");
         addString("otherLanguage", "Français", "English");
-        addString(TestConstant.FLUORIDE, "Water - Fluoride", res.getString(R.string.fluoride));
+        addString(TestConstant.FLUORIDE, "Water - Fluoride", res.getString(R.string.testName));
         addString("chlorine", "Water - Free Chlorine", res.getString(R.string.freeChlorine));
         addString("survey", "Survey", res.getString(R.string.survey));
         addString("sensors", "Sensors", res.getString(R.string.sensors));
         addString("electricalConductivity", "Water - Electrical Conductivity", res.getString(R.string.electricalConductivity));
-        addString("unnamedDataPoint", "Unnamed data point", res.getString(R.string.unnamedDataPoint));
-        addString("createNewDataPoint", "Add Data Point", res.getString(R.string.addDataPoint));
-        addString(TestConstant.USE_EXTERNAL_SOURCE, "Use External Source", res.getString(R.string.useExternalSource));
-        addString(TestConstant.GO_TO_TEST, "Launch", res.getString(R.string.goToText));
         addString("next", "Next", res.getString(R.string.next));
-
+        addString(TestConstant.GO_TO_TEST, "Launch", res.getString(R.string.launch));
         // Restore device-specific locale
         new Resources(assets, metrics, currentResources.getConfiguration());
 
@@ -253,6 +250,18 @@ public final class TestHelper {
         clickListViewItem("Test Mode");
     }
 
+    public static void clickExternalSourceButton(String id) {
+        switch (id) {
+            case TestConstant.WATER_FLUORIDE_ID:
+                nextSurveyPage(3, "Water Tests 1");
+                clickExternalSourceButton(2);
+                break;
+            case TestConstant.SOIL_IRON_ID:
+                nextSurveyPage(3, "Soil Tests 2");
+                clickExternalSourceButton(2);
+                break;
+        }
+    }
     public static void clickExternalSourceButton(int index) {
         clickExternalSourceButton(index, TestConstant.GO_TO_TEST);
     }
@@ -321,7 +330,7 @@ public final class TestHelper {
 
         mDevice.waitForIdle();
 
-        sleep(2000);
+        sleep(1000);
 
         UiObject addButton = mDevice.findObject(new UiSelector()
                 .resourceId(TestConstant.EXTERNAL_SURVEY_PACKAGE_NAME + ":id/enter_data"));

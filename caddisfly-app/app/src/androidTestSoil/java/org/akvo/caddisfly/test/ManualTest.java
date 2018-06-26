@@ -97,8 +97,6 @@ public class ManualTest {
 
         clickExternalSourceButton(0, TestConstant.GO_TO_TEST);
 
-        SystemClock.sleep(3000);
-
         onView(withText("Next")).perform(click());
 
         onView(withId(R.id.editTitration1)).check(matches(isDisplayed()))
@@ -117,9 +115,7 @@ public class ManualTest {
                         isDisplayed()));
         textInputEditText3.perform(pressImeActionButton());
 
-        assertNotNull(mDevice.findObject(By.text("20.00")));
-
-        assertNotNull(mDevice.findObject(By.text("111.00")));
+        assertNotNull(mDevice.findObject(By.text("Exchangeable Calcium: 20.00 mg/kg\nExchangeable Magnesium: 111.00 mg/kg")));
 
     }
 }
