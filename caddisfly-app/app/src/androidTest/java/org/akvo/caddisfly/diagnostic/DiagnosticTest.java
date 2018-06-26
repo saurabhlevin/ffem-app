@@ -112,7 +112,7 @@ public class DiagnosticTest {
                                 withClassName(is("android.widget.LinearLayout")),
                                 0)));
 
-        recyclerView.perform(actionOnItemAtPosition(13, click()));
+        recyclerView.perform(actionOnItemAtPosition(3, click()));
 
         mDevice.waitForIdle();
 

@@ -69,6 +69,7 @@ import static org.hamcrest.Matchers.is;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class StriptestInstructions {
+    private final StringBuilder jsArrayString = new StringBuilder();
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -126,18 +127,21 @@ public class StriptestInstructions {
         TestConfigRepository testConfigRepository = new TestConfigRepository();
         List<TestInfo> testList = testConfigRepository.getTests(TestType.STRIP_TEST);
 
-        for (int i = 0; i < TestConstants.STRIP_TESTS_COUNT; i++) {
+        if (TestConstants.STRIP_TESTS_COUNT == 1) {
+            checkInstructions(testList.get(0).getUuid());
+        } else {
 
-            assertEquals(testList.get(i).getSubtype(), TestType.STRIP_TEST);
+            for (int i = 0; i < TestConstants.STRIP_TESTS_COUNT; i++) {
 
-            String id = testList.get(i).getUuid();
-            id = id.substring(id.lastIndexOf("-") + 1, id.length());
+                assertEquals(testList.get(i).getSubtype(), TestType.STRIP_TEST);
 
-//            if (id.equalsIgnoreCase("aa4a4e3100c9")) {
-            navigateToTest(i, id);
+                String id = testList.get(i).getUuid();
+                id = id.substring(id.lastIndexOf("-") + 1, id.length());
 
-//            jsArrayString.append("[").append("\"").append(id).append("\",").append(pages).append("],");
-//            }
+                int pages = navigateToTest(i, id);
+
+                jsArrayString.append("[").append("\"").append(id).append("\",").append(pages).append("],");
+            }
         }
 
 //        Log.e("Caddisfly", jsArrayString.toString());
@@ -155,6 +159,10 @@ public class StriptestInstructions {
 
         mDevice.waitForIdle();
 
+        return checkInstructions(id);
+    }
+
+    private int checkInstructions(String id) {
         TestUtil.sleep(1000);
 
         takeScreenshot(id, -1);

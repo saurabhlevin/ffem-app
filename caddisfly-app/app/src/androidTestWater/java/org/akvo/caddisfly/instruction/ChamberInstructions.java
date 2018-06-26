@@ -131,9 +131,7 @@ public class ChamberInstructions {
 
         gotoSurveyForm();
 
-        nextSurveyPage(3, "Water Tests 1");
-
-        clickExternalSourceButton(2);
+        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
         sleep(1000);
 
@@ -141,8 +139,9 @@ public class ChamberInstructions {
 
         TestUtil.sleep(1000);
 
-        String id = Constants.FLUORIDE_ID.substring(
-                Constants.FLUORIDE_ID.lastIndexOf("-") + 1, Constants.FLUORIDE_ID.length());
+        String id = TestConstants.CUVETTE_TEST_ID_1.substring(
+                TestConstants.CUVETTE_TEST_ID_1.lastIndexOf("-") + 1,
+                TestConstants.CUVETTE_TEST_ID_1.length());
 
         takeScreenshot(id, -1);
 
@@ -220,16 +219,21 @@ public class ChamberInstructions {
         TestConfigRepository testConfigRepository = new TestConfigRepository();
         List<TestInfo> testList = testConfigRepository.getTests(TestType.STRIP_TEST);
 
-        for (int i = 0; i < TestConstants.STRIP_TESTS_COUNT; i++) {
+        if (TestConstants.STRIP_TESTS_COUNT == 1) {
+            checkInstructions(testList.get(0).getUuid());
+        } else {
 
-            assertEquals(testList.get(i).getSubtype(), TestType.STRIP_TEST);
+            for (int i = 0; i < TestConstants.STRIP_TESTS_COUNT; i++) {
 
-            String id = testList.get(i).getUuid();
-            id = id.substring(id.lastIndexOf("-") + 1, id.length());
+                assertEquals(testList.get(i).getSubtype(), TestType.STRIP_TEST);
 
-            int pages = navigateToTest(i, id);
+                String id = testList.get(i).getUuid();
+                id = id.substring(id.lastIndexOf("-") + 1, id.length());
 
-            jsArrayString.append("[").append("\"").append(id).append("\",").append(pages).append("],");
+                int pages = navigateToTest(i, id);
+
+                jsArrayString.append("[").append("\"").append(id).append("\",").append(pages).append("],");
+            }
         }
 
 //        Log.e("Caddisfly", jsArrayString.toString());
@@ -247,6 +251,10 @@ public class ChamberInstructions {
 
         mDevice.waitForIdle();
 
+        return checkInstructions(id);
+    }
+
+    private int checkInstructions(String id) {
         TestUtil.sleep(1000);
 
         takeScreenshot(id, -1);

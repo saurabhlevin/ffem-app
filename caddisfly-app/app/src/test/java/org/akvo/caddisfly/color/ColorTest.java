@@ -247,7 +247,7 @@ public class ColorTest {
 //    public void testLoadJson() {
 //        TestInfo testInfo = TestConfigHelper.loadTestByUuid("f0f3c1dd-89af-49f1-83e7-bcc31c3006cf");
 //        assert testInfo != null;
-//        assertEquals(SensorConstants.FLUORIDE_ID, testInfo.getId());
+//        assertEquals(SensorConstants.CUVETTE_TEST_ID_1, testInfo.getId());
 //    }
 //
 //    @Test

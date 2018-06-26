@@ -303,7 +303,16 @@ public final class TestUtil {
                 }
                 tab = mDevice.findObject(By.text("Soil Tests 1"));
                 if (tab != null) {
-                    swipeLeft(times);
+                    for (int ii = 0; ii < times; ii++) {
+                        mDevice.waitForIdle();
+                        swipeLeft();
+                        sleep(300);
+                        tab = mDevice.findObject(By.text(tabName));
+                        if (tab != null) {
+                            break;
+                        }
+                    }
+
                     break;
                 }
             }

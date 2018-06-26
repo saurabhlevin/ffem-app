@@ -34,10 +34,10 @@ import android.support.test.uiautomator.UiDevice;
 import android.widget.DatePicker;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.common.TestConstants;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.akvo.caddisfly.ui.TestActivity;
 import org.akvo.caddisfly.ui.TestListActivity;
-import org.akvo.caddisfly.util.TestConstant;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -148,7 +148,7 @@ public class MiscTest {
                                 withClassName(is("android.widget.LinearLayout")),
                                 0)));
 
-        recyclerView.perform(actionOnItemAtPosition(13, click()));
+        recyclerView.perform(actionOnItemAtPosition(3, click()));
 
 //        onView(withText(currentHashMap.get("fluoride"))).perform(click());
 
@@ -268,7 +268,7 @@ public class MiscTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -278,7 +278,7 @@ public class MiscTest {
             return;
         }
 
-        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+//        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -372,7 +372,7 @@ public class MiscTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstant.FLUORIDE_INDEX, click()));
+                TestConstants.TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
             onView(withText(R.string.errorCameraFlashRequired)).perform(click());
