@@ -3,7 +3,7 @@ package org.akvo.caddisfly.sensor.chamber;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -14,10 +14,11 @@ import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.model.ColorItem;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.ui.BaseActivity;
 
 import java.util.List;
 
-public class CalibrationGraphActivity extends AppCompatActivity {
+public class CalibrationGraphActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class CalibrationGraphActivity extends AppCompatActivity {
         LineGraphSeries<DataPoint> seriesRed2 =
                 new LineGraphSeries<>(getPresetDataPoints(presetCalibrations, Color.RED));
         seriesRed2.setColor(Color.BLACK);
-        seriesRed2.setThickness(2);
+        seriesRed2.setThickness(3);
         seriesRed2.setDrawDataPoints(true);
         seriesRed2.setDataPointsRadius(4);
         graphRed.addSeries(seriesRed2);
@@ -68,7 +69,7 @@ public class CalibrationGraphActivity extends AppCompatActivity {
         LineGraphSeries<DataPoint> seriesGreen2 =
                 new LineGraphSeries<>(getPresetDataPoints(presetCalibrations, Color.GREEN));
         seriesGreen2.setColor(Color.BLACK);
-        seriesGreen2.setThickness(2);
+        seriesGreen2.setThickness(3);
         seriesGreen2.setDrawDataPoints(true);
         seriesGreen2.setDataPointsRadius(4);
         graphGreen.addSeries(seriesGreen2);
@@ -76,10 +77,12 @@ public class CalibrationGraphActivity extends AppCompatActivity {
         LineGraphSeries<DataPoint> seriesBlue2 =
                 new LineGraphSeries<>(getPresetDataPoints(presetCalibrations, Color.BLUE));
         seriesBlue2.setColor(Color.BLACK);
-        seriesBlue2.setThickness(2);
+        seriesBlue2.setThickness(3);
         seriesBlue2.setDrawDataPoints(true);
         seriesBlue2.setDataPointsRadius(4);
         graphBlue.addSeries(seriesBlue2);
+
+        setTitle("Charts");
     }
 
     @NonNull
@@ -122,5 +125,14 @@ public class CalibrationGraphActivity extends AppCompatActivity {
             dataPoints[i] = new DataPoint(calibrations.get(i).value, value);
         }
         return dataPoints;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
