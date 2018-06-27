@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
@@ -98,14 +99,19 @@ public class MainActivity extends BaseActivity {
         setTitle(R.string.appName);
 
         try {
-            final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
-                    AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
-
-            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
-            b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
-
             if (AppConfig.APP_EXPIRY && ApkHelper.isNonStoreVersion(this)) {
+                final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
+                        AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
+
+                DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+                b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
+
                 b.textVersionExpiry.setVisibility(View.VISIBLE);
+            } else {
+                if (BuildConfig.showExperimentalTests) {
+                    b.textVersionExpiry.setText(CaddisflyApp.getAppVersion(true));
+                    b.textVersionExpiry.setVisibility(View.VISIBLE);
+                }
             }
 
             // If app has expired then close this activity
