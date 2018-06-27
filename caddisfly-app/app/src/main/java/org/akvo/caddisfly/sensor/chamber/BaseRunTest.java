@@ -37,7 +37,9 @@ import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ChamberTestConfig;
@@ -191,6 +193,22 @@ public class BaseRunTest extends Fragment implements RunTest {
         mCamera = mCameraPreview.getCamera();
         mCameraPreview.setupCamera(mCamera);
         binding.cameraView.addView(mCameraPreview);
+
+        binding.cameraView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        binding.cameraView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        binding.cameraView.getHeight();
+                        int offset = (binding.cameraView.getMeasuredHeight() * AppPreferences.getCameraCenterOffset())
+                                / mCamera.getParameters().getPictureSize().height;
+                        final FrameLayout.LayoutParams layoutParams =
+                                (FrameLayout.LayoutParams) binding.circleView.getLayoutParams();
+                        layoutParams.setMargins(0, 0, 0, offset);
+
+                        binding.circleView.setLayoutParams(layoutParams);
+                    }
+                });
     }
 
     protected void stopPreview() {

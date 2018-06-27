@@ -148,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="@{vm.test.cameraAbove ? View.VISIBLE : View.GONE}"
-                    tools:visibility="gone" />
+                    tools:visibility="visible" />
 
                 <Button
                     android:id="@+id/startCaptureButton"

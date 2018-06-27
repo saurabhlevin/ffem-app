@@ -48,6 +48,8 @@ import java.io.OutputStream;
 
 import timber.log.Timber;
 
+import static org.akvo.caddisfly.preference.AppPreferences.getCameraCenterOffset;
+
 /**
  * Set of utility functions to manipulate images.
  */
@@ -88,7 +90,7 @@ public final class ImageUtil {
         int[] pixels = new int[length * length];
 
         int centerX = bitmap.getWidth() / 2;
-        int centerY = bitmap.getHeight() / 2;
+        int centerY = (bitmap.getHeight() / 2) - getCameraCenterOffset();
         Point point;
 
         point = new Point(centerX, centerY);

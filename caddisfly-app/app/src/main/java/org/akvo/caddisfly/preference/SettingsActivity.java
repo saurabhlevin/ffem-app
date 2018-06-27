@@ -102,6 +102,10 @@ public class SettingsActivity extends BaseActivity
                     .commit();
 
             getFragmentManager().beginTransaction()
+                    .add(R.id.layoutCamera, new CameraPreferenceFragment())
+                    .commit();
+
+            getFragmentManager().beginTransaction()
                     .add(R.id.layoutTesting, new TestingPreferenceFragment())
                     .commit();
 

@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <org.akvo.caddisfly.preference.SeekBarPreference
+        android:defaultValue="0"
+        android:key="cameraCenterOffsetKey"
+        android:max="250"
+        android:summary="0"
+        android:title="Camera center offset" />
+    <org.akvo.caddisfly.preference.SeekBarPreference
+        android:defaultValue="0"
+        android:key="cameraZoomPercentKey"
+        android:max="100"
+        android:summary="0"
+        android:title="Camera zoom percent" />
+</PreferenceScreen>

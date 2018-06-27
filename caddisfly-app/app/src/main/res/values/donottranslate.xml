@@ -73,6 +73,8 @@
     <string name="cameraMegaPixelsKey">cameraMegaPixels</string>
     <string name="showMinMegaPixelDialogKey">showMinMegaPixelDialog</string>
     <string name="maxZoomKey">MaxZoomKey</string>
+    <string name="cameraZoomPercentKey">cameraZoomPercentKey</string>
+    <string name="cameraCenterOffsetKey">cameraCenterOffsetKey</string>
 
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 

@@ -142,4 +142,22 @@ public final class AppPreferences {
         }
         return emailList.toString();
     }
+
+    public static int getCameraZoom() {
+        if (isDiagnosticMode()) {
+            return PreferencesUtil.getInt(CaddisflyApp.getApp(),
+                    R.string.cameraZoomPercentKey, 0);
+        } else {
+            return 0;
+        }
+    }
+
+    public static int getCameraCenterOffset() {
+        if (isDiagnosticMode()) {
+            return PreferencesUtil.getInt(CaddisflyApp.getApp(),
+                    R.string.cameraCenterOffsetKey, 0);
+        } else {
+            return 0;
+        }
+    }
 }
