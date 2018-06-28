@@ -69,6 +69,8 @@ import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -125,36 +127,31 @@ public class TestActivity extends BaseActivity {
         CaddisflyApp.getApp().setAppLanguage(
                 intent.getStringExtra(SensorConstants.LANGUAGE), true, handler);
 
-        String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
-
-        String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
+        String uuid = intent.getStringExtra(SensorConstants.TEST_ID);
         if (uuid != null) {
-            //Get the test config by uuid
             final TestListViewModel viewModel =
                     ViewModelProviders.of(this).get(TestListViewModel.class);
             testInfo = viewModel.getTestInfo(uuid);
-        }
 
-        if (uuid == null) {
-            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+            if (testInfo != null && intent.getExtras() != null) {
 
-            if (uuid != null) {
-                final TestListViewModel viewModel =
-                        ViewModelProviders.of(this).get(TestListViewModel.class);
-                testInfo = viewModel.getTestInfo(uuid);
+//                for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
+//                        testInfo.getResults().size()); i++) {
 
-                if (testInfo != null && intent.getExtras() != null) {
-                    for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
-                            testInfo.getResults().size()); i++) {
-                        testInfo.getResults().get(i - 1)
-                                .setCode(intent.getExtras().keySet().toArray()[i].toString());
-                    }
+                String code = intent.getExtras().keySet().toArray()[1].toString();
+
+                Pattern pattern = Pattern.compile("_(\\d*?)$");
+                Matcher matcher = pattern.matcher(code);
+                if (matcher.find()) {
+                    testInfo.setResultSuffix(matcher.group(0));
+                } else if (code.contains("_x")) {
+                    testInfo.setResultSuffix(code.substring(code.indexOf("_x")));
                 }
             }
         }
 
         if (testInfo == null) {
-            setTitle(getTestName(questionTitle));
+            setTitle(R.string.notFound);
             alertTestTypeNotSupported();
         } else {
 
@@ -415,21 +412,6 @@ public class TestActivity extends BaseActivity {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
         }
-    }
-
-    @NonNull
-    private String getTestName(String title) {
-
-        String tempTitle = title;
-        //ensure we have short name to display as title
-        if (title != null && title.length() > 0) {
-            if (title.length() > 30) {
-                tempTitle = title.substring(0, 30);
-            }
-        } else {
-            tempTitle = getString(R.string.error);
-        }
-        return tempTitle;
     }
 
     private void checkCameraMegaPixel() {

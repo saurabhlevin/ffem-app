@@ -35,7 +35,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -544,27 +543,19 @@ public class ChamberTestActivity extends BaseActivity implements
     public void onClickAcceptResult(View view) {
 
         Intent resultIntent = new Intent();
-        final SparseArray<String> results = new SparseArray<>();
 
         for (int i = 0; i < testInfo.getResults().size(); i++) {
             Result result = testInfo.getResults().get(i);
-            results.put(i + 1, result.getResult());
+            resultIntent.putExtra(result.getName() + testInfo.getResultSuffix(),
+                    result.getResult());
+
+            if (i == 0) {
+                resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
+            }
         }
+        resultIntent.putExtra(SensorConstants.DILUTION + testInfo.getResultSuffix(),
+                testInfo.getDilution());
 
-        // Save photo taken during the test
-//        String resultImageUrl = UUID.randomUUID().toString() + ".png";
-//        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap,
-//                FileHelper.FileType.RESULT_IMAGE, resultImageUrl);
-//        resultIntent.putExtra(ConstantKey.IMAGE, path);
-
-//        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
-//                results, null, -1, "");
-//        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
-
-        // Return plain text result
-//        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
-
-        resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
         setResult(Activity.RESULT_OK, resultIntent);
 
         backDisabled = false;

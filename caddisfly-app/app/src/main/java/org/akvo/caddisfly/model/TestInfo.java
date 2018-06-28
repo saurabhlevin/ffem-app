@@ -155,6 +155,8 @@ public class TestInfo implements Parcelable {
     @SerializedName("imageScale")
     @Expose
     private String imageScale;
+    private String resultSuffix = "";
+
     private List<Calibration> calibrations = new ArrayList<>();
     private int dilution = 1;
     private List<Swatch> swatches = new ArrayList<>();
@@ -249,6 +251,7 @@ public class TestInfo implements Parcelable {
         } else {
             decimalPlaces = in.readInt();
         }
+        resultSuffix = in.readString();
     }
 
     public boolean getCameraAbove() {
@@ -487,6 +490,7 @@ public class TestInfo implements Parcelable {
             parcel.writeByte((byte) 1);
             parcel.writeInt(decimalPlaces);
         }
+        parcel.writeString(resultSuffix);
     }
 
     public Reagent getReagent(int i) {
@@ -562,10 +566,20 @@ public class TestInfo implements Parcelable {
         this.dilution = Math.max(1, dilution);
     }
 
+    /**
+     * Connected device id.
+     *
+     * @return the device id
+     */
     public String getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Use the response format to display the results in test id order.
+     *
+     * @return the Format
+     */
     public String getResponseFormat() {
         return responseFormat;
     }
@@ -608,5 +622,13 @@ public class TestInfo implements Parcelable {
 
     public List<ColorItem> getPresetColors() {
         return results.get(0).getPresetColors();
+    }
+
+    public String getResultSuffix() {
+        return resultSuffix;
+    }
+
+    public void setResultSuffix(String resultSuffix) {
+        this.resultSuffix = resultSuffix;
     }
 }
