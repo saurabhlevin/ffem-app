@@ -22,6 +22,7 @@ package org.akvo.caddisfly.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
@@ -106,6 +107,23 @@ public final class ImageUtil {
                 Bitmap.Config.ARGB_8888);
         croppedBitmap = ImageUtil.getRoundedShape(croppedBitmap, length);
         croppedBitmap.setHasAlpha(true);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawBitmap(bitmap, new Matrix(), null);
+        canvas.drawCircle(point.x, point.y, length / 2, paint);
+
+        paint.setColor(Color.YELLOW);
+        paint.setStrokeWidth(1);
+        canvas.drawLine(0, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 3, bitmap.getHeight() / 2, paint);
+        canvas.drawLine(bitmap.getWidth()  - (bitmap.getWidth() / 3), bitmap.getHeight() / 2,
+                bitmap.getWidth(), bitmap.getHeight() / 2, paint);
 
         return croppedBitmap;
     }
