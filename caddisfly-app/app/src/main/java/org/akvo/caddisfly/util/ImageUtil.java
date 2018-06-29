@@ -19,6 +19,7 @@
 
 package org.akvo.caddisfly.util;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -33,6 +34,8 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
+import android.view.Display;
+import android.view.Surface;
 
 import org.akvo.caddisfly.helper.FileHelper;
 
@@ -49,6 +52,9 @@ import java.io.OutputStream;
 
 import timber.log.Timber;
 
+import static org.akvo.caddisfly.common.Constants.DEGREES_180;
+import static org.akvo.caddisfly.common.Constants.DEGREES_270;
+import static org.akvo.caddisfly.common.Constants.DEGREES_90;
 import static org.akvo.caddisfly.preference.AppPreferences.getCameraCenterOffset;
 
 /**
@@ -81,12 +87,34 @@ public final class ImageUtil {
     /**
      * Crop a bitmap to a square shape with  given length.
      *
-     * @param bitmap the bitmap to crop
+     *
+     * @param activity the activity
+     * @param sourceBitmap the bitmap to crop
      * @param length the length of the sides
      * @return the cropped bitmap
      */
     @SuppressWarnings("SameParameterValue")
-    public static Bitmap getCroppedBitmap(@NonNull Bitmap bitmap, int length) {
+    public static Bitmap getCroppedBitmap(Activity activity, @NonNull Bitmap sourceBitmap, int length) {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        int rotation;
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0:
+                rotation = DEGREES_90;
+                break;
+            case Surface.ROTATION_180:
+                rotation = DEGREES_270;
+                break;
+            case Surface.ROTATION_270:
+                rotation = DEGREES_180;
+                break;
+            case Surface.ROTATION_90:
+            default:
+                rotation = 0;
+                break;
+        }
+
+        Bitmap bitmap = ImageUtil.rotateImage(sourceBitmap, rotation);
 
         int[] pixels = new int[length * length];
 
@@ -432,14 +460,13 @@ public final class ImageUtil {
      * @return a RGB8888 pixels int array. Where each int is a pixels ARGB.
      */
     public static int[] convertYUV420_NV21toRGB8888(byte[] data, int width, int height) {
-        int size = width * height;
-        int offset = size;
-        int[] pixels = new int[size];
+        int offset = width * height;
+        int[] pixels = new int[offset];
         int u, v, y1, y2, y3, y4;
 
         // i percorre os Y and the final pixels
         // k percorre os pixles U e V
-        for (int i = 0, k = 0; i < size; i += 2, k += 2) {
+        for (int i = 0, k = 0; i < offset; i += 2, k += 2) {
             y1 = data[i] & 0xff;
             y2 = data[i + 1] & 0xff;
             y3 = data[width + i] & 0xff;

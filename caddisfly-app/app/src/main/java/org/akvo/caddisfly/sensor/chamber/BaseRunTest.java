@@ -313,26 +313,7 @@ public class BaseRunTest extends Fragment implements RunTest {
      */
     private void getAnalyzedResult(@NonNull Bitmap bitmap) {
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        int rotation;
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0:
-                rotation = DEGREES_90;
-                break;
-            case Surface.ROTATION_180:
-                rotation = DEGREES_270;
-                break;
-            case Surface.ROTATION_270:
-                rotation = DEGREES_180;
-                break;
-            case Surface.ROTATION_90:
-            default:
-                rotation = 0;
-                break;
-        }
-
-        Bitmap rotatedBitmap = ImageUtil.rotateImage(bitmap, rotation);
-        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(rotatedBitmap,
+        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(getActivity(), bitmap,
                 ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
         //Extract the color from the photo which will be used for comparison
@@ -353,7 +334,7 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             ResultDetail resultDetail = SwatchHelper.analyzeColor(mTestInfo.getSwatches().size(),
                     photoColor, mTestInfo.getSwatches());
-            resultDetail.setBitmap(rotatedBitmap);
+            resultDetail.setBitmap(bitmap);
             resultDetail.setCroppedBitmap(croppedBitmap);
             resultDetail.setDilution(dilution);
 
