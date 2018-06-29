@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -32,6 +33,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -199,13 +201,19 @@ public class BaseRunTest extends Fragment implements RunTest {
                     @Override
                     public void onGlobalLayout() {
                         binding.cameraView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        binding.cameraView.getHeight();
-                        int offset = (binding.cameraView.getMeasuredHeight() * AppPreferences.getCameraCenterOffset())
-                                / mCamera.getParameters().getPictureSize().height;
-                        final FrameLayout.LayoutParams layoutParams =
-                                (FrameLayout.LayoutParams) binding.circleView.getLayoutParams();
-                        layoutParams.setMargins(0, 0, 0, offset);
+                        int parentHeight = ((FrameLayout)binding.cameraView.getParent()).getMeasuredHeight();
+                        int offset = (parentHeight * AppPreferences.getCameraCenterOffset())
+                                / mCamera.getParameters().getPictureSize().width;
 
+                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) binding.circleView.getLayoutParams();
+
+                        Resources r = getContext().getResources();
+                        int offsetPixels = (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                offset,
+                                r.getDisplayMetrics()
+                        );
+                        layoutParams.setMargins(0, 0, 0, offsetPixels);
                         binding.circleView.setLayoutParams(layoutParams);
                     }
                 });
