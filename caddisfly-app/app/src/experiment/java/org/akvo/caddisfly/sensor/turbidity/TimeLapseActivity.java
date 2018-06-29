@@ -127,6 +127,10 @@ public class TimeLapseActivity extends BaseActivity {
             File[] files = folder.listFiles(imageFilter);
             if (files != null) {
 
+                if (files.length < 2) {
+                    return;
+                }
+
                 List<TimeLapseResultActivity.ImageInfo> imageInfos = new ArrayList<>();
                 Calendar start = Calendar.getInstance();
                 Calendar end = Calendar.getInstance();
@@ -153,7 +157,7 @@ public class TimeLapseActivity extends BaseActivity {
 
 //                int totalTime = 0;
                 try {
-                    TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(0);
+                    TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(1);
                     String date = imageInfo.getImageFile().getName().substring(0, 13);
                     start.setTime(sdf.parse(date));
                     firstImageValue = imageInfo.getCount();
@@ -168,15 +172,19 @@ public class TimeLapseActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                firstImage = imageInfos.get(0).imageFile;
+                firstImage = imageInfos.get(1).imageFile;
                 lastImage = imageInfos.get(imageInfos.size() - 1).imageFile;
 
-                for (int i = 0; i < imageInfos.size(); i++) {
+                for (int i = 1; i < imageInfos.size(); i++) {
 
                     TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(i);
 
-                    isTurbid = (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
-                            || (firstImageValue > 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 6700);
+                    isTurbid =
+                            (firstImageValue < 2000 && Math.abs(imageInfo.getCount() - firstImageValue) > 1000)
+                                    || (firstImageValue < 10000 && Math.abs(imageInfo.getCount() - firstImageValue) > 2000)
+                                    || (firstImageValue < 20000 && Math.abs(imageInfo.getCount() - firstImageValue) > 3000)
+                                    || (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
+                                    || (firstImageValue >= 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 7000);
 
                     if (isTurbid) {
                         turbidImage = imageInfo.imageFile;
@@ -384,10 +392,10 @@ public class TimeLapseActivity extends BaseActivity {
             }
         }
 
-        File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, testInfo.getName());
-        if (folder.exists()) {
-            FileUtil.deleteRecursive(folder);
-        }
+//        File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, testInfo.getName());
+//        if (folder.exists()) {
+//            FileUtil.deleteRecursive(folder);
+//        }
 
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,
                 testInfo.getName() + File.separator + "_"

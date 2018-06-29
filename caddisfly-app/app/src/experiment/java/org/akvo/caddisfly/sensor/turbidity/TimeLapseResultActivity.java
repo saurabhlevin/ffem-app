@@ -181,6 +181,10 @@ public class TimeLapseResultActivity extends BaseActivity {
             File[] files = folder.listFiles(imageFilter);
             if (files != null) {
 
+                if (files.length < 2) {
+                    return;
+                }
+
                 List<ImageInfo> imageInfos = new ArrayList<>();
                 Calendar start = Calendar.getInstance();
                 Calendar end = Calendar.getInstance();
@@ -205,7 +209,7 @@ public class TimeLapseResultActivity extends BaseActivity {
 
                 int firstImageValue = 0;
 
-                int totalTime = 0;
+//                int totalTime = 0;
                 try {
                     ImageInfo imageInfo = imageInfos.get(0);
                     String date = imageInfo.getImageFile().getName().substring(0, 13);
@@ -216,21 +220,25 @@ public class TimeLapseResultActivity extends BaseActivity {
                     date = imageInfo.getImageFile().getName().substring(0, 13);
                     end.setTime(sdf.parse(date));
 
-                    totalTime = (int) ((end.getTimeInMillis() - start.getTimeInMillis()) / 1000 / 60);
+//                    totalTime = (int) ((end.getTimeInMillis() - start.getTimeInMillis()) / 1000 / 60);
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                firstImage = imageInfos.get(0).imageFile;
+                firstImage = imageInfos.get(1).imageFile;
                 lastImage = imageInfos.get(imageInfos.size() - 1).imageFile;
 
-                for (int i = 0; i < imageInfos.size(); i++) {
+                for (int i = 1; i < imageInfos.size(); i++) {
 
                     ImageInfo imageInfo = imageInfos.get(i);
 
-                    isTurbid = (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
-                            || (firstImageValue > 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 6700);
+                    isTurbid =
+                            (firstImageValue < 2000 && Math.abs(imageInfo.getCount() - firstImageValue) > 1000)
+                                    || (firstImageValue < 10000 && Math.abs(imageInfo.getCount() - firstImageValue) > 2000)
+                                    || (firstImageValue < 20000 && Math.abs(imageInfo.getCount() - firstImageValue) > 3000)
+                                    || (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
+                                    || (firstImageValue >= 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 7000);
 
                     if (isTurbid) {
                         turbidImage = imageInfo.imageFile;
