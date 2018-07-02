@@ -84,6 +84,8 @@ public class MainActivity extends BaseActivity {
     private final String[] storagePermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] cameraLocationPermissions = {Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION};
+    private final String[] cameraLocationStoragePermissions = {Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION};
     private NavigationController navigationController;
 
     @Override
@@ -310,10 +312,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onReceiveResult(MenuItem item) {
-        if (permissionsDelegate.hasPermissions(cameraLocationPermissions)) {
+        if (permissionsDelegate.hasPermissions(cameraLocationStoragePermissions)) {
             startBluetoothReceive();
         } else {
-            permissionsDelegate.requestPermissions(cameraLocationPermissions,
+            permissionsDelegate.requestPermissions(cameraLocationStoragePermissions,
                     BLUETOOTH_PERMISSION_RECEIVE);
         }
     }
@@ -324,7 +326,7 @@ public class MainActivity extends BaseActivity {
 
         TestInfo testInfo = viewModel.getTestInfo(Constants.COLIFORM_ID);
 
-        final Intent intent = new Intent(this, TimeLapseActivity.class);
+        final Intent intent = new Intent(this, TestActivity.class);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivity(intent);
     }
