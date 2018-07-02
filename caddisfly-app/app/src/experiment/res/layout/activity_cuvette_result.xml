@@ -4,11 +4,15 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <include layout="@layout/toolbar" />
+
     <TextView
+        android:layout_below="@+id/toolbar"
         android:id="@+id/textResult"
         android:layout_width="match_parent"
         android:layout_height="85dp"
         android:background="#eae8f5"
+        android:visibility="gone"
         android:textAlignment="center"
         android:textSize="60sp"
         tools:text="15000" />

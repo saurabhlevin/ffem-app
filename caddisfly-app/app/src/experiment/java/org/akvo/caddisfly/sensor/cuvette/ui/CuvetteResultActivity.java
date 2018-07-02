@@ -9,16 +9,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -27,17 +29,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.common.AppConstants;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.cuvette.bluetooth.Constants;
+import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.BluetoothChatService;
+import org.akvo.caddisfly.util.ColorUtil;
+import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.ResultAdapter;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
-public class CuvetteResultActivity extends AppCompatActivity
+public class CuvetteResultActivity extends BaseActivity
         implements DeviceListDialog.OnDeviceSelectedListener,
         DeviceListDialog.OnDeviceCancelListener{
 
@@ -157,6 +165,8 @@ public class CuvetteResultActivity extends AppCompatActivity
         );
 
         resultHandler = new Handler();
+
+        setTitle("View color stream");
     }
 
     @Override
@@ -177,6 +187,13 @@ public class CuvetteResultActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_stream, menu);
+        return true;
     }
 
     DialogFragment deviceDialog;
@@ -361,11 +378,19 @@ public class CuvetteResultActivity extends AppCompatActivity
     }
 
     public void onPauseClick(View view) {
+        pauseResume();
+    }
+
+    private void pauseResume() {
         readPaused = !readPaused;
         if (readPaused) {
             buttonPause.setText("Resume");
+            buttonPause.setBackgroundColor(getResources().getColor(R.color.primary_dark));
+            buttonPause.setTextColor(Color.WHITE);
         } else {
             buttonPause.setText("Pause");
+            buttonPause.setBackgroundColor(Color.TRANSPARENT);
+            buttonPause.setTextColor(getResources().getColor(R.color.text_primary));
         }
     }
 
@@ -377,6 +402,35 @@ public class CuvetteResultActivity extends AppCompatActivity
     public void onDeviceCancel() {
         releaseResources();
         finish();
+    }
+
+    public void onExportClick(MenuItem item) {
+        readPaused = true;
+        buttonPause.setText("Resume");
+        buttonPause.setBackgroundColor(getResources().getColor(R.color.primary_dark));
+        buttonPause.setTextColor(Color.WHITE);
+        StringBuilder stringBuilder = new StringBuilder();
+        List<ResultDetail> list = mConversationArrayAdapter.getList();
+        if (list != null && list.size() > 0) {
+            stringBuilder.append("R,G,B,Result");
+            stringBuilder.append(System.lineSeparator());
+            for (ResultDetail resultDetail : list) {
+                stringBuilder.append(ColorUtil.getColorRgbString(resultDetail.getColor())
+                        .replace("  ", ","));
+                stringBuilder.append(",");
+                if (resultDetail.getResult() > -1) {
+                    stringBuilder.append(resultDetail.getResult());
+                }
+                stringBuilder.append(System.lineSeparator());
+            }
+
+            File folder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
+                    + File.separator + AppConstants.APP_FOLDER + File.separator + "qa");
+            FileUtil.saveToFile(folder, "ColorStream.txt", stringBuilder.toString());
+            Toast toast = Toast.makeText(this, "Exported to file", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
+        }
     }
 
     static class MyInnerHandler extends Handler {
