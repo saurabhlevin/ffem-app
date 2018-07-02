@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +19,6 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.SensorConstants;
 import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
@@ -28,7 +26,6 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AssetsManager;
 import org.akvo.caddisfly.util.GMailSender;
 import org.akvo.caddisfly.util.PreferencesUtil;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -74,23 +71,17 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             Intent resultIntent = new Intent();
 
-            resultIntent.putExtra(testInfo.getResults().get(0).getCode(),
-                    testInfo.getResults().get(0).getResult());
-            resultIntent.putExtra(testInfo.getResults().get(1).getCode(),
-                    testInfo.getResults().get(1).getResult());
-            resultIntent.putExtra(testInfo.getResults().get(2).getCode(),
-                    testInfo.getResults().get(2).getResult());
-
-            final SparseArray<String> results = new SparseArray<>();
-
             for (int i = 0; i < testInfo.getResults().size(); i++) {
                 Result result = testInfo.getResults().get(i);
-                results.put(i + 1, result.getResult());
-            }
+                resultIntent.putExtra(result.getName() + testInfo.getResultSuffix(),
+                        result.getResult());
 
-            JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
-                    results, null, -1, "");
-            resultIntent.putExtra(SensorConstants.VALUE, resultJson.toString());
+                if (i == 0) {
+                    resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
+                }
+            }
+            resultIntent.putExtra(SensorConstants.DILUTION + testInfo.getResultSuffix(),
+                    testInfo.getDilution());
 
             setResult(Activity.RESULT_OK, resultIntent);
 
