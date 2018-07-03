@@ -20,18 +20,22 @@
         },
         {
           "id": 3,
-          "name": "Time to detect"
+          "name": "Date"
         },
         {
           "id": 4,
-          "name": "Last Image"
+          "name": "Time to detect"
         },
         {
           "id": 5,
-          "name": "Turbid Image"
+          "name": "Last Image"
         },
         {
           "id": 6,
+          "name": "Turbid Image"
+        },
+        {
+          "id": 7,
           "name": "First Image"
         }
       ],

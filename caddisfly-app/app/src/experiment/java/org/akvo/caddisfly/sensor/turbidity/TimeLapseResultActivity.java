@@ -73,15 +73,12 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             for (int i = 0; i < testInfo.getResults().size(); i++) {
                 Result result = testInfo.getResults().get(i);
-                resultIntent.putExtra(result.getName() + testInfo.getResultSuffix(),
-                        result.getResult());
-
+                resultIntent.putExtra(result.getName().replace(" ", "_")
+                        + testInfo.getResultSuffix(), result.getResult());
                 if (i == 0) {
                     resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
                 }
             }
-            resultIntent.putExtra(SensorConstants.DILUTION + testInfo.getResultSuffix(),
-                    testInfo.getDilution());
 
             setResult(Activity.RESULT_OK, resultIntent);
 
@@ -239,8 +236,9 @@ public class TimeLapseResultActivity extends BaseActivity {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
             }
 
+            long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
+
             if (emailTemplate != null) {
-                long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
                 String date = simpleDateFormat.format(new Date(startTime));
                 emailTemplate = emailTemplate.replace("{startTime}", date);
@@ -258,7 +256,12 @@ public class TimeLapseResultActivity extends BaseActivity {
             for (Result result : testInfo.getResults()) {
                 switch (result.getName()) {
                     case "Broth":
-                        result.setResult("Hi Media");
+                        result.setResult(PreferencesUtil.getString(this,
+                                R.string.colif_brothMediaKey,""));
+                        break;
+                    case "Date":
+                        result.setResult(new SimpleDateFormat("yyyyMMdd", Locale.US)
+                                .format(startTime));
                         break;
                     case "Time to detect":
                         result.setResult(durationString);
