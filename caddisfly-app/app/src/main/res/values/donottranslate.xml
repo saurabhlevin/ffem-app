@@ -75,7 +75,7 @@
     <string name="maxZoomKey">MaxZoomKey</string>
     <string name="cameraZoomPercentKey">cameraZoomPercentKey</string>
     <string name="cameraCenterOffsetKey">cameraCenterOffsetKey</string>
-
+    <string name="cameraResolutionKey">cameraResolutionKey</string>
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
     <string name="colif_volumeKey">colif_volume</string>

@@ -129,7 +129,7 @@
                     android:onClick="onCalibrateSoilClick"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
-                    android:text="Calibrate Soil Test"
+                    android:text="Soil - Calibrate"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
                     android:theme="?longButtonStyle" />
@@ -144,7 +144,7 @@
                     android:onClick="onCalibrateWaterClick"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
-                    android:text="Calibrate Water Test"
+                    android:text="Water - Calibrate"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
                     android:theme="?longButtonStyle" />

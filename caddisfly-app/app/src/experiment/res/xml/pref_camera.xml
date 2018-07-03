@@ -11,4 +11,9 @@
         android:max="100"
         android:summary="0"
         android:title="Camera zoom percent" />
+    <io.ffem.experiment.ResolutionListPreference
+        android:key="cameraResolutionKey"
+        android:title="Camera Resolution"
+        android:summary="640-480"
+        android:defaultValue="4"/>
 </PreferenceScreen>

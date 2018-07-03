@@ -12,6 +12,9 @@ import android.widget.ListView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.util.ListViewUtil;
+import org.akvo.caddisfly.util.PreferencesUtil;
+
+import io.ffem.experiment.ResolutionListPreference;
 
 public class CameraPreferenceFragment extends PreferenceFragment {
 
@@ -31,6 +34,8 @@ public class CameraPreferenceFragment extends PreferenceFragment {
         setupZoomPreference();
 
         setupOffsetPreference();
+
+        setupCameraPreference();
 
         return view;
     }
@@ -65,6 +70,24 @@ public class CameraPreferenceFragment extends PreferenceFragment {
 
             seekBarPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 seekBarPreference.setSummary(String.valueOf(newValue));
+                return false;
+            });
+        }
+    }
+
+    private void setupCameraPreference() {
+        final ResolutionListPreference resolutionListPreference =
+                (ResolutionListPreference) findPreference(getString(R.string.cameraResolutionKey));
+
+        if (resolutionListPreference != null) {
+            String resolution = PreferenceManager.getDefaultSharedPreferences(this.getActivity())
+                    .getString(getString(R.string.cameraResolutionKey), "640-480");
+
+            resolutionListPreference.setSummary(String.valueOf(resolution));
+
+            resolutionListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                resolutionListPreference.setSummary(String.valueOf(newValue));
+                PreferencesUtil.setString(getActivity(), R.string.cameraResolutionKey, newValue.toString());
                 return false;
             });
         }

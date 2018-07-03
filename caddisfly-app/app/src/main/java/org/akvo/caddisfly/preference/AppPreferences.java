@@ -19,6 +19,7 @@
 
 package org.akvo.caddisfly.preference;
 
+import android.util.Pair;
 import android.util.Patterns;
 
 import org.akvo.caddisfly.R;
@@ -148,6 +149,28 @@ public final class AppPreferences {
                     R.string.cameraZoomPercentKey, 0);
         } else {
             return 0;
+        }
+    }
+
+    public static Pair<Integer, Integer> getCameraResolution() {
+        Pair<Integer, Integer> res = new Pair<>(640, 480);
+        try {
+            if (isDiagnosticMode()) {
+                String resolution = PreferencesUtil.getString(CaddisflyApp.getApp(),
+                        R.string.cameraResolutionKey, "640-480");
+
+                String[] resolutions = resolution.split("-");
+                int widthTemp = Integer.parseInt(resolutions[0]);
+                int heightTemp = Integer.parseInt(resolutions[1]);
+                int width = Math.max(heightTemp, widthTemp);
+                int height = Math.min(heightTemp, widthTemp);
+
+                return new Pair<>(width, height);
+            } else {
+                return res;
+            }
+        } catch (Exception e) {
+            return res;
         }
     }
 
