@@ -98,7 +98,6 @@ public final class AppPreferences {
         }
     }
 
-
     public static boolean isSoundOn() {
         return !isDiagnosticMode() || PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.soundOnKey, true);
     }

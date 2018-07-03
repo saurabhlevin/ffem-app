@@ -34,9 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -48,7 +46,7 @@ import org.akvo.caddisfly.common.ChamberTestConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.databinding.FragmentRunTestBinding;
 import org.akvo.caddisfly.entity.Calibration;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.ResultDetail;
@@ -63,10 +61,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import static org.akvo.caddisfly.common.Constants.DEGREES_180;
-import static org.akvo.caddisfly.common.Constants.DEGREES_270;
-import static org.akvo.caddisfly.common.Constants.DEGREES_90;
-
 //import timber.log.Timber;
 
 public class BaseRunTest extends Fragment implements RunTest {
@@ -78,7 +72,6 @@ public class BaseRunTest extends Fragment implements RunTest {
     protected boolean cameraStarted;
     protected int pictureCount = 0;
     int timeDelay = 0;
-    private SoundPoolPlayer sound;
     private Handler mHandler;
     private AlertDialog alertDialogToBeDestroyed;
     private TestInfo mTestInfo;
@@ -90,7 +83,7 @@ public class BaseRunTest extends Fragment implements RunTest {
     private final Runnable mRunnableCode = () -> {
         if (pictureCount < AppPreferences.getSamplingTimes()) {
             pictureCount++;
-            sound.playShortResource(R.raw.beep);
+            SoundUtil.playShortResource(getActivity(), R.raw.beep);
             takePicture();
         } else {
             releaseResources();
@@ -136,12 +129,11 @@ public class BaseRunTest extends Fragment implements RunTest {
     private void setCountDown() {
         if (countdown[0] < timeDelay) {
             binding.timeLayout.setVisibility(View.VISIBLE);
-//            binding.layoutWait.setVisibility(View.GONE);
 
             countdown[0]++;
 
-            if ((timeDelay - countdown[0]) % 15 == 0) {
-                sound.playShortResource(R.raw.beep);
+            if (timeDelay > 10 && (timeDelay - countdown[0]) % 15 == 0) {
+                SoundUtil.playShortResource(getActivity(), R.raw.beep);
             }
 
 //            binding.countdownTimer.setProgress(timeDelay - countdown[0], timeDelay);
@@ -156,12 +148,6 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     protected void waitForStillness() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        sound = new SoundPoolPlayer(getActivity());
     }
 
     @Override
@@ -261,11 +247,10 @@ public class BaseRunTest extends Fragment implements RunTest {
         countdown[0] = 0;
 
         // If the test has a time delay config then use that otherwise use standard delay
-        if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
+        if (mTestInfo.getResults().get(0).getTimeDelay() > 10) {
             timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
 
             binding.timeLayout.setVisibility(View.VISIBLE);
-//            binding.layoutWait.setVisibility(View.GONE);
             binding.countdownTimer.setProgress(timeDelay, timeDelay);
 
             setCountDown();
@@ -382,7 +367,7 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             cameraStarted = true;
 
-            sound.playShortResource(R.raw.futurebeep2);
+            SoundUtil.playShortResource(getActivity(), R.raw.futurebeep2);
 
             int initialDelay = 0;
 
@@ -462,12 +447,15 @@ public class BaseRunTest extends Fragment implements RunTest {
                              Activity activity) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity.stopLockTask();
+            try {
+                activity.stopLockTask();
+            } catch (Exception ignored) {
+            }
         }
 
         releaseResources();
 
-        sound.playShortResource(R.raw.err);
+        SoundUtil.playShortResource(getActivity(), R.raw.err);
 
         alertDialogToBeDestroyed = AlertUtil.showError(activity,
                 R.string.error, message, bitmap, R.string.ok,

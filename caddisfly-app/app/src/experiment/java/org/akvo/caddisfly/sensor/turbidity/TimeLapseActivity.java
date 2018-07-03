@@ -27,13 +27,12 @@ import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.AssetsManager;
-import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.GMailSender;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -61,7 +60,6 @@ public class TimeLapseActivity extends BaseActivity {
     TextView textInterval;
     int interval = 0;
     int numberOfSamples;
-    private SoundPoolPlayer sound;
     private View layoutWait;
     private LinearLayout layoutDetails;
     private TextView textCountdown;
@@ -78,7 +76,7 @@ public class TimeLapseActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            sound.playShortResource(R.raw.beep);
+            SoundUtil.playShortResource(context, R.raw.beep);
 
             int delayMinute;
 
@@ -278,8 +276,6 @@ public class TimeLapseActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_lapse);
-
-        sound = new SoundPoolPlayer(this);
 
         layoutWait = findViewById(R.id.layoutWait);
         layoutDetails = findViewById(R.id.layoutDetails);
