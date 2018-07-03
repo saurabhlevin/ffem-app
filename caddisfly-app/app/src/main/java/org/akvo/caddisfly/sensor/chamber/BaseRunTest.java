@@ -313,7 +313,9 @@ public class BaseRunTest extends Fragment implements RunTest {
      */
     private void getAnalyzedResult(@NonNull Bitmap bitmap) {
 
-        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(getActivity(), bitmap,
+        bitmap = ImageUtil.rotateImage(getActivity(), bitmap);
+
+        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
                 ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
         //Extract the color from the photo which will be used for comparison

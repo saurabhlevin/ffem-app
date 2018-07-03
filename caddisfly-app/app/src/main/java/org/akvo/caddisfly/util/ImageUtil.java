@@ -88,33 +88,12 @@ public final class ImageUtil {
      * Crop a bitmap to a square shape with  given length.
      *
      *
-     * @param activity the activity
-     * @param sourceBitmap the bitmap to crop
+     * @param bitmap the bitmap to crop
      * @param length the length of the sides
      * @return the cropped bitmap
      */
     @SuppressWarnings("SameParameterValue")
-    public static Bitmap getCroppedBitmap(Activity activity, @NonNull Bitmap sourceBitmap, int length) {
-
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        int rotation;
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0:
-                rotation = DEGREES_90;
-                break;
-            case Surface.ROTATION_180:
-                rotation = DEGREES_270;
-                break;
-            case Surface.ROTATION_270:
-                rotation = DEGREES_180;
-                break;
-            case Surface.ROTATION_90:
-            default:
-                rotation = 0;
-                break;
-        }
-
-        Bitmap bitmap = ImageUtil.rotateImage(sourceBitmap, rotation);
+    public static Bitmap getCroppedBitmap(@NonNull Bitmap bitmap, int length) {
 
         int[] pixels = new int[length * length];
 
@@ -450,6 +429,32 @@ public final class ImageUtil {
         mat.postRotate(angle);
         return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
     }
+
+    public static Bitmap rotateImage(Activity activity, @NonNull Bitmap in) {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        int rotation;
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0:
+                rotation = DEGREES_90;
+                break;
+            case Surface.ROTATION_180:
+                rotation = DEGREES_270;
+                break;
+            case Surface.ROTATION_270:
+                rotation = DEGREES_180;
+                break;
+            case Surface.ROTATION_90:
+            default:
+                rotation = 0;
+                break;
+        }
+
+        Matrix mat = new Matrix();
+        mat.postRotate(rotation);
+        return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+    }
+
 
     /**
      * Converts YUV420 NV21 to RGB8888

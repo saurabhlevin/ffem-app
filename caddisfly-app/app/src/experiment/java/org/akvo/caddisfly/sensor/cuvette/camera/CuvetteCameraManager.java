@@ -49,7 +49,9 @@ public class CuvetteCameraManager {
                 byte[] imageBytes = out.toByteArray();
                 Bitmap tempFinalImage = BitmapFactory.decodeByteArray(imageBytes, 0, out.size());
 
-                Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(context, tempFinalImage,
+                tempFinalImage = ImageUtil.rotateImage(context, tempFinalImage);
+
+                Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(tempFinalImage,
                         ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
                 ColorInfo photoColor = ColorUtil.getColorFromBitmap(croppedBitmap,
