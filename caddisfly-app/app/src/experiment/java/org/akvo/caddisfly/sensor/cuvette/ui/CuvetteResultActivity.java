@@ -140,8 +140,6 @@ public class CuvetteResultActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        sound = new SoundPoolPlayer(this);
-
         setContentView(R.layout.activity_cuvette_result);
 
         mConversationView = findViewById(R.id.in);
