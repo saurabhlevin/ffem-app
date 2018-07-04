@@ -514,6 +514,9 @@ public class ChamberTestActivity extends BaseActivity implements
                 if (AppPreferences.getShowDebugInfo()) {
                     showDiagnosticResultDialog(false, resultDetail, resultDetails, true);
                 }
+
+                showCalibrationDialog(calibration);
+
             }
 
             stopScreenPinning();
@@ -551,6 +554,25 @@ public class ChamberTestActivity extends BaseActivity implements
         resultFragment.setCancelable(false);
         resultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
         resultFragment.show(ft, "gridDialog");
+    }
+
+    /**
+     * In diagnostic mode show the diagnostic results dialog.
+     *
+     * @param calibration the calibration details shown to the user
+     */
+    private void showCalibrationDialog(Calibration calibration) {
+        DialogFragment resultFragment = CalibrationResultDialog.newInstance(
+                calibration, testInfo.getDecimalPlaces());
+        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("calibrationDialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        resultFragment.setCancelable(false);
+        resultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        resultFragment.show(ft, "calibrationDialog");
     }
 
     /**
