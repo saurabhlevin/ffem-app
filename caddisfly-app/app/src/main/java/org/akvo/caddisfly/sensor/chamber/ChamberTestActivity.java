@@ -222,7 +222,7 @@ public class ChamberTestActivity extends BaseActivity implements
     public void onBackPressed() {
         if (isAppInLockTaskMode()) {
             if (((Fragment) runTestFragment).isVisible()) {
-                Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.screen_pinned, Toast.LENGTH_SHORT).show();
             } else {
                 stopScreenPinning();
             }
@@ -294,7 +294,7 @@ public class ChamberTestActivity extends BaseActivity implements
             case android.R.id.home:
                 if (isAppInLockTaskMode()) {
                     if (((Fragment) runTestFragment).isVisible()) {
-                        Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.screen_pinned, Toast.LENGTH_SHORT).show();
                     } else {
                         stopScreenPinning();
                     }
@@ -618,6 +618,7 @@ public class ChamberTestActivity extends BaseActivity implements
 
         alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
                 (dialogInterface, i) -> {
+                    stopScreenPinning();
                     if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                         start();
                     } else {
@@ -625,6 +626,7 @@ public class ChamberTestActivity extends BaseActivity implements
                     }
                 },
                 (dialogInterface, i) -> {
+                    stopScreenPinning();
                     dialogInterface.dismiss();
                     releaseResources();
                     setResult(Activity.RESULT_CANCELED);

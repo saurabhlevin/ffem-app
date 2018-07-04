@@ -446,12 +446,7 @@ public class BaseRunTest extends Fragment implements RunTest {
                              @SuppressWarnings("SameParameterValue") final Bitmap bitmap,
                              Activity activity) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            try {
-                activity.stopLockTask();
-            } catch (Exception ignored) {
-            }
-        }
+        stopScreenPinning(activity);
 
         releaseResources();
 
@@ -462,9 +457,20 @@ public class BaseRunTest extends Fragment implements RunTest {
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     activity.setResult(Activity.RESULT_CANCELED);
+
+                    stopScreenPinning(getActivity());
                     activity.finish();
                 }, null, null
         );
+    }
+
+    private void stopScreenPinning(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                activity.stopLockTask();
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     @Override

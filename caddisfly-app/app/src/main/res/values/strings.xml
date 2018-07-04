@@ -259,4 +259,5 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
     <string name="graph">Graph</string>
+    <string name="screen_pinned">Screen pinned. Tap Home button for more information.</string>
 </resources>
