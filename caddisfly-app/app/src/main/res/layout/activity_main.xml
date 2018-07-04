@@ -66,6 +66,7 @@
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:text="@string/stripTest"
+                    android:visibility="gone"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText" />
 
