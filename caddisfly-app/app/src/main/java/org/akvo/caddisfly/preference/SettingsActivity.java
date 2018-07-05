@@ -48,6 +48,7 @@ public class SettingsActivity extends BaseActivity
         findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnosticsOptions).setVisibility(View.GONE);
         findViewById(R.id.layoutDebugging).setVisibility(View.GONE);
+        findViewById(R.id.layoutCamera).setVisibility(View.GONE);
         findViewById(R.id.layoutTesting).setVisibility(View.GONE);
     }
 

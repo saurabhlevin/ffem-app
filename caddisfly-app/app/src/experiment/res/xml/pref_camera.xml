@@ -1,4 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <org.akvo.caddisfly.preference.PreferenceCategoryCustom
+        android:key="preferenceCategoryDiagnostics"
+        android:title="@string/camera">
     <org.akvo.caddisfly.preference.SeekBarPreference
         android:defaultValue="0"
         android:key="cameraCenterOffsetKey"
@@ -15,5 +18,6 @@
         android:key="cameraResolutionKey"
         android:title="Camera Resolution"
         android:summary="640-480"
-        android:defaultValue="4"/>
+        android:defaultValue="640-480"/>
+    </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>
