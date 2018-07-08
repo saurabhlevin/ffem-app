@@ -135,17 +135,17 @@ public class TestActivity extends BaseActivity {
 
             if (testInfo != null && intent.getExtras() != null) {
 
-//                for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
-//                        testInfo.getResults().size()); i++) {
-
-                String code = intent.getExtras().keySet().toArray()[1].toString();
-
-                Pattern pattern = Pattern.compile("_(\\d*?)$");
-                Matcher matcher = pattern.matcher(code);
-                if (matcher.find()) {
-                    testInfo.setResultSuffix(matcher.group(0));
-                } else if (code.contains("_x")) {
-                    testInfo.setResultSuffix(code.substring(code.indexOf("_x")));
+                for (int i = 0; i < intent.getExtras().keySet().size(); i++) {
+                    String code = intent.getExtras().keySet().toArray()[i].toString();
+                    if (!code.equals("testId")) {
+                        Pattern pattern = Pattern.compile("_(\\d*?)$");
+                        Matcher matcher = pattern.matcher(code);
+                        if (matcher.find()) {
+                            testInfo.setResultSuffix(matcher.group(0));
+                        } else if (code.contains("_x")) {
+                            testInfo.setResultSuffix(code.substring(code.indexOf("_x")));
+                        }
+                    }
                 }
             }
         }
