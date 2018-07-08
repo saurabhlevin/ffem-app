@@ -240,6 +240,7 @@ public class TestActivity extends BaseActivity {
                     long milliseconds = calibrationDetail.expiry;
                     if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
                         ErrorMessages.alertCalibrationExpired(this);
+                        return;
                     }
                 }
             }

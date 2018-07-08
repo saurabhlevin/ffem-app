@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.SensorConstants;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.BaseActivity;
@@ -75,6 +76,9 @@ public class TitrationTestActivity extends BaseActivity
             resultIntent.putExtra(result.getName().replace(" ", "_")
                     + testInfo.getResultSuffix(), result.getResult());
         }
+
+        resultIntent.putExtra(SensorConstants.UNIT + testInfo.getResultSuffix(),
+                testInfo.getResults().get(0).getUnit());
 
         setResult(Activity.RESULT_OK, resultIntent);
 
