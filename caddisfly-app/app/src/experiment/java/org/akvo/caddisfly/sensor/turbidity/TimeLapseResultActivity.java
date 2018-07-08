@@ -73,15 +73,13 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             for (int i = 0; i < testInfo.getResults().size(); i++) {
                 Result result = testInfo.getResults().get(i);
-                resultIntent.putExtra(result.getName() + testInfo.getResultSuffix(),
-                        result.getResult());
+                resultIntent.putExtra(result.getName().replace(" ", "_")
+                        + testInfo.getResultSuffix(), result.getResult());
 
                 if (i == 0) {
                     resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
                 }
             }
-            resultIntent.putExtra(SensorConstants.DILUTION + testInfo.getResultSuffix(),
-                    testInfo.getDilution());
 
             setResult(Activity.RESULT_OK, resultIntent);
 
@@ -266,7 +264,12 @@ public class TimeLapseResultActivity extends BaseActivity {
             for (Result result : testInfo.getResults()) {
                 switch (result.getName()) {
                     case "Broth":
-                        result.setResult("Hi Media");
+                        result.setResult(PreferencesUtil.getString(this,
+                                getString(R.string.colif_brothMediaKey), ""));
+                        break;
+                    case "Sample volume":
+                        result.setResult(PreferencesUtil.getString(this,
+                                getString(R.string.colif_volumeKey), ""));
                         break;
                     case "Time to detect":
                         result.setResult(durationString);
