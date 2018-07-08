@@ -548,6 +548,9 @@ public class ChamberTestActivity extends BaseActivity implements
         resultIntent.putExtra(SensorConstants.DILUTION + testInfo.getResultSuffix(),
                 testInfo.getDilution());
 
+        resultIntent.putExtra(SensorConstants.UNIT + testInfo.getResultSuffix(),
+                testInfo.getResults().get(0).getUnit());
+
         setResult(Activity.RESULT_OK, resultIntent);
 
         finish();

@@ -32,6 +32,7 @@ public final class SensorConstants {
     public static final String TEST_ID = "testId";
     public static final String VALUE = "value";
     public static final String LANGUAGE = "language";
+    public static final String UNIT = "Unit";
 
     private SensorConstants() {
     }
