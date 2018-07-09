@@ -60,9 +60,9 @@ public class MainActivityTest {
 
         pressBack();
 
-        onView(withText("Strip Test")).perform(click());
-
-        pressBack();
+//        onView(withText("Strip Test")).perform(click());
+//
+//        pressBack();
 
     }
 }
