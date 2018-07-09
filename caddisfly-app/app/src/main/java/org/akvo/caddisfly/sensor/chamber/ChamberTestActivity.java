@@ -585,18 +585,22 @@ public class ChamberTestActivity extends BaseActivity implements
 
         for (int i = 0; i < testInfo.getResults().size(); i++) {
             Result result = testInfo.getResults().get(i);
-            resultIntent.putExtra(result.getName() + testInfo.getResultSuffix(),
-                    result.getResult());
+            resultIntent.putExtra(result.getName().replace(" ", "_")
+                    + testInfo.getResultSuffix(), result.getResult());
+
+            resultIntent.putExtra(result.getName().replace(" ", "_")
+                    + "_" + SensorConstants.DILUTION
+                    + testInfo.getResultSuffix(), testInfo.getDilution());
+
+            resultIntent.putExtra(
+                    result.getName().replace(" ", "_")
+                            + "_" + SensorConstants.UNIT + testInfo.getResultSuffix(),
+                    testInfo.getResults().get(0).getUnit());
 
             if (i == 0) {
                 resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
             }
         }
-        resultIntent.putExtra(SensorConstants.DILUTION + testInfo.getResultSuffix(),
-                testInfo.getDilution());
-
-        resultIntent.putExtra(SensorConstants.UNIT + testInfo.getResultSuffix(),
-                testInfo.getResults().get(0).getUnit());
 
         setResult(Activity.RESULT_OK, resultIntent);
 
