@@ -63,7 +63,8 @@ public class CuvetteCameraManager {
                 Intent localIntent = new Intent("CUVETTE_RESULT_ACTION");
                 localIntent.putExtra("cuvette_result",
                         String.valueOf(resultDetail.getResult())
-                                + "," + resultDetail.getColor());
+                                + "," + resultDetail.getColor()
+                                + "," + resultDetail.getQuality());
 
                 localBroadcastManager.sendBroadcast(localIntent);
             }

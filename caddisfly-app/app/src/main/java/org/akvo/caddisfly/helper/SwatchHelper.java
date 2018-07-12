@@ -78,7 +78,7 @@ public final class SwatchHelper {
         colorCompareInfo = getNearestColorFromSwatches(photoColor.getColor(), swatches);
 
         //set the result
-        ResultDetail resultDetail = new ResultDetail(-1, photoColor.getColor());
+        ResultDetail resultDetail = new ResultDetail(-1, photoColor.getColor(), photoColor.getQuality());
         if (colorCompareInfo.getResult() > -1) {
             resultDetail.setResult(colorCompareInfo.getResult());
         }

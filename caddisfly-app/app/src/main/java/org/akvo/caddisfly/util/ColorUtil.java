@@ -127,7 +127,7 @@ public final class ColorUtil {
             Timber.e(e);
         }
 
-        return new ColorInfo(commonColor, quality);
+        return new ColorInfo(commonColor, (int) quality);
     }
 
     /**

@@ -409,7 +409,7 @@ public class CuvetteResultActivity extends BaseActivity
         StringBuilder stringBuilder = new StringBuilder();
         List<ResultDetail> list = mConversationArrayAdapter.getList();
         if (list != null && list.size() > 0) {
-            stringBuilder.append("R,G,B,Result");
+            stringBuilder.append("R,G,B,Result,Quality");
             stringBuilder.append(System.lineSeparator());
             for (int i = list.size() - 1; i >= 0; i--) {
                 ResultDetail resultDetail = list.get(i);
@@ -420,8 +420,10 @@ public class CuvetteResultActivity extends BaseActivity
                             .replace("  ", ","));
                     stringBuilder.append(",");
                     if (resultDetail.getResult() > -1) {
-                        stringBuilder.append(resultDetail.getResult());
+                        stringBuilder.append(String.format(Locale.US, "%.2f", resultDetail.getResult()));
                     }
+                    stringBuilder.append(",");
+                    stringBuilder.append(resultDetail.getQuality());
                 }
                 stringBuilder.append(System.lineSeparator());
             }
