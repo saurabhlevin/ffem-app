@@ -132,6 +132,9 @@
         <activity
             android:name=".diagnostic.DiagnosticSwatchActivity"
             android:screenOrientation="nosensor" />
+        <activity
+            android:name=".diagnostic.ChamberPreviewActivity"
+            android:screenOrientation="nosensor" />
         <!-- /Diagnostic -->
 
         <!-- Turbidity -->

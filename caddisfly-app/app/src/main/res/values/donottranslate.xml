@@ -96,6 +96,7 @@
     <string name="download_experimental_tests">Download experimental tests</string>
     <string name="testModeOn">Demo / Test Mode</string>
     <string name="maxZoom">Max Zoom</string>
+    <string name="cameraPreview">Colorimeter camera preview</string>
 
     <!--Diagnostic Mode: Messages -->
     <string name="diagnosticModeEnabled">Diagnostic mode enabled</string>

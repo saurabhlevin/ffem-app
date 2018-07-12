@@ -25,7 +25,6 @@ public class ResolutionListPreference extends ListPreference {
                 List<String> items = new ArrayList<>();
                 List<String> values = new ArrayList<>();
 
-
                 parameters.setPictureSize(
                         supportedPictureSizes.get(supportedPictureSizes.size() - 1).width,
                         supportedPictureSizes.get(supportedPictureSizes.size() - 1).height);

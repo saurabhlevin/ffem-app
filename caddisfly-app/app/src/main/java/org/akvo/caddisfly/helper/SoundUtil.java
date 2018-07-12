@@ -41,17 +41,17 @@ public class SoundUtil {
 
         //play sound if the sound is not turned off in the preference
         if (AppPreferences.isSoundOn()) {
-            final AudioManager mAudioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
+            final AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
             final int originalVolume;
-            if (mAudioManager != null) {
-                originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+            if (audioManager != null) {
+                originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        1, 0);
                 MediaPlayer mp = MediaPlayer.create(context, resourceId);
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mp.start();
                 mp.setOnCompletionListener(mediaPlayer -> {
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
                     mp.release();
                 });
             }

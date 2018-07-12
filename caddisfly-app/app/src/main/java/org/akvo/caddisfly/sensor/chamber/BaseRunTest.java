@@ -76,7 +76,7 @@ public class BaseRunTest extends Fragment implements RunTest {
     private AlertDialog alertDialogToBeDestroyed;
     private TestInfo mTestInfo;
     private Calibration mCalibration;
-    private int dilution;
+    private int dilution = 1;
     private Camera mCamera;
     private OnResultListener mListener;
     private ChamberCameraPreview mCameraPreview;
@@ -324,6 +324,7 @@ public class BaseRunTest extends Fragment implements RunTest {
             resultDetail.setBitmap(bitmap);
             resultDetail.setCroppedBitmap(croppedBitmap);
             resultDetail.setDilution(dilution);
+            resultDetail.setQuality(photoColor.getQuality());
 
 //            Timber.d("Result is: " + String.valueOf(resultDetail.getResult()));
 
@@ -352,7 +353,7 @@ public class BaseRunTest extends Fragment implements RunTest {
         this.dilution = dilution;
     }
 
-    void startRepeatingTask() {
+    protected void startRepeatingTask() {
         mRunnableCode.run();
     }
 
