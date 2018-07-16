@@ -43,6 +43,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -118,6 +119,7 @@ public class StriptestInstructions {
 
     @Test
     @RequiresDevice
+    @Ignore
     public void testInstructionsAll() {
 
         goToMainScreen();

@@ -15,7 +15,7 @@ public class BaseApplication extends Application {
         super.attachBaseContext(base);
 
         //noinspection ConstantConditions
-        if (BuildConfig.BUILD_TYPE.equals("multidex")) {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             MultiDex.install(this);
         }
     }

@@ -141,7 +141,11 @@ public class ChamberTest {
 
         goToMainScreen();
 
-        onView(withText(R.string.calibrate)).perform(click());
+        try {
+            onView(withText(R.string.calibrate)).perform(click());
+        } catch (Exception e) {
+            onView(withText(R.string.waterCalibrate)).perform(click());
+        }
 
         onView(allOf(withId(R.id.list_types),
                 childAtPosition(
@@ -171,7 +175,11 @@ public class ChamberTest {
 
         leaveDiagnosticMode();
 
-        onView(withText(R.string.calibrate)).perform(click());
+        try {
+            onView(withText(R.string.calibrate)).perform(click());
+        } catch (Exception e) {
+            onView(withText(R.string.waterCalibrate)).perform(click());
+        }
 
         onView(allOf(withId(R.id.list_types),
                 childAtPosition(
@@ -410,7 +418,11 @@ public class ChamberTest {
 
         goToMainScreen();
 
-        onView(withText(R.string.calibrate)).perform(click());
+        try {
+            onView(withText(R.string.calibrate)).perform(click());
+        } catch (Exception e) {
+            onView(withText(R.string.waterCalibrate)).perform(click());
+        }
 
         onView(allOf(withId(R.id.list_types),
                 childAtPosition(
@@ -438,7 +450,11 @@ public class ChamberTest {
 
         leaveDiagnosticMode();
 
-        onView(withText(R.string.calibrate)).perform(click());
+        try {
+            onView(withText(R.string.calibrate)).perform(click());
+        } catch (Exception e) {
+            onView(withText(R.string.waterCalibrate)).perform(click());
+        }
 
         onView(allOf(withId(R.id.list_types),
                 childAtPosition(

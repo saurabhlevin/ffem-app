@@ -717,10 +717,12 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     public void sendToServerClick(View view) {
+        stopScreenPinning();
         ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
     }
 
     public void sendTestResultClick(View view) {
+        stopScreenPinning();
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         DiagnosticSendDialogFragment diagnosticSendDialogFragment =
                 DiagnosticSendDialogFragment.newInstance();

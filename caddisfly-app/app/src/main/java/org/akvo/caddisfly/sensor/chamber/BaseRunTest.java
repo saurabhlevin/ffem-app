@@ -60,6 +60,7 @@ import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 //import timber.log.Timber;
 
@@ -187,13 +188,13 @@ public class BaseRunTest extends Fragment implements RunTest {
                     @Override
                     public void onGlobalLayout() {
                         binding.cameraView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int parentHeight = ((FrameLayout)binding.cameraView.getParent()).getMeasuredHeight();
+                        int parentHeight = ((FrameLayout) binding.cameraView.getParent()).getMeasuredHeight();
                         int offset = (parentHeight * AppPreferences.getCameraCenterOffset())
                                 / mCamera.getParameters().getPictureSize().width;
 
                         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) binding.circleView.getLayoutParams();
 
-                        Resources r = getContext().getResources();
+                        Resources r = Objects.requireNonNull(getContext()).getResources();
                         int offsetPixels = (int) TypedValue.applyDimension(
                                 TypedValue.COMPLEX_UNIT_DIP,
                                 offset,
@@ -298,7 +299,7 @@ public class BaseRunTest extends Fragment implements RunTest {
      */
     private void getAnalyzedResult(@NonNull Bitmap bitmap) {
 
-        bitmap = ImageUtil.rotateImage(getActivity(), bitmap);
+        bitmap = ImageUtil.rotateImage(Objects.requireNonNull(getActivity()), bitmap);
 
         Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
                 ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);

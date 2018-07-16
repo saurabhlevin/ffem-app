@@ -144,7 +144,7 @@
                     android:onClick="onCalibrateWaterClick"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
-                    android:text="Water - Calibrate"
+                    android:text="@string/waterCalibrate"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText"
                     android:theme="?longButtonStyle" />
