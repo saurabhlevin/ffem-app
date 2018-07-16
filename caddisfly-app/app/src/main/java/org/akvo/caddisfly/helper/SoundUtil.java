@@ -46,7 +46,7 @@ public class SoundUtil {
             if (audioManager != null) {
                 originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        1, 0);
+                        audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
                 MediaPlayer mp = MediaPlayer.create(context, resourceId);
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mp.start();

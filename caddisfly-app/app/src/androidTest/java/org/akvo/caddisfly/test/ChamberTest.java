@@ -86,6 +86,7 @@ import static org.hamcrest.Matchers.startsWith;
 public class ChamberTest {
 
     private static final int TEST_START_DELAY = 24000;
+    private static final int DELAY_EXTRA = 8000;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
@@ -239,8 +240,10 @@ public class ChamberTest {
 
 //        sleep(6000);
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
+        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+
+        onView(withId(R.id.buttonOk)).perform(click());
 
         goToMainScreen();
 
@@ -281,7 +284,7 @@ public class ChamberTest {
 
 //        sleep(20000);
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
+        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
 
 //        onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
@@ -326,7 +329,7 @@ public class ChamberTest {
 
 //        sleep(6000);
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
+        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
 
         onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
@@ -373,7 +376,7 @@ public class ChamberTest {
 
 //        sleep(6000);
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
+        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
 
         String resultString = getText(withId(R.id.textResult));
@@ -440,7 +443,7 @@ public class ChamberTest {
 
         onView(withId(R.id.menuLoad)).perform(click());
 
-        sleep(2000);
+        sleep(1000);
 
         onData(hasToString(startsWith("TestValid"))).perform(click());
 
@@ -499,9 +502,10 @@ public class ChamberTest {
                                 0)));
         recyclerView2.perform(actionOnItemAtPosition(2, click()));
 
-
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
+        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+
+        onView(withId(R.id.buttonOk)).perform(click());
 
 //        ViewInteraction cameraView = onView(
 //                allOf(withId(R.id.camera_view),
@@ -520,7 +524,7 @@ public class ChamberTest {
 
         gotoSurveyForm();
 
-        sleep(2000);
+        sleep(1000);
 
         clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
 
@@ -549,7 +553,7 @@ public class ChamberTest {
 
 //        sleep(6000);
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + 5000)
+        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
 
         //Result dialog
