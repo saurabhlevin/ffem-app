@@ -29,6 +29,7 @@
             android:dialogMessage="A number from 1 to 5"
             android:key="@string/samplingsTimeKey"
             android:maxLength="2"
+            android:selectAllOnFocus="true"
             android:numeric="integer"
             android:title="Sampling times" />
         <EditTextPreference
@@ -36,6 +37,7 @@
             android:dialogMessage="Enter a value below 400"
             android:key="@string/colorDistanceToleranceKey"
             android:maxLength="3"
+            android:selectAllOnFocus="true"
             android:numeric="integer"
             android:title="Max swatch color distance" />
         <EditTextPreference
@@ -44,9 +46,7 @@
             android:key="@string/colorAverageDistanceToleranceKey"
             android:maxLength="3"
             android:numeric="integer"
+            android:selectAllOnFocus="true"
             android:title="Max averaging color distance" />
-        <CheckBoxPreference
-            android:key="@string/maxZoomKey"
-            android:title="@string/maxZoom" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>

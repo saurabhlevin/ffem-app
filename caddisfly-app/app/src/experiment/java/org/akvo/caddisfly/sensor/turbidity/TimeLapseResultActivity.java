@@ -75,6 +75,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                 Result result = testInfo.getResults().get(i);
                 resultIntent.putExtra(result.getName().replace(" ", "_")
                         + testInfo.getResultSuffix(), result.getResult());
+
                 if (i == 0) {
                     resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
                 }
@@ -169,6 +170,10 @@ public class TimeLapseResultActivity extends BaseActivity {
             File[] files = folder.listFiles(imageFilter);
             if (files != null) {
 
+                if (files.length < 2) {
+                    return;
+                }
+
                 List<ImageInfo> imageInfos = new ArrayList<>();
                 Calendar start = Calendar.getInstance();
                 Calendar end = Calendar.getInstance();
@@ -193,7 +198,7 @@ public class TimeLapseResultActivity extends BaseActivity {
 
                 int firstImageValue = 0;
 
-                int totalTime = 0;
+//                int totalTime = 0;
                 try {
                     ImageInfo imageInfo = imageInfos.get(0);
                     String date = imageInfo.getImageFile().getName().substring(0, 13);
@@ -204,21 +209,25 @@ public class TimeLapseResultActivity extends BaseActivity {
                     date = imageInfo.getImageFile().getName().substring(0, 13);
                     end.setTime(sdf.parse(date));
 
-                    totalTime = (int) ((end.getTimeInMillis() - start.getTimeInMillis()) / 1000 / 60);
+//                    totalTime = (int) ((end.getTimeInMillis() - start.getTimeInMillis()) / 1000 / 60);
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                firstImage = imageInfos.get(0).imageFile;
+                firstImage = imageInfos.get(1).imageFile;
                 lastImage = imageInfos.get(imageInfos.size() - 1).imageFile;
 
-                for (int i = 0; i < imageInfos.size(); i++) {
+                for (int i = 1; i < imageInfos.size(); i++) {
 
                     ImageInfo imageInfo = imageInfos.get(i);
 
-                    isTurbid = (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
-                            || (firstImageValue > 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 6700);
+                    isTurbid =
+                            (firstImageValue < 2000 && Math.abs(imageInfo.getCount() - firstImageValue) > 1000)
+                                    || (firstImageValue < 10000 && Math.abs(imageInfo.getCount() - firstImageValue) > 2000)
+                                    || (firstImageValue < 20000 && Math.abs(imageInfo.getCount() - firstImageValue) > 3000)
+                                    || (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
+                                    || (firstImageValue >= 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 7000);
 
                     if (isTurbid) {
                         turbidImage = imageInfo.imageFile;
@@ -236,9 +245,8 @@ public class TimeLapseResultActivity extends BaseActivity {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
             }
 
-            long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
-
             if (emailTemplate != null) {
+                long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
                 String date = simpleDateFormat.format(new Date(startTime));
                 emailTemplate = emailTemplate.replace("{startTime}", date);
@@ -257,11 +265,11 @@ public class TimeLapseResultActivity extends BaseActivity {
                 switch (result.getName()) {
                     case "Broth":
                         result.setResult(PreferencesUtil.getString(this,
-                                R.string.colif_brothMediaKey,""));
+                                getString(R.string.colif_brothMediaKey), ""));
                         break;
-                    case "Date":
-                        result.setResult(new SimpleDateFormat("yyyyMMdd", Locale.US)
-                                .format(startTime));
+                    case "Sample volume":
+                        result.setResult(PreferencesUtil.getString(this,
+                                getString(R.string.colif_volumeKey), ""));
                         break;
                     case "Time to detect":
                         result.setResult(durationString);

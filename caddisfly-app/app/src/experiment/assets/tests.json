@@ -12,15 +12,15 @@
       "results": [
         {
           "id": 1,
-          "name": "Coliforms"
+          "name": "Result"
         },
         {
           "id": 2,
-          "name": "Broth"
+          "name": "Sample volume"
         },
         {
           "id": 3,
-          "name": "Date"
+          "name": "Broth"
         },
         {
           "id": 4,

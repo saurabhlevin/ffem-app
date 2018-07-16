@@ -50,6 +50,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -211,6 +212,7 @@ public class ManualInstructions {
     }
 
     @Test
+    @Ignore
     public void instructionTest() {
 
         gotoSurveyForm();

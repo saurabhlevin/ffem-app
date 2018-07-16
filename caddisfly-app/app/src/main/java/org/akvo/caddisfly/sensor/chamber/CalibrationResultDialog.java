@@ -1,6 +1,7 @@
 package org.akvo.caddisfly.sensor.chamber;
 
 import android.app.DialogFragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,15 @@ public class CalibrationResultDialog extends DialogFragment {
 
         Button buttonOk = view.findViewById(R.id.buttonOk);
         buttonOk.setVisibility(View.VISIBLE);
-        buttonOk.setOnClickListener(view1 -> this.dismiss());
+        buttonOk.setOnClickListener(view1 -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                try {
+                    getActivity().stopLockTask();
+                } catch (Exception ignored) {
+                }
+            }
+            this.dismiss();
+        });
 
         return view;
     }

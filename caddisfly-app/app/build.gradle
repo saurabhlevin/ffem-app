@@ -8,7 +8,7 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 232
+        versionCode 235
         versionName "Beta 1.0"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,7 +27,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Exp Beta 1.0"
+            versionName "Experiment"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
     }
@@ -53,32 +53,28 @@ android {
     buildTypes {
         debug {
             debuggable true
-        }
-
-        multidex {
-            initWith buildTypes.debug
             multiDexEnabled true
         }
     }
 
-//    signingConfigs {
-//        appRelease {
-//            storeFile file(FFEM_CADDISFLY_RELEASE_STORE_FILE)
-//            storePassword FFEM_CADDISFLY_RELEASE_STORE_PASSWORD
-//            keyAlias FFEM_CADDISFLY_RELEASE_KEY_ALIAS
-//            keyPassword FFEM_CADDISFLY_RELEASE_KEY_PASSWORD
-//        }
-//    }
-//
-//    buildTypes {
-//        release {
-//            signingConfig signingConfigs.appRelease
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            zipAlignEnabled true
-//        }
-//    }
+    signingConfigs {
+        appRelease {
+            storeFile file(FFEM_CADDISFLY_RELEASE_STORE_FILE)
+            storePassword FFEM_CADDISFLY_RELEASE_STORE_PASSWORD
+            keyAlias FFEM_CADDISFLY_RELEASE_KEY_ALIAS
+            keyPassword FFEM_CADDISFLY_RELEASE_KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.appRelease
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+        }
+    }
 
     lintOptions {
         checkReleaseBuilds true
@@ -173,4 +169,4 @@ dependencies {
     experimentImplementation 'com.google.firebase:firebase-storage:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-auth:16.0.2'
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'

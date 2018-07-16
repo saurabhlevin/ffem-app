@@ -31,15 +31,15 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.striptest.camera.CameraOperationsManager;
-import org.akvo.caddisfly.util.CameraPreview;
 import org.akvo.caddisfly.sensor.striptest.models.TimeDelayDetail;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
 import org.akvo.caddisfly.sensor.striptest.widget.FinderPatternIndicatorView;
 import org.akvo.caddisfly.ui.BaseActivity;
+import org.akvo.caddisfly.util.CameraPreview;
 import org.akvo.caddisfly.widget.TimerView;
 
 import java.lang.ref.WeakReference;
@@ -68,7 +68,6 @@ public class StripMeasureActivity extends BaseActivity implements
     private Camera mCamera;
     private CameraPreview mCameraPreview;
     private FrameLayout previewLayout;
-    private SoundPoolPlayer sound;
     private WeakReference<StripMeasureActivity> mActivity;
     private TestInfo testInfo;
     private StripMeasureFragment stripMeasureFragment;
@@ -80,8 +79,6 @@ public class StripMeasureActivity extends BaseActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sound = new SoundPoolPlayer(this);
 
         setContentView(R.layout.activity_strip_measure);
 
@@ -234,7 +231,7 @@ public class StripMeasureActivity extends BaseActivity implements
 
     @Override
     public void playSound() {
-        sound.playShortResource(R.raw.futurebeep2);
+        SoundUtil.playShortResource(this, R.raw.futurebeep2);
     }
 
     @Override

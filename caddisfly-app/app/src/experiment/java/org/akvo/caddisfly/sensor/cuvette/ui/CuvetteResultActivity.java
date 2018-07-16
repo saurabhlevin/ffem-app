@@ -2,7 +2,6 @@ package org.akvo.caddisfly.sensor.cuvette.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -10,11 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.RequiresApi;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,20 +46,18 @@ import java.util.Locale;
 
 public class CuvetteResultActivity extends BaseActivity
         implements DeviceListDialog.OnDeviceSelectedListener,
-        DeviceListDialog.OnDeviceCancelListener{
+        DeviceListDialog.OnDeviceCancelListener {
 
     private static final int REQUEST_ENABLE_BT = 3;
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
     MyInnerHandler mHandler = new MyInnerHandler(this);
+    DialogFragment deviceDialog;
     private WeakReference<CuvetteResultActivity> mActivity;
-
     private Button buttonPause;
-
     // Layout Views
     private RecyclerView mConversationView;
-
     /**
      * Array adapter for the conversation thread
      */
@@ -135,7 +132,6 @@ public class CuvetteResultActivity extends BaseActivity
     private boolean readPaused;
     private boolean ignoreNoResult;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,10 +190,9 @@ public class CuvetteResultActivity extends BaseActivity
         return true;
     }
 
-    DialogFragment deviceDialog;
     private void showDeviceListDialog() {
         deviceDialog = DeviceListDialog.newInstance();
-        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         deviceDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
         deviceDialog.show(ft, "deviceList");
     }
@@ -389,6 +384,10 @@ public class CuvetteResultActivity extends BaseActivity
             buttonPause.setText("Pause");
             buttonPause.setBackgroundColor(Color.TRANSPARENT);
             buttonPause.setTextColor(getResources().getColor(R.color.text_primary));
+            mConversationArrayAdapter.add("", false);
+            mConversationArrayAdapter.notifyDataSetChanged();
+            mConversationView.scrollToPosition(0);
+
         }
     }
 
@@ -410,14 +409,21 @@ public class CuvetteResultActivity extends BaseActivity
         StringBuilder stringBuilder = new StringBuilder();
         List<ResultDetail> list = mConversationArrayAdapter.getList();
         if (list != null && list.size() > 0) {
-            stringBuilder.append("R,G,B,Result");
+            stringBuilder.append("R,G,B,Result,Quality");
             stringBuilder.append(System.lineSeparator());
-            for (ResultDetail resultDetail : list) {
-                stringBuilder.append(ColorUtil.getColorRgbString(resultDetail.getColor())
-                        .replace("  ", ","));
-                stringBuilder.append(",");
-                if (resultDetail.getResult() > -1) {
-                    stringBuilder.append(resultDetail.getResult());
+            for (int i = list.size() - 1; i >= 0; i--) {
+                ResultDetail resultDetail = list.get(i);
+                if (resultDetail.getResult() == -2) {
+                    stringBuilder.append("Paused");
+                } else {
+                    stringBuilder.append(ColorUtil.getColorRgbString(resultDetail.getColor())
+                            .replace("  ", ","));
+                    stringBuilder.append(",");
+                    if (resultDetail.getResult() > -1) {
+                        stringBuilder.append(String.format(Locale.US, "%.2f", resultDetail.getResult()));
+                    }
+                    stringBuilder.append(",");
+                    stringBuilder.append(resultDetail.getQuality());
                 }
                 stringBuilder.append(System.lineSeparator());
             }

@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.util.Pair;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -168,16 +169,17 @@ public class ChamberCameraPreview extends SurfaceView implements SurfaceHolder.C
         parameters.setExposureCompensation(EXPOSURE_COMPENSATION);
 
         if (parameters.isZoomSupported()) {
-            if (AppPreferences.useMaxZoom()) {
-                parameters.setZoom(parameters.getMaxZoom());
-            } else {
-                parameters.setZoom(0);
-            }
+            parameters.setZoom(AppPreferences.getCameraZoom());
         }
 
         mCamera.setDisplayOrientation(Constants.DEGREES_90);
 
-        parameters.setPictureSize(MIN_PICTURE_WIDTH, MIN_PICTURE_HEIGHT);
+        if (AppPreferences.isDiagnosticMode()) {
+            Pair<Integer, Integer> resolution = AppPreferences.getCameraResolution();
+            parameters.setPictureSize(resolution.first, resolution.second);
+        } else {
+            parameters.setPictureSize(MIN_PICTURE_WIDTH, MIN_PICTURE_HEIGHT);
+        }
 
         try {
             mCamera.setParameters(parameters);

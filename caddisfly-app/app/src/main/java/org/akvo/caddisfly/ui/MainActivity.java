@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
@@ -83,6 +84,8 @@ public class MainActivity extends BaseActivity {
     private final String[] storagePermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] cameraLocationPermissions = {Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION};
+    private final String[] cameraLocationStoragePermissions = {Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION};
     private NavigationController navigationController;
 
     @Override
@@ -98,14 +101,19 @@ public class MainActivity extends BaseActivity {
         setTitle(R.string.appName);
 
         try {
-            final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
-                    AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
-
-            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
-            b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
-
             if (AppConfig.APP_EXPIRY && ApkHelper.isNonStoreVersion(this)) {
+                final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
+                        AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
+
+                DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+                b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
+
                 b.textVersionExpiry.setVisibility(View.VISIBLE);
+            } else {
+                if (BuildConfig.showExperimentalTests) {
+                    b.textVersionExpiry.setText(CaddisflyApp.getAppVersion(true));
+                    b.textVersionExpiry.setVisibility(View.VISIBLE);
+                }
             }
 
             // If app has expired then close this activity
@@ -304,10 +312,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onReceiveResult(MenuItem item) {
-        if (permissionsDelegate.hasPermissions(cameraLocationPermissions)) {
+        if (permissionsDelegate.hasPermissions(cameraLocationStoragePermissions)) {
             startBluetoothReceive();
         } else {
-            permissionsDelegate.requestPermissions(cameraLocationPermissions,
+            permissionsDelegate.requestPermissions(cameraLocationStoragePermissions,
                     BLUETOOTH_PERMISSION_RECEIVE);
         }
     }
@@ -318,7 +326,7 @@ public class MainActivity extends BaseActivity {
 
         TestInfo testInfo = viewModel.getTestInfo(Constants.COLIFORM_ID);
 
-        final Intent intent = new Intent(this, TimeLapseActivity.class);
+        final Intent intent = new Intent(this, TestActivity.class);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivity(intent);
     }

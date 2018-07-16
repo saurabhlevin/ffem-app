@@ -51,7 +51,7 @@ public class SwatchHelperTest {
     }
 
     private ResultDetail createNewResult(double value, int color) {
-        return new ResultDetail(value, color);
+        return new ResultDetail(value, color, 0);
     }
 
     @Test

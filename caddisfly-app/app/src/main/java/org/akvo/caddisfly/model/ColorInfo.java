@@ -22,9 +22,9 @@ package org.akvo.caddisfly.model;
 public class ColorInfo {
 
     private final int color;
-    private final double quality;
+    private final int quality;
 
-    public ColorInfo(int color, double quality) {
+    public ColorInfo(int color, int quality) {
         this.color = color;
         this.quality = quality;
     }
@@ -33,7 +33,7 @@ public class ColorInfo {
         return color;
     }
 
-    public double getQuality() {
+    public int getQuality() {
         return quality;
     }
 

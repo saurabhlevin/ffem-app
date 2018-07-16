@@ -16,7 +16,6 @@
 
 package org.akvo.caddisfly.sensor.cuvette.ui;
 
-import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -25,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +99,9 @@ public class DeviceListDialog extends DialogFragment {
             address = info.substring(info.length() - 17);
 
             // Send the MAC address
-            mListener.onDeviceSelected(address);
+            if (mListener != null) {
+                mListener.onDeviceSelected(address);
+            }
 
             dismiss();
         }
@@ -213,7 +215,7 @@ public class DeviceListDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (address == null) {
+        if (address == null && mCancelListener != null) {
             mCancelListener.onDeviceCancel();
         }
     }

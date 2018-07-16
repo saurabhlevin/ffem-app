@@ -2,7 +2,6 @@ package org.akvo.caddisfly.sensor.cuvette.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -10,12 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -99,7 +98,6 @@ public class CuvetteMeasureActivity extends BaseActivity
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,7 +148,7 @@ public class CuvetteMeasureActivity extends BaseActivity
 
     private void showDeviceListDialog() {
         deviceDialog = DeviceListDialog.newInstance();
-        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         deviceDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
         deviceDialog.show(ft, "deviceList");
     }
@@ -393,7 +391,7 @@ public class CuvetteMeasureActivity extends BaseActivity
         mCameraHandler = new Handler();
 
         startHandler = new Handler();
-        startHandler.postDelayed(startTask, 8000);
+        startHandler.postDelayed(startTask, 6000);
     }
 
     @Override

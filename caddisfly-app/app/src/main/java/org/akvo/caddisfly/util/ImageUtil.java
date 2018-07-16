@@ -19,9 +19,11 @@
 
 package org.akvo.caddisfly.util;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
@@ -32,6 +34,8 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
+import android.view.Display;
+import android.view.Surface;
 
 import org.akvo.caddisfly.helper.FileHelper;
 
@@ -47,6 +51,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import timber.log.Timber;
+
+import static org.akvo.caddisfly.common.Constants.DEGREES_180;
+import static org.akvo.caddisfly.common.Constants.DEGREES_270;
+import static org.akvo.caddisfly.common.Constants.DEGREES_90;
+import static org.akvo.caddisfly.preference.AppPreferences.getCameraCenterOffset;
 
 /**
  * Set of utility functions to manipulate images.
@@ -78,6 +87,7 @@ public final class ImageUtil {
     /**
      * Crop a bitmap to a square shape with  given length.
      *
+     *
      * @param bitmap the bitmap to crop
      * @param length the length of the sides
      * @return the cropped bitmap
@@ -88,7 +98,7 @@ public final class ImageUtil {
         int[] pixels = new int[length * length];
 
         int centerX = bitmap.getWidth() / 2;
-        int centerY = bitmap.getHeight() / 2;
+        int centerY = (bitmap.getHeight() / 2) - getCameraCenterOffset();
         Point point;
 
         point = new Point(centerX, centerY);
@@ -104,6 +114,23 @@ public final class ImageUtil {
                 Bitmap.Config.ARGB_8888);
         croppedBitmap = ImageUtil.getRoundedShape(croppedBitmap, length);
         croppedBitmap.setHasAlpha(true);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawBitmap(bitmap, new Matrix(), null);
+        canvas.drawCircle(point.x, point.y, length / 2, paint);
+
+        paint.setColor(Color.YELLOW);
+        paint.setStrokeWidth(1);
+        canvas.drawLine(0, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 3, bitmap.getHeight() / 2, paint);
+        canvas.drawLine(bitmap.getWidth()  - (bitmap.getWidth() / 3), bitmap.getHeight() / 2,
+                bitmap.getWidth(), bitmap.getHeight() / 2, paint);
 
         return croppedBitmap;
     }
@@ -403,6 +430,32 @@ public final class ImageUtil {
         return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
     }
 
+    public static Bitmap rotateImage(Activity activity, @NonNull Bitmap in) {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        int rotation;
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0:
+                rotation = DEGREES_90;
+                break;
+            case Surface.ROTATION_180:
+                rotation = DEGREES_270;
+                break;
+            case Surface.ROTATION_270:
+                rotation = DEGREES_180;
+                break;
+            case Surface.ROTATION_90:
+            default:
+                rotation = 0;
+                break;
+        }
+
+        Matrix mat = new Matrix();
+        mat.postRotate(rotation);
+        return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+    }
+
+
     /**
      * Converts YUV420 NV21 to RGB8888
      *
@@ -412,14 +465,13 @@ public final class ImageUtil {
      * @return a RGB8888 pixels int array. Where each int is a pixels ARGB.
      */
     public static int[] convertYUV420_NV21toRGB8888(byte[] data, int width, int height) {
-        int size = width * height;
-        int offset = size;
-        int[] pixels = new int[size];
+        int offset = width * height;
+        int[] pixels = new int[offset];
         int u, v, y1, y2, y3, y4;
 
         // i percorre os Y and the final pixels
         // k percorre os pixles U e V
-        for (int i = 0, k = 0; i < size; i += 2, k += 2) {
+        for (int i = 0, k = 0; i < offset; i += 2, k += 2) {
             y1 = data[i] & 0xff;
             y2 = data[i + 1] & 0xff;
             y3 = data[width + i] & 0xff;

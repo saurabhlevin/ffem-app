@@ -1,5 +1,6 @@
 package org.akvo.caddisfly.sensor.cuvette.camera;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 
 public class CuvetteCameraManager {
     private final TestInfo testInfo;
+    private final Activity context;
     private LocalBroadcastManager localBroadcastManager;
     private Handler mCameraHandler;
     private Camera mCamera;
@@ -47,6 +49,8 @@ public class CuvetteCameraManager {
                 byte[] imageBytes = out.toByteArray();
                 Bitmap tempFinalImage = BitmapFactory.decodeByteArray(imageBytes, 0, out.size());
 
+                tempFinalImage = ImageUtil.rotateImage(context, tempFinalImage);
+
                 Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(tempFinalImage,
                         ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
@@ -59,14 +63,16 @@ public class CuvetteCameraManager {
                 Intent localIntent = new Intent("CUVETTE_RESULT_ACTION");
                 localIntent.putExtra("cuvette_result",
                         String.valueOf(resultDetail.getResult())
-                                + "," + resultDetail.getColor());
+                                + "," + resultDetail.getColor()
+                                + "," + resultDetail.getQuality());
 
                 localBroadcastManager.sendBroadcast(localIntent);
             }
         }
     };
 
-    public CuvetteCameraManager(Context context, TestInfo testInfo) {
+    public CuvetteCameraManager(Activity context, TestInfo testInfo) {
+        this.context = context;
         this.testInfo = testInfo;
         if (AppPreferences.isTestMode()) {
             bytes = ImageUtil.loadImageBytes(testInfo.getName(), FileHelper.FileType.TEST_IMAGE);

@@ -257,6 +257,9 @@ public class TestInfo implements Parcelable {
     public boolean getCameraAbove() {
         return cameraAbove == null ? false : cameraAbove;
     }
+    public void setCameraAbove(boolean value) {
+        cameraAbove = value;
+    }
 
     public boolean getIsGroup() {
         return isCategory;

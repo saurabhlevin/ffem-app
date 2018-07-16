@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
+
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.InfoViewHolder> {
 
     @Nullable
@@ -65,20 +68,31 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.InfoViewHo
 
     public void add(String s, boolean ignoreNoResult) {
         if (mResults != null) {
-            String[] values = s.split(",");
+            if (s.isEmpty()) {
+                mResults.add(0, new ResultDetail(-2, -2, 0));
+            } else {
+                String[] values = s.split(",");
 
-            int color = Integer.parseInt(values[1]);
-            ResultDetail resultDetail = new ResultDetail(Double.parseDouble(values[0]), color);
+                int color = parseInt(values[1]);
+                int quality = 0;
+                if (values.length > 2) {
+                    quality = parseInt(values[2]);
+                }
+                ResultDetail resultDetail = new ResultDetail(parseDouble(values[0]), color, quality);
 
-            if (ignoreNoResult && resultDetail.getResult() < 0) {
-                return;
+                if (ignoreNoResult && resultDetail.getResult() < 0) {
+                    return;
+                }
+
+                if (mResults.size() > 0) {
+                    int previousColor = mResults.get(0).getColor();
+                    if (previousColor == -2) {
+                        previousColor = mResults.get(1).getColor();
+                    }
+                    resultDetail.setDistance(ColorUtil.getColorDistance(previousColor, color));
+                }
+                mResults.add(0, resultDetail);
             }
-
-            if (mResults.size() > 0) {
-                int previousColor = mResults.get(0).getColor();
-                resultDetail.setDistance(ColorUtil.getColorDistance(previousColor, color));
-            }
-            mResults.add(0, resultDetail);
         }
     }
 
@@ -117,6 +131,11 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.InfoViewHo
             if (model.getResult() > -1) {
                 value.setText(String.format(Locale.getDefault(), "%.2f",
                         model.getResult()));
+            } else if (model.getResult() == -2) {
+                value.setText("Paused");
+                layout.setBackgroundColor(Color.TRANSPARENT);
+                rgb.setText("");
+                return;
             } else {
                 value.setText("");
             }
@@ -133,8 +152,8 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.InfoViewHo
             }
 
             rgb.setText(
-                    String.format(Locale.getDefault(), "d:%.0f   %s: %s",
-                            model.getDistance(), "c", ColorUtil.getColorRgbString(color)));
+                    String.format(Locale.getDefault(), "d:%.0f   q:%s   c: %s",
+                            model.getDistance(), model.getQuality(), ColorUtil.getColorRgbString(color)));
         }
     }
 }

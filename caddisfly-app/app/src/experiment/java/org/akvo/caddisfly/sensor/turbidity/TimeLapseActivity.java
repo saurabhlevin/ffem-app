@@ -27,13 +27,12 @@ import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.AssetsManager;
-import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.GMailSender;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -61,7 +60,6 @@ public class TimeLapseActivity extends BaseActivity {
     TextView textInterval;
     int interval = 0;
     int numberOfSamples;
-    private SoundPoolPlayer sound;
     private View layoutWait;
     private LinearLayout layoutDetails;
     private TextView textCountdown;
@@ -78,7 +76,7 @@ public class TimeLapseActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            sound.playShortResource(R.raw.beep);
+            SoundUtil.playShortResource(context, R.raw.beep);
 
             int delayMinute;
 
@@ -127,6 +125,10 @@ public class TimeLapseActivity extends BaseActivity {
             File[] files = folder.listFiles(imageFilter);
             if (files != null) {
 
+                if (files.length < 2) {
+                    return;
+                }
+
                 List<TimeLapseResultActivity.ImageInfo> imageInfos = new ArrayList<>();
                 Calendar start = Calendar.getInstance();
                 Calendar end = Calendar.getInstance();
@@ -153,7 +155,7 @@ public class TimeLapseActivity extends BaseActivity {
 
 //                int totalTime = 0;
                 try {
-                    TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(0);
+                    TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(1);
                     String date = imageInfo.getImageFile().getName().substring(0, 13);
                     start.setTime(sdf.parse(date));
                     firstImageValue = imageInfo.getCount();
@@ -168,15 +170,19 @@ public class TimeLapseActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                firstImage = imageInfos.get(0).imageFile;
+                firstImage = imageInfos.get(1).imageFile;
                 lastImage = imageInfos.get(imageInfos.size() - 1).imageFile;
 
-                for (int i = 0; i < imageInfos.size(); i++) {
+                for (int i = 1; i < imageInfos.size(); i++) {
 
                     TimeLapseResultActivity.ImageInfo imageInfo = imageInfos.get(i);
 
-                    isTurbid = (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
-                            || (firstImageValue > 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 6700);
+                    isTurbid =
+                            (firstImageValue < 2000 && Math.abs(imageInfo.getCount() - firstImageValue) > 1000)
+                                    || (firstImageValue < 10000 && Math.abs(imageInfo.getCount() - firstImageValue) > 2000)
+                                    || (firstImageValue < 20000 && Math.abs(imageInfo.getCount() - firstImageValue) > 3000)
+                                    || (firstImageValue < 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 4000)
+                                    || (firstImageValue >= 50000 && Math.abs(imageInfo.getCount() - firstImageValue) > 7000);
 
                     if (isTurbid) {
                         turbidImage = imageInfo.imageFile;
@@ -270,8 +276,6 @@ public class TimeLapseActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_lapse);
-
-        sound = new SoundPoolPlayer(this);
 
         layoutWait = findViewById(R.id.layoutWait);
         layoutDetails = findViewById(R.id.layoutDetails);
@@ -384,10 +388,10 @@ public class TimeLapseActivity extends BaseActivity {
             }
         }
 
-        File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, testInfo.getName());
-        if (folder.exists()) {
-            FileUtil.deleteRecursive(folder);
-        }
+//        File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, testInfo.getName());
+//        if (folder.exists()) {
+//            FileUtil.deleteRecursive(folder);
+//        }
 
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,
                 testInfo.getName() + File.separator + "_"
