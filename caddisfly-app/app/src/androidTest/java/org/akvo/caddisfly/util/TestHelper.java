@@ -232,7 +232,7 @@ public final class TestHelper {
         }
     }
 
-    public static void activateTestMode() {
+    public static void activateTestMode(Activity activity) {
         onView(withId(R.id.actionSettings)).perform(click());
 
         onView(withText(R.string.about)).check(matches(isDisplayed())).perform(click());
@@ -247,7 +247,7 @@ public final class TestHelper {
 
         onView(withId(R.id.actionSettings)).perform(click());
 
-        clickListViewItem("Test Mode");
+        clickListViewItem(getString(activity, R.string.testModeOn));
     }
 
     public static void clickExternalSourceButton(String id) {
@@ -262,6 +262,7 @@ public final class TestHelper {
                 break;
         }
     }
+
     public static void clickExternalSourceButton(int index) {
         clickExternalSourceButton(index, TestConstant.GO_TO_TEST);
     }

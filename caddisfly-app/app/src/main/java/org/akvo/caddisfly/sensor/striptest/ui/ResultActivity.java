@@ -93,7 +93,7 @@ public class ResultActivity extends BaseActivity {
             for (int i = 0; i < testInfo.getResults().size(); i++) {
                 Result result = testInfo.getResults().get(i);
                 intent.putExtra(result.getName().replace(" ", "_")
-                        + testInfo.getResultSuffix(), 20);
+                        + testInfo.getResultSuffix(), result.getResult());
 
                 intent.putExtra(result.getName().replace(" ", "_")
                         + "_" + SensorConstants.DILUTION
@@ -105,7 +105,7 @@ public class ResultActivity extends BaseActivity {
                         testInfo.getResults().get(0).getUnit());
 
                 if (i == 0) {
-                    intent.putExtra(SensorConstants.VALUE, 20);
+                    intent.putExtra(SensorConstants.VALUE, result.getResult());
                 }
             }
 

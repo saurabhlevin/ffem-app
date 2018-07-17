@@ -20,9 +20,7 @@
 package org.akvo.caddisfly.instruction;
 
 
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.filters.RequiresDevice;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
@@ -32,45 +30,44 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.common.TestConstants;
-import org.akvo.caddisfly.model.TestInfo;
-import org.akvo.caddisfly.model.TestType;
-import org.akvo.caddisfly.repository.TestConfigRepository;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
-
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static junit.framework.Assert.assertEquals;
-import static org.akvo.caddisfly.util.TestHelper.getString;
+import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
+import static org.akvo.caddisfly.util.TestHelper.gotoSurveyForm;
 import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
-import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
+import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
+import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class StriptestInstructions {
-    private final StringBuilder jsArrayString = new StringBuilder();
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -118,78 +115,113 @@ public class StriptestInstructions {
     }
 
     @Test
-    @RequiresDevice
-    @Ignore
-    public void testInstructionsAll() {
+    public void arsenicStripTestInstructions() {
 
         goToMainScreen();
 
-        onView(withText(getString(mActivityTestRule.getActivity(), R.string.stripTest))).perform(click());
+        gotoSurveyForm();
 
-        TestConfigRepository testConfigRepository = new TestConfigRepository();
-        List<TestInfo> testList = testConfigRepository.getTests(TestType.STRIP_TEST);
+        nextSurveyPage(3, "Arsenic");
 
-        if (TestConstants.STRIP_TESTS_COUNT == 1) {
-            checkInstructions(testList.get(0).getUuid());
-        } else {
+        clickExternalSourceButton(0);
 
-            for (int i = 0; i < TestConstants.STRIP_TESTS_COUNT; i++) {
-
-                assertEquals(testList.get(i).getSubtype(), TestType.STRIP_TEST);
-
-                String id = testList.get(i).getUuid();
-                id = id.substring(id.lastIndexOf("-") + 1, id.length());
-
-                int pages = navigateToTest(i, id);
-
-                jsArrayString.append("[").append("\"").append(id).append("\",").append(pages).append("],");
-            }
-        }
-
-//        Log.e("Caddisfly", jsArrayString.toString());
-
-    }
-
-    private int navigateToTest(int index, String id) {
-
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.list_types),
-                        childAtPosition(
-                                withClassName(is("android.widget.LinearLayout")),
-                                0)));
-        recyclerView.perform(actionOnItemAtPosition(index, click()));
+        sleep(1000);
 
         mDevice.waitForIdle();
 
-        return checkInstructions(id);
-    }
-
-    private int checkInstructions(String id) {
         TestUtil.sleep(1000);
 
-        takeScreenshot(id, -1);
+        onView(withText("Arsenic (0 - 500)"))
+                .check(matches(isDisplayed()));
 
-        mDevice.waitForIdle();
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.button_instructions), withText("Instructions"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        1),
+                                1),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
 
-        onView(withText(getString(mActivityTestRule.getActivity(), R.string.instructions))).perform(click());
+        onView(withText(R.string.as_safety))
+                .check(matches(isDisplayed()));
 
-        int pages = 0;
-        for (int i = 0; i < 17; i++) {
-            pages++;
+        onView(withText("Arsenic (0 - 500)"))
+                .check(matches(isDisplayed()));
 
-            try {
-                takeScreenshot(id, i);
+        TestUtil.nextPage();
 
-                onView(withId(R.id.image_pageRight)).perform(click());
+        onView(withText(R.string.as_ins_1))
+                .check(matches(isDisplayed()));
 
-            } catch (Exception e) {
-                TestUtil.sleep(600);
-                Espresso.pressBack();
-                Espresso.pressBack();
-                TestUtil.sleep(600);
-                break;
-            }
-        }
-        return pages;
+        onView(withId(R.id.pager_indicator)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.viewPager))
+                .perform(swipeLeft());
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Navigate up"),
+                        withParent(withId(R.id.toolbar)),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+//        ViewInteraction imageView2 = onView(
+//                allOf(withId(R.id.imageBrand),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(R.id.coordinatorLayout),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        imageView2.check(matches(isDisplayed()));
+
+        ViewInteraction button1 = onView(
+                allOf(withId(R.id.button_prepare),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.instanceOf(android.widget.LinearLayout.class),
+                                        1),
+                                0),
+                        isDisplayed()));
+        button1.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.button_instructions), withText("Instructions"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        1),
+                                1),
+                        isDisplayed()));
+        appCompatButton3.perform(click());
+
+        pressBack();
+
+//        ViewInteraction imageView3 = onView(
+//                allOf(withId(R.id.imageBrand),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(R.id.coordinatorLayout),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        imageView3.check(matches(isDisplayed()));
+
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.button_prepare),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.instanceOf(android.widget.LinearLayout.class),
+                                        1),
+                                0),
+                        isDisplayed()));
+        button2.check(matches(isDisplayed()));
+
+        onView(allOf(withContentDescription("Navigate up"),
+                withParent(withId(R.id.toolbar)),
+                isDisplayed())).perform(click());
+
     }
+
 }
