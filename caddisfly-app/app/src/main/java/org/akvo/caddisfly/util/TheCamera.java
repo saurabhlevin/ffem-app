@@ -25,7 +25,7 @@ import android.hardware.Camera;
  * Created by linda on 7/7/15
  */
 @SuppressWarnings("deprecation")
-final class TheCamera {
+public final class TheCamera {
 
     private TheCamera() {
     }
@@ -33,7 +33,7 @@ final class TheCamera {
     /**
      * A safe way to get an instance of the Camera object.
      */
-    static Camera getCameraInstance() {
+    public static Camera getCameraInstance() {
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance

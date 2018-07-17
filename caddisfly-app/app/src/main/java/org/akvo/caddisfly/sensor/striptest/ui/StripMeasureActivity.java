@@ -35,11 +35,11 @@ import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.striptest.camera.CameraOperationsManager;
+import org.akvo.caddisfly.sensor.striptest.camera.StripTestCameraPreview;
 import org.akvo.caddisfly.sensor.striptest.models.TimeDelayDetail;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
 import org.akvo.caddisfly.sensor.striptest.widget.FinderPatternIndicatorView;
 import org.akvo.caddisfly.ui.BaseActivity;
-import org.akvo.caddisfly.util.CameraPreview;
 import org.akvo.caddisfly.widget.TimerView;
 
 import java.lang.ref.WeakReference;
@@ -56,7 +56,7 @@ import timber.log.Timber;
  */
 @SuppressWarnings("deprecation")
 public class StripMeasureActivity extends BaseActivity implements
-        StripMeasureListener, CameraPreview.OnSurfaceChangedListener {
+        StripMeasureListener {
 
     public static final boolean DEBUG = false;
     // a handler to handle the state machine of the preview, capture, decode, fullCapture cycle
@@ -66,7 +66,7 @@ public class StripMeasureActivity extends BaseActivity implements
     @Nullable
     private WeakReference<Camera> wrCamera;
     private Camera mCamera;
-    private CameraPreview mCameraPreview;
+    private StripTestCameraPreview mCameraPreview;
     private FrameLayout previewLayout;
     private WeakReference<StripMeasureActivity> mActivity;
     private TestInfo testInfo;
@@ -305,8 +305,4 @@ public class StripMeasureActivity extends BaseActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onSurfaceChanged(int w, int h, int previewWidth, int previewHeight) {
-
-    }
 }

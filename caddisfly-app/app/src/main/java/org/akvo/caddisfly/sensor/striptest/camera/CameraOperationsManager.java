@@ -93,11 +93,11 @@ public class CameraOperationsManager {
         }
     }
 
-    public CameraPreview initCamera(Context context) {
+    public StripTestCameraPreview initCamera(Context context) {
         startCameraThread();
 
         // open the camera and create a preview surface for it
-        CameraPreview cameraPreview = new CameraPreview(context);
+        StripTestCameraPreview cameraPreview = new StripTestCameraPreview(context);
         mCamera = cameraPreview.getCamera();
         return cameraPreview;
     }

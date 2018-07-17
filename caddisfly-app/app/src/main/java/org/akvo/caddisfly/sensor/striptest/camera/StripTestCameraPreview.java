@@ -17,7 +17,7 @@
  * along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.akvo.caddisfly.util;
+package org.akvo.caddisfly.sensor.striptest.camera;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -27,43 +27,38 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import org.akvo.caddisfly.common.Constants;
+import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
+import org.akvo.caddisfly.util.TheCamera;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
 
-import static android.hardware.Camera.Parameters.FLASH_MODE_OFF;
-
+/**
+ * Created by linda on 7/7/15
+ */
 @SuppressWarnings("deprecation")
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class StripTestCameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int MIN_CAMERA_WIDTH = 1300;
     private final Camera mCamera;
-    private final String flashMode;
-    private OnSurfaceChangedListener mListener;
+    private final StripMeasureActivity activity;
     private int mPreviewWidth;
     private int mPreviewHeight;
 
-    public CameraPreview(Context context) {
-        this(context, FLASH_MODE_OFF);
-    }
-
-    public CameraPreview(Context context, String flashModeTorch) {
+    public StripTestCameraPreview(Context context) {
         // create surfaceView
         super(context);
-
-        this.flashMode = flashModeTorch;
 
         // Create an instance of Camera
         mCamera = TheCamera.getCameraInstance();
 
         try {
-            mListener = (OnSurfaceChangedListener) context;
+            activity = (StripMeasureActivity) context;
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException(context.toString()
-                    + " must implement OnSurfaceChangedListener");
+            throw new IllegalArgumentException("must have CameraActivity as Context.", e);
         }
         // SurfaceHolder callback to track when underlying surface is created and destroyed.
         SurfaceHolder mHolder = getHolder();
@@ -117,10 +112,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setPreviewDisplay(holder);
             mPreviewWidth = bestSize.width;
             mPreviewHeight = bestSize.height;
-//            Log.e(TAG, "Preview width in cameraPreview: " + mPreviewWidth);
+            Timber.e("Preview width in cameraPreview: %s", mPreviewWidth);
 
-            mListener.onSurfaceChanged(w, h, mPreviewWidth, mPreviewHeight);
-
+            activity.setPreviewProperties(w, h, mPreviewWidth, mPreviewHeight);
+            activity.initPreviewFragment();
             mCamera.startPreview();
             // if we are in FOCUS_MODE_AUTO, we have to start the autofocus here.
             if (mCamera.getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
@@ -165,7 +160,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //preview size
         assert bestSize != null;
         parameters.setPreviewSize(bestSize.width, bestSize.height);
-//        Log.d("Caddisfly", "Preview size set to:" + bestSize.width + "," + bestSize.height);
+        Timber.d("Preview size set to:" + bestSize.width + "," + bestSize.height);
 
         // default focus mode
         String focusMode = Camera.Parameters.FOCUS_MODE_AUTO;
@@ -183,7 +178,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         parameters.setFocusMode(focusMode);
 
         Camera.Area cardArea = new Camera.Area(new Rect(-1000, -1000, -167, 1000), 1);
-        List<Camera.Area> cardAreaList = Arrays.asList(cardArea);
+        List<Camera.Area> cardAreaList = Collections.singletonList(cardArea);
         if (parameters.getMaxNumFocusAreas() > 0) {
             parameters.setFocusAreas(cardAreaList);
         }
@@ -201,7 +196,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //white balance
         if (parameters.getFlashMode() != null) {
             //Check if this optimise the code
-            parameters.setFlashMode(flashMode);
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         }
 
         try {
@@ -227,9 +222,5 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public Camera getCamera() {
         return mCamera;
-    }
-
-    public interface OnSurfaceChangedListener {
-        void onSurfaceChanged(int w, int h, int previewWidth, int previewHeight);
     }
 }
