@@ -34,17 +34,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
+import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.NavigationController;
 import org.akvo.caddisfly.databinding.ActivityMainBinding;
+import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.ApkHelper;
+import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
+import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
+import org.akvo.caddisfly.helper.SwatchHelper;
+import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.preference.SettingsActivity;
+import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteMeasureActivity;
+import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteResultActivity;
+import org.akvo.caddisfly.sensor.titration.ui.TitrationMeasureActivity;
+import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -53,15 +66,26 @@ import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
+import static org.akvo.caddisfly.model.TestType.BLUETOOTH;
 import static org.akvo.caddisfly.model.TestType.CHAMBER_TEST;
 
 public class MainActivity extends BaseActivity {
 
+    private final int STORAGE_PERMISSION = 1;
+    private final int BLUETOOTH_PERMISSION_SEND = 2;
+    private final int BLUETOOTH_PERMISSION_RECEIVE = 3;
+    private final int BLUETOOTH_STORAGE_PERMISSION = 4;
+
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
-    private final String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] storagePermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] cameraLocationPermissions = {Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
+    private final String[] cameraLocationStoragePermissions = {Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION};
     private NavigationController navigationController;
 
     @Override
@@ -77,14 +101,19 @@ public class MainActivity extends BaseActivity {
         setTitle(R.string.appName);
 
         try {
-            final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
-                    AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
-
-            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
-            b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
-
             if (AppConfig.APP_EXPIRY && ApkHelper.isNonStoreVersion(this)) {
+                final GregorianCalendar appExpiryDate = new GregorianCalendar(AppConfig.APP_EXPIRY_YEAR,
+                        AppConfig.APP_EXPIRY_MONTH - 1, AppConfig.APP_EXPIRY_DAY);
+
+                DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+                b.textVersionExpiry.setText(String.format("Version expiry: %s", df.format(appExpiryDate.getTime())));
+
                 b.textVersionExpiry.setVisibility(View.VISIBLE);
+            } else {
+                if (BuildConfig.showExperimentalTests) {
+                    b.textVersionExpiry.setText(CaddisflyApp.getAppVersion(true));
+                    b.textVersionExpiry.setVisibility(View.VISIBLE);
+                }
             }
 
             // If app has expired then close this activity
@@ -147,28 +176,19 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onStripTestsClick(View view) {
-        navigationController.navigateToTestType(TestType.STRIP_TEST);
+        navigationController.navigateToTestType(TestType.STRIP_TEST, TestSampleType.ALL);
     }
 
     public void onBluetoothDeviceClick(View view) {
-        navigationController.navigateToTestType(TestType.BLUETOOTH);
+        navigationController.navigateToTestType(BLUETOOTH, TestSampleType.ALL);
     }
 
     public void onSensorsClick(View view) {
         boolean hasOtg = getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST);
         if (hasOtg) {
-            navigationController.navigateToTestType(TestType.SENSOR);
+            navigationController.navigateToTestType(TestType.SENSOR, TestSampleType.ALL);
         } else {
             ErrorMessages.alertFeatureNotSupported(this, false);
-        }
-    }
-
-    public void onCalibrateClick(View view) {
-
-        if (permissionsDelegate.hasPermissions(permissions)) {
-            startCalibrate();
-        } else {
-            permissionsDelegate.requestPermissions(permissions);
         }
     }
 
@@ -177,21 +197,51 @@ public class MainActivity extends BaseActivity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
-            startCalibrate();
+            switch (requestCode) {
+                case BLUETOOTH_PERMISSION_SEND:
+                    startBluetoothSend();
+                    break;
+                case BLUETOOTH_PERMISSION_RECEIVE:
+                    startBluetoothReceive();
+                    break;
+                case STORAGE_PERMISSION:
+                    startCalibrate(TestSampleType.WATER);
+                    break;
+                case BLUETOOTH_STORAGE_PERMISSION:
+                    showCalibrationError();
+                    break;
+            }
         } else {
+            String message = "";
+            switch (requestCode) {
+                case BLUETOOTH_PERMISSION_SEND:
+                case BLUETOOTH_PERMISSION_RECEIVE:
+                    message = getString(R.string.cameraAndLocationPermissions);
+                    break;
+                case STORAGE_PERMISSION:
+                case BLUETOOTH_STORAGE_PERMISSION:
+                    message = getString(R.string.storagePermission);
+                    break;
+            }
             AlertUtil.showSettingsSnackbar(this,
-                    getWindow().getDecorView().getRootView(),
-                    getString(R.string.storagePermission));
+                    getWindow().getDecorView().getRootView(), message);
         }
     }
 
-    private void startCalibrate() {
-        navigationController.navigateToTestType(CHAMBER_TEST);
+    private void startBluetoothReceive() {
+        final Intent intent = new Intent(this, CuvetteResultActivity.class);
+        startActivity(intent);
+    }
+
+    private void startCalibrate(TestSampleType testSampleType) {
+        FileHelper.migrateFolders();
+        navigationController.navigateToTestType(CHAMBER_TEST, testSampleType);
     }
 
     public void onCbtClick(View view) {
-        navigationController.navigateToTestType(TestType.CBT);
+        navigationController.navigateToTestType(TestType.CBT, TestSampleType.ALL);
     }
 
     public void onSettingsClick(MenuItem item) {
@@ -215,8 +265,105 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    public void onColiformCountClick(View view) {
-        navigationController.navigateToTestType(TestType.COLIFORM_COUNT);
+    public void onSendResult(MenuItem item) {
+        if (permissionsDelegate.hasPermissions(cameraLocationPermissions)) {
+            startBluetoothSend();
+        } else {
+            permissionsDelegate.requestPermissions(cameraLocationPermissions,
+                    BLUETOOTH_PERMISSION_SEND);
+        }
+    }
+
+    private void startBluetoothSend() {
+        //Only start the colorimetry calibration if the device has a camera flash
+        if (CameraHelper.hasFeatureCameraFlash(this,
+                R.string.cannotStartTest, R.string.ok, null)) {
+
+            final TestListViewModel viewModel =
+                    ViewModelProviders.of(this).get(TestListViewModel.class);
+
+            TestInfo testInfo = viewModel.getTestInfo(Constants.CUVETTE_BLUETOOTH_ID);
+
+            List<Calibration> calibrations = CaddisflyApp.getApp().getDb()
+                    .calibrationDao().getAll(Constants.FLUORIDE_ID);
+
+            testInfo.setCalibrations(calibrations);
+
+            if (!SwatchHelper.isSwatchListValid(testInfo)) {
+                if (permissionsDelegate.hasPermissions(storagePermission)) {
+                    showCalibrationError();
+                } else {
+                    permissionsDelegate.requestPermissions(storagePermission,
+                            BLUETOOTH_STORAGE_PERMISSION);
+                }
+            } else {
+                final Intent intent = new Intent(this, CuvetteMeasureActivity.class);
+                intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                startActivity(intent);
+            }
+        }
+    }
+
+    private void showCalibrationError() {
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+        ErrorMessages.alertCalibrationIncomplete(this,
+                viewModel.getTestInfo(Constants.FLUORIDE_ID));
+    }
+
+    public void onReceiveResult(MenuItem item) {
+        if (permissionsDelegate.hasPermissions(cameraLocationStoragePermissions)) {
+            startBluetoothReceive();
+        } else {
+            permissionsDelegate.requestPermissions(cameraLocationStoragePermissions,
+                    BLUETOOTH_PERMISSION_RECEIVE);
+        }
+    }
+
+    public void onColiformsClick(View view) {
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+
+        TestInfo testInfo = viewModel.getTestInfo(Constants.COLIFORM_ID);
+
+        final Intent intent = new Intent(this, TestActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivity(intent);
+    }
+
+    public void onTitrationClick(View view) {
+        final TestListViewModel viewModel =
+                ViewModelProviders.of(this).get(TestListViewModel.class);
+
+        TestInfo testInfo = viewModel.getTestInfo(Constants.TITRATION2_ID);
+
+        final Intent intent = new Intent(this, TitrationMeasureActivity.class);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivity(intent);
+    }
+
+    public void onCalibrateSoilClick(View view) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
+            startCalibrate(TestSampleType.SOIL);
+        } else {
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+        }
+    }
+
+    public void onCalibrateWaterClick(View view) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
+            startCalibrate(TestSampleType.WATER);
+        } else {
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+        }
+    }
+
+    public void onCalibrateClick(View view) {
+        if (permissionsDelegate.hasPermissions(storagePermission)) {
+            startCalibrate(TestSampleType.ALL);
+        } else {
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+        }
     }
 
     /**

@@ -265,6 +265,10 @@ public class CalibrationTest {
 
         sleep(500);
 
+        onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.button_prepare)).perform(click());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String message = String.format("%s%n%n%s",
                     mActivityRule.getActivity().getString(R.string.errorCalibrationExpired),

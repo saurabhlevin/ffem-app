@@ -66,6 +66,7 @@
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:text="@string/stripTest"
+                    android:visibility="gone"
                     android:textAlignment="viewStart"
                     android:textColor="?longButtonText" />
 
@@ -143,7 +144,7 @@
                         android:singleLine="true"
                         android:textAllCaps="true"
                         android:textColor="#d8001c29"
-                        android:textSize="12dp"
+                        android:textSize="14dp"
                         android:visibility="gone"
                         tools:ignore="SpUsage"
                         tools:text="Version expires: 15 Jan 2018" />

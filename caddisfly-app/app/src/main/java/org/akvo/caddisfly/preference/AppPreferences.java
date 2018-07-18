@@ -19,6 +19,9 @@
 
 package org.akvo.caddisfly.preference;
 
+import android.util.Pair;
+import android.util.Patterns;
+
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ChamberTestConfig;
@@ -96,7 +99,6 @@ public final class AppPreferences {
         }
     }
 
-
     public static boolean isSoundOn() {
         return !isDiagnosticMode() || PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.soundOnKey, true);
     }
@@ -123,5 +125,61 @@ public final class AppPreferences {
     public static boolean useMaxZoom() {
         return isDiagnosticMode()
                 && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.maxZoomKey, false);
+    }
+
+    public static String getNotificationEmails() {
+        String emails = PreferencesUtil.getString(CaddisflyApp.getApp(), R.string.colif_emails, "");
+        String[] emailArray = emails.split("\n");
+        StringBuilder emailList = new StringBuilder();
+        for (String email : emailArray) {
+            email = email.trim();
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (!emailList.toString().isEmpty()) {
+                    emailList.append(",");
+                }
+                emailList.append(email);
+            }
+        }
+        return emailList.toString();
+    }
+
+    public static int getCameraZoom() {
+        if (isDiagnosticMode()) {
+            return PreferencesUtil.getInt(CaddisflyApp.getApp(),
+                    R.string.cameraZoomPercentKey, 0);
+        } else {
+            return 0;
+        }
+    }
+
+    public static Pair<Integer, Integer> getCameraResolution() {
+        Pair<Integer, Integer> res = new Pair<>(640, 480);
+        try {
+            if (isDiagnosticMode()) {
+                String resolution = PreferencesUtil.getString(CaddisflyApp.getApp(),
+                        R.string.cameraResolutionKey, "640-480");
+
+                String[] resolutions = resolution.split("-");
+                int widthTemp = Integer.parseInt(resolutions[0]);
+                int heightTemp = Integer.parseInt(resolutions[1]);
+                int width = Math.max(heightTemp, widthTemp);
+                int height = Math.min(heightTemp, widthTemp);
+
+                return new Pair<>(width, height);
+            } else {
+                return res;
+            }
+        } catch (Exception e) {
+            return res;
+        }
+    }
+
+    public static int getCameraCenterOffset() {
+        if (isDiagnosticMode()) {
+            return PreferencesUtil.getInt(CaddisflyApp.getApp(),
+                    R.string.cameraCenterOffsetKey, 0);
+        } else {
+            return 0;
+        }
     }
 }

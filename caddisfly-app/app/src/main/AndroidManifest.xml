@@ -26,6 +26,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -64,6 +65,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.TestActivity"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".ui.TestListActivity"
             android:screenOrientation="nosensor" />
@@ -129,9 +133,53 @@
             android:name=".diagnostic.DiagnosticSwatchActivity"
             android:screenOrientation="nosensor" />
         <activity
-            android:name=".sensor.titration.TitrationTestActivity"
+            android:name=".diagnostic.ChamberPreviewActivity"
             android:screenOrientation="nosensor" />
         <!-- /Diagnostic -->
+
+        <!-- Turbidity -->
+        <activity
+            android:name=".sensor.turbidity.TimeLapseActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".sensor.turbidity.TimeLapseResultActivity"
+            android:screenOrientation="nosensor" />
+
+        <receiver
+            android:name=".sensor.turbidity.TurbidityStartReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <!-- /Turbidity -->
+
+        <!-- Titration -->
+        <activity
+            android:name=".sensor.titration.TitrationTestActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".sensor.titration.ui.TitrationMeasureActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".sensor.titration.ui.ResultActivity"
+            android:screenOrientation="nosensor" />
+        <!-- /Titration -->
+
+        <activity
+            android:name=".sensor.chamber.CalibrationGraphActivity"
+            android:screenOrientation="nosensor" />
+
+        <service
+            android:name=".updater.AlarmService"
+            android:enabled="true" />
+
+        <receiver android:name=".updater.NotificationCancelReceiver" />
+        <receiver android:name=".updater.UpdateAppReceiver" />
+        <receiver
+            android:name=".updater.BootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

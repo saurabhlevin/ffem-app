@@ -2,6 +2,7 @@ package org.akvo.caddisfly.diagnostic;
 
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.model.ResultDetail;
+import org.akvo.caddisfly.sensor.chamber.BaseRunTest;
 import org.akvo.caddisfly.util.ColorUtil;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class DiagnosticResultDialog extends DialogFragment {
 
     private ArrayList<ResultDetail> resultDetails;
     private ResultDetail result;
+    private OnDismissed mListener;
 
     /**
      * Instance of dialog.
@@ -66,7 +69,7 @@ public class DiagnosticResultDialog extends DialogFragment {
         TextView textSwatchRgb = view.findViewById(R.id.textSwatchRgb);
 //        TextView textDimension = view.findViewById(R.id.textDimension);
         TextView textDistance = view.findViewById(R.id.textDistance);
-//        TextView textQuality = view.findViewById(R.id.textQuality);
+        TextView textQuality = view.findViewById(R.id.textQuality);
 
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
         Button buttonRetry = view.findViewById(R.id.buttonRetry);
@@ -78,7 +81,7 @@ public class DiagnosticResultDialog extends DialogFragment {
         textSwatchRgb.setText(String.format("%s", ColorUtil.getColorRgbString(result.getMatchedColor())));
 
         textDistance.setText(String.format(Locale.getDefault(), "D: %.2f", result.getDistance()));
-        //textQuality.setText(String.format(Locale.getDefault(), "Q: %.0f%%", result.getQuality()));
+        textQuality.setText(String.format(Locale.getDefault(), "Q: %d%%", result.getQuality()));
 
         if (testFailed) {
             getDialog().setTitle(R.string.no_result);
@@ -102,9 +105,18 @@ public class DiagnosticResultDialog extends DialogFragment {
 
         Button buttonOk = view.findViewById(R.id.buttonOk);
         buttonOk.setVisibility(View.VISIBLE);
-        buttonOk.setOnClickListener(view1 -> this.dismiss());
+        buttonOk.setOnClickListener(view1 -> {
+            this.dismiss();
+            if (mListener != null) {
+                mListener.onDismissed();
+            }
+        });
 
         return view;
+    }
+
+    public interface OnDismissed {
+        void onDismissed();
     }
 
     private class ResultListAdapter extends BaseAdapter {
@@ -150,4 +162,11 @@ public class DiagnosticResultDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof BaseRunTest.OnResultListener) {
+            mListener = (OnDismissed) context;
+        }
+    }
 }

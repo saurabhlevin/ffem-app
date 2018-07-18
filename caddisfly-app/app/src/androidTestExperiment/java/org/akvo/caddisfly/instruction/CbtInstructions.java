@@ -44,6 +44,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -144,6 +145,7 @@ public class CbtInstructions {
 
     @Test
     @FlakyTest
+    @Ignore
     public void cbtInstructions() {
 
         goToMainScreen();
@@ -334,6 +336,7 @@ public class CbtInstructions {
 
     @Test
     @FlakyTest
+    @Ignore
     public void cbtInstructionsAll() {
 
         goToMainScreen();

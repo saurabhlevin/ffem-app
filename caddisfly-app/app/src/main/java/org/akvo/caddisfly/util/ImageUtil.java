@@ -19,9 +19,12 @@
 
 package org.akvo.caddisfly.util;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -31,11 +34,14 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
+import android.view.Display;
+import android.view.Surface;
 
 import org.akvo.caddisfly.helper.FileHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,6 +51,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import timber.log.Timber;
+
+import static org.akvo.caddisfly.common.Constants.DEGREES_180;
+import static org.akvo.caddisfly.common.Constants.DEGREES_270;
+import static org.akvo.caddisfly.common.Constants.DEGREES_90;
+import static org.akvo.caddisfly.preference.AppPreferences.getCameraCenterOffset;
 
 /**
  * Set of utility functions to manipulate images.
@@ -76,6 +87,7 @@ public final class ImageUtil {
     /**
      * Crop a bitmap to a square shape with  given length.
      *
+     *
      * @param bitmap the bitmap to crop
      * @param length the length of the sides
      * @return the cropped bitmap
@@ -86,7 +98,7 @@ public final class ImageUtil {
         int[] pixels = new int[length * length];
 
         int centerX = bitmap.getWidth() / 2;
-        int centerY = bitmap.getHeight() / 2;
+        int centerY = (bitmap.getHeight() / 2) - getCameraCenterOffset();
         Point point;
 
         point = new Point(centerX, centerY);
@@ -103,7 +115,42 @@ public final class ImageUtil {
         croppedBitmap = ImageUtil.getRoundedShape(croppedBitmap, length);
         croppedBitmap.setHasAlpha(true);
 
+        Canvas canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawBitmap(bitmap, new Matrix(), null);
+        canvas.drawCircle(point.x, point.y, length / 2, paint);
+
+        paint.setColor(Color.YELLOW);
+        paint.setStrokeWidth(1);
+        canvas.drawLine(0, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 3, bitmap.getHeight() / 2, paint);
+        canvas.drawLine(bitmap.getWidth()  - (bitmap.getWidth() / 3), bitmap.getHeight() / 2,
+                bitmap.getWidth(), bitmap.getHeight() / 2, paint);
+
         return croppedBitmap;
+    }
+
+    public static ColorMatrix createGreyMatrix() {
+        return new ColorMatrix(new float[]{
+                0.2989f, 0.5870f, 0.1140f, 0, 0,
+                0.2989f, 0.5870f, 0.1140f, 0, 0,
+                0.2989f, 0.5870f, 0.1140f, 0, 0,
+                0, 0, 0, 1, 0
+        });
+    }
+
+    public static ColorMatrix createThresholdMatrix(int threshold) {
+        return new ColorMatrix(new float[]{
+                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+                0f, 0f, 0f, 1f, 0f
+        });
     }
 
     public static Bitmap getGrayscale(@NonNull Bitmap src) {
@@ -381,5 +428,89 @@ public final class ImageUtil {
         Matrix mat = new Matrix();
         mat.postRotate(angle);
         return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+    }
+
+    public static Bitmap rotateImage(Activity activity, @NonNull Bitmap in) {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        int rotation;
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0:
+                rotation = DEGREES_90;
+                break;
+            case Surface.ROTATION_180:
+                rotation = DEGREES_270;
+                break;
+            case Surface.ROTATION_270:
+                rotation = DEGREES_180;
+                break;
+            case Surface.ROTATION_90:
+            default:
+                rotation = 0;
+                break;
+        }
+
+        Matrix mat = new Matrix();
+        mat.postRotate(rotation);
+        return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+    }
+
+
+    /**
+     * Converts YUV420 NV21 to RGB8888
+     *
+     * @param data   byte array on YUV420 NV21 format.
+     * @param width  pixels width
+     * @param height pixels height
+     * @return a RGB8888 pixels int array. Where each int is a pixels ARGB.
+     */
+    public static int[] convertYUV420_NV21toRGB8888(byte[] data, int width, int height) {
+        int offset = width * height;
+        int[] pixels = new int[offset];
+        int u, v, y1, y2, y3, y4;
+
+        // i percorre os Y and the final pixels
+        // k percorre os pixles U e V
+        for (int i = 0, k = 0; i < offset; i += 2, k += 2) {
+            y1 = data[i] & 0xff;
+            y2 = data[i + 1] & 0xff;
+            y3 = data[width + i] & 0xff;
+            y4 = data[width + i + 1] & 0xff;
+
+            u = data[offset + k] & 0xff;
+            v = data[offset + k + 1] & 0xff;
+            u = u - 128;
+            v = v - 128;
+
+            pixels[i] = convertYUVtoRGB(y1, u, v);
+            pixels[i + 1] = convertYUVtoRGB(y2, u, v);
+            pixels[width + i] = convertYUVtoRGB(y3, u, v);
+            pixels[width + i + 1] = convertYUVtoRGB(y4, u, v);
+
+            if (i != 0 && (i + 2) % width == 0)
+                i += width;
+        }
+
+        return pixels;
+    }
+
+    private static int convertYUVtoRGB(int y, int u, int v) {
+        int r, g, b;
+
+        r = y + (int) (1.402f * v);
+        g = y - (int) (0.344f * u + 0.714f * v);
+        b = y + (int) (1.772f * u);
+        r = r > 255 ? 255 : r < 0 ? 0 : r;
+        g = g > 255 ? 255 : g < 0 ? 0 : g;
+        b = b > 255 ? 255 : b < 0 ? 0 : b;
+        return 0xff000000 | (b << 16) | (g << 8) | r;
+    }
+
+    public static byte[] bitmapToBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        bitmap.recycle();
+        return byteArray;
     }
 }

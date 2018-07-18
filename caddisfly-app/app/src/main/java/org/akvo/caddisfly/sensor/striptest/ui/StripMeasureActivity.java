@@ -31,11 +31,11 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.sensor.striptest.camera.CameraOperationsManager;
-import org.akvo.caddisfly.sensor.striptest.camera.CameraPreview;
+import org.akvo.caddisfly.sensor.striptest.camera.StripTestCameraPreview;
 import org.akvo.caddisfly.sensor.striptest.models.TimeDelayDetail;
 import org.akvo.caddisfly.sensor.striptest.utils.MessageUtils;
 import org.akvo.caddisfly.sensor.striptest.widget.FinderPatternIndicatorView;
@@ -55,7 +55,8 @@ import timber.log.Timber;
  * Created by markwestra on 19/07/2017
  */
 @SuppressWarnings("deprecation")
-public class StripMeasureActivity extends BaseActivity implements StripMeasureListener {
+public class StripMeasureActivity extends BaseActivity implements
+        StripMeasureListener {
 
     public static final boolean DEBUG = false;
     // a handler to handle the state machine of the preview, capture, decode, fullCapture cycle
@@ -65,9 +66,8 @@ public class StripMeasureActivity extends BaseActivity implements StripMeasureLi
     @Nullable
     private WeakReference<Camera> wrCamera;
     private Camera mCamera;
-    private CameraPreview mCameraPreview;
+    private StripTestCameraPreview mCameraPreview;
     private FrameLayout previewLayout;
-    private SoundPoolPlayer sound;
     private WeakReference<StripMeasureActivity> mActivity;
     private TestInfo testInfo;
     private StripMeasureFragment stripMeasureFragment;
@@ -79,8 +79,6 @@ public class StripMeasureActivity extends BaseActivity implements StripMeasureLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sound = new SoundPoolPlayer(this);
 
         setContentView(R.layout.activity_strip_measure);
 
@@ -233,7 +231,7 @@ public class StripMeasureActivity extends BaseActivity implements StripMeasureLi
 
     @Override
     public void playSound() {
-        sound.playShortResource(R.raw.futurebeep2);
+        SoundUtil.playShortResource(this, R.raw.futurebeep2);
     }
 
     @Override
@@ -306,4 +304,5 @@ public class StripMeasureActivity extends BaseActivity implements StripMeasureLi
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

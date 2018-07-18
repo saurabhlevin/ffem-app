@@ -20,6 +20,7 @@
 package org.akvo.caddisfly.sensor.chamber;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
@@ -28,13 +29,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,7 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.common.SensorConstants;
@@ -55,7 +57,7 @@ import org.akvo.caddisfly.diagnostic.DiagnosticSwatchActivity;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.FileHelper;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.Result;
@@ -97,8 +99,8 @@ public class ChamberTestActivity extends BaseActivity implements
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
     private int currentDilution = 1;
-    private SoundPoolPlayer sound;
     private AlertDialog alertDialogToBeDestroyed;
+    private boolean testStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +108,6 @@ public class ChamberTestActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_chamber_test);
-
-        sound = new SoundPoolPlayer(this);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -145,6 +145,14 @@ public class ChamberTestActivity extends BaseActivity implements
             fragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment).commit();
         }
+
+        if (fragment instanceof SelectDilutionFragment) {
+            testStarted = true;
+        } else if (fragment != runTestFragment) {
+            testStarted = false;
+        }
+
+        invalidateOptionsMenu();
     }
 
     private void start() {
@@ -164,8 +172,17 @@ public class ChamberTestActivity extends BaseActivity implements
 
     private void runTest() {
         if (cameraIsOk) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                    && AppConfig.USE_SCREEN_PINNING) {
+                startLockTask();
+            }
+
             runTestFragment.setDilution(currentDilution);
             goToFragment((Fragment) runTestFragment);
+
+            testStarted = true;
+
         } else {
             checkCameraMegaPixel();
         }
@@ -197,25 +214,31 @@ public class ChamberTestActivity extends BaseActivity implements
                     runTestFragment.setCalibration(item);
                     setTitle(R.string.calibrate);
                     runTest();
-                    invalidateOptionsMenu();
+//                    invalidateOptionsMenu();
                 }, 150);
             }
         }
     }
 
     @Override
-    protected void onDestroy() {
-        sound.release();
-        super.onDestroy();
+    public void onBackPressed() {
+        if (isAppInLockTaskMode()) {
+            if (((Fragment) runTestFragment).isVisible()) {
+                Toast.makeText(this, R.string.screen_pinned, Toast.LENGTH_SHORT).show();
+            } else {
+                stopScreenPinning();
+            }
+        } else {
+            if (!fragmentManager.popBackStackImmediate()) {
+                super.onBackPressed();
+            }
+            refreshTitle();
+            testStarted = false;
+            invalidateOptionsMenu();
+        }
     }
 
-    @Override
-    public void onBackPressed() {
-
-        if (!fragmentManager.popBackStackImmediate()) {
-            super.onBackPressed();
-        }
-
+    private void refreshTitle() {
         if (fragmentManager.getBackStackEntryCount() == 0) {
             if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                 setTitle(R.string.analyze);
@@ -223,8 +246,6 @@ public class ChamberTestActivity extends BaseActivity implements
                 setTitle(R.string.calibration);
             }
         }
-
-        invalidateOptionsMenu();
     }
 
     @SuppressWarnings("unused")
@@ -246,7 +267,7 @@ public class ChamberTestActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (AppPreferences.isDiagnosticMode()
+        if (AppPreferences.isDiagnosticMode() && !testStarted
                 && (calibrationItemFragment != null && calibrationItemFragment.isVisible())) {
             getMenuInflater().inflate(R.menu.menu_calibrate_dev, menu);
         }
@@ -256,6 +277,11 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuGraph:
+                final Intent graphIntent = new Intent(this, CalibrationGraphActivity.class);
+                graphIntent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                startActivity(graphIntent);
+                return true;
             case R.id.actionSwatches:
                 final Intent intent = new Intent(this, DiagnosticSwatchActivity.class);
                 intent.putExtra(ConstantKey.TEST_INFO, testInfo);
@@ -268,7 +294,22 @@ public class ChamberTestActivity extends BaseActivity implements
                 showEditCalibrationDetailsDialog(false);
                 return true;
             case android.R.id.home:
-                onBackPressed();
+                if (isAppInLockTaskMode()) {
+                    if (((Fragment) runTestFragment).isVisible()) {
+                        Toast.makeText(this, R.string.screen_pinned, Toast.LENGTH_SHORT).show();
+                    } else {
+                        stopScreenPinning();
+                    }
+                } else {
+                    stopScreenPinning();
+                    releaseResources();
+                    if (!fragmentManager.popBackStackImmediate()) {
+                        super.onBackPressed();
+                    }
+                    refreshTitle();
+                    testStarted = false;
+                    invalidateOptionsMenu();
+                }
                 return true;
             default:
                 break;
@@ -394,9 +435,9 @@ public class ChamberTestActivity extends BaseActivity implements
                 result.setResult(value, dilution, testInfo.getMaxDilution());
 
                 if (result.highLevelsFound() && testInfo.getDilution() != testInfo.getMaxDilution()) {
-                    sound.playShortResource(R.raw.beep_long);
+                    SoundUtil.playShortResource(this, R.raw.beep_long);
                 } else {
-                    sound.playShortResource(R.raw.done);
+                    SoundUtil.playShortResource(this, R.raw.done);
                 }
 
                 fragmentManager.popBackStack();
@@ -415,7 +456,8 @@ public class ChamberTestActivity extends BaseActivity implements
             } else {
 
                 if (AppPreferences.getShowDebugInfo()) {
-                    sound.playShortResource(R.raw.err);
+
+                    SoundUtil.playShortResource(this, R.raw.err);
 
                     releaseResources();
 
@@ -469,13 +511,27 @@ public class ChamberTestActivity extends BaseActivity implements
                 CalibrationFile.saveCalibratedData(this, testInfo, calibration, color);
                 loadDetails();
 
-                sound.playShortResource(R.raw.done);
+                SoundUtil.playShortResource(this, R.raw.done);
 
                 if (AppPreferences.getShowDebugInfo()) {
                     showDiagnosticResultDialog(false, resultDetail, resultDetails, true);
                 }
+
+                showCalibrationDialog(calibration);
+
             }
+
+            stopScreenPinning();
             fragmentManager.popBackStackImmediate();
+        }
+    }
+
+    private void stopScreenPinning() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                stopLockTask();
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -503,34 +559,54 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     /**
+     * In diagnostic mode show the diagnostic results dialog.
+     *
+     * @param calibration the calibration details shown to the user
+     */
+    private void showCalibrationDialog(Calibration calibration) {
+        DialogFragment resultFragment = CalibrationResultDialog.newInstance(
+                calibration, testInfo.getDecimalPlaces());
+        final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("calibrationDialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        resultFragment.setCancelable(false);
+        resultFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        resultFragment.show(ft, "calibrationDialog");
+    }
+
+    /**
      * Create result json to send back.
      */
     @SuppressWarnings("unused")
     public void onClickAcceptResult(View view) {
 
         Intent resultIntent = new Intent();
-        final SparseArray<String> results = new SparseArray<>();
 
         for (int i = 0; i < testInfo.getResults().size(); i++) {
             Result result = testInfo.getResults().get(i);
-            results.put(i + 1, result.getResult());
+            resultIntent.putExtra(result.getName().replace(" ", "_")
+                    + testInfo.getResultSuffix(), result.getResult());
+
+            resultIntent.putExtra(result.getName().replace(" ", "_")
+                    + "_" + SensorConstants.DILUTION
+                    + testInfo.getResultSuffix(), testInfo.getDilution());
+
+            resultIntent.putExtra(
+                    result.getName().replace(" ", "_")
+                            + "_" + SensorConstants.UNIT + testInfo.getResultSuffix(),
+                    testInfo.getResults().get(0).getUnit());
+
+            if (i == 0) {
+                resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
+            }
         }
 
-        // Save photo taken during the test
-//        String resultImageUrl = UUID.randomUUID().toString() + ".png";
-//        String path = FileUtil.writeBitmapToExternalStorage(mCroppedBitmap,
-//                FileHelper.FileType.RESULT_IMAGE, resultImageUrl);
-//        resultIntent.putExtra(ConstantKey.IMAGE, path);
-
-//        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo,
-//                results, null, -1, "");
-//        resultIntent.putExtra(SensorConstants.RESPONSE, resultJson.toString());
-
-        // Return plain text result
-//        resultIntent.putExtra(SensorConstants.RESPONSE_COMPAT, results.get(1));
-        resultIntent.putExtra(SensorConstants.VALUE, results.get(1));
-
         setResult(Activity.RESULT_OK, resultIntent);
+
+        stopScreenPinning();
 
         finish();
     }
@@ -543,12 +619,15 @@ public class ChamberTestActivity extends BaseActivity implements
      */
     private void showError(String message, final Bitmap bitmap) {
 
-        sound.playShortResource(R.raw.err);
+        stopScreenPinning();
+
+        SoundUtil.playShortResource(this, R.raw.err);
 
         releaseResources();
 
         alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
                 (dialogInterface, i) -> {
+                    stopScreenPinning();
                     if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
                         start();
                     } else {
@@ -556,6 +635,7 @@ public class ChamberTestActivity extends BaseActivity implements
                     }
                 },
                 (dialogInterface, i) -> {
+                    stopScreenPinning();
                     dialogInterface.dismiss();
                     releaseResources();
                     setResult(Activity.RESULT_CANCELED);
@@ -575,9 +655,14 @@ public class ChamberTestActivity extends BaseActivity implements
      */
     @SuppressWarnings("unused")
     public void onTestWithDilution(View view) {
+
+        stopScreenPinning();
+
         if (!fragmentManager.popBackStackImmediate("dilution", 0)) {
             super.onBackPressed();
         }
+
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -634,10 +719,12 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     public void sendToServerClick(View view) {
+        stopScreenPinning();
         ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
     }
 
     public void sendTestResultClick(View view) {
+        stopScreenPinning();
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         DiagnosticSendDialogFragment diagnosticSendDialogFragment =
                 DiagnosticSendDialogFragment.newInstance();
@@ -647,5 +734,25 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onDetailsSaved(int type, String comment) {
         ConfigDownloader.sendDataToCloudDatabase(this, testInfo, type, comment);
+    }
+
+    public boolean isAppInLockTaskMode() {
+        ActivityManager activityManager;
+
+        activityManager = (ActivityManager)
+                this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (activityManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return activityManager.getLockTaskModeState()
+                        != ActivityManager.LOCK_TASK_MODE_NONE;
+            }
+
+            //noinspection deprecation
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                    && activityManager.isInLockTaskMode();
+        }
+
+        return false;
     }
 }

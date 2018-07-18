@@ -65,6 +65,9 @@ public class TestInfo implements Parcelable {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("type")
+    @Expose
+    private TestSampleType sampleType = TestSampleType.ALL;
     @SerializedName("subtype")
     @Expose
     private TestType subtype;
@@ -152,6 +155,8 @@ public class TestInfo implements Parcelable {
     @SerializedName("imageScale")
     @Expose
     private String imageScale;
+    private String resultSuffix = "";
+
     private List<Calibration> calibrations = new ArrayList<>();
     private int dilution = 1;
     private List<Swatch> swatches = new ArrayList<>();
@@ -172,6 +177,7 @@ public class TestInfo implements Parcelable {
         category = in.readString();
         name = in.readString();
         subtype = TestType.valueOf(in.readString());
+        sampleType = TestSampleType.valueOf(in.readString());
         description = in.readString();
         tags = in.createStringArrayList();
         reagents = new ArrayList<>();
@@ -245,10 +251,14 @@ public class TestInfo implements Parcelable {
         } else {
             decimalPlaces = in.readInt();
         }
+        resultSuffix = in.readString();
     }
 
     public boolean getCameraAbove() {
         return cameraAbove == null ? false : cameraAbove;
+    }
+    public void setCameraAbove(boolean value) {
+        cameraAbove = value;
     }
 
     public boolean getIsGroup() {
@@ -271,6 +281,10 @@ public class TestInfo implements Parcelable {
         return subtype;
     }
 
+    public TestSampleType getSampleType() {
+        return sampleType;
+    }
+
     public String getUuid() {
         return uuid;
     }
@@ -284,21 +298,27 @@ public class TestInfo implements Parcelable {
     }
 
     public double getMinRangeValue() {
-        String[] array = ranges.split(",");
-
-        try {
-            return Double.valueOf(array[0]);
-        } catch (NumberFormatException e) {
+        if (ranges != null) {
+            try {
+                String[] array = ranges.split(",");
+                return Double.valueOf(array[0]);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        } else {
             return -1;
         }
     }
 
     public double getMaxRangeValue() {
-        String[] array = ranges.split(",");
-
-        try {
-            return Double.valueOf(array[array.length - 1]);
-        } catch (NumberFormatException e) {
+        if (ranges != null) {
+            try {
+                String[] array = ranges.split(",");
+                return Double.valueOf(array[array.length - 1]);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        } else {
             return -1;
         }
     }
@@ -409,6 +429,7 @@ public class TestInfo implements Parcelable {
         parcel.writeString(category);
         parcel.writeString(name);
         parcel.writeString(subtype.name());
+        parcel.writeString(sampleType.name());
         parcel.writeString(description);
         parcel.writeStringList(tags);
         parcel.writeTypedList(reagents);
@@ -472,6 +493,7 @@ public class TestInfo implements Parcelable {
             parcel.writeByte((byte) 1);
             parcel.writeInt(decimalPlaces);
         }
+        parcel.writeString(resultSuffix);
     }
 
     public Reagent getReagent(int i) {
@@ -520,7 +542,7 @@ public class TestInfo implements Parcelable {
                     newCalibration.date = calibration.date;
                     newCalibration.image = calibration.image;
                     newCalibration.croppedImage = calibration.croppedImage;
-                    colorItem.setRgb(calibration.color);
+                    colorItem.setRgbInt(calibration.color);
                 }
             }
 
@@ -547,10 +569,20 @@ public class TestInfo implements Parcelable {
         this.dilution = Math.max(1, dilution);
     }
 
+    /**
+     * Connected device id.
+     *
+     * @return the device id
+     */
     public String getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Use the response format to display the results in test id order.
+     *
+     * @return the Format
+     */
     public String getResponseFormat() {
         return responseFormat;
     }
@@ -589,5 +621,17 @@ public class TestInfo implements Parcelable {
 
     public void setResultDetail(ResultDetail resultDetail) {
         this.resultDetail = resultDetail;
+    }
+
+    public List<ColorItem> getPresetColors() {
+        return results.get(0).getPresetColors();
+    }
+
+    public String getResultSuffix() {
+        return resultSuffix;
+    }
+
+    public void setResultSuffix(String resultSuffix) {
+        this.resultSuffix = resultSuffix;
     }
 }

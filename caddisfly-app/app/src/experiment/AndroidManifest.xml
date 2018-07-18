@@ -8,11 +8,21 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application>
+        <activity
+            android:name=".ui.TestActivity"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="io.ffem.experiment" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".sensor.bluetooth.BluetoothLeService"
             android:enabled="true" />
         <!-- /Bluetooth -->
-
 
         <!-- USB -->
         <activity
@@ -31,14 +41,22 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            tools:replace="android:authorities"
             android:authorities="io.ffem.experiment.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <activity
+            android:name=".sensor.cuvette.ui.CuvetteMeasureActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".sensor.cuvette.ui.CuvetteResultActivity"
+            android:screenOrientation="nosensor" />
+
     </application>
 
 </manifest>

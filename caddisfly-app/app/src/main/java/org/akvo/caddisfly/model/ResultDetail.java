@@ -32,10 +32,12 @@ public class ResultDetail {
     private Bitmap bitmap;
     private String image;
     private String croppedImage;
+    private int quality;
 
-    public ResultDetail(double result, int color) {
+    public ResultDetail(double result, int color, int quality) {
         this.result = result;
         this.color = color;
+        this.quality = quality;
     }
 
     public int getColor() {
@@ -112,5 +114,13 @@ public class ResultDetail {
 
     public void setCroppedImage(String croppedImage) {
         this.croppedImage = croppedImage;
+    }
+
+    public int getQuality() {
+        return quality;
+    }
+
+    public void setQuality(int quality) {
+        this.quality = quality;
     }
 }

@@ -44,6 +44,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,9 +54,7 @@ import java.util.List;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -189,27 +188,28 @@ public class ChamberInstructions {
 
         mDevice.waitForIdle();
 
-        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
+//        onView(withText(R.string.cannotStartTest)).check(matches(isDisplayed()));
 
-//        onView(withText(getString(mActivityTestRule.getActivity(), R.string.instructions))).perform(click());
+        onView(withText(getString(mActivityTestRule.getActivity(), R.string.instructions))).perform(click());
 
-//        for (int i = 0; i < 17; i++) {
-//
-//            try {
-//                takeScreenshot(id, i);
-//
-//                onView(withId(R.id.image_pageRight)).perform(click());
-//
-//            } catch (Exception e) {
-//                TestUtil.sleep(600);
-//                Espresso.pressBack();
-//                break;
-//            }
-//        }
+        for (int i = 0; i < 17; i++) {
+
+            try {
+                takeScreenshot(id, i);
+
+                onView(withId(R.id.image_pageRight)).perform(click());
+
+            } catch (Exception e) {
+                TestUtil.sleep(600);
+                Espresso.pressBack();
+                break;
+            }
+        }
     }
 
     @Test
     @RequiresDevice
+    @Ignore
     public void testInstructionsAll() {
 
         goToMainScreen();

@@ -23,27 +23,30 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.Display;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ChamberTestConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.databinding.FragmentRunTestBinding;
 import org.akvo.caddisfly.entity.Calibration;
-import org.akvo.caddisfly.helper.SoundPoolPlayer;
+import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.ResultDetail;
@@ -56,28 +59,37 @@ import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import static org.akvo.caddisfly.common.Constants.DEGREES_180;
-import static org.akvo.caddisfly.common.Constants.DEGREES_270;
-import static org.akvo.caddisfly.common.Constants.DEGREES_90;
+import java.util.Locale;
+import java.util.Objects;
 
 //import timber.log.Timber;
 
 public class BaseRunTest extends Fragment implements RunTest {
     private static final double SHORT_DELAY = 1;
+    final int[] countdown = {0};
     private final ArrayList<ResultDetail> results = new ArrayList<>();
     private final Handler delayHandler = new Handler();
     protected FragmentRunTestBinding binding;
     protected boolean cameraStarted;
     protected int pictureCount = 0;
-    private SoundPoolPlayer sound;
+    int timeDelay = 0;
     private Handler mHandler;
     private AlertDialog alertDialogToBeDestroyed;
     private TestInfo mTestInfo;
     private Calibration mCalibration;
-    private int dilution;
+    private int dilution = 1;
     private Camera mCamera;
     private OnResultListener mListener;
+    private ChamberCameraPreview mCameraPreview;
+    private final Runnable mRunnableCode = () -> {
+        if (pictureCount < AppPreferences.getSamplingTimes()) {
+            pictureCount++;
+            SoundUtil.playShortResource(getActivity(), R.raw.beep);
+            takePicture();
+        } else {
+            releaseResources();
+        }
+    };
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -97,21 +109,46 @@ public class BaseRunTest extends Fragment implements RunTest {
             }
         }
     };
-    private ChamberCameraPreview mCameraPreview;
-    private final Runnable mRunnableCode = () -> {
-        if (pictureCount < AppPreferences.getSamplingTimes()) {
-            pictureCount++;
-            sound.playShortResource(R.raw.beep);
-            takePicture();
-        } else {
-            releaseResources();
-        }
-    };
+    private Runnable mCountdown = this::setCountDown;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        sound = new SoundPoolPlayer(getActivity());
+    private static String timeConversion(int seconds) {
+
+        final int MINUTES_IN_AN_HOUR = 60;
+        final int SECONDS_IN_A_MINUTE = 60;
+
+        int minutes = seconds / SECONDS_IN_A_MINUTE;
+        seconds -= minutes * SECONDS_IN_A_MINUTE;
+
+        int hours = minutes / MINUTES_IN_AN_HOUR;
+        minutes -= hours * MINUTES_IN_AN_HOUR;
+
+        return String.format(Locale.US, "%02d", hours) + ":" +
+                String.format(Locale.US, "%02d", minutes) + ":" +
+                String.format(Locale.US, "%02d", seconds);
+    }
+
+    private void setCountDown() {
+        if (countdown[0] < timeDelay) {
+            binding.timeLayout.setVisibility(View.VISIBLE);
+
+            countdown[0]++;
+
+            if (timeDelay > 10 && (timeDelay - countdown[0]) % 15 == 0) {
+                SoundUtil.playShortResource(getActivity(), R.raw.beep);
+            }
+
+//            binding.countdownTimer.setProgress(timeDelay - countdown[0], timeDelay);
+            binding.textTimeRemaining.setText(timeConversion(timeDelay - countdown[0]));
+
+            delayHandler.postDelayed(mCountdown, 1000);
+        } else {
+            binding.timeLayout.setVisibility(View.GONE);
+            binding.layoutWait.setVisibility(View.VISIBLE);
+            waitForStillness();
+        }
+    }
+
+    protected void waitForStillness() {
     }
 
     @Override
@@ -145,6 +182,28 @@ public class BaseRunTest extends Fragment implements RunTest {
         mCamera = mCameraPreview.getCamera();
         mCameraPreview.setupCamera(mCamera);
         binding.cameraView.addView(mCameraPreview);
+
+        binding.cameraView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        binding.cameraView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int parentHeight = ((FrameLayout) binding.cameraView.getParent()).getMeasuredHeight();
+                        int offset = (parentHeight * AppPreferences.getCameraCenterOffset())
+                                / mCamera.getParameters().getPictureSize().width;
+
+                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) binding.circleView.getLayoutParams();
+
+                        Resources r = Objects.requireNonNull(getContext()).getResources();
+                        int offsetPixels = (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                offset,
+                                r.getDisplayMetrics()
+                        );
+                        layoutParams.setMargins(0, 0, 0, offsetPixels);
+                        binding.circleView.setLayoutParams(layoutParams);
+                    }
+                });
     }
 
     protected void stopPreview() {
@@ -184,6 +243,20 @@ public class BaseRunTest extends Fragment implements RunTest {
         } else {
             binding.textDilution.setText(getResources()
                     .getQuantityString(R.plurals.dilutions, dilution, dilution));
+        }
+
+        countdown[0] = 0;
+
+        // If the test has a time delay config then use that otherwise use standard delay
+        if (mTestInfo.getResults().get(0).getTimeDelay() > 10) {
+            timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+
+            binding.timeLayout.setVisibility(View.VISIBLE);
+            binding.countdownTimer.setProgress(timeDelay, timeDelay);
+
+            setCountDown();
+        } else {
+            waitForStillness();
         }
 
         return binding.getRoot();
@@ -226,26 +299,9 @@ public class BaseRunTest extends Fragment implements RunTest {
      */
     private void getAnalyzedResult(@NonNull Bitmap bitmap) {
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        int rotation;
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0:
-                rotation = DEGREES_90;
-                break;
-            case Surface.ROTATION_180:
-                rotation = DEGREES_270;
-                break;
-            case Surface.ROTATION_270:
-                rotation = DEGREES_180;
-                break;
-            case Surface.ROTATION_90:
-            default:
-                rotation = 0;
-                break;
-        }
+        bitmap = ImageUtil.rotateImage(Objects.requireNonNull(getActivity()), bitmap);
 
-        Bitmap rotatedBitmap = ImageUtil.rotateImage(bitmap, rotation);
-        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(rotatedBitmap,
+        Bitmap croppedBitmap = ImageUtil.getCroppedBitmap(bitmap,
                 ChamberTestConfig.SAMPLE_CROP_LENGTH_DEFAULT);
 
         //Extract the color from the photo which will be used for comparison
@@ -266,9 +322,10 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             ResultDetail resultDetail = SwatchHelper.analyzeColor(mTestInfo.getSwatches().size(),
                     photoColor, mTestInfo.getSwatches());
-            resultDetail.setBitmap(rotatedBitmap);
+            resultDetail.setBitmap(bitmap);
             resultDetail.setCroppedBitmap(croppedBitmap);
             resultDetail.setDilution(dilution);
+            resultDetail.setQuality(photoColor.getQuality());
 
 //            Timber.d("Result is: " + String.valueOf(resultDetail.getResult()));
 
@@ -297,7 +354,7 @@ public class BaseRunTest extends Fragment implements RunTest {
         this.dilution = dilution;
     }
 
-    void startRepeatingTask() {
+    protected void startRepeatingTask() {
         mRunnableCode.run();
     }
 
@@ -312,17 +369,18 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             cameraStarted = true;
 
-            sound.playShortResource(R.raw.futurebeep2);
+            SoundUtil.playShortResource(getActivity(), R.raw.futurebeep2);
 
-            int timeDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
+            int initialDelay = 0;
 
-            // If the test has a time delay config then use that otherwise use standard delay
-            if (mTestInfo.getResults().get(0).getTimeDelay() > 0) {
-                (new Handler()).postDelayed(this::stopPreview, 1000);
-                timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
+            //If the test has a time delay config then use that otherwise use standard delay
+            if (mTestInfo.getResults().get(0).getTimeDelay() < 5) {
+                initialDelay = ChamberTestConfig.DELAY_INITIAL + ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
             }
 
-            delayHandler.postDelayed(mRunnableCode, timeDelay * 1000);
+            binding.layoutWait.setVisibility(View.VISIBLE);
+
+            delayHandler.postDelayed(mRunnableCode, initialDelay * 1000);
         }
     }
 
@@ -390,18 +448,31 @@ public class BaseRunTest extends Fragment implements RunTest {
                              @SuppressWarnings("SameParameterValue") final Bitmap bitmap,
                              Activity activity) {
 
+        stopScreenPinning(activity);
+
         releaseResources();
 
-        sound.playShortResource(R.raw.err);
+        SoundUtil.playShortResource(getActivity(), R.raw.err);
 
         alertDialogToBeDestroyed = AlertUtil.showError(activity,
                 R.string.error, message, bitmap, R.string.ok,
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     activity.setResult(Activity.RESULT_CANCELED);
+
+                    stopScreenPinning(getActivity());
                     activity.finish();
                 }, null, null
         );
+    }
+
+    private void stopScreenPinning(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                activity.stopLockTask();
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     @Override
