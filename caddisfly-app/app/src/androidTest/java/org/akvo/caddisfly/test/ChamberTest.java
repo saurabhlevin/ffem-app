@@ -86,7 +86,7 @@ import static org.hamcrest.Matchers.startsWith;
 public class ChamberTest {
 
     private static final int TEST_START_DELAY = 24000;
-    private static final int DELAY_EXTRA = 8000;
+    private static final int DELAY_EXTRA = 10000;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
@@ -190,12 +190,6 @@ public class ChamberTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-//        onView(withId(R.id.editBatchCode))
-//                .perform(clearText(), closeSoftKeyboard());
-//
-//        onView(withId(R.id.editBatchCode))
-//                .perform(typeText("    "), closeSoftKeyboard());
-
         onView(withText(R.string.save)).perform(click());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
@@ -210,14 +204,6 @@ public class ChamberTest {
 
         onView(withText(R.string.save)).perform(click());
 
-//        onView(withId(R.id.editBatchCode))
-//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
-
-//        onView(withText(R.string.save)).perform(click());
-
-//        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-//        onView(withText("2" + dfs.getDecimalSeparator() + "0 mg/l")).perform(click());
-
         ViewInteraction recyclerView2 = onView(
                 allOf(withId(R.id.calibrationList),
                         childAtPosition(
@@ -226,19 +212,6 @@ public class ChamberTest {
         recyclerView2.perform(actionOnItemAtPosition(4, click()));
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
-
-//        ViewInteraction cameraView1 = onView(
-//                allOf(withId(R.id.camera_view),
-//                        childAtPosition(
-//                                allOf(withId(R.id.layoutWait),
-//                                        childAtPosition(
-//                                                withClassName(is("android.widget.LinearLayout")),
-//                                                1)),
-//                                1),
-//                        isDisplayed()));
-//        cameraView1.perform(click());
-
-//        sleep(6000);
 
         sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
@@ -264,31 +237,13 @@ public class ChamberTest {
         onView(allOf(withId(R.id.textDilution), withText(R.string.noDilution)))
                 .check(matches(isCompletelyDisplayed()));
 
-        //onView(withId(R.id.buttonStart)).perform(click());
-
         onView(allOf(withId(R.id.textDilution), withText(R.string.noDilution)))
                 .check(matches(isCompletelyDisplayed()));
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-//        ViewInteraction cameraView = onView(
-//                allOf(withId(R.id.camera_view),
-//                        childAtPosition(
-//                                allOf(withId(R.id.layoutWait),
-//                                        childAtPosition(
-//                                                withClassName(is("android.widget.LinearLayout")),
-//                                                1)),
-//                                1),
-//                        isDisplayed()));
-//        cameraView.perform(click());
-
-//        sleep(20000);
-
         sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
-
-//        onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
-//                .check(matches(isDisplayed()));
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
@@ -309,25 +264,7 @@ public class ChamberTest {
         //Test Start Screen
         takeScreenshot();
 
-        //onView(withId(R.id.buttonStart)).perform(click());
-
-//        onView(allOf(withId(R.id.textDilution), withText(mActivityRule.getActivity()
-//                .getString(R.string.testWithDilution)))).check(matches(isCompletelyDisplayed()));
-
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
-
-//        ViewInteraction cameraView3 = onView(
-//                allOf(withId(R.id.camera_view),
-//                        childAtPosition(
-//                                allOf(withId(R.id.layoutWait),
-//                                        childAtPosition(
-//                                                withClassName(is("android.widget.LinearLayout")),
-//                                                1)),
-//                                1),
-//                        isDisplayed()));
-//        cameraView3.perform(click());
-
-//        sleep(6000);
 
         sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
@@ -353,28 +290,10 @@ public class ChamberTest {
         onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
                 .getString(R.string.timesDilution), 5)))).check(matches(isCompletelyDisplayed()));
 
-        //onView(withId(R.id.buttonStart)).perform(click());
-
-//        onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
-//                .getString(R.string.timesDilution), 5)))).check(matches(isCompletelyDisplayed()));
-
         //Test Progress Screen
         takeScreenshot();
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
-
-//        ViewInteraction cameraView2 = onView(
-//                allOf(withId(R.id.camera_view),
-//                        childAtPosition(
-//                                allOf(withId(R.id.layoutWait),
-//                                        childAtPosition(
-//                                                withClassName(is("android.widget.LinearLayout")),
-//                                                1)),
-//                                1),
-//                        isDisplayed()));
-//        cameraView2.perform(click());
-
-//        sleep(6000);
 
         sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
@@ -467,12 +386,6 @@ public class ChamberTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-//        onView(withId(R.id.editBatchCode))
-//                .perform(clearText(), closeSoftKeyboard());
-//
-//        onView(withId(R.id.editBatchCode))
-//                .perform(typeText("    "), closeSoftKeyboard());
-
         onView(withText(R.string.save)).perform(click());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
@@ -487,14 +400,6 @@ public class ChamberTest {
 
         onView(withText(R.string.save)).perform(click());
 
-//        onView(withId(R.id.editBatchCode))
-//                .perform(typeText("TEST 123#*@!"), closeSoftKeyboard());
-
-//        onView(withText(R.string.save)).perform(click());
-
-//        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-//        onView(withText("1" + dfs.getDecimalSeparator() + "5 mg/l")).perform(click());
-
         ViewInteraction recyclerView2 = onView(
                 allOf(withId(R.id.calibrationList),
                         childAtPosition(
@@ -506,19 +411,6 @@ public class ChamberTest {
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
 
         onView(withId(R.id.buttonOk)).perform(click());
-
-//        ViewInteraction cameraView = onView(
-//                allOf(withId(R.id.camera_view),
-//                        childAtPosition(
-//                                allOf(withId(R.id.layoutWait),
-//                                        childAtPosition(
-//                                                withClassName(is("android.widget.LinearLayout")),
-//                                                1)),
-//                                1),
-//                        isDisplayed()));
-//        cameraView.perform(click());
-
-//        sleep(6000);
 
         goToMainScreen();
 
@@ -537,21 +429,6 @@ public class ChamberTest {
         onView(withId(R.id.buttonNoDilution)).check(matches(isDisplayed()));
 
         onView(withId(R.id.buttonNoDilution)).perform(click());
-
-        //onView(withId(R.id.buttonStart)).perform(click());
-
-//        ViewInteraction cameraView1 = onView(
-//                allOf(withId(R.id.camera_view),
-//                        childAtPosition(
-//                                allOf(withId(R.id.layoutWait),
-//                                        childAtPosition(
-//                                                withClassName(is("android.widget.LinearLayout")),
-//                                                1)),
-//                                1),
-//                        isDisplayed()));
-//        cameraView1.perform(click());
-
-//        sleep(6000);
 
         sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
                 * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
