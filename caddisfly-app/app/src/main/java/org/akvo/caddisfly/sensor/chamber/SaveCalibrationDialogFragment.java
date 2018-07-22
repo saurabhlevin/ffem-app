@@ -33,12 +33,8 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
@@ -74,8 +70,8 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     private EditText editName = null;
     private EditText editExpiryDate;
     private boolean isEditing = false;
-    private Spinner spinnerCuvette;
-    private TextView textError;
+//    private Spinner spinnerCuvette;
+//    private TextView textError;
 
     private OnCalibrationDetailsSavedListener mListener;
 
@@ -108,7 +104,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         final Activity activity = getActivity();
-        LayoutInflater i = activity.getLayoutInflater();
+        LayoutInflater i = Objects.requireNonNull(activity).getLayoutInflater();
 
         @SuppressLint("InflateParams")
         View view = i.inflate(R.layout.fragment_save_calibration, null);
@@ -130,36 +126,36 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
 
         setupDatePicker(activity);
 
-        spinnerCuvette = view.findViewById(R.id.spinner);
-        if (AppPreferences.isDiagnosticMode()) {
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
-                    R.array.cuvettes, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerCuvette.setAdapter(adapter);
-
-            textError = view.findViewById(R.id.textError);
-
-            for (int j = 0; j < adapter.getCount(); j++) {
-                if (Objects.equals(adapter.getItem(j), calibrationDetail.cuvetteType)) {
-                    spinnerCuvette.setSelection(j);
-                }
-            }
-
-            spinnerCuvette.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    textError.setError(null);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                    textError.setError(null);
-                }
-            });
-        } else {
-            spinnerCuvette.setVisibility(View.GONE);
-            view.findViewById(R.id.layoutSpinner).setVisibility(View.GONE);
-        }
+//        spinnerCuvette = view.findViewById(R.id.spinner);
+//        if (AppPreferences.isDiagnosticMode()) {
+//            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
+//                    R.array.cuvettes, android.R.layout.simple_spinner_item);
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            spinnerCuvette.setAdapter(adapter);
+//
+//            textError = view.findViewById(R.id.textError);
+//
+//            for (int j = 0; j < adapter.getCount(); j++) {
+//                if (Objects.equals(adapter.getItem(j), calibrationDetail.cuvetteType)) {
+//                    spinnerCuvette.setSelection(j);
+//                }
+//            }
+//
+//            spinnerCuvette.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                    textError.setError(null);
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> adapterView) {
+//                    textError.setError(null);
+//                }
+//            });
+//        } else {
+//            spinnerCuvette.setVisibility(View.GONE);
+//            view.findViewById(R.id.layoutSpinner).setVisibility(View.GONE);
+//        }
 
         editName = view.findViewById(R.id.editName);
         if (!isEditing && AppPreferences.isDiagnosticMode()) {
@@ -264,7 +260,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                             File file = new File(path, editName.getText().toString());
 
                             if (file.exists()) {
-                                AlertUtil.askQuestion(context, R.string.fileAlreadyExists,
+                                AlertUtil.askQuestion(Objects.requireNonNull(context), R.string.fileAlreadyExists,
                                         R.string.doYouWantToOverwrite, R.string.overwrite, R.string.cancel, true,
                                         (dialogInterface, i) -> {
                                             saveDetails(testCode);
@@ -294,9 +290,9 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                     calibrationDetail.date = Calendar.getInstance().getTimeInMillis();
                     calibrationDetail.expiry = calendar.getTimeInMillis();
 
-                    if (AppPreferences.isDiagnosticMode()) {
-                        calibrationDetail.cuvetteType = spinnerCuvette.getSelectedItem().toString();
-                    }
+//                    if (AppPreferences.isDiagnosticMode()) {
+//                        calibrationDetail.cuvetteType = spinnerCuvette.getSelectedItem().toString();
+//                    }
 
                     CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                     dao.insert(calibrationDetail);
@@ -312,16 +308,14 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                         return false;
                     }
 
-                    if (AppPreferences.isDiagnosticMode()) {
-
-                        textError.setError(null);
-
-                        if (spinnerCuvette.getSelectedItemPosition() == 0) {
-                            textError.requestFocus();
-                            textError.setError("Select cuvette type");
-                            return false;
-                        }
-                    }
+//                    if (AppPreferences.isDiagnosticMode()) {
+//                        textError.setError(null);
+//                        if (spinnerCuvette.getSelectedItemPosition() == 0) {
+//                            textError.requestFocus();
+//                            textError.setError("Select cuvette type");
+//                            return false;
+//                        }
+//                    }
 
                     if (editExpiryDate.getText().toString().trim().isEmpty()) {
                         editExpiryDate.setError(getString(R.string.required));

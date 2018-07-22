@@ -39,31 +39,31 @@
         android:textColor="?android:textColor" />
 
 
-    <RelativeLayout
-        android:id="@+id/layoutSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:gravity="top|left">
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/layoutSpinner"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:gravity="top|left">-->
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <!--<Spinner-->
+            <!--android:id="@+id/spinner"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
 
-        <android.widget.TextView
-            android:id="@+id/textError"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_alignBottom="@+id/spinner"
-            android:layout_alignEnd="@+id/spinner"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="0dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:paddingTop="0dp" />
-    </RelativeLayout>
+        <!--<android.widget.TextView-->
+            <!--android:id="@+id/textError"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_alignBottom="@+id/spinner"-->
+            <!--android:layout_alignEnd="@+id/spinner"-->
+            <!--android:layout_marginEnd="20dp"-->
+            <!--android:layout_marginTop="0dp"-->
+            <!--android:focusable="true"-->
+            <!--android:focusableInTouchMode="true"-->
+            <!--android:paddingTop="0dp" />-->
+    <!--</RelativeLayout>-->
 
     <TextView
         android:layout_width="wrap_content"
