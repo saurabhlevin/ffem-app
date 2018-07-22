@@ -114,6 +114,10 @@ public class TestActivity extends BaseActivity {
             }
         }
 
+        if (BuildConfig.showExperimentalTests) {
+            AppPreferences.enableDiagnosticMode();
+        }
+
         Intent intent = getIntent();
 
         if (BuildConfig.APPLICATION_ID.equals(intent.getAction())) {

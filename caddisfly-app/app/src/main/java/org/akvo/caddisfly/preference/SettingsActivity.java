@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.ui.BaseActivity;
@@ -138,7 +139,7 @@ public class SettingsActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (AppPreferences.isDiagnosticMode()) {
+        if (!BuildConfig.showExperimentalTests && AppPreferences.isDiagnosticMode()) {
             getMenuInflater().inflate(R.menu.menu_settings, menu);
         }
         return true;

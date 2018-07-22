@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.databinding.ActivityAboutBinding;
@@ -117,12 +118,15 @@ public class AboutActivity extends BaseActivity {
      */
     private void switchLayoutForDiagnosticOrUserMode() {
         if (AppPreferences.isDiagnosticMode()) {
-            findViewById(R.id.layoutDiagnostics).setVisibility(View.VISIBLE);
+            if (BuildConfig.showExperimentalTests) {
+                findViewById(R.id.fabDisableDiagnostics).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.layoutDiagnostics).setVisibility(View.VISIBLE);
+            }
         } else {
             if (findViewById(R.id.layoutDiagnostics).getVisibility() == View.VISIBLE) {
                 findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
             }
         }
     }
-
 }

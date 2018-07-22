@@ -57,7 +57,6 @@ import org.akvo.caddisfly.preference.SettingsActivity;
 import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteMeasureActivity;
 import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteResultActivity;
 import org.akvo.caddisfly.sensor.titration.ui.TitrationMeasureActivity;
-import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -78,10 +77,12 @@ public class MainActivity extends BaseActivity {
     private final int BLUETOOTH_PERMISSION_SEND = 2;
     private final int BLUETOOTH_PERMISSION_RECEIVE = 3;
     private final int BLUETOOTH_STORAGE_PERMISSION = 4;
+    private final int CAMERA_PERMISSION = 5;
 
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     private final String[] storagePermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] cameraPermission = {Manifest.permission.CAMERA};
     private final String[] cameraLocationPermissions = {Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION};
     private final String[] cameraLocationStoragePermissions = {Manifest.permission.CAMERA,
@@ -97,6 +98,10 @@ public class MainActivity extends BaseActivity {
         navigationController = new NavigationController(this);
 
         ActivityMainBinding b = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        if (BuildConfig.showExperimentalTests) {
+            AppPreferences.enableDiagnosticMode();
+        }
 
         setTitle(R.string.appName);
 
@@ -128,7 +133,11 @@ public class MainActivity extends BaseActivity {
      */
     private void switchLayoutForDiagnosticOrUserMode() {
         if (AppPreferences.isDiagnosticMode()) {
-            findViewById(R.id.layoutDiagnostics).setVisibility(View.VISIBLE);
+            if (BuildConfig.showExperimentalTests) {
+                findViewById(R.id.fabDisableDiagnostics).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.layoutDiagnostics).setVisibility(View.VISIBLE);
+            }
         } else {
             if (findViewById(R.id.layoutDiagnostics).getVisibility() == View.VISIBLE) {
                 findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
@@ -147,6 +156,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (BuildConfig.showExperimentalTests) {
+            AppPreferences.enableDiagnosticMode();
+        }
 
         switchLayoutForDiagnosticOrUserMode();
 
@@ -205,6 +218,9 @@ public class MainActivity extends BaseActivity {
                     break;
                 case BLUETOOTH_PERMISSION_RECEIVE:
                     startBluetoothReceive();
+                    break;
+                case CAMERA_PERMISSION:
+                    startTitration();
                     break;
                 case STORAGE_PERMISSION:
                     startCalibrate(TestSampleType.WATER);
@@ -332,6 +348,14 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onTitrationClick(View view) {
+        if (permissionsDelegate.hasPermissions(cameraPermission)) {
+            startTitration();
+        } else {
+            permissionsDelegate.requestPermissions(cameraPermission, CAMERA_PERMISSION);
+        }
+    }
+
+    private void startTitration(){
         final TestListViewModel viewModel =
                 ViewModelProviders.of(this).get(TestListViewModel.class);
 
