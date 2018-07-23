@@ -416,8 +416,10 @@ public class ChamberTestActivity extends BaseActivity implements
         ResultDetail resultDetail = SwatchHelper.analyzeColor(testInfo.getSwatches().size(),
                 colorInfo, testInfo.getSwatches());
 
-        resultDetail.setBitmap(resultDetails.get(resultDetails.size() - 1).getBitmap());
-        resultDetail.setCroppedBitmap(resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
+        ResultDetail lastResult = resultDetails.get(resultDetails.size() - 1);
+        resultDetail.setBitmap(lastResult.getBitmap());
+        resultDetail.setCroppedBitmap(lastResult.getCroppedBitmap());
+        resultDetail.setQuality(lastResult.getQuality());
 
         if (calibration == null) {
 
@@ -494,6 +496,11 @@ public class ChamberTestActivity extends BaseActivity implements
 
                 CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                 calibration.color = color;
+                calibration.quality = resultDetail.getQuality();
+                calibration.centerOffset = AppPreferences.getCameraCenterOffset();
+                calibration.resWidth = resultDetail.getBitmap().getWidth();
+                calibration.resHeight = resultDetail.getBitmap().getHeight();
+                calibration.zoom = AppPreferences.getCameraZoom();
                 calibration.date = new Date().getTime();
                 if (AppPreferences.isDiagnosticMode()) {
 
@@ -565,7 +572,7 @@ public class ChamberTestActivity extends BaseActivity implements
      */
     private void showCalibrationDialog(Calibration calibration) {
         DialogFragment resultFragment = CalibrationResultDialog.newInstance(
-                calibration, testInfo.getDecimalPlaces());
+                calibration, testInfo.getDecimalPlaces(), testInfo.getResults().get(0).getUnit());
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("calibrationDialog");
@@ -720,7 +727,11 @@ public class ChamberTestActivity extends BaseActivity implements
 
     public void sendToServerClick(View view) {
         stopScreenPinning();
-        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
+        try {
+            ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendTestResultClick(View view) {

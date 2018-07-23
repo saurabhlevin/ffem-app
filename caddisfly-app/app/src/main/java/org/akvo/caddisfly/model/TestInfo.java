@@ -542,6 +542,11 @@ public class TestInfo implements Parcelable {
                     newCalibration.date = calibration.date;
                     newCalibration.image = calibration.image;
                     newCalibration.croppedImage = calibration.croppedImage;
+                    newCalibration.quality = calibration.quality;
+                    newCalibration.resWidth = calibration.resWidth;
+                    newCalibration.resHeight = calibration.resHeight;
+                    newCalibration.zoom = calibration.zoom;
+                    newCalibration.centerOffset = calibration.centerOffset;
                     colorItem.setRgbInt(calibration.color);
                 }
             }

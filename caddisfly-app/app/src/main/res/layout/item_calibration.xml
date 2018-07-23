@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            tools:text="ppm" />
+            tools:text="mg/l" />
 
         <TextView
             android:id="@+id/textRgb"

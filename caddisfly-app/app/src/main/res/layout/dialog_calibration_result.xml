@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,8 +9,8 @@
         android:id="@+id/tableDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -39,8 +40,17 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="0.5"
-                android:textSize="40dp" />
+                android:textSize="40dp"
+                tools:ignore="SpUsage"
+                tools:text="0.5" />
+
+            <TextView
+                android:id="@+id/textUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="20sp"
+                tools:text="mg/l" />
 
         </TableRow>
 
@@ -48,10 +58,10 @@
 
     <Button
         android:id="@+id/buttonOk"
-        android:gravity="center_horizontal"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Close" />
+        android:gravity="center_horizontal"
+        android:text="@string/close" />
 
 </LinearLayout>

@@ -106,7 +106,7 @@ public class ConfigDownloader {
 //        }
 //    }
 
-    private static int stringToInteger(String value){
+    private static int stringToInteger(String value) {
 
         try {
             return Integer.valueOf(value);
@@ -123,7 +123,7 @@ public class ConfigDownloader {
         File folder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
                 + File.separator + AppConstants.APP_FOLDER + File.separator + "qa");
 
-        String deviceId = FileUtil.loadTextFromFile(new File(folder,"deviceId"));
+        String deviceId = FileUtil.loadTextFromFile(new File(folder, "deviceId"));
 
         if (stringToInteger(deviceId) < 1) {
 
@@ -175,8 +175,7 @@ public class ConfigDownloader {
                         isSending = true;
 
                         sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
-                                calibration.image, calibration.croppedImage, imagePath, croppedImagePath,
-                                calibration.color, calibration.value, new Date(calibration.date));
+                                imagePath, croppedImagePath, calibration, new Date(calibration.date));
                     }
                 }
             } else {
@@ -197,10 +196,14 @@ public class ConfigDownloader {
                 File imagePath = new File(path, result.getImage());
                 File croppedImagePath = new File(path, result.getCroppedImage());
 
-                sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
-                        result.getImage(), result.getCroppedImage(), imagePath, croppedImagePath,
-                        result.getColor(), result.getResult(), new Date());
+                Calibration calibration = new Calibration();
+                calibration.value = result.getResult();
+                calibration.color = result.getColor();
+                calibration.image = result.getImage();
+                calibration.croppedImage = result.getCroppedImage();
 
+                sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
+                        imagePath, croppedImagePath, calibration, new Date());
             }
 
             if (!isSending) {
@@ -215,10 +218,9 @@ public class ConfigDownloader {
 
     private static void sendFile(Context context, String uuid, int type, String comment, ProgressDialog pd,
                                  String deviceId, FirebaseFirestore db, StorageReference storageReference,
-                                 String imageName, String croppedImageName, File imagePath, File croppedImagePath,
-                                 int color, double value, Date date) {
+                                 File imagePath, File croppedImagePath, Calibration calibration, Date date) {
         Uri file = Uri.fromFile(imagePath);
-        StorageReference storageReference1 = storageReference.child("calibration-images/" + imageName);
+        StorageReference storageReference1 = storageReference.child("calibration-images/" + calibration.image);
 
         storageReference1.putFile(file).addOnSuccessListener(taskSnapshot ->
                 storageReference1.getDownloadUrl().addOnSuccessListener(uri -> {
@@ -227,7 +229,7 @@ public class ConfigDownloader {
                     imagePath.delete();
 
                     Uri file2 = Uri.fromFile(croppedImagePath);
-                    StorageReference storageReference2 = storageReference.child("calibration-images/" + croppedImageName);
+                    StorageReference storageReference2 = storageReference.child("calibration-images/" + calibration.croppedImage);
 
                     storageReference2.putFile(file2).addOnSuccessListener(taskSnapshot2 ->
                             storageReference2.getDownloadUrl().addOnSuccessListener(uri2 -> {
@@ -241,11 +243,16 @@ public class ConfigDownloader {
                                 cal.put("deviceId", deviceId);
                                 cal.put("id", uuid);
                                 cal.put("type", type);
-                                cal.put("value", value);
-                                cal.put("color", color);
-                                cal.put("r", Color.red(color));
-                                cal.put("g", Color.green(color));
-                                cal.put("b", Color.blue(color));
+                                cal.put("value", calibration.value);
+                                cal.put("color", calibration.color);
+                                cal.put("quality", calibration.quality);
+                                cal.put("zoom", calibration.zoom);
+                                cal.put("resWidth", calibration.resWidth);
+                                cal.put("resHeight", calibration.resHeight);
+                                cal.put("centerOffset", calibration.centerOffset);
+                                cal.put("r", Color.red(calibration.color));
+                                cal.put("g", Color.green(calibration.color));
+                                cal.put("b", Color.blue(calibration.color));
                                 cal.put("date", date);
                                 cal.put("comment", comment);
                                 cal.put("version", BuildConfig.VERSION_CODE);
