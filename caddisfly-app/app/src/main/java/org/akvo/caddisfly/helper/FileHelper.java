@@ -64,6 +64,10 @@ public final class FileHelper {
     private FileHelper() {
     }
 
+    public static String getAppFolder() {
+        return FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false) + ROOT_DIRECTORY;
+    }
+
     /**
      * Get the appropriate files directory for the given FileType. The directory may or may
      * not be in the app-specific External Storage. The caller cannot assume anything about

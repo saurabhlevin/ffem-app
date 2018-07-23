@@ -5,5 +5,8 @@
         <CheckBoxPreference
             android:key="@string/showDebugMessagesKey"
             android:title="@string/debuggingOn" />
+        <Preference
+            android:key="@string/showFolderKey"
+            android:title="@string/openAppFolder" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>
