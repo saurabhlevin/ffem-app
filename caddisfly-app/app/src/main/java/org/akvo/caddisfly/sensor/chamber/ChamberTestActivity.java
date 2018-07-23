@@ -728,7 +728,7 @@ public class ChamberTestActivity extends BaseActivity implements
     public void sendToServerClick(View view) {
         stopScreenPinning();
         try {
-            ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
+            ConfigDownloader.sendDataToCloudDatabase(this, testInfo, "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -743,8 +743,8 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     @Override
-    public void onDetailsSaved(int type, String comment) {
-        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, type, comment);
+    public void onDetailsSaved(String comment) {
+        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, comment);
     }
 
     public boolean isAppInLockTaskMode() {

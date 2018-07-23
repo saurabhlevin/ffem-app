@@ -118,7 +118,7 @@ public class ConfigDownloader {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
+    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, String comment) {
 
         ProgressDialog pd;
 
@@ -181,7 +181,7 @@ public class ConfigDownloader {
 
                         isSending = true;
 
-                        sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
+                        sendFile(context, testInfo.getUuid(), comment, pd, finalDeviceId, db, storageReference,
                                 imagePath, croppedImagePath, calibration, calibrationFile, new Date(calibration.date));
                     }
                 }
@@ -209,7 +209,7 @@ public class ConfigDownloader {
                 calibration.image = result.getImage();
                 calibration.croppedImage = result.getCroppedImage();
 
-                sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
+                sendFile(context, testInfo.getUuid(), comment, pd, finalDeviceId, db, storageReference,
                         imagePath, croppedImagePath, calibration, calibrationFile, new Date());
             }
 
@@ -223,7 +223,7 @@ public class ConfigDownloader {
         }).start();
     }
 
-    private static void sendFile(Context context, String uuid, int type, String comment, ProgressDialog pd,
+    private static void sendFile(Context context, String uuid, String comment, ProgressDialog pd,
                                  String deviceId, FirebaseFirestore db, StorageReference storageReference,
                                  File imagePath, File croppedImagePath, Calibration calibration,
                                  String calibrationFileName, Date date) {
@@ -250,7 +250,6 @@ public class ConfigDownloader {
                                 Map<String, Object> cal = new HashMap<>();
                                 cal.put("deviceId", deviceId);
                                 cal.put("id", uuid);
-                                cal.put("type", type);
                                 cal.put("value", calibration.value);
                                 cal.put("color", calibration.color);
                                 cal.put("quality", calibration.quality);

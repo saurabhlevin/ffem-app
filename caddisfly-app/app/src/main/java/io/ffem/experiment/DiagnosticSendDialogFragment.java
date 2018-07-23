@@ -67,17 +67,8 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
 
             Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener(view1 -> {
-                mListener.onDetailsSaved(0, comment.getText().toString());
-
-//                textError.setError(null);
-//                if (spinner.getSelectedItemPosition() > 0) {
-//                    mListener.onDetailsSaved(spinner.getSelectedItemPosition(), comment.getText().toString());
-//                    dismiss();
-//                } else {
-//                    textError.requestFocus();
-//                    textError.setError("Select cuvette type");
-//
-//                }
+                mListener.onDetailsSaved(comment.getText().toString());
+                dismiss();
             });
         });
         dialog.show();
@@ -103,7 +94,7 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
     }
 
     public interface OnDetailsSavedListener {
-        void onDetailsSaved(int i, String s);
+        void onDetailsSaved(String s);
     }
 
 }
