@@ -8,7 +8,7 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 235
+        versionCode 237
         versionName "Beta 1.1"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -162,7 +162,7 @@ dependencies {
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
 
     // Firebase (Experiment Flavor)
-    experimentImplementation 'com.android.support:multidex:1.0.3'
+//    experimentImplementation 'com.android.support:multidex:1.0.3'
     experimentImplementation 'com.google.firebase:firebase-core:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-database:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-firestore:17.0.3'

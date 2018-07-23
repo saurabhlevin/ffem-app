@@ -3,9 +3,9 @@ package org.akvo.caddisfly.app;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
+//import android.support.multidex.MultiDex;
 
-import org.akvo.caddisfly.BuildConfig;
+//import org.akvo.caddisfly.BuildConfig;
 
 @SuppressLint("Registered")
 public class BaseApplication extends Application {
@@ -15,8 +15,8 @@ public class BaseApplication extends Application {
         super.attachBaseContext(base);
 
         //noinspection ConstantConditions
-        if (BuildConfig.BUILD_TYPE.equals("debug")) {
-            MultiDex.install(this);
-        }
+//        if (BuildConfig.BUILD_TYPE.equals("debug")) {
+//            MultiDex.install(this);
+//        }
     }
 }

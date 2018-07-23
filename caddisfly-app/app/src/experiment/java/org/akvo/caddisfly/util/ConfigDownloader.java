@@ -42,8 +42,10 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.AppConstants;
+import org.akvo.caddisfly.dao.CalibrationDao;
 import org.akvo.caddisfly.diagnostic.ConfigTask;
 import org.akvo.caddisfly.entity.Calibration;
+import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
@@ -142,6 +144,11 @@ public class ConfigDownloader {
             return;
         }
 
+        CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
+
+        CalibrationDetail calibrationDetail = dao.getCalibrationDetails(testInfo.getUuid());
+        String calibrationFile = calibrationDetail.fileName;
+
         final File path = FileHelper.getFilesDir(FileHelper.FileType.DIAGNOSTIC_IMAGE);
 
         FirebaseApp.initializeApp(context);
@@ -175,7 +182,7 @@ public class ConfigDownloader {
                         isSending = true;
 
                         sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
-                                imagePath, croppedImagePath, calibration, new Date(calibration.date));
+                                imagePath, croppedImagePath, calibration, calibrationFile, new Date(calibration.date));
                     }
                 }
             } else {
@@ -203,7 +210,7 @@ public class ConfigDownloader {
                 calibration.croppedImage = result.getCroppedImage();
 
                 sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
-                        imagePath, croppedImagePath, calibration, new Date());
+                        imagePath, croppedImagePath, calibration, calibrationFile, new Date());
             }
 
             if (!isSending) {
@@ -218,7 +225,8 @@ public class ConfigDownloader {
 
     private static void sendFile(Context context, String uuid, int type, String comment, ProgressDialog pd,
                                  String deviceId, FirebaseFirestore db, StorageReference storageReference,
-                                 File imagePath, File croppedImagePath, Calibration calibration, Date date) {
+                                 File imagePath, File croppedImagePath, Calibration calibration,
+                                 String calibrationFileName, Date date) {
         Uri file = Uri.fromFile(imagePath);
         StorageReference storageReference1 = storageReference.child("calibration-images/" + calibration.image);
 
@@ -253,6 +261,7 @@ public class ConfigDownloader {
                                 cal.put("r", Color.red(calibration.color));
                                 cal.put("g", Color.green(calibration.color));
                                 cal.put("b", Color.blue(calibration.color));
+                                cal.put("calibration", calibrationFileName);
                                 cal.put("date", date);
                                 cal.put("comment", comment);
                                 cal.put("version", BuildConfig.VERSION_CODE);

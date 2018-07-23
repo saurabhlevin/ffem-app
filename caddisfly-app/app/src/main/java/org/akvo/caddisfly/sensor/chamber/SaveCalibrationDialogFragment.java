@@ -66,7 +66,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
 
     private static final String ARG_TEST_INFO = "testInfo";
     private final Calendar calendar = Calendar.getInstance();
-    private TestInfo mTestInfo;
+    private TestInfo testInfo;
     private EditText editName = null;
     private EditText editExpiryDate;
     private boolean isEditing = false;
@@ -95,7 +95,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mTestInfo = getArguments().getParcelable(ARG_TEST_INFO);
+            testInfo = getArguments().getParcelable(ARG_TEST_INFO);
         }
     }
 
@@ -112,7 +112,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         editExpiryDate = view.findViewById(R.id.editExpiryDate);
 
         CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
-                .calibrationDao().getCalibrationDetails(mTestInfo.getUuid());
+                .calibrationDao().getCalibrationDetails(testInfo.getUuid());
 
         if (calibrationDetail.expiry > new Date().getTime()) {
 
@@ -215,8 +215,8 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
         date.set(Calendar.SECOND, date.getMinimum(Calendar.SECOND));
         date.set(Calendar.MILLISECOND, date.getMinimum(Calendar.MILLISECOND));
         datePickerDialog.getDatePicker().setMinDate(date.getTimeInMillis());
-        if (mTestInfo.getMonthsValid() != null) {
-            date.add(Calendar.MONTH, mTestInfo.getMonthsValid());
+        if (testInfo.getMonthsValid() != null) {
+            date.add(Calendar.MONTH, testInfo.getMonthsValid());
             date.set(Calendar.HOUR_OF_DAY, date.getMaximum(Calendar.HOUR_OF_DAY));
             date.set(Calendar.MINUTE, date.getMaximum(Calendar.MINUTE));
             date.set(Calendar.SECOND, date.getMaximum(Calendar.SECOND));
@@ -251,11 +251,9 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                 public void onClick(View v) {
                     if (formEntryValid()) {
 
-                        final String testCode = mTestInfo.getUuid();
-
                         if (!editName.getText().toString().trim().isEmpty()) {
 
-                            final File path = FileHelper.getFilesDir(FileHelper.FileType.CALIBRATION, testCode);
+                            final File path = FileHelper.getFilesDir(FileHelper.FileType.CALIBRATION, testInfo.getUuid());
 
                             File file = new File(path, editName.getText().toString());
 
@@ -263,38 +261,42 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
                                 AlertUtil.askQuestion(Objects.requireNonNull(context), R.string.fileAlreadyExists,
                                         R.string.doYouWantToOverwrite, R.string.overwrite, R.string.cancel, true,
                                         (dialogInterface, i) -> {
-                                            saveDetails(testCode);
+                                            saveDetails(testInfo.getUuid(), file.getName());
                                             saveCalibrationDetails(path);
                                             closeKeyboard(context, editName);
                                             dismiss();
                                         }, null
                                 );
                             } else {
-                                saveDetails(testCode);
+                                saveDetails(testInfo.getUuid(), file.getName());
                                 saveCalibrationDetails(path);
                                 closeKeyboard(context, editName);
                                 dismiss();
                             }
                         } else {
-                            saveDetails(testCode);
+                            saveDetails(testInfo.getUuid(), "");
                             closeKeyboard(context, editExpiryDate);
                             dismiss();
                         }
                     }
                 }
 
-                void saveDetails(String testCode) {
+                void saveDetails(String uuid, String fileName) {
 
-                    CalibrationDetail calibrationDetail = new CalibrationDetail();
-                    calibrationDetail.uid = testCode;
+                    CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
+
+                    CalibrationDetail calibrationDetail = dao.getCalibrationDetails(uuid);
+                    calibrationDetail.uid = uuid;
                     calibrationDetail.date = Calendar.getInstance().getTimeInMillis();
                     calibrationDetail.expiry = calendar.getTimeInMillis();
+                    if (!fileName.isEmpty()) {
+                        calibrationDetail.fileName = fileName;
+                    }
 
 //                    if (AppPreferences.isDiagnosticMode()) {
 //                        calibrationDetail.cuvetteType = spinnerCuvette.getSelectedItem().toString();
 //                    }
 
-                    CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
                     dao.insert(calibrationDetail);
 
                     mListener.onCalibrationDetailsSaved();
@@ -331,7 +333,7 @@ public class SaveCalibrationDialogFragment extends DialogFragment {
     private void saveCalibrationDetails(File path) {
         final Context context = getContext();
 
-        final String calibrationDetails = SwatchHelper.generateCalibrationFile(context, mTestInfo, true);
+        final String calibrationDetails = SwatchHelper.generateCalibrationFile(context, testInfo, true);
 
         FileUtil.saveToFile(path, editName.getText().toString().trim(), calibrationDetails);
 

@@ -156,7 +156,7 @@ public class CalibrationItemFragment extends Fragment {
                 .calibrationDao().getCalibrationDetails(testInfo.getUuid());
 
         if (calibrationDetail != null) {
-            binding.textSubtitle.setText(calibrationDetail.cuvetteType);
+            binding.textSubtitle.setText(calibrationDetail.fileName);
 
             if (calibrationDetail.date > 0) {
                 binding.textSubtitle1.setText(DateFormat

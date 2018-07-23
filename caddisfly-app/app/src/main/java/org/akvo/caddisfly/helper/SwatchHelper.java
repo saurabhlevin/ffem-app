@@ -171,12 +171,12 @@ public final class SwatchHelper {
         calibrationDetails.append("Name: ");
         calibrationDetails.append(testInfo.getName());
 
-        if (calibrationDetail.cuvetteType != null) {
-            calibrationDetails.append("\n");
-            calibrationDetails.append("Cuvette: ");
-            calibrationDetails.append(calibrationDetail.cuvetteType);
-        }
-
+//        if (calibrationDetail.cuvetteType != null) {
+//            calibrationDetails.append("\n");
+//            calibrationDetails.append("Cuvette: ");
+//            calibrationDetails.append(calibrationDetail.cuvetteType);
+//        }
+//
         calibrationDetails.append("\n");
         calibrationDetails.append("UUID: ");
         calibrationDetails.append(testInfo.getUuid());
@@ -237,7 +237,8 @@ public final class SwatchHelper {
         List<String> calibrationDetails = FileUtil.loadFromFile(path, fileName);
         if (calibrationDetails != null) {
 
-            CalibrationDetail calibrationDetail = new CalibrationDetail();
+            CalibrationDetail calibrationDetail = dao.getCalibrationDetails(testInfo.getUuid());
+
             calibrationDetail.uid = testInfo.getUuid();
 
             for (int i = calibrationDetails.size() - 1; i >= 0; i--) {
@@ -263,13 +264,11 @@ public final class SwatchHelper {
                         }
                     }
 
-                    if (line.contains("Cuvette:")) {
-                        calibrationDetail.cuvetteType = line.substring(line.indexOf(':') + 1).trim();
-                    }
-
                     calibrationDetails.remove(i);
                 }
             }
+
+            calibrationDetail.fileName = fileName;
 
             dao.insert(calibrationDetail);
 

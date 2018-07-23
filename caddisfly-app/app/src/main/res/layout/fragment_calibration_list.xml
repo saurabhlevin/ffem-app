@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#d6f6fdf6"
                 android:textSize="16sp"
-                tools:text="Batch Name Number" />
+                tools:text="File name" />
 
             <TextView
                 android:id="@+id/textSubtitle1"

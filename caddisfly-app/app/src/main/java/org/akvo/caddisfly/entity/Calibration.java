@@ -32,15 +32,15 @@ public class Calibration implements Parcelable {
     @ColumnInfo(name = "color")
     public int color;
     @ColumnInfo(name = "quality")
-    public int quality;
+    public int quality = 0;
     @ColumnInfo(name = "zoom")
-    public int zoom;
+    public int zoom = 0;
     @ColumnInfo(name = "resWidth")
-    public int resWidth;
+    public int resWidth = 0;
     @ColumnInfo(name = "resHeight")
-    public int resHeight;
+    public int resHeight = 0;
     @ColumnInfo(name = "centerOffset")
-    public int centerOffset;
+    public int centerOffset = 0;
     @ColumnInfo(name = "image")
     public String image;
     @ColumnInfo(name = "croppedImage")
