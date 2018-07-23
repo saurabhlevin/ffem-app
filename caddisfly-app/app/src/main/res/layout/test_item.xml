@@ -45,6 +45,10 @@
             type="org.akvo.caddisfly.model.TestInfo" />
 
         <variable
+            name="preferences"
+            type="org.akvo.caddisfly.preference.AppPreferences" />
+
+        <variable
             name="callback"
             type="org.akvo.caddisfly.ui.TestInfoClickCallback" />
     </data>
@@ -105,6 +109,17 @@
                 android:textColor="#797979"
                 android:textSize="14sp"
                 tools:text="BRAND 23426435" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingBottom="7dp"
+                android:text="@{testInfo.uuid}"
+                android:textColor="#797979"
+                android:textSize="14sp"
+                android:visibility="@{preferences.isDiagnosticMode() ? View.VISIBLE : View.GONE}"
+                tools:text="sdfg2-dfgsdf-hjkjh-dfghfg" />
 
         </LinearLayout>
 

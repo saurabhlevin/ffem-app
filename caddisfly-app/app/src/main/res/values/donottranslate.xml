@@ -130,6 +130,8 @@
     <string name="testing">Testing</string>
     <string name="camera">Camera</string>
     <string name="waterCalibrate">Water - Calibrate</string>
+    <string name="openAppFolder">Show app folder</string>
+    <string name="showFolderKey">showFolderKey</string>
 
     <string-array name="cuvettes">
         <item>Cuvette Type</item>
