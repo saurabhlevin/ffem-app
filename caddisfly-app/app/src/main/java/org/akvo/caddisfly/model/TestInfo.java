@@ -160,9 +160,11 @@ public class TestInfo implements Parcelable {
     private List<Calibration> calibrations = new ArrayList<>();
     private int dilution = 1;
     private List<Swatch> swatches = new ArrayList<>();
+    private List<Swatch> oneStepSwatches = new ArrayList<>();
     private Integer decimalPlaces = 0;
 
     private ResultDetail resultDetail;
+    private List<Calibration> oneStepCalibrations;
 
     public TestInfo() {
     }
@@ -188,8 +190,14 @@ public class TestInfo implements Parcelable {
         calibrations = new ArrayList<>();
         in.readTypedList(calibrations, Calibration.CREATOR);
 
+        oneStepCalibrations = new ArrayList<>();
+        in.readTypedList(oneStepCalibrations, Calibration.CREATOR);
+
         swatches = new ArrayList<>();
         in.readTypedList(swatches, Swatch.CREATOR);
+
+        oneStepSwatches = new ArrayList<>();
+        in.readTypedList(oneStepSwatches, Swatch.CREATOR);
 
         brand = in.readString();
         brandUrl = in.readString();
@@ -257,6 +265,7 @@ public class TestInfo implements Parcelable {
     public boolean getCameraAbove() {
         return cameraAbove == null ? false : cameraAbove;
     }
+
     public void setCameraAbove(boolean value) {
         cameraAbove = value;
     }
@@ -436,7 +445,9 @@ public class TestInfo implements Parcelable {
         parcel.writeString(uuid);
         parcel.writeString(calibration);
         parcel.writeTypedList(calibrations);
+        parcel.writeTypedList(oneStepCalibrations);
         parcel.writeTypedList(swatches);
+        parcel.writeTypedList(oneStepSwatches);
         parcel.writeString(brand);
         parcel.writeString(brandUrl);
         parcel.writeString(String.valueOf(groupingType));
@@ -524,7 +535,11 @@ public class TestInfo implements Parcelable {
     }
 
     public void setCalibrations(List<Calibration> calibrations) {
-        this.swatches.clear();
+        swatches.clear();
+        oneStepSwatches.clear();
+        if (oneStepCalibrations != null) {
+            oneStepCalibrations.clear();
+        }
 
         Result result = results.get(0);
 
@@ -564,6 +579,24 @@ public class TestInfo implements Parcelable {
 
         this.calibrations = newCalibrations;
         swatches = SwatchHelper.generateGradient(swatches);
+
+        if (this.calibrations.get(0).color != 0) {
+            oneStepCalibrations = SwatchHelper.getOneStepCalibrations(
+                    this.calibrations.get(0), getPresetColors());
+
+            for (Calibration calibration : this.oneStepCalibrations) {
+                Swatch swatch = new Swatch(calibration.value, calibration.color, Color.TRANSPARENT);
+                oneStepSwatches.add(swatch);
+            }
+            oneStepSwatches = SwatchHelper.generateGradient(oneStepSwatches);
+        }
+    }
+
+    public List<Calibration> getOneStepCalibrations() {
+        if (oneStepCalibrations == null) {
+            oneStepCalibrations = new ArrayList<>();
+        }
+        return oneStepCalibrations;
     }
 
     public int getDilution() {
@@ -594,6 +627,10 @@ public class TestInfo implements Parcelable {
 
     public List<Swatch> getSwatches() {
         return swatches;
+    }
+
+    public List<Swatch> getOneStepSwatches() {
+        return oneStepSwatches;
     }
 
     public void setSwatches(List<Swatch> swatches) {

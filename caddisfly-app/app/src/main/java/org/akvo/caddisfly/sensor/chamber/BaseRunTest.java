@@ -68,6 +68,7 @@ public class BaseRunTest extends Fragment implements RunTest {
     private static final double SHORT_DELAY = 1;
     final int[] countdown = {0};
     private final ArrayList<ResultDetail> results = new ArrayList<>();
+    private final ArrayList<ResultDetail> oneStepResults = new ArrayList<>();
     private final Handler delayHandler = new Handler();
     protected FragmentRunTestBinding binding;
     protected boolean cameraStarted;
@@ -80,16 +81,6 @@ public class BaseRunTest extends Fragment implements RunTest {
     private int dilution = 1;
     private Camera mCamera;
     private OnResultListener mListener;
-    private ChamberCameraPreview mCameraPreview;
-    private final Runnable mRunnableCode = () -> {
-        if (pictureCount < AppPreferences.getSamplingTimes()) {
-            pictureCount++;
-            SoundUtil.playShortResource(getActivity(), R.raw.beep);
-            takePicture();
-        } else {
-            releaseResources();
-        }
-    };
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -107,6 +98,16 @@ public class BaseRunTest extends Fragment implements RunTest {
             } else {
                 mHandler.postDelayed(mRunnableCode, ChamberTestConfig.DELAY_BETWEEN_SAMPLING * 1000);
             }
+        }
+    };
+    private ChamberCameraPreview mCameraPreview;
+    private final Runnable mRunnableCode = () -> {
+        if (pictureCount < AppPreferences.getSamplingTimes()) {
+            pictureCount++;
+            SoundUtil.playShortResource(getActivity(), R.raw.beep);
+            takePicture();
+        } else {
+            releaseResources();
         }
     };
     private Runnable mCountdown = this::setCountDown;
@@ -172,6 +173,7 @@ public class BaseRunTest extends Fragment implements RunTest {
 
     protected void initializeTest() {
         results.clear();
+        oneStepResults.clear();
 
         mHandler = new Handler();
     }
@@ -322,6 +324,10 @@ public class BaseRunTest extends Fragment implements RunTest {
 
             ResultDetail resultDetail = SwatchHelper.analyzeColor(mTestInfo.getSwatches().size(),
                     photoColor, mTestInfo.getSwatches());
+
+            ResultDetail oneStepResultDetail = SwatchHelper.analyzeColor(mTestInfo.getOneStepSwatches().size(),
+                    photoColor, mTestInfo.getOneStepSwatches());
+
             resultDetail.setBitmap(bitmap);
             resultDetail.setCroppedBitmap(croppedBitmap);
             resultDetail.setDilution(dilution);
@@ -330,16 +336,18 @@ public class BaseRunTest extends Fragment implements RunTest {
 //            Timber.d("Result is: " + String.valueOf(resultDetail.getResult()));
 
             results.add(resultDetail);
+            oneStepResults.add(oneStepResultDetail);
 
             if (mListener != null && pictureCount >= AppPreferences.getSamplingTimes()) {
                 // ignore the first two results
                 for (int i = 0; i < ChamberTestConfig.SKIP_SAMPLING_COUNT; i++) {
                     if (results.size() > 1) {
                         results.remove(0);
+                        oneStepResults.remove(0);
                     }
                 }
 
-                mListener.onResult(results, mCalibration);
+                mListener.onResult(results, oneStepResults, mCalibration);
             }
         }
     }
@@ -482,6 +490,6 @@ public class BaseRunTest extends Fragment implements RunTest {
     }
 
     public interface OnResultListener {
-        void onResult(ArrayList<ResultDetail> results, Calibration calibration);
+        void onResult(ArrayList<ResultDetail> results, ArrayList<ResultDetail> oneStepResults, Calibration calibration);
     }
 }

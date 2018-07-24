@@ -29,6 +29,7 @@ public class CalibrationGraphActivity extends BaseActivity {
 
         List<Calibration> calibrations = testInfo.getCalibrations();
         List<ColorItem> presetCalibrations = testInfo.getPresetColors();
+        List<Calibration> oneStepCalibrations = testInfo.getOneStepCalibrations();
 
         GraphView graphRed = findViewById(R.id.graphRed);
         GraphView graphGreen = findViewById(R.id.graphGreen);
@@ -44,7 +45,7 @@ public class CalibrationGraphActivity extends BaseActivity {
 
         LineGraphSeries<DataPoint> seriesGreen =
                 new LineGraphSeries<>(getDataPoints(calibrations, Color.GREEN));
-        seriesGreen.setColor(Color.GREEN);
+        seriesGreen.setColor(Color.RED);
         seriesGreen.setThickness(4);
         seriesGreen.setDrawDataPoints(true);
         seriesGreen.setDataPointsRadius(9);
@@ -52,7 +53,7 @@ public class CalibrationGraphActivity extends BaseActivity {
 
         LineGraphSeries<DataPoint> seriesBlue =
                 new LineGraphSeries<>(getDataPoints(calibrations, Color.BLUE));
-        seriesBlue.setColor(Color.BLUE);
+        seriesBlue.setColor(Color.RED);
         seriesBlue.setThickness(4);
         seriesBlue.setDrawDataPoints(true);
         seriesBlue.setDataPointsRadius(9);
@@ -82,6 +83,30 @@ public class CalibrationGraphActivity extends BaseActivity {
         seriesBlue2.setDataPointsRadius(4);
         graphBlue.addSeries(seriesBlue2);
 
+        LineGraphSeries<DataPoint> seriesRed3 =
+                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.RED));
+        seriesRed3.setColor(Color.MAGENTA);
+        seriesRed3.setThickness(3);
+        seriesRed3.setDrawDataPoints(true);
+        seriesRed3.setDataPointsRadius(4);
+        graphRed.addSeries(seriesRed3);
+
+        LineGraphSeries<DataPoint> seriesGreen3 =
+                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.GREEN));
+        seriesGreen3.setColor(Color.MAGENTA);
+        seriesGreen3.setThickness(3);
+        seriesGreen3.setDrawDataPoints(true);
+        seriesGreen3.setDataPointsRadius(4);
+        graphGreen.addSeries(seriesGreen3);
+
+        LineGraphSeries<DataPoint> seriesBlue3 =
+                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.BLUE));
+        seriesBlue3.setColor(Color.MAGENTA);
+        seriesBlue3.setThickness(3);
+        seriesBlue3.setDrawDataPoints(true);
+        seriesBlue3.setDataPointsRadius(4);
+        graphBlue.addSeries(seriesBlue3);
+
         setTitle("Charts");
     }
 
@@ -90,16 +115,20 @@ public class CalibrationGraphActivity extends BaseActivity {
         DataPoint[] dataPoints = new DataPoint[colorItems.size()];
         int value = 0;
         for (int i = 0; i < colorItems.size(); i++) {
-            switch (color) {
-                case Color.RED:
-                    value = colorItems.get(i).getRgb().get(0);
-                    break;
-                case Color.GREEN:
-                    value = colorItems.get(i).getRgb().get(1);
-                    break;
-                case Color.BLUE:
-                    value = colorItems.get(i).getRgb().get(2);
-                    break;
+            if (colorItems.get(i).getRgb() == null) {
+                return new DataPoint[0];
+            } else {
+                switch (color) {
+                    case Color.RED:
+                        value = colorItems.get(i).getRgb().get(0);
+                        break;
+                    case Color.GREEN:
+                        value = colorItems.get(i).getRgb().get(1);
+                        break;
+                    case Color.BLUE:
+                        value = colorItems.get(i).getRgb().get(2);
+                        break;
+                }
             }
             dataPoints[i] = new DataPoint(colorItems.get(i).getValue(), value);
         }

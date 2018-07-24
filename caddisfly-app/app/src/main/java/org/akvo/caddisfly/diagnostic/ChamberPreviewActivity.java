@@ -124,7 +124,8 @@ public class ChamberPreviewActivity extends BaseActivity implements
     }
 
     @Override
-    public void onResult(ArrayList<ResultDetail> resultDetails, Calibration calibration) {
+    public void onResult(ArrayList<ResultDetail> resultDetails,
+                         ArrayList<ResultDetail> oneStepResults, Calibration calibration) {
 
         ColorInfo colorInfo = new ColorInfo(SwatchHelper.getAverageColor(resultDetails),
                 resultDetails.get(resultDetails.size() - 1).getQuality());
@@ -205,7 +206,7 @@ public class ChamberPreviewActivity extends BaseActivity implements
     private void showDiagnosticResultDialog(boolean testFailed, ResultDetail resultDetail,
                                             ArrayList<ResultDetail> resultDetails, boolean isCalibration) {
         DialogFragment resultFragment = DiagnosticResultDialog.newInstance(
-                testFailed, resultDetail, resultDetails, isCalibration);
+                testFailed, resultDetail, resultDetail, resultDetails, isCalibration);
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("gridDialog");

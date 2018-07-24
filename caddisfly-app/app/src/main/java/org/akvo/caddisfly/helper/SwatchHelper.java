@@ -29,6 +29,7 @@ import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.model.ColorCompareInfo;
 import org.akvo.caddisfly.model.ColorInfo;
+import org.akvo.caddisfly.model.ColorItem;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.Swatch;
 import org.akvo.caddisfly.model.TestInfo;
@@ -278,8 +279,10 @@ public final class SwatchHelper {
                 Calibration calibration = new Calibration();
                 calibration.uid = testInfo.getUuid();
                 calibration.date = new Date().getTime();
-                calibration.color = ColorUtil.getColorFromRgb(values[1]);
                 calibration.value = stringToDouble(values[0]);
+                if (values.length > 1) {
+                    calibration.color = ColorUtil.getColorFromRgb(values[1]);
+                }
                 calibrations.add(calibration);
             }
 
@@ -301,15 +304,18 @@ public final class SwatchHelper {
     @SuppressWarnings("SameParameterValue")
     public static List<Swatch> generateGradient(List<Swatch> swatches) {
 
+        List<Swatch> list = new ArrayList<>();
+
+        if (swatches.size() < 2) {
+            return list;
+        }
+
         // Predict 2 more points in the calibration list to account for high levels of contamination
         Swatch swatch1 = swatches.get(swatches.size() - 2);
         Swatch swatch2 = swatches.get(swatches.size() - 1);
 
         swatches.add(predictNextColor(swatch1, swatch2));
-
         swatches.add(predictNextColor(swatch2, swatches.get(swatches.size() - 1)));
-
-        List<Swatch> list = new ArrayList<>();
 
         for (int i = 0; i < swatches.size() - 1; i++) {
 
@@ -328,7 +334,6 @@ public final class SwatchHelper {
 
         list.add(new Swatch(swatches.get(swatches.size() - 1).getValue(),
                 swatches.get(swatches.size() - 1).getColor(), Color.TRANSPARENT));
-
 
         return list;
     }
@@ -500,4 +505,37 @@ public final class SwatchHelper {
         return Color.rgb(red / resultCount, green / resultCount, blue / resultCount);
     }
 
+    public static List<Calibration> getOneStepCalibrations(Calibration firstCalibration,
+                                                           List<ColorItem> presetColors) {
+
+        List<Calibration> oneStepCalibrations = new ArrayList<>();
+        oneStepCalibrations.add(firstCalibration);
+
+        for (int i = 1; i < presetColors.size(); i++) {
+            ColorItem presetColor1 = presetColors.get(i - 1);
+            ColorItem presetColor2 = presetColors.get(i);
+            Calibration oneStepCalibration = oneStepCalibrations.get(i - 1);
+
+            int red = Color.red(oneStepCalibration.color);
+            int green = Color.green(oneStepCalibration.color);
+            int blue = Color.blue(oneStepCalibration.color);
+
+            int rShift = Color.red(presetColor1.getRgbInt()) - Color.red(presetColor2.getRgbInt());
+            int gShift = Color.green(presetColor1.getRgbInt()) - Color.green(presetColor2.getRgbInt());
+            int bShift = Color.blue(presetColor1.getRgbInt()) - Color.blue(presetColor2.getRgbInt());
+
+            Timber.e(red + ":" + green + ":" + blue);
+
+            int newColor = Color.rgb(
+                    Math.max(Math.min(red - rShift, 255), 0),
+                    Math.max(Math.min(green - gShift, 255), 0),
+                    Math.max(Math.min(blue - bShift, 255), 0));
+
+            Calibration calibration = new Calibration(presetColor2.getValue(), newColor);
+
+            oneStepCalibrations.add(calibration);
+        }
+
+        return oneStepCalibrations;
+    }
 }

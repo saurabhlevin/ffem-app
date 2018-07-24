@@ -27,23 +27,26 @@ public class DiagnosticResultDialog extends DialogFragment {
 
     private ArrayList<ResultDetail> resultDetails;
     private ResultDetail result;
+    private ResultDetail oneStepResult;
     private OnDismissed mListener;
 
     /**
      * Instance of dialog.
      *
-     * @param testFailed    did test fail
-     * @param resultDetail  the result
-     * @param resultDetails the result details
-     * @param isCalibration is this in calibration mode
+     * @param testFailed          did test fail
+     * @param resultDetail        the result
+     * @param oneStepResultDetail the one step result
+     * @param resultDetails       the result details
+     * @param isCalibration       is this in calibration mode
      * @return the dialog
      */
     public static DialogFragment newInstance(boolean testFailed, ResultDetail resultDetail,
-                                             ArrayList<ResultDetail> resultDetails,
+                                             ResultDetail oneStepResultDetail, ArrayList<ResultDetail> resultDetails,
                                              boolean isCalibration) {
         DiagnosticResultDialog fragment = new DiagnosticResultDialog();
         Bundle args = new Bundle();
         fragment.result = resultDetail;
+        fragment.oneStepResult = oneStepResultDetail;
         fragment.resultDetails = resultDetails;
         args.putBoolean("testFailed", testFailed);
         args.putBoolean("isCalibration", isCalibration);
@@ -71,6 +74,9 @@ public class DiagnosticResultDialog extends DialogFragment {
         TextView textDistance = view.findViewById(R.id.textDistance);
         TextView textQuality = view.findViewById(R.id.textQuality);
 
+        TextView textResult = view.findViewById(R.id.textResult);
+        TextView textOneStepResult = view.findViewById(R.id.textOneStepResult);
+
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
         Button buttonRetry = view.findViewById(R.id.buttonRetry);
 
@@ -92,11 +98,15 @@ public class DiagnosticResultDialog extends DialogFragment {
                 if (result.getColor() == Color.TRANSPARENT) {
                     getDialog().setTitle(R.string.error);
                 } else {
+                    getDialog().setTitle(R.string.result);
                     getDialog().setTitle(String.format("%s: %s", getString(R.string.result),
                             ColorUtil.getColorRgbString(result.getColor())));
                 }
             } else {
-                getDialog().setTitle(String.format(Locale.getDefault(), "%.2f %s", result.getResult(), ""));
+                textResult.setText(String.format(Locale.getDefault(),
+                        "%.2f %s", result.getResult(), ""));
+                textOneStepResult.setText(String.format(Locale.getDefault(),
+                        "%.2f %s", oneStepResult.getResult(), ""));
             }
         }
 
@@ -113,6 +123,14 @@ public class DiagnosticResultDialog extends DialogFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof BaseRunTest.OnResultListener) {
+            mListener = (OnDismissed) context;
+        }
     }
 
     public interface OnDismissed {
@@ -159,14 +177,6 @@ public class DiagnosticResultDialog extends DialogFragment {
                 textRgb.setText(String.format(Locale.getDefault(), "%d  %d  %d", r, g, b));
             }
             return rowView;
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BaseRunTest.OnResultListener) {
-            mListener = (OnDismissed) context;
         }
     }
 }

@@ -223,7 +223,22 @@ public class TestConfigRepository {
                                     dao.insertAll(calibrations);
                                 }
                             }
+
+                            // setup preset colors
+                            for (int i = 0; i < calibrations.size(); i++) {
+                                List<ColorItem> presetColors = testInfo.getPresetColors();
+                                Calibration calibration = calibrations.get(i);
+
+                                if (presetColors.size() > i && presetColors.get(i).getValue() == calibration.value) {
+                                    ColorItem colorItem = presetColors.get(i);
+                                    colorItem.setRgbInt(Color.rgb(colorItem.getRgb().get(0),
+                                            colorItem.getRgb().get(1),
+                                            colorItem.getRgb().get(2)));
+                                }
+                            }
+
                             testInfo.setCalibrations(calibrations);
+
                         }
                         return testInfo;
                     }

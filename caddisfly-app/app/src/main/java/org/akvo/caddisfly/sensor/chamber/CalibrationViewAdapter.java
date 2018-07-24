@@ -21,6 +21,7 @@ package org.akvo.caddisfly.sensor.chamber;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,15 +50,16 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
         mListener = listener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_calibration, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.mItem = testInfo.getCalibrations().get(position);
 
         String format = "%." + testInfo.getDecimalPlaces() + "f";
@@ -65,10 +67,24 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
                 holder.mItem.value)));
 
         Result result = testInfo.getResults().get(0);
+        List<ColorItem> presetColors = result.getPresetColors();
         List<ColorItem> colors = result.getColors();
+        List<Calibration> oneStepColors = testInfo.getOneStepCalibrations();
         if (position < colors.size()) {
+            int presetColor = 0;
+            int oneStepColor = 0;
+            if (presetColors.size() > position) {
+                presetColor = presetColors.get(position).getRgbInt();
+            }
+            if (oneStepColors.size() > position) {
+                oneStepColor = oneStepColors.get(position).color;
+            }
+
             int color = colors.get(position).getRgbInt();
-            holder.mIdView.setBackground(new ColorDrawable(color));
+
+            holder.buttonPreset.setBackground(new ColorDrawable(presetColor));
+            holder.buttonColor.setBackground(new ColorDrawable(color));
+            holder.buttonOneStep.setBackground(new ColorDrawable(oneStepColor));
             holder.textUnit.setText(String.valueOf(result.getUnit()));
 
             //display additional information if we are in diagnostic mode
@@ -114,18 +130,22 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final Button mIdView;
+        final Button buttonColor;
         final TextView textValue;
         final TextView textUnit;
+        private final Button buttonPreset;
         private final TextView textRgb;
         private final TextView textHsv;
         private final TextView textBrightness;
+        private final Button buttonOneStep;
         Calibration mItem;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.buttonColor);
+            buttonPreset = view.findViewById(R.id.buttonPresetColor);
+            buttonColor = view.findViewById(R.id.buttonColor);
+            buttonOneStep = view.findViewById(R.id.buttonOneStepColor);
             textValue = view.findViewById(R.id.textValue);
             textUnit = view.findViewById(R.id.textUnit);
             textRgb = view.findViewById(R.id.textRgb);

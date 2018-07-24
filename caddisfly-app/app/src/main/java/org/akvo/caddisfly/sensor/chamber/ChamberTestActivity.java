@@ -89,7 +89,8 @@ public class ChamberTestActivity extends BaseActivity implements
         SaveCalibrationDialogFragment.OnCalibrationDetailsSavedListener,
         SelectDilutionFragment.OnDilutionSelectedListener,
         EditCustomDilution.OnCustomDilutionListener,
-        DiagnosticSendDialogFragment.OnDetailsSavedListener {
+        DiagnosticSendDialogFragment.OnDetailsSavedListener,
+        DiagnosticResultDialog.OnDismissed {
 
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
 
@@ -410,11 +411,16 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     @Override
-    public void onResult(ArrayList<ResultDetail> resultDetails, Calibration calibration) {
+    public void onResult(ArrayList<ResultDetail> resultDetails,
+                         ArrayList<ResultDetail> oneStepResults, Calibration calibration) {
 
         ColorInfo colorInfo = new ColorInfo(SwatchHelper.getAverageColor(resultDetails), 0);
         ResultDetail resultDetail = SwatchHelper.analyzeColor(testInfo.getSwatches().size(),
                 colorInfo, testInfo.getSwatches());
+
+        colorInfo = new ColorInfo(SwatchHelper.getAverageColor(oneStepResults), 0);
+        ResultDetail oneStepResultDetail = SwatchHelper.analyzeColor(testInfo.getOneStepSwatches().size(),
+                colorInfo, testInfo.getOneStepSwatches());
 
         ResultDetail lastResult = resultDetails.get(resultDetails.size() - 1);
         resultDetail.setBitmap(lastResult.getBitmap());
@@ -450,7 +456,8 @@ public class ChamberTestActivity extends BaseActivity implements
                                 ResultFragment.newInstance(testInfo), null).commit();
 
                 if (AppPreferences.getShowDebugInfo()) {
-                    showDiagnosticResultDialog(false, resultDetail, resultDetails, false);
+                    showDiagnosticResultDialog(false, resultDetail, oneStepResultDetail,
+                            resultDetails, false);
                 }
 
                 testInfo.setResultDetail(resultDetail);
@@ -467,7 +474,8 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     fragmentManager.popBackStack();
 
-                    showDiagnosticResultDialog(true, resultDetail, resultDetails, false);
+                    showDiagnosticResultDialog(true, resultDetail, oneStepResultDetail,
+                            resultDetails, false);
 
                 } else {
 
@@ -486,7 +494,7 @@ public class ChamberTestActivity extends BaseActivity implements
             if (color == Color.TRANSPARENT) {
 
                 if (AppPreferences.getShowDebugInfo()) {
-                    showDiagnosticResultDialog(true, resultDetail, resultDetails, true);
+                    showDiagnosticResultDialog(true, resultDetail, oneStepResultDetail, resultDetails, true);
                 }
 
                 showError(String.format(TWO_SENTENCE_FORMAT, getString(R.string.couldNotCalibrate),
@@ -521,7 +529,7 @@ public class ChamberTestActivity extends BaseActivity implements
                 SoundUtil.playShortResource(this, R.raw.done);
 
                 if (AppPreferences.getShowDebugInfo()) {
-                    showDiagnosticResultDialog(false, resultDetail, resultDetails, true);
+                    showDiagnosticResultDialog(false, resultDetail, oneStepResultDetail, resultDetails, true);
                 }
 
                 showCalibrationDialog(calibration);
@@ -545,15 +553,17 @@ public class ChamberTestActivity extends BaseActivity implements
     /**
      * In diagnostic mode show the diagnostic results dialog.
      *
-     * @param testFailed    if test has failed then dialog knows to show the retry button
-     * @param resultDetail  the result shown to the user
-     * @param resultDetails the result details
-     * @param isCalibration is this a calibration result
+     * @param testFailed          if test has failed then dialog knows to show the retry button
+     * @param resultDetail        the result shown to the user
+     * @param oneStepResultDetail the one step result
+     * @param resultDetails       the result details
+     * @param isCalibration       is this a calibration result
      */
     private void showDiagnosticResultDialog(boolean testFailed, ResultDetail resultDetail,
+                                            ResultDetail oneStepResultDetail,
                                             ArrayList<ResultDetail> resultDetails, boolean isCalibration) {
         DialogFragment resultFragment = DiagnosticResultDialog.newInstance(
-                testFailed, resultDetail, resultDetails, isCalibration);
+                testFailed, resultDetail, oneStepResultDetail, resultDetails, isCalibration);
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("gridDialog");
@@ -765,5 +775,11 @@ public class ChamberTestActivity extends BaseActivity implements
         }
 
         return false;
+    }
+
+    @Override
+    public void onDismissed() {
+        testStarted = false;
+        invalidateOptionsMenu();
     }
 }
