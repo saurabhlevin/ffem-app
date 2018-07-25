@@ -629,12 +629,12 @@ public class TestInfo implements Parcelable {
         return swatches;
     }
 
-    public List<Swatch> getOneStepSwatches() {
-        return oneStepSwatches;
-    }
-
     public void setSwatches(List<Swatch> swatches) {
         this.swatches = swatches;
+    }
+
+    public List<Swatch> getOneStepSwatches() {
+        return oneStepSwatches;
     }
 
     public Integer getMonthsValid() {
@@ -675,5 +675,18 @@ public class TestInfo implements Parcelable {
 
     public void setResultSuffix(String resultSuffix) {
         this.resultSuffix = resultSuffix;
+    }
+
+    public void clearCalibration() {
+        for (Calibration calibration : calibrations) {
+            calibration.color = Color.TRANSPARENT;
+        }
+        Result result = results.get(0);
+        for (ColorItem colorItem : result.getColors()) {
+            colorItem.setRgbInt(Color.TRANSPARENT);
+        }
+        oneStepCalibrations.clear();
+        swatches.clear();
+        oneStepCalibrations.clear();
     }
 }

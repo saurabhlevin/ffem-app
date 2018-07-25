@@ -53,5 +53,11 @@
         android:icon="@drawable/ic_style_black_24dp"
         android:orderInCategory="3"
         android:title="@string/swatches"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/clearCalibration"
+        android:orderInCategory="3"
+        android:title="Clear calibration"
+        app:showAsAction="collapseActionView" />
 </menu>

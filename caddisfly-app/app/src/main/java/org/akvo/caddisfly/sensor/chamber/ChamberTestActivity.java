@@ -19,6 +19,7 @@
 
 package org.akvo.caddisfly.sensor.chamber;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -36,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -266,12 +268,19 @@ public class ChamberTestActivity extends BaseActivity implements
         loadDetails();
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (AppPreferences.isDiagnosticMode() && !testStarted
                 && (calibrationItemFragment != null && calibrationItemFragment.isVisible())) {
             getMenuInflater().inflate(R.menu.menu_calibrate_dev, menu);
+
+            if (menu instanceof MenuBuilder) {
+                MenuBuilder m = (MenuBuilder) menu;
+                m.setOptionalIconsVisible(true);
+            }
         }
+
         return true;
     }
 
@@ -293,6 +302,27 @@ public class ChamberTestActivity extends BaseActivity implements
                 return true;
             case R.id.menuSave:
                 showEditCalibrationDetailsDialog(false);
+                return true;
+            case R.id.clearCalibration:
+                final Activity activity = this;
+                AlertUtil.askQuestion(activity, R.string.delete,
+                        R.string.calibrationWillBeDeleted, R.string.delete, R.string.cancel, true,
+                        (dialogInterface1, i1) -> {
+                            testInfo.clearCalibration();
+
+                            CalibrationDao dao = CaddisflyApp.getApp().getDb().calibrationDao();
+                            dao.deleteCalibrations(testInfo.getUuid());
+
+                            CalibrationDetail calibrationDetail = new CalibrationDetail();
+                            calibrationDetail.uid = testInfo.getUuid();
+                            dao.insert(calibrationDetail);
+
+                            Toast.makeText(activity, "Calibration deleted", Toast.LENGTH_SHORT).show();
+
+                            loadDetails();
+
+                        }, null);
+
                 return true;
             case android.R.id.home:
                 if (isAppInLockTaskMode()) {

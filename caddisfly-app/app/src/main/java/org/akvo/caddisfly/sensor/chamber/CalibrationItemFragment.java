@@ -140,8 +140,6 @@ public class CalibrationItemFragment extends Fragment {
             binding.calibrationList.addItemDecoration(new DividerItemDecoration(getContext(), 1));
         }
 
-        setAdapter(testInfo);
-
         loadDetails();
 
         return binding.getRoot();
@@ -152,6 +150,8 @@ public class CalibrationItemFragment extends Fragment {
      */
     public void loadDetails() {
 
+        setAdapter(testInfo);
+
         CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
                 .calibrationDao().getCalibrationDetails(testInfo.getUuid());
 
@@ -161,11 +161,15 @@ public class CalibrationItemFragment extends Fragment {
             if (calibrationDetail.date > 0) {
                 binding.textSubtitle1.setText(DateFormat
                         .getDateInstance(DateFormat.MEDIUM).format(new Date(calibrationDetail.date)));
+            } else {
+                binding.textSubtitle1.setText("");
             }
 
             if (calibrationDetail.expiry > 0) {
                 binding.textSubtitle2.setText(String.format("%s: %s", getString(R.string.expires),
                         DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date(calibrationDetail.expiry))));
+            } else {
+                binding.textSubtitle2.setText("");
             }
         }
     }
