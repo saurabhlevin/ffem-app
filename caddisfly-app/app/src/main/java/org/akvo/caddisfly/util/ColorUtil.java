@@ -209,6 +209,9 @@ public final class ColorUtil {
      * @return The rgb value as string
      */
     public static String getColorRgbString(int color) {
+        if (color == Color.TRANSPARENT) {
+            return "";
+        }
         return String.format(Locale.getDefault(), "%d  %d  %d", Color.red(color), Color.green(color), Color.blue(color));
     }
 

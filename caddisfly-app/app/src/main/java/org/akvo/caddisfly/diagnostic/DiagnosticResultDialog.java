@@ -68,11 +68,16 @@ public class DiagnosticResultDialog extends DialogFragment {
 
         Button buttonColorExtract = view.findViewById(R.id.buttonColorExtract);
         Button buttonSwatchColor = view.findViewById(R.id.buttonSwatchColor);
+        Button buttonOneStepSwatchColor = view.findViewById(R.id.buttonOneStepSwatchColor);
+
         TextView textExtractedRgb = view.findViewById(R.id.textExtractedRgb);
         TextView textSwatchRgb = view.findViewById(R.id.textSwatchRgb);
+        TextView textOneStepSwatchRgb = view.findViewById(R.id.textOneStepSwatchRgb);
+
 //        TextView textDimension = view.findViewById(R.id.textDimension);
-        TextView textDistance = view.findViewById(R.id.textDistance);
         TextView textQuality = view.findViewById(R.id.textQuality);
+        TextView textDistance = view.findViewById(R.id.textDistance);
+        TextView textOneStepDistance = view.findViewById(R.id.textOneStepDistance);
 
         TextView textResult = view.findViewById(R.id.textResult);
         TextView textOneStepResult = view.findViewById(R.id.textOneStepResult);
@@ -82,12 +87,15 @@ public class DiagnosticResultDialog extends DialogFragment {
 
         buttonColorExtract.setBackgroundColor(result.getColor());
         buttonSwatchColor.setBackgroundColor(result.getMatchedColor());
+        buttonOneStepSwatchColor.setBackgroundColor(oneStepResult.getMatchedColor());
 
         textExtractedRgb.setText(String.format("%s", ColorUtil.getColorRgbString(result.getColor())));
         textSwatchRgb.setText(String.format("%s", ColorUtil.getColorRgbString(result.getMatchedColor())));
+        textOneStepSwatchRgb.setText(String.format("%s", ColorUtil.getColorRgbString(oneStepResult.getMatchedColor())));
 
-        textDistance.setText(String.format(Locale.getDefault(), "D: %.2f", result.getDistance()));
         textQuality.setText(String.format(Locale.getDefault(), "Q: %d%%", result.getQuality()));
+        textDistance.setText(String.format(Locale.getDefault(), "D: %.2f", result.getDistance()));
+        textOneStepDistance.setText(String.format(Locale.getDefault(), "D: %.2f", oneStepResult.getDistance()));
 
         if (testFailed) {
             getDialog().setTitle(R.string.no_result);
@@ -98,11 +106,11 @@ public class DiagnosticResultDialog extends DialogFragment {
                 if (result.getColor() == Color.TRANSPARENT) {
                     getDialog().setTitle(R.string.error);
                 } else {
-                    getDialog().setTitle(R.string.result);
                     getDialog().setTitle(String.format("%s: %s", getString(R.string.result),
                             ColorUtil.getColorRgbString(result.getColor())));
                 }
             } else {
+                getDialog().setTitle(R.string.result);
                 textResult.setText(String.format(Locale.getDefault(),
                         "%.2f %s", result.getResult(), ""));
                 textOneStepResult.setText(String.format(Locale.getDefault(),
@@ -116,10 +124,10 @@ public class DiagnosticResultDialog extends DialogFragment {
         Button buttonOk = view.findViewById(R.id.buttonOk);
         buttonOk.setVisibility(View.VISIBLE);
         buttonOk.setOnClickListener(view1 -> {
-            this.dismiss();
             if (mListener != null) {
                 mListener.onDismissed();
             }
+            this.dismiss();
         });
 
         return view;

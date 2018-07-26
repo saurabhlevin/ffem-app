@@ -40,49 +40,59 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="30sp"
-                tools:text="Result" />
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textResult"
+                <TextView
+                    android:id="@+id/textResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    tools:text="2.5" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Five step"
+                    android:textAllCaps="true"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="30sp"
-                tools:text="2.5" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textOneStepResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    tools:text="2.5" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="One Step"
+                    android:textAllCaps="true"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+        <TextView
             android:layout_marginTop="10dp"
-            android:clickable="false"
-            android:columnCount="2"
-            android:focusable="false"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="30sp"
-                tools:text="One Step" />
-
-            <TextView
-                android:id="@+id/textOneStepResult"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="30sp"
-                tools:text="2.5" />
-        </TableRow>
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/black" />
 
         <TableRow
             android:layout_width="match_parent"
@@ -106,6 +116,15 @@
 
             <Button
                 android:id="@+id/buttonSwatchColor"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="5dp"
+                android:background="#000"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <Button
+                android:id="@+id/buttonOneStepSwatchColor"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"
@@ -139,6 +158,13 @@
                 android:gravity="center"
                 tools:text="255 255 255" />
 
+            <TextView
+                android:id="@+id/textOneStepSwatchRgb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                tools:text="255 255 255" />
+
         </TableRow>
 
         <TableRow
@@ -166,17 +192,24 @@
                 tools:text="D: 10" />
 
             <TextView
-                android:id="@+id/textDimension"
+                android:id="@+id/textOneStepDistance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                tools:text="10000 x 2000" />
+                tools:text="D: 10" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="10dp" />
+            <!--<TextView-->
+                <!--android:id="@+id/textDimension"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--tools:text="10000 x 2000" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingTop="10dp" />-->
 
         </TableRow>
     </TableLayout>

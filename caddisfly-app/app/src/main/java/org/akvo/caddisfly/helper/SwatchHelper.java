@@ -524,8 +524,6 @@ public final class SwatchHelper {
             int gShift = Color.green(presetColor1.getRgbInt()) - Color.green(presetColor2.getRgbInt());
             int bShift = Color.blue(presetColor1.getRgbInt()) - Color.blue(presetColor2.getRgbInt());
 
-            Timber.e(red + ":" + green + ":" + blue);
-
             int newColor = Color.rgb(
                     Math.max(Math.min(red - rShift, 255), 0),
                     Math.max(Math.min(green - gShift, 255), 0),
