@@ -36,7 +36,7 @@ public class ConfigDownloader {
 //        // do nothing
 //    }
 
-    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
+    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, String comment) {
         // do nothing
     }
 }
