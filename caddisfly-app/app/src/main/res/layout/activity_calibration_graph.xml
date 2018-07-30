@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="#ddd"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ddd">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,10 +25,92 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#000 "
+                        android:clickable="false"
+                        android:focusable="false" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:text="Preset"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#ff00ff "
+                        android:clickable="false"
+                        android:focusable="false" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:text="One step"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#ff0000"
+                        android:clickable="false"
+                        android:focusable="false" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:text="Calibrated"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
+
                 <com.jjoe64.graphview.GraphView
                     android:id="@+id/graphRed"
                     android:layout_width="match_parent"
                     android:layout_height="200dip" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="2dp"
+                    android:text="R"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -40,6 +122,16 @@
                     android:id="@+id/graphGreen"
                     android:layout_width="match_parent"
                     android:layout_height="200dip" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="2dp"
+                    android:text="G"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -51,6 +143,16 @@
                     android:id="@+id/graphBlue"
                     android:layout_width="match_parent"
                     android:layout_height="200dip" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="2dp"
+                    android:text="B"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>

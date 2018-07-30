@@ -49,6 +49,7 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.model.ResultDetail;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.TestListActivity;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
@@ -207,6 +208,11 @@ public class ConfigDownloader {
                 calibration.value = result.getResult();
                 calibration.color = result.getColor();
                 calibration.image = result.getImage();
+                calibration.quality = result.getQuality();
+                calibration.centerOffset = AppPreferences.getCameraCenterOffset();
+                calibration.resWidth = result.getBitmap().getWidth();
+                calibration.resHeight = result.getBitmap().getHeight();
+                calibration.zoom = AppPreferences.getCameraZoom();
                 calibration.croppedImage = result.getCroppedImage();
 
                 sendFile(context, testInfo.getUuid(), comment, pd, finalDeviceId, db, storageReference,
