@@ -457,6 +457,8 @@ public class ChamberTestActivity extends BaseActivity implements
         resultDetail.setCroppedBitmap(lastResult.getCroppedBitmap());
         resultDetail.setQuality(lastResult.getQuality());
 
+        testStarted = false;
+
         if (calibration == null) {
 
             int dilution = resultDetails.get(0).getDilution();
@@ -569,6 +571,8 @@ public class ChamberTestActivity extends BaseActivity implements
             stopScreenPinning();
             fragmentManager.popBackStackImmediate();
         }
+
+        invalidateOptionsMenu();
     }
 
     private void stopScreenPinning() {
