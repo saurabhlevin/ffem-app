@@ -1,20 +1,22 @@
 #### Versions 
 
-   * App name and version: _____  
-   * Device: _____
-   * OS version: _____
+   * App name and version:   
+   * Device: 
+   * OS version: 
   
 #### Problem description
 
+
 #### Steps to reproduce the problem
 
-    1. _____
-    2. _____
-    3. _____
+    1. 
+    2. 
+    3. 
 
 #### Expected behavior
 
-#### How often does it happen:
 
-#### Other information 
-*[Things you tried, related issues, suggestions on how to fix it...]*
+#### How often does it happen
+
+
+#### Other information *[Things you tried, related issues, suggestions on how to fix it...]*
