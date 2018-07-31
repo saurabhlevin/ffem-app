@@ -16,9 +16,14 @@ import org.akvo.caddisfly.model.ColorItem;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.BaseActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CalibrationGraphActivity extends BaseActivity {
+
+    private GraphView graphRed;
+    private GraphView graphGreen;
+    private GraphView graphBlue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +36,50 @@ public class CalibrationGraphActivity extends BaseActivity {
         List<ColorItem> presetCalibrations = testInfo.getPresetColors();
         List<Calibration> oneStepCalibrations = testInfo.getOneStepCalibrations();
 
-        GraphView graphRed = findViewById(R.id.graphRed);
-        GraphView graphGreen = findViewById(R.id.graphGreen);
-        GraphView graphBlue = findViewById(R.id.graphBlue);
+        graphRed = findViewById(R.id.graphRed);
+        graphGreen = findViewById(R.id.graphGreen);
+        graphBlue = findViewById(R.id.graphBlue);
 
+        if (presetCalibrations.size() > 0) {
+            addPresetSeries(presetCalibrations);
+            addCalibrationSeries(calibrations);
+        } else {
+            addCalibrationSeries(calibrations);
+            addPresetSeries(presetCalibrations);
+        }
+
+        addOneStepSeries(oneStepCalibrations);
+
+        setTitle("Charts");
+    }
+
+    private void addOneStepSeries(List<Calibration> oneStepCalibrations) {
+        LineGraphSeries<DataPoint> seriesRed =
+                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.RED));
+        seriesRed.setColor(Color.MAGENTA);
+        seriesRed.setThickness(3);
+        seriesRed.setDrawDataPoints(true);
+        seriesRed.setDataPointsRadius(4);
+        graphRed.addSeries(seriesRed);
+
+        LineGraphSeries<DataPoint> seriesGreen =
+                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.GREEN));
+        seriesGreen.setColor(Color.MAGENTA);
+        seriesGreen.setThickness(3);
+        seriesGreen.setDrawDataPoints(true);
+        seriesGreen.setDataPointsRadius(4);
+        graphGreen.addSeries(seriesGreen);
+
+        LineGraphSeries<DataPoint> seriesBlue =
+                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.BLUE));
+        seriesBlue.setColor(Color.MAGENTA);
+        seriesBlue.setThickness(3);
+        seriesBlue.setDrawDataPoints(true);
+        seriesBlue.setDataPointsRadius(4);
+        graphBlue.addSeries(seriesBlue);
+    }
+
+    private void addCalibrationSeries(List<Calibration> calibrations) {
         LineGraphSeries<DataPoint> seriesRed =
                 new LineGraphSeries<>(getDataPoints(calibrations, Color.RED));
         seriesRed.setColor(Color.RED);
@@ -58,56 +103,32 @@ public class CalibrationGraphActivity extends BaseActivity {
         seriesBlue.setDrawDataPoints(true);
         seriesBlue.setDataPointsRadius(9);
         graphBlue.addSeries(seriesBlue);
+    }
 
-        LineGraphSeries<DataPoint> seriesRed2 =
+    private void addPresetSeries(List<ColorItem> presetCalibrations) {
+        LineGraphSeries<DataPoint> seriesRed =
                 new LineGraphSeries<>(getPresetDataPoints(presetCalibrations, Color.RED));
-        seriesRed2.setColor(Color.BLACK);
-        seriesRed2.setThickness(3);
-        seriesRed2.setDrawDataPoints(true);
-        seriesRed2.setDataPointsRadius(4);
-        graphRed.addSeries(seriesRed2);
+        seriesRed.setColor(Color.BLACK);
+        seriesRed.setThickness(3);
+        seriesRed.setDrawDataPoints(true);
+        seriesRed.setDataPointsRadius(4);
+        graphRed.addSeries(seriesRed);
 
-        LineGraphSeries<DataPoint> seriesGreen2 =
+        LineGraphSeries<DataPoint> seriesGreen =
                 new LineGraphSeries<>(getPresetDataPoints(presetCalibrations, Color.GREEN));
-        seriesGreen2.setColor(Color.BLACK);
-        seriesGreen2.setThickness(3);
-        seriesGreen2.setDrawDataPoints(true);
-        seriesGreen2.setDataPointsRadius(4);
-        graphGreen.addSeries(seriesGreen2);
+        seriesGreen.setColor(Color.BLACK);
+        seriesGreen.setThickness(3);
+        seriesGreen.setDrawDataPoints(true);
+        seriesGreen.setDataPointsRadius(4);
+        graphGreen.addSeries(seriesGreen);
 
-        LineGraphSeries<DataPoint> seriesBlue2 =
+        LineGraphSeries<DataPoint> seriesBlue =
                 new LineGraphSeries<>(getPresetDataPoints(presetCalibrations, Color.BLUE));
-        seriesBlue2.setColor(Color.BLACK);
-        seriesBlue2.setThickness(3);
-        seriesBlue2.setDrawDataPoints(true);
-        seriesBlue2.setDataPointsRadius(4);
-        graphBlue.addSeries(seriesBlue2);
-
-        LineGraphSeries<DataPoint> seriesRed3 =
-                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.RED));
-        seriesRed3.setColor(Color.MAGENTA);
-        seriesRed3.setThickness(3);
-        seriesRed3.setDrawDataPoints(true);
-        seriesRed3.setDataPointsRadius(4);
-        graphRed.addSeries(seriesRed3);
-
-        LineGraphSeries<DataPoint> seriesGreen3 =
-                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.GREEN));
-        seriesGreen3.setColor(Color.MAGENTA);
-        seriesGreen3.setThickness(3);
-        seriesGreen3.setDrawDataPoints(true);
-        seriesGreen3.setDataPointsRadius(4);
-        graphGreen.addSeries(seriesGreen3);
-
-        LineGraphSeries<DataPoint> seriesBlue3 =
-                new LineGraphSeries<>(getDataPoints(oneStepCalibrations, Color.BLUE));
-        seriesBlue3.setColor(Color.MAGENTA);
-        seriesBlue3.setThickness(3);
-        seriesBlue3.setDrawDataPoints(true);
-        seriesBlue3.setDataPointsRadius(4);
-        graphBlue.addSeries(seriesBlue3);
-
-        setTitle("Charts");
+        seriesBlue.setColor(Color.BLACK);
+        seriesBlue.setThickness(3);
+        seriesBlue.setDrawDataPoints(true);
+        seriesBlue.setDataPointsRadius(4);
+        graphBlue.addSeries(seriesBlue);
     }
 
     @NonNull
@@ -137,23 +158,25 @@ public class CalibrationGraphActivity extends BaseActivity {
 
     @NonNull
     private DataPoint[] getDataPoints(List<Calibration> calibrations, int color) {
-        DataPoint[] dataPoints = new DataPoint[calibrations.size()];
+        List<DataPoint> dataPoints = new ArrayList<>();
         int value = 0;
         for (int i = 0; i < calibrations.size(); i++) {
-            switch (color) {
-                case Color.RED:
-                    value = Color.red(calibrations.get(i).color);
-                    break;
-                case Color.GREEN:
-                    value = Color.green(calibrations.get(i).color);
-                    break;
-                case Color.BLUE:
-                    value = Color.blue(calibrations.get(i).color);
-                    break;
+            if (calibrations.get(i).color != 0) {
+                switch (color) {
+                    case Color.RED:
+                        value = Color.red(calibrations.get(i).color);
+                        break;
+                    case Color.GREEN:
+                        value = Color.green(calibrations.get(i).color);
+                        break;
+                    case Color.BLUE:
+                        value = Color.blue(calibrations.get(i).color);
+                        break;
+                }
+                dataPoints.add(new DataPoint(calibrations.get(i).value, value));
             }
-            dataPoints[i] = new DataPoint(calibrations.get(i).value, value);
         }
-        return dataPoints;
+        return dataPoints.toArray(new DataPoint[0]);
     }
 
     @Override
