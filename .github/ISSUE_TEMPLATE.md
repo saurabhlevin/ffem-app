@@ -1,12 +1,12 @@
-#### Versions 
-
-   * App name and version:   
-   * Device: 
-   * OS version: 
-  
 #### Problem description
 
 
+#### Versions
+
+   * **App name and version:** 
+   * **Device:** 
+   * **OS version:** 
+  
 #### Steps to reproduce the problem
 
     1. 
