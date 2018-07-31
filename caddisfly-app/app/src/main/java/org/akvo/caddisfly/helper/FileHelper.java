@@ -58,6 +58,9 @@ public final class FileHelper {
     private static final String DIR_DIAGNOSTIC_IMAGE = ROOT_DIRECTORY
             + File.separator + "qa" + File.separator + "diagnostic-images"; // Images saved for testing
 
+    private static final String DIR_TEMP_IMAGES = ROOT_DIRECTORY
+            + File.separator + "test" + File.separator + "images"; // Images saved for testing
+
     private FileHelper() {
     }
 
@@ -84,10 +87,6 @@ public final class FileHelper {
      * @return File representing the root directory for the given FileType.
      */
     public static File getFilesDir(FileType type, String subPath) {
-
-        //TODO remove migration at some point in future
-        migrateFolders();
-
         String path;
         switch (type) {
             case CALIBRATION:
@@ -111,6 +110,9 @@ public final class FileHelper {
             case DIAGNOSTIC_IMAGE:
                 path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false) + DIR_DIAGNOSTIC_IMAGE;
                 break;
+            case TEMP_IMAGE:
+                path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false) + DIR_TEMP_IMAGES;
+                break;
             default:
                 path = FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), true);
                 break;
@@ -119,6 +121,11 @@ public final class FileHelper {
         File dir = new File(path);
         if (!subPath.isEmpty()) {
             dir = new File(dir, subPath);
+        }
+
+        try {
+            migrateFolders();
+        } catch (Exception ignored) {
         }
 
         // create folder if it does not exist
@@ -130,7 +137,8 @@ public final class FileHelper {
         return dir;
     }
 
-    private static void migrateFolders() {
+    //TODO remove migration at some point in future
+    public static void migrateFolders() {
         File appFolder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(),
                 false) + ROOT_DIRECTORY);
         if (!appFolder.exists()) {
@@ -150,6 +158,6 @@ public final class FileHelper {
      * The different types of files.
      */
     public enum FileType {
-        CALIBRATION, CUSTOM_CONFIG, EXP_CONFIG, CARD, TEST_IMAGE, DIAGNOSTIC_IMAGE, RESULT_IMAGE
+        CALIBRATION, CUSTOM_CONFIG, EXP_CONFIG, CARD, TEST_IMAGE, DIAGNOSTIC_IMAGE, RESULT_IMAGE, TEMP_IMAGE
     }
 }

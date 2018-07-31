@@ -48,6 +48,7 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.ApkHelper;
 import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
+import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.TestInfo;
@@ -60,6 +61,7 @@ import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.sensor.manual.ManualTestActivity;
 import org.akvo.caddisfly.sensor.striptest.ui.StripMeasureActivity;
 import org.akvo.caddisfly.sensor.titration.TitrationTestActivity;
+import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
@@ -67,6 +69,8 @@ import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -83,9 +87,9 @@ public class TestActivity extends BaseActivity {
     private final WeakRefHandler handler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
 
+    private final String[] storagePermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final String[] bluetoothPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
-    private final String[] noPermissions = {};
 
     private TestInfo testInfo;
     private boolean cameraIsOk = false;
@@ -116,29 +120,6 @@ public class TestActivity extends BaseActivity {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
-
-        if (testInfo != null) {
-            if (testInfo.getSubtype() == TestType.SENSOR
-                    && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
-                ErrorMessages.alertFeatureNotSupported(this, true);
-            } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
-
-                if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
-                    return;
-                }
-
-                CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
-                        .calibrationDao().getCalibrationDetails(testInfo.getUuid());
-
-                if (calibrationDetail != null) {
-                    long milliseconds = calibrationDetail.expiry;
-                    if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
-                        ErrorMessages.alertCalibrationExpired(this);
-                    }
-                }
-            }
-        }
     }
 
     private void getTestSelectedByExternalApp(FragmentManager fragmentManager, Intent intent) {
@@ -146,36 +127,31 @@ public class TestActivity extends BaseActivity {
         CaddisflyApp.getApp().setAppLanguage(
                 intent.getStringExtra(SensorConstants.LANGUAGE), true, handler);
 
-        String questionTitle = intent.getStringExtra(SensorConstants.QUESTION_TITLE);
-
-        String uuid = intent.getStringExtra(SensorConstants.RESOURCE_ID);
+        String uuid = intent.getStringExtra(SensorConstants.TEST_ID);
         if (uuid != null) {
-            //Get the test config by uuid
             final TestListViewModel viewModel =
                     ViewModelProviders.of(this).get(TestListViewModel.class);
             testInfo = viewModel.getTestInfo(uuid);
-        }
 
-        if (uuid == null) {
-            uuid = intent.getStringExtra(SensorConstants.TEST_ID);
+            if (testInfo != null && intent.getExtras() != null) {
 
-            if (uuid != null) {
-                final TestListViewModel viewModel =
-                        ViewModelProviders.of(this).get(TestListViewModel.class);
-                testInfo = viewModel.getTestInfo(uuid);
-
-                if (testInfo != null && intent.getExtras() != null) {
-                    for (int i = 1; i < Math.min(intent.getExtras().keySet().size(),
-                            testInfo.getResults().size()); i++) {
-                        testInfo.getResults().get(i - 1)
-                                .setCode(intent.getExtras().keySet().toArray()[i].toString());
+                for (int i = 0; i < intent.getExtras().keySet().size(); i++) {
+                    String code = intent.getExtras().keySet().toArray()[i].toString();
+                    if (!code.equals("testId")) {
+                        Pattern pattern = Pattern.compile("_(\\d*?)$");
+                        Matcher matcher = pattern.matcher(code);
+                        if (matcher.find()) {
+                            testInfo.setResultSuffix(matcher.group(0));
+                        } else if (code.contains("_x")) {
+                            testInfo.setResultSuffix(code.substring(code.indexOf("_x")));
+                        }
                     }
                 }
             }
         }
 
         if (testInfo == null) {
-            setTitle(getTestName(questionTitle));
+            setTitle(R.string.notFound);
             alertTestTypeNotSupported();
         } else {
 
@@ -216,16 +192,20 @@ public class TestActivity extends BaseActivity {
 
         switch (testInfo.getSubtype()) {
             case SENSOR:
-                checkPermissions = noPermissions;
-                break;
+                startTest();
+                return;
             case MANUAL:
                 if (!testInfo.getHasImage()) {
-                    checkPermissions = noPermissions;
+                    startTest();
+                    return;
                 }
                 break;
             case BLUETOOTH:
                 checkPermissions = bluetoothPermissions;
                 break;
+            case TITRATION:
+                startTest();
+                return;
             default:
         }
 
@@ -237,49 +217,78 @@ public class TestActivity extends BaseActivity {
     }
 
     private void startTest() {
-        switch (testInfo.getSubtype()) {
-            case BLUETOOTH:
-                startBluetoothTest();
-                break;
-            case CBT:
-                startCbtTest();
-                break;
-            case CHAMBER_TEST:
-                startChamberTest();
-                break;
-            case COLIFORM_COUNT:
-                startColiformCountTest();
-                break;
-            case MANUAL:
-                startManualTest();
-                break;
-            case SENSOR:
-                startSensorTest();
-                break;
-            case STRIP_TEST:
-                if (cameraIsOk) {
-                    startStripTest();
-                } else {
-                    checkCameraMegaPixel();
-                }
-                break;
-            case TITRATION:
-                startTitrationTest();
-                break;
-            default:
+
+        if (permissionsDelegate.hasPermissions(storagePermissions)) {
+            FileHelper.migrateFolders();
         }
+
+        if (testInfo != null) {
+            if (testInfo.getSubtype() == TestType.SENSOR
+                    && !this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
+                ErrorMessages.alertFeatureNotSupported(this, true);
+            } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
+
+                if (!SwatchHelper.isSwatchListValid(testInfo)) {
+                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                    return;
+                }
+
+                CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
+                        .calibrationDao().getCalibrationDetails(testInfo.getUuid());
+
+                if (calibrationDetail != null) {
+                    long milliseconds = calibrationDetail.expiry;
+                    if (milliseconds > 0 && milliseconds <= new Date().getTime()) {
+                        ErrorMessages.alertCalibrationExpired(this);
+                        return;
+                    }
+                }
+            }
+
+            switch (testInfo.getSubtype()) {
+                case BLUETOOTH:
+                    startBluetoothTest();
+                    break;
+                case CBT:
+                    startCbtTest();
+                    break;
+                case CHAMBER_TEST:
+                    startChamberTest();
+                    break;
+                case COLIFORM:
+                    startColiformTest();
+                    break;
+                case MANUAL:
+                    startManualTest();
+                    break;
+                case SENSOR:
+                    startSensorTest();
+                    break;
+                case STRIP_TEST:
+                    if (cameraIsOk) {
+                        startStripTest();
+                    } else {
+                        checkCameraMegaPixel();
+                    }
+                    break;
+                case TITRATION:
+                    startTitrationTest();
+                    break;
+                default:
+            }
+        }
+    }
+
+    private void startColiformTest() {
+        Intent intent = new Intent(this, TimeLapseActivity.class);
+        intent.putExtra(ConstantKey.RUN_TEST, true);
+        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+        startActivityForResult(intent, REQUEST_TEST);
     }
 
     private void startTitrationTest() {
         Intent intent;
         intent = new Intent(this, TitrationTestActivity.class);
-        intent.putExtra(ConstantKey.TEST_INFO, testInfo);
-        startActivityForResult(intent, REQUEST_TEST);
-    }
-
-    private void startColiformCountTest() {
-        Intent intent = new Intent(this, ChamberTestActivity.class);
-        intent.putExtra(ConstantKey.RUN_TEST, true);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         startActivityForResult(intent, REQUEST_TEST);
     }
@@ -406,21 +415,6 @@ public class TestActivity extends BaseActivity {
         }
     }
 
-    @NonNull
-    private String getTestName(String title) {
-
-        String tempTitle = title;
-        //ensure we have short name to display as title
-        if (title != null && title.length() > 0) {
-            if (title.length() > 30) {
-                tempTitle = title.substring(0, 30);
-            }
-        } else {
-            tempTitle = getString(R.string.error);
-        }
-        return tempTitle;
-    }
-
     private void checkCameraMegaPixel() {
 
         cameraIsOk = true;
@@ -466,6 +460,7 @@ public class TestActivity extends BaseActivity {
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissionsDelegate.resultGranted(requestCode, grantResults)) {
+            FileHelper.migrateFolders();
             startTest();
         } else {
 

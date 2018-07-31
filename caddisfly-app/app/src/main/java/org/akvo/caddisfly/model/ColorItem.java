@@ -48,7 +48,10 @@ public class ColorItem implements Parcelable {
     @SerializedName("lab")
     @Expose
     private List<Double> lab = null;
-    private Integer rgb;
+    @SerializedName("rgb")
+    @Expose
+    private List<Integer> rgb = null;
+    private int rgbInt;
 
     private ColorItem(Parcel in) {
         value = in.readByte() == 0x00 ? null : in.readDouble();
@@ -58,11 +61,13 @@ public class ColorItem implements Parcelable {
         } else {
             lab = null;
         }
-        if (in.readByte() == 0) {
-            rgb = 0;
+        if (in.readByte() == 0x01) {
+            rgb = new ArrayList<>();
+            in.readList(rgb, Integer.class.getClassLoader());
         } else {
-            rgb = in.readInt();
+            rgb = null;
         }
+        rgbInt = in.readInt();
     }
 
     public ColorItem(double value) {
@@ -85,12 +90,16 @@ public class ColorItem implements Parcelable {
         this.lab = lab;
     }
 
-    public int getRgb() {
+    public List<Integer> getRgb() {
         return rgb;
     }
 
-    public void setRgb(int rgb) {
-        this.rgb = rgb;
+    public int getRgbInt() {
+        return rgbInt;
+    }
+
+    public void setRgbInt(int rgbInt) {
+        this.rgbInt = rgbInt;
     }
 
     @Override
@@ -113,10 +122,11 @@ public class ColorItem implements Parcelable {
             dest.writeList(lab);
         }
         if (rgb == null) {
-            dest.writeByte((byte) 0);
+            dest.writeByte((byte) (0x00));
         } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(rgb);
+            dest.writeByte((byte) (0x01));
+            dest.writeList(rgb);
         }
+        dest.writeInt(rgbInt);
     }
 }

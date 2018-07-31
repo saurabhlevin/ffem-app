@@ -21,7 +21,6 @@ package org.akvo.caddisfly.test;
 
 
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
@@ -115,7 +114,9 @@ public class ManualTest {
                         isDisplayed()));
         textInputEditText3.perform(pressImeActionButton());
 
-        assertNotNull(mDevice.findObject(By.text("Exchangeable Calcium: 20.00 mg/kg\nExchangeable Magnesium: 111.00 mg/kg")));
-
+        assertNotNull(mDevice.findObject(By.text("Exchangeable Calcium: ")));
+        assertNotNull(mDevice.findObject(By.text("20.00")));
+        assertNotNull(mDevice.findObject(By.text("Exchangeable Magnesium: ")));
+        assertNotNull(mDevice.findObject(By.text("111.00")));
     }
 }

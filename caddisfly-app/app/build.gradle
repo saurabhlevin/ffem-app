@@ -1,8 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'de.mobilej.unmock'
 
-def isExperiment
-
 android {
     compileSdkVersion 27
 
@@ -10,8 +8,8 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 229
-        versionName "Beta 1.0"
+        versionCode 234
+        versionName "Beta 1.1"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -22,19 +20,15 @@ android {
         soil {
             applicationIdSuffix ".soil"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
-            isExperiment = false
         }
         water {
             applicationIdSuffix ".water"
             buildConfigField 'boolean', 'showExperimentalTests', 'false'
-            isExperiment = false
         }
         experiment {
             applicationIdSuffix ".experiment"
-            versionName "Exp Beta 1.0"
+            versionName "Experiment"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
-            multiDexEnabled true
-            isExperiment = true
         }
     }
 
@@ -59,9 +53,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            if (isExperiment) {
-                multiDexEnabled true
-            }
+            multiDexEnabled true
         }
     }
 
@@ -127,14 +119,21 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     // Room
-    implementation 'android.arch.persistence.room:runtime:1.1.0'
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.2'
 
     // Usb
     implementation 'com.github.felHR85:UsbSerial:4.5.1'
+
+    implementation 'com.jjoe64:graphview:4.2.2'
+
+    // Email
+    implementation files('libs/activation.jar')
+    implementation files('libs/additionnal.jar')
+    implementation files('libs/mail.jar')
 
     // Testing
     testImplementation 'junit:junit:4.12'
@@ -153,7 +152,7 @@ dependencies {
     }
 
     // Robolectric
-    testImplementation 'org.robolectric:robolectric:3.6.1'
+    testImplementation 'org.robolectric:robolectric:3.8'
     testImplementation "org.robolectric:shadows-support-v4:3.4-rc2"
 
     // UIAutomator
@@ -164,10 +163,10 @@ dependencies {
 
     // Firebase (Experiment Flavor)
     experimentImplementation 'com.android.support:multidex:1.0.3'
-    experimentImplementation 'com.google.firebase:firebase-core:16.0.0'
+    experimentImplementation 'com.google.firebase:firebase-core:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-database:16.0.1'
-    experimentImplementation 'com.google.firebase:firebase-firestore:17.0.1'
+    experimentImplementation 'com.google.firebase:firebase-firestore:17.0.2'
     experimentImplementation 'com.google.firebase:firebase-storage:16.0.1'
-    experimentImplementation 'com.google.firebase:firebase-auth:16.0.1'
+    experimentImplementation 'com.google.firebase:firebase-auth:16.0.2'
 }
 //apply plugin: 'com.google.gms.google-services'

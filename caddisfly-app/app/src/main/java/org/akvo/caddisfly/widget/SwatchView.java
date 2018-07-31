@@ -92,7 +92,7 @@ public class SwatchView extends View {
 
                         ColorItem colorItem = colors.get(i);
                         if (colorItem != null) {
-                            paintColor.setColor(colorItem.getRgb());
+                            paintColor.setColor(colorItem.getRgbInt());
 
                             canvas.drawRect(MARGIN + (i * totalWidth), MARGIN + (index * lineHeight),
                                     i * totalWidth + blockWidth, (index * lineHeight) + blockWidth, paintColor);
@@ -146,7 +146,7 @@ public class SwatchView extends View {
                         rgbCols[i] = ColorUtils.XYZtoRGBint(ColorUtils.Lab2XYZ(lab));
                         int color = Color.rgb(rgbCols[i][0], rgbCols[i][1], rgbCols[i][2]);
 
-                        colors.get(i).setRgb(color);
+                        colors.get(i).setRgbInt(color);
                     }
                 }
             }

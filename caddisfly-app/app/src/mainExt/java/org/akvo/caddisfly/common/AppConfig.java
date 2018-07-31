@@ -26,24 +26,22 @@ import org.akvo.caddisfly.BuildConfig;
  */
 public final class AppConfig {
 
+    public static final boolean SOUND_ON = true;
+    public static final boolean USE_SCREEN_PINNING = true;
+
     /**
      * Date on which the app version will expire.
      * This is to ensure that installs from apk meant for testing only are not used for too long.
      */
     public static final boolean APP_EXPIRY = true;
     public static final int APP_EXPIRY_DAY = 30;
-    public static final int APP_EXPIRY_MONTH = 6;
+    public static final int APP_EXPIRY_MONTH = 7;
     public static final int APP_EXPIRY_YEAR = 2018;
 
     /**
      * Uri for photos from built in camera.
      */
     public static final String FILE_PROVIDER_AUTHORITY_URI = BuildConfig.APPLICATION_ID + ".fileprovider";
-
-    /**
-     * The sound volume for the beeps and other sound effects.
-     */
-    public static final float SOUND_EFFECTS_VOLUME = 0.99f;
 
     /**
      * The url to check for version updates.

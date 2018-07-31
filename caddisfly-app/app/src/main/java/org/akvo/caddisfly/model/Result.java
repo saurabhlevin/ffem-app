@@ -78,6 +78,9 @@ public class Result implements Parcelable {
     @SerializedName("colors")
     @Expose
     private List<ColorItem> colorItems = new ArrayList<>();
+    @SerializedName("preset")
+    @Expose
+    private List<ColorItem> presetColors = new ArrayList<>();
     @SerializedName("grayScale")
     @Expose
     private Boolean grayScale = false;
@@ -106,6 +109,12 @@ public class Result implements Parcelable {
             in.readList(colorItems, ColorItem.class.getClassLoader());
         } else {
             colorItems = null;
+        }
+        if (in.readByte() == 0x01) {
+            presetColors = new ArrayList<>();
+            in.readList(presetColors, ColorItem.class.getClassLoader());
+        } else {
+            presetColors = null;
         }
         byte tmpGrayScale = in.readByte();
         grayScale = tmpGrayScale != 0 && tmpGrayScale == 1;
@@ -194,6 +203,10 @@ public class Result implements Parcelable {
         this.colorItems = colorItems;
     }
 
+    public List<ColorItem> getPresetColors() {
+        return presetColors;
+    }
+
     public Boolean getGrayScale() {
         return grayScale;
     }
@@ -246,12 +259,22 @@ public class Result implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(colorItems);
         }
+        if (presetColors == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(presetColors);
+        }
         dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
         dest.writeString(code);
     }
 
     public String getResult() {
         return result;
+    }
+
+    public void setResult(String value) {
+        result = value;
     }
 
     public void setResult(double resultDouble, int dilution, Integer maxDilution) {

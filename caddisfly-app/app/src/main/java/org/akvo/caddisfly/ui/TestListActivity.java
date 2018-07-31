@@ -35,6 +35,7 @@ import org.akvo.caddisfly.helper.CameraHelper;
 import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.repository.TestConfigRepository;
@@ -90,8 +91,10 @@ public class TestListActivity extends BaseActivity
         if (savedInstanceState == null) {
 
             TestType testType = (TestType) getIntent().getSerializableExtra(ConstantKey.TYPE);
+            TestSampleType sampleType = (TestSampleType) getIntent()
+                    .getSerializableExtra(ConstantKey.SAMPLE_TYPE);
 
-            fragment = TestListFragment.newInstance(testType);
+            fragment = TestListFragment.newInstance(testType, sampleType);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment, TestListFragment.TAG).commit();

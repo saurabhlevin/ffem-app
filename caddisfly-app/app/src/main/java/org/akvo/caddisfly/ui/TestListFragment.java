@@ -38,6 +38,7 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.databinding.FragmentListBinding;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.model.TestSampleType;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
@@ -59,13 +60,15 @@ public class TestListFragment extends Fragment {
     };
     private TestType mTestType;
     private TestInfoAdapter mTestInfoAdapter;
+    private TestSampleType mSampleType;
 
-    public static TestListFragment newInstance(TestType testType) {
+    public static TestListFragment newInstance(TestType testType, TestSampleType sampleType) {
 
         TestListFragment fragment = new TestListFragment();
 
         Bundle args = new Bundle();
         args.putSerializable(ConstantKey.TYPE, testType);
+        args.putSerializable(ConstantKey.SAMPLE_TYPE, sampleType);
         fragment.setArguments(args);
 
         return fragment;
@@ -81,6 +84,7 @@ public class TestListFragment extends Fragment {
 
         if (getArguments() != null) {
             mTestType = (TestType) getArguments().get(ConstantKey.TYPE);
+            mSampleType = (TestSampleType) getArguments().get(ConstantKey.SAMPLE_TYPE);
         }
 
         mTestInfoAdapter = new TestInfoAdapter(mTestInfoClickCallback);
@@ -106,7 +110,7 @@ public class TestListFragment extends Fragment {
         final TestListViewModel viewModel =
                 ViewModelProviders.of(this).get(TestListViewModel.class);
 
-        List<TestInfo> tests = viewModel.getTests(mTestType);
+        List<TestInfo> tests = viewModel.getTests(mTestType, mSampleType);
         if (tests.size() == 1) {
             mListener.onListFragmentInteraction(tests.get(0));
         } else {

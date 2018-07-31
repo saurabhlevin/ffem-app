@@ -17,7 +17,7 @@
   ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!--Common-->
     <string name="ok">OK</string>
     <string name="retry">Retry</string>
@@ -156,6 +156,7 @@
     <!--Permission-->
     <string name="storagePermission">Storage permission is required</string>
     <string name="cameraAndStoragePermissions">Camera &amp; storage permissions are required</string>
+    <string name="cameraAndLocationPermissions">Camera &amp; location permissions are required</string>
 
     <!--Sensor-->
     <string name="incorrectDevice">Incorrect Device</string>
@@ -247,4 +248,16 @@
     <string name="continue_send">Continue</string>
     <string name="creatingMessage">Creating message</string>
 
+    <!--  Bluetooth -->
+    <string name="title_not_connected">Not Connected</string>
+    <string name="title_connected_to">connected to %1$s</string>
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>
+    <string name="select_device">select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+    <string name="graph">Graph</string>
+    <string name="screen_pinned">Screen pinned. Tap Home button for more information.</string>
 </resources>

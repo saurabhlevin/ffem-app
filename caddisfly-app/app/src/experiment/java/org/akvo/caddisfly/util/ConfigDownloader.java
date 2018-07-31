@@ -41,6 +41,7 @@ import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.AppConfig;
+import org.akvo.caddisfly.common.AppConstants;
 import org.akvo.caddisfly.diagnostic.ConfigTask;
 import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -105,15 +106,34 @@ public class ConfigDownloader {
 //        }
 //    }
 
+    private static int stringToInteger(String value){
+
+        try {
+            return Integer.valueOf(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
 
         ProgressDialog pd;
 
-        String deviceId = PreferencesUtil.getString(context, R.string.deviceIdKey, "0");
-        if (Integer.valueOf(deviceId) < 1) {
-            AlertUtil.showMessage(context, R.string.error, "Please set Device ID in settings before sending.");
-            return;
+        File folder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
+                + File.separator + AppConstants.APP_FOLDER + File.separator + "qa");
+
+        String deviceId = FileUtil.loadTextFromFile(new File(folder,"deviceId"));
+
+        if (stringToInteger(deviceId) < 1) {
+
+            deviceId = PreferencesUtil.getString(context, R.string.deviceIdKey, "0");
+
+            if (stringToInteger(deviceId) < 1) {
+                deviceId = String.valueOf(Calendar.getInstance().getTimeInMillis());
+            }
+
+            FileUtil.saveToFile(folder, "deviceId", deviceId);
         }
 
         if (!NetUtil.isNetworkAvailable(context)) {
@@ -133,6 +153,7 @@ public class ConfigDownloader {
         pd.setCancelable(false);
         pd.show();
 
+        String finalDeviceId = deviceId;
         new Thread(() -> {
 
             boolean isSending = false;
@@ -153,7 +174,7 @@ public class ConfigDownloader {
 
                         isSending = true;
 
-                        sendFile(context, testInfo.getUuid(), type, comment, pd, deviceId, db, storageReference,
+                        sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
                                 calibration.image, calibration.croppedImage, imagePath, croppedImagePath,
                                 calibration.color, calibration.value, new Date(calibration.date));
                     }
@@ -176,7 +197,7 @@ public class ConfigDownloader {
                 File imagePath = new File(path, result.getImage());
                 File croppedImagePath = new File(path, result.getCroppedImage());
 
-                sendFile(context, testInfo.getUuid(), type, comment, pd, deviceId, db, storageReference,
+                sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
                         result.getImage(), result.getCroppedImage(), imagePath, croppedImagePath,
                         result.getColor(), result.getResult(), new Date());
 

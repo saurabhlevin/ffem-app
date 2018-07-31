@@ -237,7 +237,7 @@ public class SensorTest {
 
         TestUtil.nextSurveyPage(7);
 
-        clickExternalSourceButton("useExternalSource");
+        clickExternalSourceButton(0);
 
         SystemClock.sleep(6000);
 

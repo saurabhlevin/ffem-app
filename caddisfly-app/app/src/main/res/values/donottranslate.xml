@@ -73,8 +73,18 @@
     <string name="cameraMegaPixelsKey">cameraMegaPixels</string>
     <string name="showMinMegaPixelDialogKey">showMinMegaPixelDialog</string>
     <string name="maxZoomKey">MaxZoomKey</string>
-
+    <string name="cameraZoomPercentKey">cameraZoomPercentKey</string>
+    <string name="cameraCenterOffsetKey">cameraCenterOffsetKey</string>
+    <string name="cameraResolutionKey">cameraResolutionKey</string>
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
+
+    <string name="colif_volumeKey">colif_volume</string>
+    <string name="colif_brothMediaKey">colif_brothMedia</string>
+    <string name="colif_IntervalMinutesKey">colif_IntervalMinutes</string>
+    <string name="colif_NumberOfSamplesKey">colif_NumberOfSamples</string>
+    <string name="colif_emails">colif_emails</string>
+    <string name="turbiditySavePathKey">turbiditySavePath</string>
+    <string name="coliformResultSafeKey">coliformResultSafe</string>
 
     <!--Diagnostic-->
     <string name="diagnostics">Diagnostics</string>
@@ -84,8 +94,9 @@
     <string name="ignoreTimeDelays">Ignore time delays</string>
     <string name="debugging">Debugging</string>
     <string name="download_experimental_tests">Download experimental tests</string>
-    <string name="testModeOn">Test Mode</string>
+    <string name="testModeOn">Demo / Test Mode</string>
     <string name="maxZoom">Max Zoom</string>
+    <string name="cameraPreview">Colorimeter camera preview</string>
 
     <!--Diagnostic Mode: Messages -->
     <string name="diagnosticModeEnabled">Diagnostic mode enabled</string>
@@ -117,6 +128,8 @@
     <string name="cca_software"><a href="https://design.google.com/icons/">Material Icons</a></string>
     <string name="eclipse_software"><a href="https://github.com/junit-team/junit4">Junit 4</a></string>
     <string name="testing">Testing</string>
+    <string name="camera">Camera</string>
+    <string name="waterCalibrate">Water - Calibrate</string>
 
     <string-array name="cuvettes">
         <item>Cuvette Type</item>

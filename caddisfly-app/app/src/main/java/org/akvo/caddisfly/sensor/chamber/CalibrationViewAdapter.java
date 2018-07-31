@@ -67,7 +67,7 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
         Result result = testInfo.getResults().get(0);
         List<ColorItem> colors = result.getColors();
         if (position < colors.size()) {
-            int color = colors.get(position).getRgb();
+            int color = colors.get(position).getRgbInt();
             holder.mIdView.setBackground(new ColorDrawable(color));
             holder.textUnit.setText(String.valueOf(result.getUnit()));
 
@@ -87,7 +87,7 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
 
                 double distance = 0;
                 if (position > 0) {
-                    int previousColor = colors.get(position - 1).getRgb();
+                    int previousColor = colors.get(position - 1).getRgbInt();
                     distance = ColorUtil.getColorDistance(previousColor, color);
                 }
 

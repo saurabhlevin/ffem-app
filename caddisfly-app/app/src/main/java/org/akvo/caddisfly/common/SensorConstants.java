@@ -28,12 +28,11 @@ public final class SensorConstants {
      * Serialization constants.
      */
     public static final String IMAGE = "image";
-    public static final String RESOURCE_ID = "caddisflyResourceUuid";
-    public static final String RESPONSE = "response";
+    public static final String DILUTION = "Dilution";
     public static final String TEST_ID = "testId";
     public static final String VALUE = "value";
     public static final String LANGUAGE = "language";
-    public static final String QUESTION_TITLE = "questionTitle";
+    public static final String UNIT = "Unit";
 
     private SensorConstants() {
     }

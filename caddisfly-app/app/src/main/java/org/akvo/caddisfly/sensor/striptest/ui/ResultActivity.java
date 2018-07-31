@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import timber.log.Timber;
+
 import static org.akvo.caddisfly.sensor.striptest.utils.BitmapUtils.concatTwoBitmaps;
 import static org.akvo.caddisfly.sensor.striptest.utils.BitmapUtils.createErrorImage;
 import static org.akvo.caddisfly.sensor.striptest.utils.BitmapUtils.createResultImageGroup;
@@ -71,10 +72,9 @@ public class ResultActivity extends BaseActivity {
     private static DecodeData mDecodeData;
     private final SparseArray<String> resultStringValues = new SparseArray<>();
     private final SparseArray<String> brackets = new SparseArray<>();
+    TestInfo testInfo;
     private Button buttonSave;
-    private Button buttonCancel;
     private Bitmap totalImage;
-    //    private String totalImageUrl;
     private LinearLayout layout;
 
     public static void setDecodeData(DecodeData decodeData) {
@@ -90,35 +90,26 @@ public class ResultActivity extends BaseActivity {
         buttonSave = findViewById(R.id.button_save);
         buttonSave.setOnClickListener(v -> {
             Intent intent = new Intent();
-//            String path;
+            for (int i = 0; i < testInfo.getResults().size(); i++) {
+                Result result = testInfo.getResults().get(i);
+                intent.putExtra(result.getName().replace(" ", "_")
+                        + testInfo.getResultSuffix(), result.getResult());
 
-//            if (totalImage != null) {
-//
-//                // store image on sd card
-//                path = FileUtil.writeBitmapToExternalStorage(totalImage,
-//                        FileHelper.FileType.RESULT_IMAGE, totalImageUrl);
-//
-//                intent.putExtra(ConstantKey.IMAGE, path);
-//
-//                if (path.length() == 0) {
-//                    totalImageUrl = "";
-//                }
-//            } else {
-//                totalImageUrl = "";
-//            }
+                intent.putExtra(result.getName().replace(" ", "_")
+                        + "_" + SensorConstants.DILUTION
+                        + testInfo.getResultSuffix(), testInfo.getDilution());
 
-//            JSONObject resultJsonObj = TestConfigHelper.getJsonResult(testInfo,
-//                    resultStringValues, brackets, -1, totalImageUrl);
+                intent.putExtra(
+                        result.getName().replace(" ", "_")
+                                + "_" + SensorConstants.UNIT + testInfo.getResultSuffix(),
+                        testInfo.getResults().get(0).getUnit());
 
-            intent.putExtra(SensorConstants.VALUE, resultStringValues.get(1));
+                if (i == 0) {
+                    intent.putExtra(SensorConstants.VALUE, result.getResult());
+                }
+            }
+
             setResult(RESULT_OK, intent);
-            finish();
-        });
-
-        buttonCancel = findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> {
-            Intent intent = new Intent(getIntent());
-            setResult(RESULT_CANCELED, intent);
             finish();
         });
     }
@@ -138,7 +129,7 @@ public class ResultActivity extends BaseActivity {
         layout = findViewById(R.id.layout_results);
         layout.removeAllViews();
 
-        TestInfo testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
+        testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
         List<PatchResult> patchResultList = computeResults(testInfo);
         showResults(patchResultList, testInfo);
@@ -165,7 +156,7 @@ public class ResultActivity extends BaseActivity {
 
             // check if we have the corresponding image
             if (!patchImageMap.containsKey(delay)) {
-                Log.d("Caddisfly", "patch not found!");
+                Timber.d("patch not found!");
                 patchResult.setMeasured(false);
                 return null;
             }
@@ -250,7 +241,6 @@ public class ResultActivity extends BaseActivity {
 
         // show buttons
         buttonSave.setVisibility(View.VISIBLE);
-        buttonCancel.setVisibility(View.VISIBLE);
     }
 
     private void createView(TestInfo testInfo, List<PatchResult> patchResultList) {
