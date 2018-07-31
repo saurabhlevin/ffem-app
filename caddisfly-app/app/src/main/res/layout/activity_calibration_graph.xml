@@ -31,11 +31,12 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
+                    android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
                     <Button
                         android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_height="12dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginStart="10dp"
@@ -54,7 +55,7 @@
 
                     <Button
                         android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_height="12dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginStart="10dp"
@@ -73,7 +74,7 @@
 
                     <Button
                         android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_height="12dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginStart="10dp"
@@ -108,6 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="2dp"
+                    android:background="@color/white"
                     android:text="R"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -128,6 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="2dp"
+                    android:background="@color/white"
                     android:text="G"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -149,6 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="2dp"
+                    android:background="@color/white"
                     android:text="B"
                     android:textSize="20dp"
                     android:textStyle="bold" />
