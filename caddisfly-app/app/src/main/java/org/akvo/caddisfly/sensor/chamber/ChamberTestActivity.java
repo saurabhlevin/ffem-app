@@ -26,8 +26,10 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
@@ -37,6 +39,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +73,7 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
+import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
@@ -95,7 +99,12 @@ public class ChamberTestActivity extends BaseActivity implements
         DiagnosticResultDialog.OnDismissed {
 
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
-
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
     private RunTest runTestFragment;
     private CalibrationItemFragment calibrationItemFragment;
     private FragmentManager fragmentManager;
@@ -113,6 +122,9 @@ public class ChamberTestActivity extends BaseActivity implements
         setContentView(R.layout.activity_chamber_test);
 
         fragmentManager = getSupportFragmentManager();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("data-sent-to-dash"));
 
         // Add list fragment if this is first creation
         if (savedInstanceState == null) {
@@ -487,12 +499,12 @@ public class ChamberTestActivity extends BaseActivity implements
                         .replace(R.id.fragment_container,
                                 ResultFragment.newInstance(testInfo), null).commit();
 
+                testInfo.setResultDetail(resultDetail);
+
                 if (AppPreferences.getShowDebugInfo()) {
                     showDiagnosticResultDialog(false, resultDetail, oneStepResultDetail,
                             resultDetails, false);
                 }
-
-                testInfo.setResultDetail(resultDetail);
 
             } else {
 
@@ -518,7 +530,6 @@ public class ChamberTestActivity extends BaseActivity implements
                             resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
                 }
             }
-
         } else {
 
             int color = SwatchHelper.getAverageColor(resultDetails);
@@ -779,11 +790,16 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     public void sendTestResultClick(View view) {
+        if (!NetUtil.isNetworkAvailable(this)) {
+            Toast.makeText(this,
+                    "No data connection. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
+        } else {
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            DiagnosticSendDialogFragment diagnosticSendDialogFragment =
+                    DiagnosticSendDialogFragment.newInstance();
+            diagnosticSendDialogFragment.show(ft, "sendDialog");
+        }
         stopScreenPinning();
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        DiagnosticSendDialogFragment diagnosticSendDialogFragment =
-                DiagnosticSendDialogFragment.newInstance();
-        diagnosticSendDialogFragment.show(ft, "sendDialog");
     }
 
     @Override
