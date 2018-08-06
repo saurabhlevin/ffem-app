@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -17,9 +18,12 @@ import org.akvo.caddisfly.R;
 
 import java.util.Objects;
 
+import timber.log.Timber;
+
 public class DiagnosticSendDialogFragment extends DialogFragment {
 
     private OnDetailsSavedListener mListener;
+    private EditText editComment;
 
     public DiagnosticSendDialogFragment() {
         // Required empty public constructor
@@ -54,7 +58,7 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        spinner.setAdapter(adapter);
 
-        EditText comment = view.findViewById(R.id.comment);
+        editComment = view.findViewById(R.id.comment);
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -64,14 +68,17 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
                 .create();
 
         dialog.setOnShowListener(dialogInterface -> {
-
             Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener(view1 -> {
-                mListener.onDetailsSaved(comment.getText().toString());
+                closeKeyboard(getActivity(), editComment);
+                mListener.onDetailsSaved(editComment.getText().toString());
                 dismiss();
             });
         });
         dialog.show();
+
+        editComment.requestFocus();
+        showKeyboard(activity);
 
         return dialog;
     }
@@ -97,4 +104,34 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
         void onDetailsSaved(String s);
     }
 
+    private void showKeyboard(Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+    }
+
+    /**
+     * Hides the keyboard.
+     *
+     * @param input the EditText for which the keyboard is open
+     */
+    private void closeKeyboard(Context context, EditText input) {
+        try {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                if (getActivity() != null) {
+                    View view = getActivity().getCurrentFocus();
+                    if (view != null) {
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
 }
