@@ -192,6 +192,8 @@ public class ChamberTest {
 
         onView(withText(R.string.save)).perform(click());
 
+        onView(withId(R.id.fabEditCalibration)).perform(click());
+
         onView(withId(R.id.editExpiryDate)).perform(click());
 
         Calendar date = Calendar.getInstance();
@@ -387,6 +389,8 @@ public class ChamberTest {
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
         onView(withText(R.string.save)).perform(click());
+
+        onView(withId(R.id.fabEditCalibration)).perform(click());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
 
