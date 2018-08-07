@@ -516,7 +516,12 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     setResult(Activity.RESULT_CANCELED);
 
+                    stopScreenPinning();
+
                     fragmentManager.popBackStack();
+                    if (testInfo.getDilutions().size() > 0) {
+                        fragmentManager.popBackStack();
+                    }
 
                     showDiagnosticResultDialog(true, resultDetail, oneStepResultDetail,
                             resultDetails, false);
