@@ -67,7 +67,6 @@ import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.saveCalibration;
 import static org.akvo.caddisfly.util.TestUtil.childAtPosition;
-import static org.akvo.caddisfly.util.TestUtil.nextSurveyPage;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.allOf;
@@ -229,6 +228,8 @@ public class CalibrationTest {
 //                .perform(typeText("    "), closeSoftKeyboard());
 
         onView(withText(R.string.save)).perform(click());
+
+        onView(withId(R.id.fabEditCalibration)).perform(click());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
 

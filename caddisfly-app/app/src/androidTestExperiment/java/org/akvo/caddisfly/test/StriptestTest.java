@@ -72,7 +72,7 @@ public class StriptestTest {
     @Ignore
     public void startStriptest() {
 
-        activateTestMode();
+        activateTestMode(mActivityRule.getActivity());
 
         test5in1(false);
         testSoilNitrogen(false);
