@@ -505,13 +505,43 @@ public final class SwatchHelper {
         return Color.rgb(red / resultCount, green / resultCount, blue / resultCount);
     }
 
-    public static List<Calibration> getOneStepCalibrations(Calibration firstCalibration,
+    public static List<Calibration> getOneStepCalibrations(List<Calibration> calibrations, double pivotValue,
                                                            List<ColorItem> presetColors) {
-
         List<Calibration> oneStepCalibrations = new ArrayList<>();
-        oneStepCalibrations.add(firstCalibration);
+        if (presetColors.size() < 1) {
+            return oneStepCalibrations;
+        }
 
-        for (int i = 1; i < presetColors.size(); i++) {
+        int pivotIndex = 0;
+        for (int i = 0; i < presetColors.size(); i++) {
+            if (presetColors.get(i).getValue() == pivotValue) {
+                pivotIndex = i;
+            }
+            Calibration calibration = new Calibration(presetColors.get(i).getValue(),
+                    calibrations.get(i).color);
+            oneStepCalibrations.add(calibration);
+        }
+
+        for (int i = pivotIndex; i >= 1; i--) {
+            ColorItem presetColor1 = presetColors.get(i);
+            ColorItem presetColor2 = presetColors.get(i - 1);
+            Calibration oneStepCalibration = oneStepCalibrations.get(i);
+
+            int red = Color.red(oneStepCalibration.color);
+            int green = Color.green(oneStepCalibration.color);
+            int blue = Color.blue(oneStepCalibration.color);
+
+            int rShift = Color.red(presetColor2.getRgbInt()) - Color.red(presetColor1.getRgbInt());
+            int gShift = Color.green(presetColor2.getRgbInt()) - Color.green(presetColor1.getRgbInt());
+            int bShift = Color.blue(presetColor2.getRgbInt()) - Color.blue(presetColor1.getRgbInt());
+
+            oneStepCalibrations.get(i - 1).color = Color.rgb(
+                    Math.max(Math.min(red + rShift, 255), 0),
+                    Math.max(Math.min(green + gShift, 255), 0),
+                    Math.max(Math.min(blue + bShift, 255), 0));
+        }
+
+        for (int i = pivotIndex + 1; i < presetColors.size(); i++) {
             ColorItem presetColor1 = presetColors.get(i - 1);
             ColorItem presetColor2 = presetColors.get(i);
             Calibration oneStepCalibration = oneStepCalibrations.get(i - 1);
@@ -524,14 +554,10 @@ public final class SwatchHelper {
             int gShift = Color.green(presetColor1.getRgbInt()) - Color.green(presetColor2.getRgbInt());
             int bShift = Color.blue(presetColor1.getRgbInt()) - Color.blue(presetColor2.getRgbInt());
 
-            int newColor = Color.rgb(
+            oneStepCalibrations.get(i).color = Color.rgb(
                     Math.max(Math.min(red - rShift, 255), 0),
                     Math.max(Math.min(green - gShift, 255), 0),
                     Math.max(Math.min(blue - bShift, 255), 0));
-
-            Calibration calibration = new Calibration(presetColor2.getValue(), newColor);
-
-            oneStepCalibrations.add(calibration);
         }
 
         return oneStepCalibrations;

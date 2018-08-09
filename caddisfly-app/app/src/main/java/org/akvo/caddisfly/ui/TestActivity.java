@@ -124,6 +124,9 @@ public class TestActivity extends BaseActivity {
 
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
+
+        testInfo.setPivotCalibration(PreferencesUtil.getDouble(this,
+                "pivot_" + testInfo.getUuid(), 0));
     }
 
     private void getTestSelectedByExternalApp(FragmentManager fragmentManager, Intent intent) {

@@ -165,6 +165,7 @@ public class TestInfo implements Parcelable {
 
     private ResultDetail resultDetail;
     private List<Calibration> oneStepCalibrations;
+    private double pivotCalibration;
 
     public TestInfo() {
     }
@@ -198,6 +199,8 @@ public class TestInfo implements Parcelable {
 
         oneStepSwatches = new ArrayList<>();
         in.readTypedList(oneStepSwatches, Swatch.CREATOR);
+
+        pivotCalibration = in.readDouble();
 
         brand = in.readString();
         brandUrl = in.readString();
@@ -448,6 +451,7 @@ public class TestInfo implements Parcelable {
         parcel.writeTypedList(oneStepCalibrations);
         parcel.writeTypedList(swatches);
         parcel.writeTypedList(oneStepSwatches);
+        parcel.writeDouble(pivotCalibration);
         parcel.writeString(brand);
         parcel.writeString(brandUrl);
         parcel.writeString(String.valueOf(groupingType));
@@ -536,10 +540,6 @@ public class TestInfo implements Parcelable {
 
     public void setCalibrations(List<Calibration> calibrations) {
         swatches.clear();
-        oneStepSwatches.clear();
-        if (oneStepCalibrations != null) {
-            oneStepCalibrations.clear();
-        }
 
         Result result = results.get(0);
 
@@ -579,17 +579,6 @@ public class TestInfo implements Parcelable {
 
         this.calibrations = newCalibrations;
         swatches = SwatchHelper.generateGradient(swatches);
-
-        if (this.calibrations.get(0).color != 0) {
-            oneStepCalibrations = SwatchHelper.getOneStepCalibrations(
-                    this.calibrations.get(0), getPresetColors());
-
-            for (Calibration calibration : this.oneStepCalibrations) {
-                Swatch swatch = new Swatch(calibration.value, calibration.color, Color.TRANSPARENT);
-                oneStepSwatches.add(swatch);
-            }
-            oneStepSwatches = SwatchHelper.generateGradient(oneStepSwatches);
-        }
     }
 
     public List<Calibration> getOneStepCalibrations() {
@@ -688,5 +677,27 @@ public class TestInfo implements Parcelable {
         oneStepCalibrations.clear();
         swatches.clear();
         oneStepCalibrations.clear();
+    }
+
+    public double getPivotCalibration() {
+        return pivotCalibration;
+    }
+
+    public void setPivotCalibration(double pivotCalibration) {
+        this.pivotCalibration = pivotCalibration;
+
+        oneStepSwatches.clear();
+        if (oneStepCalibrations != null) {
+            oneStepCalibrations.clear();
+        }
+
+        oneStepCalibrations = SwatchHelper.getOneStepCalibrations(this.calibrations,
+                pivotCalibration, getPresetColors());
+
+        for (Calibration calibration : this.oneStepCalibrations) {
+            Swatch swatch = new Swatch(calibration.value, calibration.color, Color.TRANSPARENT);
+            oneStepSwatches.add(swatch);
+        }
+        oneStepSwatches = SwatchHelper.generateGradient(oneStepSwatches);
     }
 }

@@ -236,6 +236,15 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     @Override
+    public void onCalibrationLongClick(Calibration item) {
+        if (null != testInfo) {
+            PreferencesUtil.setDouble(this, "pivot_" + testInfo.getUuid(), item.value);
+            testInfo.setPivotCalibration(item.value);
+            loadDetails();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (isAppInLockTaskMode()) {
             if (((Fragment) runTestFragment).isVisible()) {

@@ -31,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:contentDescription="@null"
         android:src="@drawable/ic_play_arrow_black_24dp" />
 
     <Button
@@ -58,10 +59,10 @@
 
     <Button
         android:id="@+id/buttonColor"
-        android:layout_width="70dp"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginStart="2dp"
         android:layout_marginTop="10dp"
         android:clickable="false"
@@ -69,59 +70,118 @@
         android:textAppearance="?attr/textAppearanceListItem"
         tools:background="#000" />
 
-    <TextView
-        android:id="@+id/textValue"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="5dp"
-        android:textSize="25sp"
-        tools:text="0.5" />
+        android:layout_height="match_parent"
+        android:layout_marginEnd="15dp"
+        android:minWidth="100dp"
+        android:layout_marginStart="12dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-1dp">
+
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:paddingStart="2dp"
+                android:text="r "
+                android:textIsSelectable="false"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textReference"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                tools:text="243 23 156" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-1dp">
+
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="o "
+                android:textIsSelectable="false"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textOneStep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                tools:text="243 23 156" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-1dp">
+
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="c "
+                android:textIsSelectable="false"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textCalibration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                tools:text="243 23 156" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginEnd="15dp"
         android:layout_marginStart="5dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textUnit"
+            android:id="@+id/textValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            tools:text="mg/l" />
-
-        <TextView
-            android:id="@+id/textRgb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
-            android:textIsSelectable="false"
-            android:textSize="14sp"
-            android:visibility="gone"
-            tools:text="rgb: 243 23 156" />
-
-        <TextView
-            android:id="@+id/textHsv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
-            android:textIsSelectable="false"
-            android:textSize="14sp"
-            android:visibility="gone"
-            tools:text="hsv: 243 23 156" />
+            android:layout_gravity="center"
+            android:textSize="25sp"
+            tools:text="0.5" />
 
         <TextView
             android:id="@+id/textBrightness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
             android:textIsSelectable="false"
             android:textSize="14sp"
-            android:visibility="gone"
-            tools:text="d: 233  b: 233" />
+            tools:text="d: 23" />
 
     </LinearLayout>
 </LinearLayout>

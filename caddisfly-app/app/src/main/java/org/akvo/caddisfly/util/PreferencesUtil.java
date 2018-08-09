@@ -290,4 +290,20 @@ public final class PreferencesUtil {
                 .getDefaultSharedPreferences(context);
         return sharedPreferences.contains(getKey(context, keyId));
     }
+
+    public static void setDouble(Context context,  final String key, final double value) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        Editor editor = sharedPreferences.edit();
+
+        editor.putLong(key, Double.doubleToRawLongBits(value));
+
+        editor.apply();
+    }
+
+    public static double getDouble(Context context, final String key, final double defaultValue) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return Double.longBitsToDouble(sharedPreferences.getLong(key, Double.doubleToLongBits(defaultValue)));
+    }
 }

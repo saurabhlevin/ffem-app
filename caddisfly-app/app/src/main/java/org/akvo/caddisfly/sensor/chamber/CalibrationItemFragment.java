@@ -199,5 +199,7 @@ public class CalibrationItemFragment extends Fragment {
 
     public interface OnCalibrationSelectedListener {
         void onCalibrationSelected(Calibration item);
+
+        void onCalibrationLongClick(Calibration mItem);
     }
 }

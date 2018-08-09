@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
@@ -53,8 +54,17 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        int layout;
+        if (AppPreferences.getShowDebugInfo()) {
+            layout = R.layout.item_debug_calibration;
+        } else {
+            layout = R.layout.item_calibration;
+        }
+
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_calibration, parent, false);
+                .inflate(layout, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -82,24 +92,38 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
 
             int color = colors.get(position).getRgbInt();
 
+            if (testInfo.getPivotCalibration() == holder.mItem.value) {
+                holder.imagePivotArrow.setVisibility(View.VISIBLE);
+            } else {
+                holder.imagePivotArrow.setVisibility(View.INVISIBLE);
+            }
+
             holder.buttonPreset.setBackground(new ColorDrawable(presetColor));
             holder.buttonColor.setBackground(new ColorDrawable(color));
             holder.buttonOneStep.setBackground(new ColorDrawable(oneStepColor));
-            holder.textUnit.setText(String.valueOf(result.getUnit()));
+
+            if (null != holder.textUnit) {
+                holder.textUnit.setText(String.valueOf(result.getUnit()));
+            }
 
             //display additional information if we are in diagnostic mode
             if (AppPreferences.getShowDebugInfo()) {
 
-                holder.textUnit.setVisibility(View.GONE);
+                if (null == holder.textReference) {
+                    holder.textRgb.setText(String.format("r: %s", ColorUtil.getColorRgbString(color)));
+                    holder.textRgb.setVisibility(View.VISIBLE);
 
-                holder.textRgb.setText(String.format("r: %s", ColorUtil.getColorRgbString(color)));
-                holder.textRgb.setVisibility(View.VISIBLE);
+                    float[] colorHsv = new float[3];
+                    Color.colorToHSV(color, colorHsv);
+                    holder.textHsv.setText(String.format(Locale.getDefault(),
+                            "h: %.0f  %.2f  %.2f", colorHsv[0], colorHsv[1], colorHsv[2]));
+                    holder.textHsv.setVisibility(View.VISIBLE);
 
-                float[] colorHsv = new float[3];
-                Color.colorToHSV(color, colorHsv);
-                holder.textHsv.setText(String.format(Locale.getDefault(),
-                        "h: %.0f  %.2f  %.2f", colorHsv[0], colorHsv[1], colorHsv[2]));
-                holder.textHsv.setVisibility(View.VISIBLE);
+                } else {
+                    holder.textReference.setText(ColorUtil.getColorRgbString(presetColor));
+                    holder.textOneStep.setText(ColorUtil.getColorRgbString(oneStepColor));
+                    holder.textCalibration.setText(ColorUtil.getColorRgbString(color));
+                }
 
                 double distance = 0;
                 if (position > 0) {
@@ -107,20 +131,23 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
                     distance = ColorUtil.getColorDistance(previousColor, color);
                 }
 
-                holder.textBrightness.setText(String.format(Locale.getDefault(),
-                        "d:%.2f  b: %d", distance, ColorUtil.getBrightness(color)));
+                holder.textBrightness.setText(String.format(Locale.getDefault(), "d %d", (int) distance));
                 holder.textBrightness.setVisibility(View.VISIBLE);
             }
         }
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
                 mListener.onCalibrationSelected(holder.mItem);
             }
         });
 
+        holder.mView.setOnLongClickListener(v -> {
+            if (null != mListener) {
+                mListener.onCalibrationLongClick(holder.mItem);
+            }
+            return true;
+        });
     }
 
     @Override
@@ -133,16 +160,23 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
         final Button buttonColor;
         final TextView textValue;
         final TextView textUnit;
+        private final ImageView imagePivotArrow;
         private final Button buttonPreset;
         private final TextView textRgb;
         private final TextView textHsv;
         private final TextView textBrightness;
         private final Button buttonOneStep;
+
+        private final TextView textReference;
+        private final TextView textOneStep;
+        private final TextView textCalibration;
+
         Calibration mItem;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
+            imagePivotArrow = view.findViewById(R.id.imagePivotArrow);
             buttonPreset = view.findViewById(R.id.buttonPresetColor);
             buttonColor = view.findViewById(R.id.buttonColor);
             buttonOneStep = view.findViewById(R.id.buttonOneStepColor);
@@ -151,6 +185,10 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
             textRgb = view.findViewById(R.id.textRgb);
             textHsv = view.findViewById(R.id.textHsv);
             textBrightness = view.findViewById(R.id.textBrightness);
+
+            textReference = view.findViewById(R.id.textReference);
+            textOneStep = view.findViewById(R.id.textOneStep);
+            textCalibration = view.findViewById(R.id.textCalibration);
         }
 
         @Override

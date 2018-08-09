@@ -42,6 +42,7 @@ import org.akvo.caddisfly.repository.TestConfigRepository;
 import org.akvo.caddisfly.sensor.chamber.ChamberTestActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
+import org.akvo.caddisfly.util.PreferencesUtil;
 
 public class TestListActivity extends BaseActivity
         implements TestListFragment.OnListFragmentInteractionListener {
@@ -129,6 +130,9 @@ public class TestListActivity extends BaseActivity
             ErrorMessages.alertCouldNotLoadConfig(this);
             return;
         }
+
+        testInfo.setPivotCalibration(PreferencesUtil.getDouble(this,
+                "pivot_" + testInfo.getUuid(), 0));
 
         if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
             startCalibration();

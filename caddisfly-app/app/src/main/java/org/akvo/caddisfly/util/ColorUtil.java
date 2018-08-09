@@ -222,6 +222,7 @@ public final class ColorUtil {
      * @return An Integer color value
      */
     public static Integer getColorFromRgb(@NonNull String rgb) {
+        rgb = rgb.replace(",", " ");
         String[] rgbArray = rgb.split("\\s+");
         return Color.rgb(Integer.parseInt(rgbArray[0]), Integer.parseInt(rgbArray[1]), Integer.parseInt(rgbArray[2]));
     }
