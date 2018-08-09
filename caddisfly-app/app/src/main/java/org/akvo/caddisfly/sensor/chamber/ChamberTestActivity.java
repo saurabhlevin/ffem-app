@@ -87,6 +87,7 @@ import java.util.UUID;
 import io.ffem.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
@@ -105,6 +106,7 @@ public class ChamberTestActivity extends BaseActivity implements
             finish();
         }
     };
+    Calibration selectedCalibration;
     private RunTest runTestFragment;
     private CalibrationItemFragment calibrationItemFragment;
     private FragmentManager fragmentManager;
@@ -145,7 +147,8 @@ public class ChamberTestActivity extends BaseActivity implements
                 start();
             } else {
                 setTitle(R.string.calibration);
-                calibrationItemFragment = CalibrationItemFragment.newInstance(testInfo);
+                boolean isInternal = getIntent().getBooleanExtra(IS_INTERNAL, true);
+                calibrationItemFragment = CalibrationItemFragment.newInstance(testInfo, isInternal);
                 goToFragment(calibrationItemFragment);
             }
         }
@@ -214,6 +217,7 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onCalibrationSelected(Calibration item) {
 
+        selectedCalibration = item;
         CalibrationDetail calibrationDetail = CaddisflyApp.getApp().getDb()
                 .calibrationDao().getCalibrationDetails(testInfo.getUuid());
 
@@ -236,11 +240,20 @@ public class ChamberTestActivity extends BaseActivity implements
     }
 
     @Override
-    public void onCalibrationLongClick(Calibration item) {
+    public void onCalibrationLongClick(Calibration item, int position) {
         if (null != testInfo) {
-            PreferencesUtil.setDouble(this, "pivot_" + testInfo.getUuid(), item.value);
-            testInfo.setPivotCalibration(item.value);
-            loadDetails();
+            if (item.color != Color.TRANSPARENT
+                    && testInfo.getPresetColors().size() > position
+                    && testInfo.getPivotCalibration() != item.value
+                    && testInfo.getPresetColors().get(position).getRgbInt() != Color.TRANSPARENT) {
+                AlertUtil.askQuestion(this, R.string.confirm,
+                        R.string.setDefaultCalibration, R.string.ok, R.string.cancel, true,
+                        (dialogInterface1, i1) -> {
+                            PreferencesUtil.setDouble(this, "pivot_" + testInfo.getUuid(), item.value);
+                            testInfo.setPivotCalibration(item.value);
+                            loadDetails();
+                        }, null);
+            }
         }
     }
 
@@ -287,6 +300,9 @@ public class ChamberTestActivity extends BaseActivity implements
     @Override
     public void onCalibrationDetailsSaved() {
         loadDetails();
+        if (selectedCalibration != null) {
+            onCalibrationSelected(selectedCalibration);
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -423,6 +439,8 @@ public class ChamberTestActivity extends BaseActivity implements
                             try {
                                 SwatchHelper.loadCalibrationFromFile(testInfo, fileName);
                                 loadDetails();
+                                PreferencesUtil.setDouble(this, "pivot_" + testInfo.getUuid(), testInfo.getPivotCalibration());
+                                loadDetails();
                             } catch (Exception ex) {
                                 AlertUtil.showError(context, R.string.error, getString(R.string.errorLoadingFile),
                                         null, R.string.ok,
@@ -501,12 +519,14 @@ public class ChamberTestActivity extends BaseActivity implements
                     SoundUtil.playShortResource(this, R.raw.done);
                 }
 
+                boolean isInternal = getIntent().getBooleanExtra(IS_INTERNAL, true);
+
                 fragmentManager.popBackStack();
                 fragmentManager
                         .beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.fragment_container,
-                                ResultFragment.newInstance(testInfo), null).commit();
+                                ResultFragment.newInstance(testInfo, isInternal), null).commit();
 
                 testInfo.setResultDetail(resultDetail);
 
@@ -581,6 +601,9 @@ public class ChamberTestActivity extends BaseActivity implements
                 }
                 dao.insert(calibration);
                 CalibrationFile.saveCalibratedData(this, testInfo, calibration, color);
+
+                loadDetails();
+                PreferencesUtil.setDouble(this, "pivot_" + testInfo.getUuid(), testInfo.getPivotCalibration());
                 loadDetails();
 
                 SoundUtil.playShortResource(this, R.raw.done);

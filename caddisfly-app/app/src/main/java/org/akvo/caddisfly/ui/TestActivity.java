@@ -121,12 +121,13 @@ public class TestActivity extends BaseActivity {
         Intent intent = getIntent();
 
         if (BuildConfig.APPLICATION_ID.equals(intent.getAction())) {
-
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
 
-        testInfo.setPivotCalibration(PreferencesUtil.getDouble(this,
-                "pivot_" + testInfo.getUuid(), 0));
+        if (null != testInfo) {
+            testInfo.setPivotCalibration(PreferencesUtil.getDouble(this,
+                    "pivot_" + testInfo.getUuid(), 0));
+        }
     }
 
     private void getTestSelectedByExternalApp(FragmentManager fragmentManager, Intent intent) {
@@ -236,7 +237,7 @@ public class TestActivity extends BaseActivity {
             } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
 
                 if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                    ErrorMessages.alertCalibrationIncomplete(this, testInfo, false);
                     return;
                 }
 
@@ -334,7 +335,7 @@ public class TestActivity extends BaseActivity {
                 R.string.cannotStartTest, R.string.ok, null)) {
 
             if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                ErrorMessages.alertCalibrationIncomplete(this, testInfo, false);
                 return;
             }
 

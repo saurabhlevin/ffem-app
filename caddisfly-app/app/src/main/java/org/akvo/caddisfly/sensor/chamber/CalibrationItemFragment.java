@@ -40,10 +40,13 @@ import org.akvo.caddisfly.entity.Calibration;
 import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.SwatchHelper;
 import org.akvo.caddisfly.model.TestInfo;
+import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
 import java.text.DateFormat;
 import java.util.Date;
+
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 
 /**
  * A fragment representing a list of Items.
@@ -57,17 +60,20 @@ public class CalibrationItemFragment extends Fragment {
     private FragmentCalibrationListBinding binding;
     private TestInfo testInfo;
     private OnCalibrationSelectedListener mListener;
+    private boolean isInternal;
 
     /**
      * Get instance of CalibrationItemFragment.
      *
      * @param testInfo the test info
+     * @param isInternal
      * @return the fragment
      */
-    public static CalibrationItemFragment newInstance(TestInfo testInfo) {
+    public static CalibrationItemFragment newInstance(TestInfo testInfo, boolean isInternal) {
         CalibrationItemFragment fragment = new CalibrationItemFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_TEST_INFO, testInfo);
+        args.putBoolean(IS_INTERNAL, isInternal);
         fragment.setArguments(args);
         return fragment;
     }
@@ -115,6 +121,7 @@ public class CalibrationItemFragment extends Fragment {
 
         if (getArguments() != null) {
             testInfo = getArguments().getParcelable(ARG_TEST_INFO);
+            isInternal =  getArguments().getBoolean(IS_INTERNAL, true);
         }
     }
 
@@ -141,6 +148,10 @@ public class CalibrationItemFragment extends Fragment {
         }
 
         loadDetails();
+
+        if (!isInternal || !AppPreferences.isDiagnosticMode()) {
+            binding.layoutButtons.setVisibility(View.GONE);
+        }
 
         return binding.getRoot();
     }
@@ -200,6 +211,6 @@ public class CalibrationItemFragment extends Fragment {
     public interface OnCalibrationSelectedListener {
         void onCalibrationSelected(Calibration item);
 
-        void onCalibrationLongClick(Calibration mItem);
+        void onCalibrationLongClick(Calibration mItem, int position);
     }
 }

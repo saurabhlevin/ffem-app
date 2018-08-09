@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:contentDescription="@null"
-        android:src="@drawable/ic_play_arrow_black_24dp" />
+        android:src="@drawable/ic_play_arrow_pointer" />
 
     <Button
         android:id="@+id/buttonPresetColor"
@@ -42,7 +42,6 @@
         android:layout_marginTop="10dp"
         android:clickable="false"
         android:focusable="false"
-        android:textAppearance="?attr/textAppearanceListItem"
         tools:background="#000" />
 
     <Button
@@ -54,7 +53,6 @@
         android:layout_marginTop="10dp"
         android:clickable="false"
         android:focusable="false"
-        android:textAppearance="?attr/textAppearanceListItem"
         tools:background="#000" />
 
     <Button
@@ -67,22 +65,21 @@
         android:layout_marginTop="10dp"
         android:clickable="false"
         android:focusable="false"
-        android:textAppearance="?attr/textAppearanceListItem"
         tools:background="#000" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="15dp"
-        android:minWidth="100dp"
         android:layout_marginStart="12dp"
         android:gravity="center_vertical"
+        android:minWidth="100dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-1dp">
+            android:layout_marginBottom="-2dp">
 
             <TextView
                 android:layout_width="16dp"
@@ -108,7 +105,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-1dp">
+            android:layout_marginBottom="-2dp">
 
             <TextView
                 android:layout_width="16dp"
@@ -133,7 +130,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-1dp">
+            android:layout_marginBottom="-2dp">
 
             <TextView
                 android:layout_width="16dp"
@@ -178,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:textIsSelectable="false"
             android:textSize="14sp"
             tools:text="d: 23" />

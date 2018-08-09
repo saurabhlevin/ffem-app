@@ -579,6 +579,23 @@ public class TestInfo implements Parcelable {
 
         this.calibrations = newCalibrations;
         swatches = SwatchHelper.generateGradient(swatches);
+
+        // if only one calibration exists then choose that as the default calibration
+        double tempPivotCalibration = -1;
+        for (Calibration calibration : calibrations) {
+            if (calibration.color != Color.TRANSPARENT) {
+                if (tempPivotCalibration == -1) {
+                    tempPivotCalibration = calibration.value;
+                } else {
+                    tempPivotCalibration = -1;
+                    break;
+                }
+            }
+        }
+        if (tempPivotCalibration != -1) {
+            pivotCalibration = tempPivotCalibration;
+        }
+        setPivotCalibration(pivotCalibration);
     }
 
     public List<Calibration> getOneStepCalibrations() {

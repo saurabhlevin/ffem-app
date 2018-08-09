@@ -71,7 +71,7 @@ public class ErrorMessages {
     /**
      * Alert message for calibration incomplete or invalid.
      */
-    public static void alertCalibrationIncomplete(Activity activity, TestInfo testInfo) {
+    public static void alertCalibrationIncomplete(Activity activity, TestInfo testInfo, boolean isInternal) {
 
         String message = activity.getString(R.string.errorCalibrationIncomplete, testInfo.getName());
         message = String.format(MESSAGE_TWO_LINE_FORMAT, message,
@@ -82,6 +82,7 @@ public class ErrorMessages {
 
                     final Intent intent = new Intent(activity, ChamberTestActivity.class);
                     intent.putExtra(ConstantKey.TEST_INFO, testInfo);
+                    intent.putExtra(ConstantKey.IS_INTERNAL, isInternal);
                     activity.startActivity(intent);
 
                     activity.setResult(Activity.RESULT_CANCELED);

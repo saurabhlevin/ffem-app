@@ -377,17 +377,31 @@ public final class SwatchHelper {
             return false;
         }
 
-        for (Calibration swatch1 : calibrations) {
-            if (swatch1.color == Color.TRANSPARENT || swatch1.color == Color.BLACK) {
-                //Calibration is incomplete
-                result = false;
-                break;
+        boolean hasOneStepCalibration = true;
+        List<Calibration> oneStepCalibrations = testInfo.getOneStepCalibrations();
+        if (null != oneStepCalibrations && oneStepCalibrations.size() == calibrations.size()) {
+            for (Calibration calibration : oneStepCalibrations) {
+                if (calibration.color == Color.TRANSPARENT) {
+                    hasOneStepCalibration = false;
+                }
             }
-            for (Calibration swatch2 : calibrations) {
-                if (!swatch1.equals(swatch2) && ColorUtil.areColorsSimilar(swatch1.color, swatch2.color)) {
-                    //Duplicate color
+        } else {
+            hasOneStepCalibration = false;
+        }
+
+        if (!hasOneStepCalibration) {
+            for (Calibration swatch1 : calibrations) {
+                if (swatch1.color == Color.TRANSPARENT || swatch1.color == Color.BLACK) {
+                    //Calibration is incomplete
                     result = false;
                     break;
+                }
+                for (Calibration swatch2 : calibrations) {
+                    if (!swatch1.equals(swatch2) && ColorUtil.areColorsSimilar(swatch1.color, swatch2.color)) {
+                        //Duplicate color
+                        result = false;
+                        break;
+                    }
                 }
             }
         }
@@ -520,6 +534,10 @@ public final class SwatchHelper {
             Calibration calibration = new Calibration(presetColors.get(i).getValue(),
                     calibrations.get(i).color);
             oneStepCalibrations.add(calibration);
+        }
+
+        if (calibrations.get(pivotIndex).color == Color.TRANSPARENT) {
+            return new ArrayList<>();
         }
 
         for (int i = pivotIndex; i >= 1; i--) {

@@ -48,10 +48,6 @@ import java.util.List;
 
 
 public class BindingAdapters {
-    @BindingAdapter("hideInNormalMode")
-    public static void setHideInNormalMode(View view, boolean value) {
-        view.setVisibility(AppPreferences.isDiagnosticMode() ? View.VISIBLE : View.GONE);
-    }
 
     @BindingAdapter("background")
     public static void setBackground(View view, String dummy) {

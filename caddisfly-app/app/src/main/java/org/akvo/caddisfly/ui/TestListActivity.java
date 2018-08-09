@@ -44,6 +44,8 @@ import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
+
 public class TestListActivity extends BaseActivity
         implements TestListFragment.OnListFragmentInteractionListener {
 
@@ -139,7 +141,7 @@ public class TestListActivity extends BaseActivity
         } else {
             Intent intent = new Intent(this, TestActivity.class);
             intent.putExtra(ConstantKey.TEST_INFO, testInfo);
-            intent.putExtra("internal", true);
+            intent.putExtra(IS_INTERNAL, true);
             startActivity(intent);
         }
     }

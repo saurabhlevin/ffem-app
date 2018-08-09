@@ -115,6 +115,10 @@
     <string name="fileSaved">File saved</string>
     <string name="calibrationLoaded">%1$s loaded</string>
 
+    <string name="calibrationWillBeDeleted">Current calibration in memory will be deleted.\n\nAny unsaved calibration will be lost.</string>
+    <string name="confirm">Confirm</string>
+    <string name="setDefaultCalibration">Set this as the default reference calibration?</string>
+
     <!--CBT-->
     <string name="mpn">MPN/100ml</string>
 
@@ -132,7 +136,6 @@
     <string name="waterCalibrate">Water - Calibrate</string>
     <string name="openAppFolder">Show app folder</string>
     <string name="showFolderKey">showFolderKey</string>
-    <string name="calibrationWillBeDeleted">Current calibration in memory will be deleted.\n\nAny unsaved calibration will be lost.</string>
 
     <string-array name="cuvettes">
         <item>Cuvette Type</item>

@@ -92,7 +92,9 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
 
             int color = colors.get(position).getRgbInt();
 
-            if (testInfo.getPivotCalibration() == holder.mItem.value) {
+            if (testInfo.getPivotCalibration() == holder.mItem.value
+                    && presetColor != Color.TRANSPARENT
+                    && color != Color.TRANSPARENT) {
                 holder.imagePivotArrow.setVisibility(View.VISIBLE);
             } else {
                 holder.imagePivotArrow.setVisibility(View.INVISIBLE);
@@ -144,7 +146,7 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
 
         holder.mView.setOnLongClickListener(v -> {
             if (null != mListener) {
-                mListener.onCalibrationLongClick(holder.mItem);
+                mListener.onCalibrationLongClick(holder.mItem, position);
             }
             return true;
         });
