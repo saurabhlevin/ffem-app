@@ -470,6 +470,24 @@
       ]
     },
     {
+      "name": "Hydrogen Peroxide",
+      "type": "water",
+      "subtype": "cuvette",
+      "uuid": "c19ed9e5-0d0d-4ad7-adcb-8afd21b635db",
+      "image": "ffem",
+      "imageScale": "centerCrop",
+      "calibrate": true,
+      "ranges": "0, 0.05, 0.1, 0.5, 1.0",
+      "monthsValid": 2,
+      "results": [
+        {
+          "id": 1,
+          "name": "Hydrogen Peroxide",
+          "unit": "M"
+        }
+      ]
+    },
+    {
       "name": "Nitrate",
       "type": "water",
       "subtype": "cuvette",
