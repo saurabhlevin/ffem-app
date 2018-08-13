@@ -120,7 +120,7 @@ public class BluetoothTest {
     @Ignore
     public void bluetoothTest() {
 
-        activateTestMode();
+        activateTestMode(mActivityTestRule.getActivity());
 
         goToMainScreen();
 

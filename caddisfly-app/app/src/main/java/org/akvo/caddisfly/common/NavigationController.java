@@ -14,6 +14,8 @@ import org.akvo.caddisfly.viewmodel.TestListViewModel;
 
 import java.util.List;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
+
 /**
  * A utility class that handles navigation.
  */
@@ -33,7 +35,7 @@ public class NavigationController {
         TestInfo testInfo = viewModel.getTestInfo(uuid);
 
         final Intent intent = new Intent(context, TestActivity.class);
-        intent.putExtra("internal", true);
+        intent.putExtra(IS_INTERNAL, true);
         intent.putExtra(ConstantKey.TEST_INFO, testInfo);
         context.startActivity(intent);
 
@@ -56,7 +58,7 @@ public class NavigationController {
             intent.putExtra(ConstantKey.SAMPLE_TYPE, testSampleType);
         }
 
-        intent.putExtra("internal", true);
+        intent.putExtra(IS_INTERNAL, true);
         context.startActivity(intent);
 
     }

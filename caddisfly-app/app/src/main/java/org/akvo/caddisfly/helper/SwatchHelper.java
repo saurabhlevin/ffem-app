@@ -237,7 +237,8 @@ public final class SwatchHelper {
         List<String> calibrationDetails = FileUtil.loadFromFile(path, fileName);
         if (calibrationDetails != null) {
 
-            CalibrationDetail calibrationDetail = new CalibrationDetail();
+            CalibrationDetail calibrationDetail = dao.getCalibrationDetails(testInfo.getUuid());
+
             calibrationDetail.uid = testInfo.getUuid();
 
             for (int i = calibrationDetails.size() - 1; i >= 0; i--) {
@@ -279,8 +280,10 @@ public final class SwatchHelper {
                 Calibration calibration = new Calibration();
                 calibration.uid = testInfo.getUuid();
                 calibration.date = new Date().getTime();
-                calibration.color = ColorUtil.getColorFromRgb(values[1]);
                 calibration.value = stringToDouble(values[0]);
+                if (values.length > 1) {
+                    calibration.color = ColorUtil.getColorFromRgb(values[1]);
+                }
                 calibrations.add(calibration);
             }
 
@@ -302,15 +305,18 @@ public final class SwatchHelper {
     @SuppressWarnings("SameParameterValue")
     public static List<Swatch> generateGradient(List<Swatch> swatches) {
 
+        List<Swatch> list = new ArrayList<>();
+
+        if (swatches.size() < 2) {
+            return list;
+        }
+
         // Predict 2 more points in the calibration list to account for high levels of contamination
         Swatch swatch1 = swatches.get(swatches.size() - 2);
         Swatch swatch2 = swatches.get(swatches.size() - 1);
 
         swatches.add(predictNextColor(swatch1, swatch2));
-
         swatches.add(predictNextColor(swatch2, swatches.get(swatches.size() - 1)));
-
-        List<Swatch> list = new ArrayList<>();
 
         for (int i = 0; i < swatches.size() - 1; i++) {
 
@@ -329,7 +335,6 @@ public final class SwatchHelper {
 
         list.add(new Swatch(swatches.get(swatches.size() - 1).getValue(),
                 swatches.get(swatches.size() - 1).getColor(), Color.TRANSPARENT));
-
 
         return list;
     }

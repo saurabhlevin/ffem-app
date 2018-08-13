@@ -12,6 +12,8 @@ public class ConstantKey {
     public static final String TEST_INFO = NAMESPACE_PREFIX + "testInfo";
     public static final String RUN_TEST = NAMESPACE_PREFIX + "runTest";
 
+    public static final String IS_INTERNAL = NAMESPACE_PREFIX + "internal";
+
     public static final String TEST_STAGE = NAMESPACE_PREFIX + "testStage";
 
     public static final String TYPE = NAMESPACE_PREFIX + "type";

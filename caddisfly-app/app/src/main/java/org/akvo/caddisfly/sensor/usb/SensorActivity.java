@@ -60,6 +60,8 @@ import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
+
 /**
  * The activity that displays the results for the connected sensor.
  */
@@ -118,6 +120,17 @@ public class SensorActivity extends BaseActivity {
     };
     private int identityCheck = 0;
     private int deviceStatus = 0;
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (deviceStatus == 1) {
+                requestResult();
+                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
+            } else {
+                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
+            }
+        }
+    };
     private final Runnable validateDeviceRunnable = new Runnable() {
         @Override
         public void run() {
@@ -145,17 +158,6 @@ public class SensorActivity extends BaseActivity {
                     }
                     handler.postDelayed(runnable, IDENTIFY_DELAY_MILLIS);
                     break;
-            }
-        }
-    };
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (deviceStatus == 1) {
-                requestResult();
-                handler.postDelayed(this, REQUEST_DELAY_MILLIS);
-            } else {
-                handler.postDelayed(validateDeviceRunnable, IDENTIFY_DELAY_MILLIS * 2);
             }
         }
     };
@@ -250,7 +252,7 @@ public class SensorActivity extends BaseActivity {
 
         final Intent intent = getIntent();
 
-        mIsInternal = intent.getBooleanExtra("internal", false);
+        mIsInternal = intent.getBooleanExtra(IS_INTERNAL, false);
         mHandler = new MyHandler(this);
 
         b.textSubtitle.setText(R.string.deviceConnectSensor);

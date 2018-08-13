@@ -18,6 +18,7 @@ public class CalibrationResultDialog extends DialogFragment {
 
     private Calibration calibration;
     private int decimalPlaces;
+    private String unit;
 
     /**
      * Instance of dialog.
@@ -26,11 +27,12 @@ public class CalibrationResultDialog extends DialogFragment {
      * @param decimalPlaces decimal places
      * @return the dialog
      */
-    public static DialogFragment newInstance(Calibration calibration, int decimalPlaces) {
+    public static DialogFragment newInstance(Calibration calibration, int decimalPlaces, String unit) {
         CalibrationResultDialog fragment = new CalibrationResultDialog();
         Bundle args = new Bundle();
         fragment.decimalPlaces = decimalPlaces;
         fragment.calibration = calibration;
+        fragment.unit = unit;
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,11 +47,13 @@ public class CalibrationResultDialog extends DialogFragment {
 
         Button buttonColorExtract = view.findViewById(R.id.buttonColorExtract);
         TextView textValue = view.findViewById(R.id.textValue);
+        TextView textUnit = view.findViewById(R.id.textUnit);
 
         buttonColorExtract.setBackgroundColor(calibration.color);
 
         String format = "%." + decimalPlaces + "f";
         textValue.setText(String.format(Locale.getDefault(), format, calibration.value, ""));
+        textUnit.setText(unit);
 
         Button buttonOk = view.findViewById(R.id.buttonOk);
         buttonOk.setVisibility(View.VISIBLE);

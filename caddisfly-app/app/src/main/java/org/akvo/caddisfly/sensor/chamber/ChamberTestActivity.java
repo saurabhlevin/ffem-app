@@ -25,8 +25,10 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
@@ -36,6 +38,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,6 +85,7 @@ import java.util.UUID;
 import io.ffem.experiment.DiagnosticSendDialogFragment;
 import timber.log.Timber;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 import static org.akvo.caddisfly.helper.CameraHelper.getMaxSupportedMegaPixelsByCamera;
 
 public class ChamberTestActivity extends BaseActivity implements
@@ -94,7 +98,12 @@ public class ChamberTestActivity extends BaseActivity implements
         DiagnosticResultDialog.OnDismissed {
 
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
-
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
     private RunTest runTestFragment;
     private CalibrationItemFragment calibrationItemFragment;
     private FragmentManager fragmentManager;
@@ -112,6 +121,9 @@ public class ChamberTestActivity extends BaseActivity implements
         setContentView(R.layout.activity_chamber_test);
 
         fragmentManager = getSupportFragmentManager();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("data-sent-to-dash"));
 
         // Add list fragment if this is first creation
         if (savedInstanceState == null) {
@@ -132,7 +144,8 @@ public class ChamberTestActivity extends BaseActivity implements
                 start();
             } else {
                 setTitle(R.string.calibration);
-                calibrationItemFragment = CalibrationItemFragment.newInstance(testInfo);
+                boolean isInternal = getIntent().getBooleanExtra(IS_INTERNAL, true);
+                calibrationItemFragment = CalibrationItemFragment.newInstance(testInfo, isInternal);
                 goToFragment(calibrationItemFragment);
             }
         }
@@ -194,7 +207,9 @@ public class ChamberTestActivity extends BaseActivity implements
 
     @SuppressWarnings("unused")
     public void runTestClick(View view) {
-        runTestFragment.setCalibration(null);
+        if (runTestFragment != null) {
+            runTestFragment.setCalibration(null);
+        }
         start();
     }
 
@@ -442,18 +457,20 @@ public class ChamberTestActivity extends BaseActivity implements
                     SoundUtil.playShortResource(this, R.raw.done);
                 }
 
+                boolean isInternal = getIntent().getBooleanExtra(IS_INTERNAL, true);
+
                 fragmentManager.popBackStack();
                 fragmentManager
                         .beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.fragment_container,
-                                ResultFragment.newInstance(testInfo), null).commit();
+                                ResultFragment.newInstance(testInfo, isInternal), null).commit();
+
+                testInfo.setResultDetail(resultDetail);
 
                 if (AppPreferences.getShowDebugInfo()) {
                     showDiagnosticResultDialog(false, resultDetail, resultDetails, false);
                 }
-
-                testInfo.setResultDetail(resultDetail);
 
             } else {
 
@@ -465,7 +482,12 @@ public class ChamberTestActivity extends BaseActivity implements
 
                     setResult(Activity.RESULT_CANCELED);
 
+                    stopScreenPinning();
+
                     fragmentManager.popBackStack();
+                    if (testInfo.getDilutions().size() > 0) {
+                        fragmentManager.popBackStack();
+                    }
 
                     showDiagnosticResultDialog(true, resultDetail, resultDetails, false);
 
@@ -478,7 +500,6 @@ public class ChamberTestActivity extends BaseActivity implements
                             resultDetails.get(resultDetails.size() - 1).getCroppedBitmap());
                 }
             }
-
         } else {
 
             int color = SwatchHelper.getAverageColor(resultDetails);
@@ -526,6 +547,8 @@ public class ChamberTestActivity extends BaseActivity implements
             stopScreenPinning();
             fragmentManager.popBackStackImmediate();
         }
+
+        invalidateOptionsMenu();
     }
 
     private void stopScreenPinning() {
@@ -567,7 +590,7 @@ public class ChamberTestActivity extends BaseActivity implements
      */
     private void showCalibrationDialog(Calibration calibration) {
         DialogFragment resultFragment = CalibrationResultDialog.newInstance(
-                calibration, testInfo.getDecimalPlaces());
+                calibration, testInfo.getDecimalPlaces(), testInfo.getResults().get(0).getUnit());
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("calibrationDialog");

@@ -57,7 +57,6 @@ import org.akvo.caddisfly.preference.SettingsActivity;
 import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteMeasureActivity;
 import org.akvo.caddisfly.sensor.cuvette.ui.CuvetteResultActivity;
 import org.akvo.caddisfly.sensor.titration.ui.TitrationMeasureActivity;
-import org.akvo.caddisfly.sensor.turbidity.TimeLapseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
@@ -308,7 +307,7 @@ public class MainActivity extends BaseActivity {
         final TestListViewModel viewModel =
                 ViewModelProviders.of(this).get(TestListViewModel.class);
         ErrorMessages.alertCalibrationIncomplete(this,
-                viewModel.getTestInfo(Constants.FLUORIDE_ID));
+                viewModel.getTestInfo(Constants.FLUORIDE_ID), true);
     }
 
     public void onReceiveResult(MenuItem item) {

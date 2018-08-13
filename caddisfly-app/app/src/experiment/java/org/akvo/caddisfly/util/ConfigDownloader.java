@@ -24,12 +24,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
@@ -106,7 +108,7 @@ public class ConfigDownloader {
 //        }
 //    }
 
-    private static int stringToInteger(String value){
+    private static int stringToInteger(String value) {
 
         try {
             return Integer.valueOf(value);
@@ -123,7 +125,7 @@ public class ConfigDownloader {
         File folder = new File(FileUtil.getFilesStorageDir(CaddisflyApp.getApp(), false)
                 + File.separator + AppConstants.APP_FOLDER + File.separator + "qa");
 
-        String deviceId = FileUtil.loadTextFromFile(new File(folder,"deviceId"));
+        String deviceId = FileUtil.loadTextFromFile(new File(folder, "deviceId"));
 
         if (stringToInteger(deviceId) < 1) {
 
@@ -274,6 +276,10 @@ public class ConfigDownloader {
                                             }
 
                                             Toast.makeText(context, "Data sent", Toast.LENGTH_SHORT).show();
+
+                                            Intent intent = new Intent("data-sent-to-dash");
+                                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
                                         })
                                         .addOnFailureListener(e -> {
                                             if (pd.isShowing()) {

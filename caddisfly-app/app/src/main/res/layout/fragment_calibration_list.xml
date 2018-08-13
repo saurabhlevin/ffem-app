@@ -134,8 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/main_button_blue"
-                android:orientation="horizontal"
-                app:hideInNormalMode="@{true}">
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/buttonSendToServer"

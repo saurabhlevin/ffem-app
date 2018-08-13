@@ -209,6 +209,9 @@ public final class ColorUtil {
      * @return The rgb value as string
      */
     public static String getColorRgbString(int color) {
+        if (color == Color.TRANSPARENT) {
+            return "";
+        }
         return String.format(Locale.getDefault(), "%d  %d  %d", Color.red(color), Color.green(color), Color.blue(color));
     }
 
@@ -219,6 +222,7 @@ public final class ColorUtil {
      * @return An Integer color value
      */
     public static Integer getColorFromRgb(@NonNull String rgb) {
+        rgb = rgb.replace(",", " ");
         String[] rgbArray = rgb.split("\\s+");
         return Color.rgb(Integer.parseInt(rgbArray[0]), Integer.parseInt(rgbArray[1]), Integer.parseInt(rgbArray[2]));
     }

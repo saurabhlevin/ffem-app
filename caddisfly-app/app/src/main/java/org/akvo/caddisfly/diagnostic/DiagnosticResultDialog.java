@@ -96,7 +96,8 @@ public class DiagnosticResultDialog extends DialogFragment {
                             ColorUtil.getColorRgbString(result.getColor())));
                 }
             } else {
-                getDialog().setTitle(String.format(Locale.getDefault(), "%.2f %s", result.getResult(), ""));
+                getDialog().setTitle(String.format(Locale.getDefault(),
+                        "%.2f %s", result.getResult(), ""));
             }
         }
 

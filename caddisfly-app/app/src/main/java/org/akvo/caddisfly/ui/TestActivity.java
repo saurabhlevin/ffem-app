@@ -117,7 +117,6 @@ public class TestActivity extends BaseActivity {
         Intent intent = getIntent();
 
         if (BuildConfig.APPLICATION_ID.equals(intent.getAction())) {
-
             getTestSelectedByExternalApp(fragmentManager, intent);
         }
     }
@@ -229,7 +228,7 @@ public class TestActivity extends BaseActivity {
             } else if (testInfo.getSubtype() == TestType.CHAMBER_TEST) {
 
                 if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                    ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                    ErrorMessages.alertCalibrationIncomplete(this, testInfo, false);
                     return;
                 }
 
@@ -327,7 +326,7 @@ public class TestActivity extends BaseActivity {
                 R.string.cannotStartTest, R.string.ok, null)) {
 
             if (!SwatchHelper.isSwatchListValid(testInfo)) {
-                ErrorMessages.alertCalibrationIncomplete(this, testInfo);
+                ErrorMessages.alertCalibrationIncomplete(this, testInfo, false);
                 return;
             }
 

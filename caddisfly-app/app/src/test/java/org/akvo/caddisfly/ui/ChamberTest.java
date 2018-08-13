@@ -85,7 +85,7 @@ public class ChamberTest {
     }
 
     @Test
-    public void testCount() throws Exception {
+    public void testCount() {
         Intent intent = new Intent();
         intent.putExtra(ConstantKey.TYPE, TestType.CHAMBER_TEST);
 
@@ -113,7 +113,7 @@ public class ChamberTest {
     }
 
     @Test
-    public void testTitles() throws Exception {
+    public void testTitles() {
         Intent intent = new Intent();
         intent.putExtra(ConstantKey.TYPE, TestType.CHAMBER_TEST);
         ActivityController controller = Robolectric.buildActivity(TestListActivity.class, intent).create();
@@ -206,7 +206,7 @@ public class ChamberTest {
         AlertDialog alert = ShadowAlertDialog.getLatestAlertDialog();
         ShadowAlertDialog sAlert = shadowOf(alert);
 
-        assertEquals(sAlert.getMessage(), "Calibration for Water - Fluoride is incomplete\n" +
+        assertEquals(sAlert.getMessage(), "Calibration for Fluoride is incomplete\n" +
                 "\n" +
                 "Do you want to calibrate now?");
 

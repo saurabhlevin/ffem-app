@@ -257,6 +257,7 @@ public class TestInfo implements Parcelable {
     public boolean getCameraAbove() {
         return cameraAbove == null ? false : cameraAbove;
     }
+
     public void setCameraAbove(boolean value) {
         cameraAbove = value;
     }
@@ -524,7 +525,7 @@ public class TestInfo implements Parcelable {
     }
 
     public void setCalibrations(List<Calibration> calibrations) {
-        this.swatches.clear();
+        swatches.clear();
 
         Result result = results.get(0);
 

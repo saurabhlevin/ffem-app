@@ -34,6 +34,7 @@ import org.akvo.caddisfly.databinding.FragmentResultBinding;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 import static org.akvo.caddisfly.common.ConstantKey.TEST_INFO;
 
 public class ResultFragment extends Fragment {
@@ -41,10 +42,11 @@ public class ResultFragment extends Fragment {
     /**
      * Get the instance.
      */
-    public static ResultFragment newInstance(TestInfo testInfo) {
+    public static ResultFragment newInstance(TestInfo testInfo, boolean isInternal) {
         ResultFragment fragment = new ResultFragment();
         Bundle args = new Bundle();
         args.putParcelable(TEST_INFO, testInfo);
+        args.putBoolean(IS_INTERNAL, isInternal);
         fragment.setArguments(args);
         return fragment;
     }
