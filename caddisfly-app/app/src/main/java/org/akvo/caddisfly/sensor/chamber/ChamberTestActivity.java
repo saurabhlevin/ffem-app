@@ -210,7 +210,9 @@ public class ChamberTestActivity extends BaseActivity implements
 
     @SuppressWarnings("unused")
     public void runTestClick(View view) {
-        runTestFragment.setCalibration(null);
+        if (runTestFragment != null) {
+            runTestFragment.setCalibration(null);
+        }
         start();
     }
 

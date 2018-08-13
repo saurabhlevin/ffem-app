@@ -34,7 +34,7 @@ public final class AppConfig {
      * This is to ensure that installs from apk meant for testing only are not used for too long.
      */
     public static final boolean APP_EXPIRY = true;
-    public static final int APP_EXPIRY_DAY = 15;
+    public static final int APP_EXPIRY_DAY = 30;
     public static final int APP_EXPIRY_MONTH = 8;
     public static final int APP_EXPIRY_YEAR = 2018;
 
