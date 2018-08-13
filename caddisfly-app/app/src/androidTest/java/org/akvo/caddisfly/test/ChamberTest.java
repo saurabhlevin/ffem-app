@@ -190,7 +190,7 @@ public class ChamberTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withText(R.string.save)).perform(click());
+//        onView(withText(R.string.save)).perform(click());
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -388,7 +388,7 @@ public class ChamberTest {
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
-        onView(withText(R.string.save)).perform(click());
+//        onView(withText(R.string.save)).perform(click());
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 

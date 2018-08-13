@@ -227,7 +227,7 @@ public class CalibrationTest {
 //        onView(withId(R.id.editBatchCode))
 //                .perform(typeText("    "), closeSoftKeyboard());
 
-        onView(withText(R.string.save)).perform(click());
+//        onView(withText(R.string.save)).perform(click());
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 

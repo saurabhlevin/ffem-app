@@ -46,6 +46,8 @@ import org.akvo.caddisfly.util.PreferencesUtil;
 
 import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 
+import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
+
 public class TestListActivity extends BaseActivity
         implements TestListFragment.OnListFragmentInteractionListener {
 
