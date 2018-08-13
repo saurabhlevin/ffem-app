@@ -8,8 +8,8 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 234
-        versionName "Beta 1.1"
+        versionCode 235
+        versionName "Beta 1.2"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -113,7 +113,7 @@ dependencies {
     implementation 'org.apache.commons:commons-math3:3.6.1'
 
     // Timber
-    implementation 'com.jakewharton.timber:timber:4.7.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Architecture Components
     implementation "android.arch.lifecycle:extensions:1.1.1"
@@ -123,7 +123,7 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 
     // Gson
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     // Usb
     implementation 'com.github.felHR85:UsbSerial:4.5.1'
@@ -162,10 +162,10 @@ dependencies {
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
 
     // Firebase (Experiment Flavor)
-    experimentImplementation 'com.android.support:multidex:1.0.3'
+//    experimentImplementation 'com.android.support:multidex:1.0.3'
     experimentImplementation 'com.google.firebase:firebase-core:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-database:16.0.1'
-    experimentImplementation 'com.google.firebase:firebase-firestore:17.0.2'
+    experimentImplementation 'com.google.firebase:firebase-firestore:17.0.4'
     experimentImplementation 'com.google.firebase:firebase-storage:16.0.1'
     experimentImplementation 'com.google.firebase:firebase-auth:16.0.2'
 }
