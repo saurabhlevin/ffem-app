@@ -68,6 +68,7 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
+import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
@@ -89,7 +90,8 @@ public class ChamberTestActivity extends BaseActivity implements
         SaveCalibrationDialogFragment.OnCalibrationDetailsSavedListener,
         SelectDilutionFragment.OnDilutionSelectedListener,
         EditCustomDilution.OnCustomDilutionListener,
-        DiagnosticSendDialogFragment.OnDetailsSavedListener {
+        DiagnosticSendDialogFragment.OnDetailsSavedListener,
+        DiagnosticResultDialog.OnDismissed {
 
     private static final String TWO_SENTENCE_FORMAT = "%s%n%n%s";
 
@@ -720,15 +722,24 @@ public class ChamberTestActivity extends BaseActivity implements
 
     public void sendToServerClick(View view) {
         stopScreenPinning();
-        ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
+        try {
+            ConfigDownloader.sendDataToCloudDatabase(this, testInfo, 0, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendTestResultClick(View view) {
+        if (!NetUtil.isNetworkAvailable(this)) {
+            Toast.makeText(this,
+                    "No data connection. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
+        } else {
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            DiagnosticSendDialogFragment diagnosticSendDialogFragment =
+                    DiagnosticSendDialogFragment.newInstance();
+            diagnosticSendDialogFragment.show(ft, "sendDialog");
+        }
         stopScreenPinning();
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        DiagnosticSendDialogFragment diagnosticSendDialogFragment =
-                DiagnosticSendDialogFragment.newInstance();
-        diagnosticSendDialogFragment.show(ft, "sendDialog");
     }
 
     @Override
@@ -754,5 +765,11 @@ public class ChamberTestActivity extends BaseActivity implements
         }
 
         return false;
+    }
+
+    @Override
+    public void onDismissed() {
+        testStarted = false;
+        invalidateOptionsMenu();
     }
 }

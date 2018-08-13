@@ -106,13 +106,21 @@ public class DiagnosticResultDialog extends DialogFragment {
         Button buttonOk = view.findViewById(R.id.buttonOk);
         buttonOk.setVisibility(View.VISIBLE);
         buttonOk.setOnClickListener(view1 -> {
-            this.dismiss();
             if (mListener != null) {
                 mListener.onDismissed();
             }
+            this.dismiss();
         });
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof BaseRunTest.OnResultListener) {
+            mListener = (OnDismissed) context;
+        }
     }
 
     public interface OnDismissed {
@@ -159,14 +167,6 @@ public class DiagnosticResultDialog extends DialogFragment {
                 textRgb.setText(String.format(Locale.getDefault(), "%d  %d  %d", r, g, b));
             }
             return rowView;
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BaseRunTest.OnResultListener) {
-            mListener = (OnDismissed) context;
         }
     }
 }
