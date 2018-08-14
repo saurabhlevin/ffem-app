@@ -73,10 +73,11 @@ import static org.akvo.caddisfly.model.TestType.CHAMBER_TEST;
 
 public class MainActivity extends BaseActivity {
 
-    private final int STORAGE_PERMISSION = 1;
-    private final int BLUETOOTH_PERMISSION_SEND = 2;
-    private final int BLUETOOTH_PERMISSION_RECEIVE = 3;
-    private final int BLUETOOTH_STORAGE_PERMISSION = 4;
+    private final int STORAGE_PERMISSION_WATER = 1;
+    private final int STORAGE_PERMISSION_SOIL = 2;
+    private final int BLUETOOTH_PERMISSION_SEND = 3;
+    private final int BLUETOOTH_PERMISSION_RECEIVE = 4;
+    private final int BLUETOOTH_STORAGE_PERMISSION = 5;
 
     private final WeakRefHandler refreshHandler = new WeakRefHandler(this);
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
@@ -205,8 +206,11 @@ public class MainActivity extends BaseActivity {
                 case BLUETOOTH_PERMISSION_RECEIVE:
                     startBluetoothReceive();
                     break;
-                case STORAGE_PERMISSION:
+                case STORAGE_PERMISSION_WATER:
                     startCalibrate(TestSampleType.WATER);
+                    break;
+                case STORAGE_PERMISSION_SOIL:
+                    startCalibrate(TestSampleType.SOIL);
                     break;
                 case BLUETOOTH_STORAGE_PERMISSION:
                     showCalibrationError();
@@ -219,7 +223,8 @@ public class MainActivity extends BaseActivity {
                 case BLUETOOTH_PERMISSION_RECEIVE:
                     message = getString(R.string.cameraAndLocationPermissions);
                     break;
-                case STORAGE_PERMISSION:
+                case STORAGE_PERMISSION_WATER:
+                case STORAGE_PERMISSION_SOIL:
                 case BLUETOOTH_STORAGE_PERMISSION:
                     message = getString(R.string.storagePermission);
                     break;
@@ -345,7 +350,7 @@ public class MainActivity extends BaseActivity {
         if (permissionsDelegate.hasPermissions(storagePermission)) {
             startCalibrate(TestSampleType.SOIL);
         } else {
-            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION_SOIL);
         }
     }
 
@@ -353,7 +358,7 @@ public class MainActivity extends BaseActivity {
         if (permissionsDelegate.hasPermissions(storagePermission)) {
             startCalibrate(TestSampleType.WATER);
         } else {
-            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION_WATER);
         }
     }
 
@@ -361,7 +366,11 @@ public class MainActivity extends BaseActivity {
         if (permissionsDelegate.hasPermissions(storagePermission)) {
             startCalibrate(TestSampleType.ALL);
         } else {
-            permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION);
+            if (BuildConfig.APPLICATION_ID.contains("soil")) {
+                permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION_SOIL);
+            } else {
+                permissionsDelegate.requestPermissions(storagePermission, STORAGE_PERMISSION_WATER);
+            }
         }
     }
 
@@ -383,6 +392,5 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
 }
 
