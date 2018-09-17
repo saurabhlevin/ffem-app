@@ -29,6 +29,7 @@ import com.google.gson.annotations.SerializedName;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.ColorUtil;
 
+import org.akvo.caddisfly.util.MathUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -93,6 +94,7 @@ public class Result implements Parcelable {
     private boolean highLevelsFound;
     private int pivotIndex;
     private List<ColorItem> referenceColors = new ArrayList<>();
+    private double resultValue;
 
     public Result() {
     }
@@ -303,14 +305,14 @@ public class Result implements Parcelable {
                 double maxResult = colorItems.get(colorItems.size() - 1).getValue();
                 highLevelsFound = resultDouble > maxResult * 0.95;
 
-                double finalResult = resultDouble * dilution;
+                resultValue = applyFormula(resultDouble * dilution, formula);
 
                 // if no more dilution can be performed then set result to highest value
                 if (highLevelsFound && dilution >= maxDilution) {
-                    finalResult = maxResult * dilution;
+                    resultValue = applyFormula(maxResult * dilution, formula);
                 }
 
-                result = String.format(Locale.getDefault(), "%.2f", finalResult);
+                result = String.format(Locale.getDefault(), "%.2f", resultValue);
 
                 // Add 'greater than' symbol if result could be an unknown high value
                 if (highLevelsFound) {
@@ -320,6 +322,20 @@ public class Result implements Parcelable {
                 result = String.format(Locale.getDefault(), "%.2f", resultDouble);
             }
         }
+    }
+
+    private double applyFormula(double value, String formula) {
+        // if we don't have a valid result, return the value unchanged
+        if (value == -1 || Double.isNaN(value)) {
+            return value;
+        }
+
+        if (!formula.isEmpty()) {
+            return (float) MathUtil.eval(String.format(Locale.US,
+                    formula, value));
+        }
+        // if we didn't have a formula, return the unchanged value.
+        return value;
     }
 
     public boolean highLevelsFound() {
@@ -333,6 +349,10 @@ public class Result implements Parcelable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public double getResultValue() {
+        return resultValue;
     }
 
     public List<ColorItem> getPresetColors() {

@@ -61,6 +61,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.akvo.caddisfly.common.ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
+import static org.akvo.caddisfly.common.TestConstants.CUVETTE_TEST_TIME_DELAY;
 import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
@@ -85,8 +87,7 @@ import static org.hamcrest.Matchers.startsWith;
 @LargeTest
 public class ChamberTest {
 
-    private static final int TEST_START_DELAY = 24000;
-    private static final int DELAY_EXTRA = 10000;
+    private static final int TEST_START_DELAY = 24;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
@@ -215,8 +216,9 @@ public class ChamberTest {
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
-                * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+                + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
+                * 1000);
 
         onView(withId(R.id.buttonOk)).perform(click());
 
@@ -244,8 +246,9 @@ public class ChamberTest {
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
-                * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+                + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
+                * 1000);
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
@@ -268,8 +271,9 @@ public class ChamberTest {
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
-                * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+                + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
+                * 1000);
 
         onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
                 .check(matches(isDisplayed()));
@@ -297,17 +301,24 @@ public class ChamberTest {
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
-                * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+                + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
+                * 1000);
 
         String resultString = getText(withId(R.id.textResult));
         assertTrue(resultString.contains(">"));
 
-        double result = Double.valueOf(resultString.replace(">", "").trim());
-        assertTrue("Result is wrong", result > 9);
-
-        onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
-                .check(matches(not(isDisplayed())));
+        if (CUVETTE_TEST_TIME_DELAY > 0) {
+            double result = Double.valueOf(resultString.replace(">", "").trim());
+            assertTrue("Result is wrong", result > 49);
+            onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
+                    .check(matches(isDisplayed()));
+        } else {
+            double result = Double.valueOf(resultString.replace(">", "").trim());
+            assertTrue("Result is wrong", result > 9);
+            onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
+                    .check(matches(not(isDisplayed())));
+        }
 
         onView(withId(R.id.buttonAccept)).perform(click());
 
@@ -411,8 +422,9 @@ public class ChamberTest {
                                 0)));
         recyclerView2.perform(actionOnItemAtPosition(2, click()));
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
-                * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+                + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
+                * 1000);
 
         onView(withId(R.id.buttonOk)).perform(click());
 
@@ -434,8 +446,9 @@ public class ChamberTest {
 
         onView(withId(R.id.buttonNoDilution)).perform(click());
 
-        sleep(TEST_START_DELAY + (ChamberTestConfig.DELAY_BETWEEN_SAMPLING + DELAY_EXTRA)
-                * ChamberTestConfig.SAMPLING_COUNT_DEFAULT);
+        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+                + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
+                * 1000);
 
         //Result dialog
         takeScreenshot();
