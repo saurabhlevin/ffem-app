@@ -71,6 +71,7 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
+import org.akvo.caddisfly.util.MathUtil;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
@@ -80,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.ffem.experiment.DiagnosticSendDialogFragment;
@@ -440,6 +442,8 @@ public class ChamberTestActivity extends BaseActivity implements
 
             int dilution = resultDetails.get(0).getDilution();
 
+            Result result = testInfo.getResults().get(0);
+
             double value = resultDetail.getResult();
 
             if (value > -1) {
@@ -448,8 +452,8 @@ public class ChamberTestActivity extends BaseActivity implements
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 }
 
-                Result result = testInfo.getResults().get(0);
                 result.setResult(value, dilution, testInfo.getMaxDilution());
+                resultDetail.setResult(result.getResultValue());
 
                 if (result.highLevelsFound() && testInfo.getDilution() != testInfo.getMaxDilution()) {
                     SoundUtil.playShortResource(this, R.raw.beep_long);
