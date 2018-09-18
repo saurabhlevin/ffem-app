@@ -21,6 +21,7 @@ package org.akvo.caddisfly.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -51,6 +53,8 @@ import org.akvo.caddisfly.helper.ErrorMessages;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.PermissionsDelegate;
 import org.akvo.caddisfly.helper.SwatchHelper;
+import org.akvo.caddisfly.helper.TestConfigHelper;
+import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
@@ -66,9 +70,11 @@ import org.akvo.caddisfly.sensor.usb.SensorActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestListViewModel;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,10 +139,9 @@ public class TestActivity extends BaseActivity {
             testInfo = viewModel.getTestInfo(uuid);
 
             if (testInfo != null && intent.getExtras() != null) {
-
                 for (int i = 0; i < intent.getExtras().keySet().size(); i++) {
                     String code = intent.getExtras().keySet().toArray()[i].toString();
-                    if (!code.equals("testId")) {
+                    if (!code.equals(SensorConstants.TEST_ID)) {
                         Pattern pattern = Pattern.compile("_(\\d*?)$");
                         Matcher matcher = pattern.matcher(code);
                         if (matcher.find()) {
@@ -159,6 +164,24 @@ public class TestActivity extends BaseActivity {
             fragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment, TestActivity.class.getSimpleName()).commit();
         }
+
+//        String suffix = "";
+//            Pattern pattern = Pattern.compile("(.*?)(_\\d*?)$");
+//            Matcher matcher = pattern.matcher(uuid);
+//            if (matcher.find()) {
+//                uuid = matcher.group(1);
+//                suffix = matcher.group(2);
+//            } else if (uuid.contains("_x")) {
+//                Pattern pattern2 = Pattern.compile("(.*?)(_x.*?)$");
+//                matcher = pattern2.matcher(uuid);
+//                if (matcher.find()) {
+//                    uuid = matcher.group(1);
+//                    suffix = matcher.group(2);
+//                }
+//            }
+//            if (testInfo != null) {
+//                testInfo.setResultSuffix(suffix);
+//            }
     }
 
     @Override
@@ -187,6 +210,12 @@ public class TestActivity extends BaseActivity {
      */
     public void onStartTestClick(View view) {
 
+        // if app was launched in debug mode then send dummy results without running test
+        if (getIntent().getBooleanExtra(SensorConstants.DEBUG_MODE, false)) {
+            sendDummyResultForDebugging();
+            return;
+        }
+
         String[] checkPermissions = permissions;
 
         switch (testInfo.getSubtype()) {
@@ -213,6 +242,44 @@ public class TestActivity extends BaseActivity {
         } else {
             permissionsDelegate.requestPermissions(checkPermissions);
         }
+    }
+
+    /**
+     * Create dummy results to send when in debug mode
+     */
+    private void sendDummyResultForDebugging() {
+        Intent resultIntent = new Intent();
+        SparseArray<String> results = new SparseArray<>();
+
+        for (int i = 0; i < testInfo.getResults().size(); i++) {
+            Result result = testInfo.getResults().get(i);
+            Random random = new Random();
+
+            double maxValue = result.getColors().get(result.getColors().size() - 1).getValue();
+            result.setResult(random.nextDouble() * maxValue,
+                    random.nextInt(9) + 1, testInfo.getMaxDilution());
+
+            if (i == 0) {
+                resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
+            }
+
+            results.append(result.getId(), result.getResult());
+        }
+
+        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, null, -1, null);
+        resultIntent.putExtra(SensorConstants.RESULT_JSON, resultJson.toString());
+
+        ProgressDialog pd = new ProgressDialog(this);
+        pd.setMessage("Sending dummy result...");
+        pd.setCancelable(false);
+        pd.show();
+
+        setResult(Activity.RESULT_OK, resultIntent);
+
+        (new Handler()).postDelayed(() -> {
+            pd.dismiss();
+            finish();
+        }, 3000);
     }
 
     private void startTest() {
