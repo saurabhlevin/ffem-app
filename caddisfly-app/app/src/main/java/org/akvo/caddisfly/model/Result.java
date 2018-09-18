@@ -95,6 +95,7 @@ public class Result implements Parcelable {
     private int pivotIndex;
     private List<ColorItem> referenceColors = new ArrayList<>();
     private double resultValue;
+    private Integer dilution;
 
     public Result() {
     }
@@ -129,6 +130,7 @@ public class Result implements Parcelable {
         } else {
             referenceColors = null;
         }
+        dilution = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     public Integer getId() {
@@ -285,6 +287,14 @@ public class Result implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(referenceColors);
         }
+        dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
+        dest.writeString(code);
+        if (dilution == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(dilution);
+        }
     }
 
     public String getResult() {
@@ -296,6 +306,8 @@ public class Result implements Parcelable {
     }
 
     public void setResult(double resultDouble, int dilution, Integer maxDilution) {
+
+        this.dilution = dilution;
 
         if (resultDouble == -1) {
             result = "";
@@ -384,5 +396,9 @@ public class Result implements Parcelable {
                 referenceColors.add(colorItem);
             }
         }
+    }
+
+    public int getDilution() {
+        return dilution;
     }
 }
