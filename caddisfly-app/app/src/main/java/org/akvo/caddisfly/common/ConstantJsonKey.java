@@ -33,4 +33,5 @@ public class ConstantJsonKey {
     public static final String USER = "user";
     public static final String UUID = "uuid";
     public static final String VALUE = "value";
+    public static final String DILUTION = "dilution";
 }

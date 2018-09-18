@@ -91,6 +91,7 @@ public class Result implements Parcelable {
     private String result;
     private boolean highLevelsFound;
     private double resultValue;
+    private Integer dilution;
 
     public Result() {
     }
@@ -121,6 +122,7 @@ public class Result implements Parcelable {
         byte tmpGrayScale = in.readByte();
         grayScale = tmpGrayScale != 0 && tmpGrayScale == 1;
         code = in.readString();
+        dilution = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     public Integer getId() {
@@ -269,6 +271,12 @@ public class Result implements Parcelable {
         }
         dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
         dest.writeString(code);
+        if (dilution == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(dilution);
+        }
     }
 
     public String getResult() {
@@ -280,6 +288,8 @@ public class Result implements Parcelable {
     }
 
     public void setResult(double resultDouble, int dilution, Integer maxDilution) {
+
+        this.dilution = dilution;
 
         if (resultDouble == -1) {
             result = "";
@@ -337,5 +347,9 @@ public class Result implements Parcelable {
 
     public double getResultValue() {
         return resultValue;
+    }
+
+    public int getDilution() {
+        return dilution;
     }
 }

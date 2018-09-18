@@ -118,6 +118,7 @@ public final class TestConfigHelper {
             JSONArray resultsJsonArray = new JSONArray();
             for (Result subTest : testInfo.getResults()) {
                 JSONObject subTestJson = new JSONObject();
+                subTestJson.put(ConstantJsonKey.DILUTION, subTest.getDilution());
                 subTestJson.put(ConstantJsonKey.NAME, subTest.getName());
                 subTestJson.put(ConstantJsonKey.UNIT, subTest.getUnit());
                 subTestJson.put(ConstantJsonKey.ID, subTest.getId());
