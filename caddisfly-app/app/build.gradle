@@ -8,8 +8,8 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 240
-        versionName "Beta 1.11"
+        versionCode 236
+        versionName "Beta 1.2.1"
         resConfigs "en", "en_US"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

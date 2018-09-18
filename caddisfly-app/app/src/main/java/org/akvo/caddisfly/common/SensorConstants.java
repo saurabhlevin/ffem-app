@@ -33,6 +33,8 @@ public final class SensorConstants {
     public static final String VALUE = "value";
     public static final String LANGUAGE = "language";
     public static final String UNIT = "Unit";
+    public static final String DEBUG_MODE = "debugMode";
+    public static final String RESULT_JSON = "resultJson";
 
     private SensorConstants() {
     }
