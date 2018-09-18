@@ -39,6 +39,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ import org.akvo.caddisfly.entity.CalibrationDetail;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.helper.SoundUtil;
 import org.akvo.caddisfly.helper.SwatchHelper;
+import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.ColorInfo;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.ResultDetail;
@@ -71,17 +73,16 @@ import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AlertUtil;
 import org.akvo.caddisfly.util.ConfigDownloader;
 import org.akvo.caddisfly.util.FileUtil;
-import org.akvo.caddisfly.util.MathUtil;
 import org.akvo.caddisfly.util.NetUtil;
 import org.akvo.caddisfly.util.PreferencesUtil;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import io.ffem.experiment.DiagnosticSendDialogFragment;
@@ -613,6 +614,7 @@ public class ChamberTestActivity extends BaseActivity implements
     public void onClickAcceptResult(View view) {
 
         Intent resultIntent = new Intent();
+        SparseArray<String> results = new SparseArray<>();
 
         for (int i = 0; i < testInfo.getResults().size(); i++) {
             Result result = testInfo.getResults().get(i);
@@ -631,7 +633,12 @@ public class ChamberTestActivity extends BaseActivity implements
             if (i == 0) {
                 resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
             }
+
+            results.append(result.getId(), result.getResult());
         }
+
+        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, null, -1, null);
+        resultIntent.putExtra(SensorConstants.RESULT_JSON, resultJson.toString());
 
         setResult(Activity.RESULT_OK, resultIntent);
 
