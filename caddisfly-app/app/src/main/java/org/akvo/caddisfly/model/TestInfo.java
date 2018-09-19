@@ -364,8 +364,11 @@ public class TestInfo implements Parcelable {
                             if (minMaxRange.length() > 0) {
                                 minMaxRange.append(", ");
                             }
+
+                            double maxRangeValue = result.calculateResult(getMaxRangeValue());
+
                             minMaxRange.append(rangeArray[0].trim()).append(" - ")
-                                    .append(rangeArray[rangeArray.length - 1].trim());
+                                    .append(decimalFormat.format(maxRangeValue));
                             minMaxRange.append(" ");
                             minMaxRange.append(result.getUnit());
                         }
@@ -375,9 +378,17 @@ public class TestInfo implements Parcelable {
 
             if (dilutions.size() > 1) {
                 int maxDilution = dilutions.get(Math.min(dilutions.size() - 1, 2));
-                double maxRangeValue = getMaxRangeValue();
-                String text = String.format(" (Upto %s with dilution)",
-                        maxDilution * maxRangeValue);
+                Result result = results.get(0);
+
+                double maxRangeValue = result.calculateResult(getMaxRangeValue());
+
+                String text;
+                if (dilutions.size() > 3) {
+                    text = String.format(" (More than %s with dilution)", maxDilution * maxRangeValue);
+                } else {
+                    text = String.format(" (Upto %s with dilution)", maxDilution * maxRangeValue);
+                }
+
                 return minMaxRange.toString() + text;
             }
 
