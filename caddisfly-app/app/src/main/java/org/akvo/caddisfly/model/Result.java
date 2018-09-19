@@ -352,4 +352,8 @@ public class Result implements Parcelable {
     public int getDilution() {
         return dilution;
     }
+
+    public double calculateResult(double value) {
+        return applyFormula(value, formula);
+    }
 }
