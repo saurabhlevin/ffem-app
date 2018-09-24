@@ -1,0 +1,62 @@
+[
+  {
+    "name": "pH",
+    "ind": "6.5-8.5",
+    "who": "6.5-8.5"
+  },
+  {
+    "name": "Fluoride",
+    "ind": 1,
+    "who": 1.5
+  },
+  {
+    "name": "Iron",
+    "ind": 0.3,
+    "who": ""
+  },
+  {
+    "name": "Nitrate",
+    "ind": 45,
+    "who": 50
+  },
+  {
+    "name": "Arsenic",
+    "ind": 0.05,
+    "who": 0.01
+  },
+  {
+    "name": "Phosphate",
+    "ind": 0.3,
+    "who": ""
+  },
+  {
+    "name": "Sulphate",
+    "ind": 200,
+    "who": 500
+  },
+  {
+    "name": "Residual chlorine",
+    "ind": 0.2,
+    "who": 0.2
+  },
+  {
+    "name": "Copper",
+    "ind": 1.5,
+    "who": 2
+  },
+  {
+    "name": "Chloride",
+    "ind": 250,
+    "who": 250
+  },
+  {
+    "name": "Chromium(VI)",
+    "ind": "",
+    "who": 0.05
+  },
+  {
+    "name": "Aluminium",
+    "ind": 0.2,
+    "who": 0.2
+  }
+]
