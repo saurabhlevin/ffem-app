@@ -1,0 +1,64 @@
+{
+  "standards": [
+    {
+      "uuid": "4d3a7d6d-2f11-49de-9f7f-9e21e840df93",
+      "name": "pH",
+      "min": 6.5,
+      "max": 8.5
+    },
+    {
+      "uuid": "f0f3c1dd-89af-49f1-83e7-bcc31c3006cf",
+      "name": "Fluoride",
+      "max": 1
+    },
+    {
+      "uuid": "5a7cf06e-5e73-4044-9aa5-0206cc627c82",
+      "name": "Iron",
+      "max": 0.3
+    },
+    {
+      "uuid": "c08123f7-eaa6-44d0-9113-1c16bf4b183b",
+      "name": "Nitrate",
+      "max": 45
+    },
+    {
+      "uuid": "93c259c5-f8b5-4317-828b-adfa324a2918",
+      "name": "Arsenic",
+      "max": 0.05
+    },
+    {
+      "uuid": "6fbe9952-7199-4c9d-8664-977236176cc9",
+      "name": "Phosphate",
+      "max": 0.3
+    },
+    {
+      "uuid": "0b542432-5574-411d-944c-a9a958454e68",
+      "name": "Sulphate",
+      "max": 200
+    },
+    {
+      "uuid": "a2413119-38eb-4959-92ee-cc169fdbb0fc",
+      "name": "Free Chlorine",
+      "max": 0.2
+    },
+    {
+      "uuid": "4828ff51-0f2d-4a20-913b-896d6c947d8a",
+      "name": "Copper",
+      "max": 1.5
+    },
+    {
+      "name": "Chloride",
+      "max": 250
+    },
+    {
+      "uuid": "d488672f-9a4c-4aa4-82eb-8a95c40d0296",
+      "name": "Chromium(VI)",
+      "max": 0.05
+    },
+    {
+      "uuid": "af112e3c-4fc1-45c1-a8d0-1ec75a2b789e",
+      "name": "Aluminium",
+      "max": 0.2
+    }
+  ]
+}

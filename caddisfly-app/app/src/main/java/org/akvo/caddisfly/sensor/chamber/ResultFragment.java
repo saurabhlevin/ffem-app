@@ -20,6 +20,7 @@
 package org.akvo.caddisfly.sensor.chamber;
 
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,11 +29,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+
 import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.databinding.FragmentResultBinding;
+import org.akvo.caddisfly.model.QualityGuide;
 import org.akvo.caddisfly.model.Result;
+import org.akvo.caddisfly.model.Standard;
 import org.akvo.caddisfly.model.TestInfo;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Objects;
 
 import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 import static org.akvo.caddisfly.common.ConstantKey.TEST_INFO;
@@ -49,6 +61,27 @@ public class ResultFragment extends Fragment {
         args.putBoolean(IS_INTERNAL, isInternal);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    static public String readStringFromResource(Context ctx, int resourceID) {
+        StringBuilder contents = new StringBuilder();
+        String sep = System.getProperty("line.separator");
+
+        try {
+            InputStream is = ctx.getResources().openRawResource(resourceID);
+
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(is), 1024 * 8)) {
+                String line;
+                while ((line = input.readLine()) != null) {
+                    contents.append(line);
+                    contents.append(sep);
+                }
+            }
+        } catch (IOException ex) {
+            return null;
+        }
+
+        return contents.toString();
     }
 
     @Override
@@ -71,6 +104,23 @@ public class ResultFragment extends Fragment {
             TestInfo testInfo = getArguments().getParcelable(TEST_INFO);
             if (testInfo != null) {
                 Result result = testInfo.getResults().get(0);
+
+                String json = readStringFromResource(Objects.requireNonNull(getActivity()),
+                        R.raw.quality_guide_ind);
+
+                List<Standard> standards = new Gson().fromJson(json, QualityGuide.class).getStandards();
+                for (Standard standard : standards) {
+                    if (standard.getUuid() != null && standard.getUuid().equalsIgnoreCase(testInfo.getUuid())) {
+                        if (standard.getMax() != null && result.getResultValue() > standard.getMax()) {
+                            b.textResultInfo.setVisibility(View.VISIBLE);
+                        }
+
+                        if (standard.getMin() != null && standard.getMin() < result.getResultValue()) {
+                            b.textResultInfo.setVisibility(View.VISIBLE);
+                        }
+                        break;
+                    }
+                }
 
                 b.textResult.setText(result.getResult());
                 b.textTitle.setText(testInfo.getName());

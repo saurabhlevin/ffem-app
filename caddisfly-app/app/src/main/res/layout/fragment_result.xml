@@ -87,10 +87,23 @@
                 android:textSize="20sp"
                 tools:text="mg/l" />
 
+            <TextView
+                android:id="@+id/textResultInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:background="@color/error_background"
+                android:textColor="@color/destructive"
+                android:text="Warning: Contamination is higher than the minimum safe level standard for drinking water."
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
