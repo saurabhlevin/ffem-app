@@ -87,18 +87,38 @@
                 android:textSize="20sp"
                 tools:text="mg/l" />
 
-            <TextView
-                android:id="@+id/textResultInfo"
+            <LinearLayout
+                android:id="@+id/resultInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/error_background"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="Warning: Contamination is higher than the minimum safe level standard for drinking water."
-                android:textColor="@color/destructive"
-                android:textSize="16sp"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Warning"
+                    android:textAlignment="center"
+                    android:textColor="@color/destructive"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Contamination is higher than the minimum safe level standard for drinking water."
+                    android:textAlignment="center"
+                    android:textColor="@color/destructive"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -117,6 +137,7 @@
                     android:layout_weight="1"
                     android:onClick="sendTestResultClick"
                     android:text="@string/sendData"
+                    android:theme="?primaryButtonStyle"
                     android:visibility="visible" />
 
                 <Button
@@ -183,13 +204,13 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="10dp"
-                android:drawableStart="@drawable/ic_flipped_play_arrow"
+                android:drawableStart="?backwardArrow"
                 android:onClick="onTestWithDilution"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:text="@string/testWithDilution"
                 android:textAlignment="textStart"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="?linkTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
