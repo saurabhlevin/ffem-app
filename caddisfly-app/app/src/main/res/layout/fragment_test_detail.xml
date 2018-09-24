@@ -104,13 +104,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
-                android:drawableEnd="@drawable/ic_play_arrow_black_24dp"
+                android:drawableEnd="?forwardArrow"
                 android:onClick="onInstructionsClick"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:text="@string/instructions"
                 android:textAlignment="textEnd"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="?linkTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

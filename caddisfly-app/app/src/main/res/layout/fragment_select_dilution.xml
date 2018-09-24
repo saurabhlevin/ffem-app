@@ -78,7 +78,7 @@
             android:minHeight="70dp"
             android:minWidth="260dp"
             android:text="@string/noDilution"
-            android:theme="?secondaryButtonStyle" />
+            android:theme="?primaryButtonStyle" />
 
         <Button
             android:id="@+id/buttonDilution1"
@@ -87,7 +87,7 @@
             android:minHeight="70dp"
             android:minWidth="260dp"
             android:text="@string/timesDilution"
-            android:theme="?secondaryButtonStyle" />
+            android:theme="?primaryButtonStyle" />
 
         <Button
             android:id="@+id/buttonDilution2"
@@ -96,7 +96,7 @@
             android:minHeight="70dp"
             android:minWidth="260dp"
             android:text="@string/timesDilution"
-            android:theme="?secondaryButtonStyle" />
+            android:theme="?primaryButtonStyle" />
 
         <Button
             android:id="@+id/buttonCustomDilution"
@@ -104,7 +104,7 @@
             android:minHeight="70dp"
             android:minWidth="260dp"
             android:text="@string/customDilution"
-            android:theme="?secondaryButtonStyle" />
+            android:theme="?primaryButtonStyle" />
 
     </LinearLayout>
 

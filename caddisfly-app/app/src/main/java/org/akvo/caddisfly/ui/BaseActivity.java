@@ -39,6 +39,7 @@ import org.akvo.caddisfly.preference.AppPreferences;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private String mTitle;
+    protected int appTheme = R.style.AppTheme_Main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void updateTheme() {
 
-        setTheme(R.style.AppTheme_Main);
+        setTheme(appTheme);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

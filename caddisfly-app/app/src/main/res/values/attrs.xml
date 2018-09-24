@@ -26,12 +26,15 @@
         <attr name="textColorPrimary" format="color" />
         <attr name="longButtonStyle" format="reference" />
         <attr name="longButtonText" format="color" />
+        <attr name="linkTextColor" format="color" />
         <attr name="dialogDestructiveButton" format="reference" />
         <attr name="primaryBackgroundStyle" format="reference" />
         <attr name="toolbarHeight" format="dimension" />
         <attr name="toolbarMargin" format="dimension" />
         <attr name="progressTint" format="color" />
         <attr name="progressTintInverse" format="color" />
+        <attr name="forwardArrow" format="color" />
+        <attr name="backwardArrow" format="color" />
     </declare-styleable>
 
     <declare-styleable name="TimerView">
