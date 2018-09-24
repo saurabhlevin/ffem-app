@@ -112,11 +112,11 @@ public class ResultFragment extends Fragment {
                 for (Standard standard : standards) {
                     if (standard.getUuid() != null && standard.getUuid().equalsIgnoreCase(testInfo.getUuid())) {
                         if (standard.getMax() != null && result.getResultValue() > standard.getMax()) {
-                            b.textResultInfo.setVisibility(View.VISIBLE);
+                            b.resultInfoLayout.setVisibility(View.VISIBLE);
                         }
 
                         if (standard.getMin() != null && standard.getMin() < result.getResultValue()) {
-                            b.textResultInfo.setVisibility(View.VISIBLE);
+                            b.resultInfoLayout.setVisibility(View.VISIBLE);
                         }
                         break;
                     }
