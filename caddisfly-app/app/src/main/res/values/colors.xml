@@ -58,4 +58,12 @@
 
     <color name="main_button_blue">#CDCDCD</color>
 
+    <!--Green theme-->
+    <color name="primary_2">#8BC34A</color>
+    <color name="primary_dark_2">#689F38</color>
+    <color name="button_2">#607D8B</color>
+    <color name="button_selected_2">#4f778b</color>
+    <color name="button_text_2">#fff</color>
+    <color name="link_text_2">#304f74</color>
+
 </resources>

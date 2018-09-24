@@ -397,7 +397,8 @@ public class TestActivity extends BaseActivity {
                 return;
             }
 
-            Intent intent = new Intent(this, ChamberTestActivity.class);
+            Intent intent = getIntent();
+            intent.setClass(this, ChamberTestActivity.class);
             intent.putExtra(ConstantKey.RUN_TEST, true);
             intent.putExtra(ConstantKey.TEST_INFO, testInfo);
             startActivityForResult(intent, REQUEST_TEST);
