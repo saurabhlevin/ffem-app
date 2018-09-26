@@ -671,8 +671,8 @@ public class TestInfo implements Parcelable {
         this.resultDetail = resultDetail;
     }
 
-    public List<ColorItem> getPresetColors() {
-        return results.get(0).getPresetColors();
+    public List<ColorItem> getPresetColors(double pivotCalibration) {
+        return results.get(0).getPresetColors(pivotCalibration);
     }
 
     public String getResultSuffix() {
@@ -709,7 +709,7 @@ public class TestInfo implements Parcelable {
         }
 
         oneStepCalibrations = SwatchHelper.getOneStepCalibrations(this.calibrations,
-                pivotCalibration, getPresetColors());
+                pivotCalibration, getPresetColors(pivotCalibration));
 
         for (Calibration calibration : this.oneStepCalibrations) {
             Swatch swatch = new Swatch(calibration.value, calibration.color, Color.TRANSPARENT);

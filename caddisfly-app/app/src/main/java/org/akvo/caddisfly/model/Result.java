@@ -19,6 +19,7 @@
 
 package org.akvo.caddisfly.model;
 
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -78,9 +79,9 @@ public class Result implements Parcelable {
     @SerializedName("colors")
     @Expose
     private List<ColorItem> colorItems = new ArrayList<>();
-    @SerializedName("preset")
+    @SerializedName("references")
     @Expose
-    private List<ColorItem> presetColors = new ArrayList<>();
+    private List<String> references = new ArrayList<>();
     @SerializedName("grayScale")
     @Expose
     private Boolean grayScale = false;
@@ -110,12 +111,7 @@ public class Result implements Parcelable {
         } else {
             colorItems = null;
         }
-        if (in.readByte() == 0x01) {
-            presetColors = new ArrayList<>();
-            in.readList(presetColors, ColorItem.class.getClassLoader());
-        } else {
-            presetColors = null;
-        }
+        in.readList(this.references, (java.lang.String.class.getClassLoader()));
         byte tmpGrayScale = in.readByte();
         grayScale = tmpGrayScale != 0 && tmpGrayScale == 1;
         code = in.readString();
@@ -203,8 +199,12 @@ public class Result implements Parcelable {
         this.colorItems = colorItems;
     }
 
-    public List<ColorItem> getPresetColors() {
-        return presetColors;
+    public List<String> getReferences() {
+        return references;
+    }
+
+    public void setReferences(List<String> references) {
+        this.references = references;
     }
 
     public Boolean getGrayScale() {
@@ -259,12 +259,7 @@ public class Result implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(colorItems);
         }
-        if (presetColors == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(presetColors);
-        }
+        dest.writeList(references);
         dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
         dest.writeString(code);
     }
@@ -317,5 +312,27 @@ public class Result implements Parcelable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public List<ColorItem> getPresetColors(double value) {
+
+        int pivotIndex = 0;
+        for (int i = 0; i < colorItems.size(); i++) {
+            ColorItem colorItem = colorItems.get(i);
+            if (colorItem.getValue() == value) {
+                pivotIndex = i;
+                break;
+            }
+        }
+
+        List<ColorItem> list = new ArrayList<>();
+
+        String[] colors = references.get(0).split(",");
+        for (int i = 0; i < colors.length; i++) {
+            ColorItem colorItem = new ColorItem(colorItems.get(i).getValue());
+            colorItem.setRgbInt(Color.parseColor("#" + colors[i]));
+            list.add(colorItem);
+        }
+        return list;
     }
 }

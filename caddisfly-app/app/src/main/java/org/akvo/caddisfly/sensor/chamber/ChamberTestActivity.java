@@ -245,9 +245,9 @@ public class ChamberTestActivity extends BaseActivity implements
     public void onCalibrationLongClick(Calibration item, int position) {
         if (null != testInfo) {
             if (item.color != Color.TRANSPARENT
-                    && testInfo.getPresetColors().size() > position
+                    && testInfo.getPresetColors(0).size() > position
                     && testInfo.getPivotCalibration() != item.value
-                    && testInfo.getPresetColors().get(position).getRgbInt() != Color.TRANSPARENT) {
+                    && testInfo.getPresetColors(0).get(position).getRgbInt() != Color.TRANSPARENT) {
                 AlertUtil.askQuestion(this, R.string.confirm,
                         R.string.setDefaultCalibration, R.string.ok, R.string.cancel, true,
                         (dialogInterface1, i1) -> {

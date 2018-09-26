@@ -225,19 +225,19 @@ public class TestConfigRepository {
                             }
 
                             // setup preset colors
-                            List<ColorItem> presetColors = testInfo.getPresetColors();
-                            if (null != presetColors) {
-                                for (int i = 0; i < calibrations.size(); i++) {
-                                    Calibration calibration = calibrations.get(i);
-                                    for (ColorItem colorItem : presetColors) {
-                                        if (colorItem.getValue() == calibration.value) {
-                                            colorItem.setRgbInt(Color.rgb(colorItem.getRgb().get(0),
-                                                    colorItem.getRgb().get(1),
-                                                    colorItem.getRgb().get(2)));
-                                        }
-                                    }
-                                }
-                            }
+//                            List<ColorItem> presetColors = testInfo.getPresetColors(0);
+//                            if (null != presetColors) {
+//                                for (int i = 0; i < calibrations.size(); i++) {
+//                                    Calibration calibration = calibrations.get(i);
+//                                    for (ColorItem colorItem : presetColors) {
+//                                        if (colorItem.getValue() == calibration.value) {
+                                            //Color.rgb(colorItem.getRgb().get(0),
+                                            //                                                    colorItem.getRgb().get(1),
+                                            //                                                    colorItem.getRgb().get(2)
+//                                        }
+//                                    }
+//                                }
+//                            }
 
                             testInfo.setCalibrations(calibrations);
 

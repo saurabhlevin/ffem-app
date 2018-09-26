@@ -33,7 +33,7 @@ public class CalibrationGraphActivity extends BaseActivity {
         TestInfo testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
         List<Calibration> calibrations = testInfo.getCalibrations();
-        List<ColorItem> presetCalibrations = testInfo.getPresetColors();
+        List<ColorItem> presetCalibrations = testInfo.getPresetColors(0);
         List<Calibration> oneStepCalibrations = testInfo.getOneStepCalibrations();
 
         graphRed = findViewById(R.id.graphRed);
