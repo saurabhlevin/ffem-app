@@ -263,7 +263,7 @@ public class TestActivity extends BaseActivity {
                 resultIntent.putExtra(SensorConstants.VALUE, result.getResult());
             }
 
-            results.append(result.getId(), result.getResult());
+            results.append(result.getId(), "> " + result.getResult());
         }
 
         JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, null, -1, null);
