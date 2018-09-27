@@ -417,6 +417,9 @@ public class BaseRunTest extends Fragment implements RunTest {
         Camera.Parameters parameters = mCamera.getParameters();
 
         String flashMode = Camera.Parameters.FLASH_MODE_TORCH;
+        if (AppPreferences.useFlashMode()) {
+            flashMode = Camera.Parameters.FLASH_MODE_ON;
+        }
         parameters.setFlashMode(flashMode);
 
         mCamera.setParameters(parameters);

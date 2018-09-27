@@ -182,4 +182,10 @@ public final class AppPreferences {
             return 0;
         }
     }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean useFlashMode() {
+        return isDiagnosticMode() &&
+                PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.useFlashModeKey, false);
+    }
 }
