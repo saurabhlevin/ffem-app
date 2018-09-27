@@ -91,7 +91,7 @@ public class Result implements Parcelable {
     private String result;
     private boolean highLevelsFound;
     private double resultValue;
-    private Integer dilution;
+    private Integer dilution = 0;
 
     public Result() {
     }

@@ -373,9 +373,11 @@ public class TestInfo implements Parcelable {
 
                 String text;
                 if (dilutions.size() > 3) {
-                    text = String.format(" (More than %s with dilution)", maxDilution * maxRangeValue);
+                    text = String.format(Locale.US, " (Up to %s+ with dilution)",
+                            decimalFormat.format(maxDilution * maxRangeValue));
                 } else {
-                    text = String.format(" (Upto %s with dilution)", maxDilution * maxRangeValue);
+                    text = String.format(" (Up to %s with dilution)",
+                            decimalFormat.format(maxDilution * maxRangeValue));
                 }
 
                 return minMaxRange.toString() + text;
