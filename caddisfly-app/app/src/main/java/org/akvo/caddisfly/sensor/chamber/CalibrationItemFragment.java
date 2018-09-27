@@ -65,7 +65,7 @@ public class CalibrationItemFragment extends Fragment {
     /**
      * Get instance of CalibrationItemFragment.
      *
-     * @param testInfo the test info
+     * @param testInfo   the test info
      * @param isInternal
      * @return the fragment
      */
@@ -121,7 +121,7 @@ public class CalibrationItemFragment extends Fragment {
 
         if (getArguments() != null) {
             testInfo = getArguments().getParcelable(ARG_TEST_INFO);
-            isInternal =  getArguments().getBoolean(IS_INTERNAL, true);
+            isInternal = getArguments().getBoolean(IS_INTERNAL, true);
         }
     }
 

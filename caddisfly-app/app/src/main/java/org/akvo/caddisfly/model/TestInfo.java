@@ -683,7 +683,7 @@ public class TestInfo implements Parcelable {
     }
 
     public List<ColorItem> getReferenceColors() {
-        return results.get(0).getPresetColors();
+        return results.get(0).getReferenceColors();
     }
 
     public String getResultSuffix() {

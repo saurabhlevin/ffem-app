@@ -41,10 +41,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.model.Instruction;
 import org.akvo.caddisfly.preference.AppPreferences;
-
-import java.util.List;
 
 
 public class BindingAdapters {
@@ -60,11 +57,4 @@ public class BindingAdapters {
             view.setBackgroundColor(color);
         }
     }
-
-    @BindingAdapter("instructionLinkVisibility")
-    public static void setInstructionLinkVisibility(View view, List<Instruction> instructions) {
-        view.setVisibility(instructions == null || instructions.size() == 0 ? View.INVISIBLE : View.VISIBLE);
-    }
-
-
 }

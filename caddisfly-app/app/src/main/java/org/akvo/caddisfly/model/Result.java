@@ -28,8 +28,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.util.ColorUtil;
-
 import org.akvo.caddisfly.util.MathUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -91,10 +91,10 @@ public class Result implements Parcelable {
     @Expose
     private String code;
     private String result;
+    private Double resultValue;
     private boolean highLevelsFound;
     private int pivotIndex;
     private List<ColorItem> referenceColors = new ArrayList<>();
-    private double resultValue;
     private Integer dilution;
 
     public Result() {
@@ -122,10 +122,11 @@ public class Result implements Parcelable {
         grayScale = tmpGrayScale != 0 && tmpGrayScale == 1;
         code = in.readString();
         result = in.readString();
+        resultValue = in.readByte() == 0x00 ? null : in.readDouble();
         highLevelsFound = in.readByte() != 0x00;
         pivotIndex = in.readInt();
         if (in.readByte() == 0x01) {
-            referenceColors = new ArrayList<ColorItem>();
+            referenceColors = new ArrayList<>();
             in.readList(referenceColors, ColorItem.class.getClassLoader());
         } else {
             referenceColors = null;
@@ -173,17 +174,17 @@ public class Result implements Parcelable {
         return patchPos;
     }
 
-    public void setPatchPos(Double patchPos) {
-        this.patchPos = patchPos;
-    }
+//    public void setPatchPos(Double patchPos) {
+//        this.patchPos = patchPos;
+//    }
 
     public Double getPatchWidth() {
         return patchWidth;
     }
 
-    public void setPatchWidth(Double patchWidth) {
-        this.patchWidth = patchWidth;
-    }
+//    public void setPatchWidth(Double patchWidth) {
+//        this.patchWidth = patchWidth;
+//    }
 
     /**
      * Time to wait before analyzing.
@@ -199,9 +200,9 @@ public class Result implements Parcelable {
         }
     }
 
-    public void setTimeDelay(Integer timeDelay) {
-        this.timeDelay = timeDelay;
-    }
+//    public void setTimeDelay(Integer timeDelay) {
+//        this.timeDelay = timeDelay;
+//    }
 
     public Integer getTestStage() {
         return testStage;
@@ -211,17 +212,17 @@ public class Result implements Parcelable {
         return colorItems;
     }
 
-    public void setColorItems(List<ColorItem> colorItems) {
-        this.colorItems = colorItems;
-    }
+//    public void setColorItems(List<ColorItem> colorItems) {
+//        this.colorItems = colorItems;
+//    }
 
-    public List<String> getReferences() {
-        return references;
-    }
-
-    public void setReferences(List<String> references) {
-        this.references = references;
-    }
+//    public List<String> getReferences() {
+//        return references;
+//    }
+//
+//    public void setReferences(List<String> references) {
+//        this.references = references;
+//    }
 
     public Boolean getGrayScale() {
         return grayScale;
@@ -279,6 +280,12 @@ public class Result implements Parcelable {
         dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
         dest.writeString(code);
         dest.writeString(result);
+        if (resultValue == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(resultValue);
+        }
         dest.writeByte((byte) (highLevelsFound ? 0x01 : 0x00));
         dest.writeInt(pivotIndex);
         if (referenceColors == null) {
@@ -287,8 +294,6 @@ public class Result implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(referenceColors);
         }
-        dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
-        dest.writeString(code);
         if (dilution == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -367,7 +372,7 @@ public class Result implements Parcelable {
         return resultValue;
     }
 
-    public List<ColorItem> getPresetColors() {
+    public List<ColorItem> getReferenceColors() {
         return referenceColors;
     }
 
@@ -402,7 +407,7 @@ public class Result implements Parcelable {
         return dilution;
     }
 
-    public double calculateResult(double value) {
+    double calculateResult(double value) {
         return applyFormula(value, formula);
     }
 }

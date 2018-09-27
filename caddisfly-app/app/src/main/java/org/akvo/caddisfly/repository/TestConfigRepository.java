@@ -223,9 +223,7 @@ public class TestConfigRepository {
                                     dao.insertAll(calibrations);
                                 }
                             }
-
                             testInfo.setCalibrations(calibrations);
-
                         }
                         return testInfo;
                     }

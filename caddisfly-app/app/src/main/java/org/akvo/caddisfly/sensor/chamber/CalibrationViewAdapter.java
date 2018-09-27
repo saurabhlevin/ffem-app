@@ -77,7 +77,7 @@ public class CalibrationViewAdapter extends RecyclerView.Adapter<CalibrationView
                 holder.mItem.value)));
 
         Result result = testInfo.getResults().get(0);
-        List<ColorItem> presetColors = result.getPresetColors();
+        List<ColorItem> presetColors = result.getReferenceColors();
         List<ColorItem> colors = result.getColors();
         List<Calibration> oneStepColors = testInfo.getOneStepCalibrations();
         if (position < colors.size()) {

@@ -578,42 +578,12 @@
         {
           "id": 1,
           "name": "Free Chlorine",
-          "unit": "mg/l",
-          "preset": [
-            {
-              "value": 0,
-              "rgb": [149,139,86]
-            },
-            {
-              "value": 0.5,
-              "rgb": [168,134,96]
-            },
-            {
-              "value": 1,
-              "rgb": [184,131,106]
-            },
-            {
-              "value": 1.5,
-              "rgb": [165,79,69]
-            },
-            {
-              "value": 2,
-              "rgb": [193,94,94]
-            },
-            {
-              "value": 2.5,
-              "rgb": [229,78,111]
-            },
-            {
-              "value": 3,
-              "rgb": [227,70,95]
-            }
-          ]
+          "unit": "mg/l"
         }
       ]
     },
     {
-      "name": "Water - Hydrogen Peroxide",
+      "name": "Hydrogen Peroxide",
       "type": "water",
       "subtype": "cuvette",
       "uuid": "c19ed9e5-0d0d-4ad7-adcb-8afd21b635db",
@@ -621,34 +591,12 @@
       "imageScale": "centerCrop",
       "calibrate": true,
       "ranges": "0, 0.05, 0.1, 0.5, 1.0",
-      "monthsValid": 12,
+      "monthsValid": 2,
       "results": [
         {
           "id": 1,
           "name": "Hydrogen Peroxide",
-          "unit": "M",
-          "preset": [
-            {
-              "value": 0,
-              "rgb": [198,178,127]
-            },
-            {
-              "value": 0.05,
-              "rgb": [238,177,0]
-            },
-            {
-              "value": 0.1,
-              "rgb": [241,147,0]
-            },
-            {
-              "value": 0.5,
-              "rgb": [255,26,0]
-            },
-            {
-              "value": 1,
-              "rgb": [255,1,3]
-            }
-          ]
+          "unit": "M"
         }
       ]
     },
