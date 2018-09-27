@@ -27,6 +27,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.akvo.caddisfly.preference.AppPreferences;
+import org.akvo.caddisfly.util.ColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,8 @@ public class Result implements Parcelable {
     private String code;
     private String result;
     private boolean highLevelsFound;
+    private int pivotIndex;
+    private List<ColorItem> referenceColors = new ArrayList<>();
 
     public Result() {
     }
@@ -115,6 +118,15 @@ public class Result implements Parcelable {
         byte tmpGrayScale = in.readByte();
         grayScale = tmpGrayScale != 0 && tmpGrayScale == 1;
         code = in.readString();
+        result = in.readString();
+        highLevelsFound = in.readByte() != 0x00;
+        pivotIndex = in.readInt();
+        if (in.readByte() == 0x01) {
+            referenceColors = new ArrayList<ColorItem>();
+            in.readList(referenceColors, ColorItem.class.getClassLoader());
+        } else {
+            referenceColors = null;
+        }
     }
 
     public Integer getId() {
@@ -262,6 +274,15 @@ public class Result implements Parcelable {
         dest.writeList(references);
         dest.writeByte((byte) (grayScale == null ? 0 : grayScale ? 1 : 2));
         dest.writeString(code);
+        dest.writeString(result);
+        dest.writeByte((byte) (highLevelsFound ? 0x01 : 0x00));
+        dest.writeInt(pivotIndex);
+        if (referenceColors == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(referenceColors);
+        }
     }
 
     public String getResult() {
@@ -314,25 +335,34 @@ public class Result implements Parcelable {
         this.code = code;
     }
 
-    public List<ColorItem> getPresetColors(double value) {
+    public List<ColorItem> getPresetColors() {
+        return referenceColors;
+    }
 
-        int pivotIndex = 0;
-        for (int i = 0; i < colorItems.size(); i++) {
-            ColorItem colorItem = colorItems.get(i);
-            if (colorItem.getValue() == value) {
-                pivotIndex = i;
-                break;
+    void setPivotIndex(int pivotIndex) {
+        this.pivotIndex = pivotIndex;
+        referenceColors.clear();
+        if (references.size() > 0) {
+            double nearestDistance = Integer.MAX_VALUE;
+            int referenceIndex = 0;
+            for (int i = 0; i < references.size(); i++) {
+                String reference = references.get(i);
+                String[] colors = reference.split(",");
+                int color1 = Color.parseColor("#" + colors[pivotIndex]);
+                int color2 = colorItems.get(pivotIndex).getRgbInt();
+                double distance = ColorUtil.getColorDistance(color1, color2);
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                    referenceIndex = i;
+                }
+            }
+
+            String[] colors = references.get(referenceIndex).split(",");
+            for (int i = 0; i < colors.length; i++) {
+                ColorItem colorItem = new ColorItem(colorItems.get(i).getValue());
+                colorItem.setRgbInt(Color.parseColor("#" + colors[i]));
+                referenceColors.add(colorItem);
             }
         }
-
-        List<ColorItem> list = new ArrayList<>();
-
-        String[] colors = references.get(0).split(",");
-        for (int i = 0; i < colors.length; i++) {
-            ColorItem colorItem = new ColorItem(colorItems.get(i).getValue());
-            colorItem.setRgbInt(Color.parseColor("#" + colors[i]));
-            list.add(colorItem);
-        }
-        return list;
     }
 }

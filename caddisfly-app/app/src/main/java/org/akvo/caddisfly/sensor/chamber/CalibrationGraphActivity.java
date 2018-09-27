@@ -33,7 +33,7 @@ public class CalibrationGraphActivity extends BaseActivity {
         TestInfo testInfo = getIntent().getParcelableExtra(ConstantKey.TEST_INFO);
 
         List<Calibration> calibrations = testInfo.getCalibrations();
-        List<ColorItem> presetCalibrations = testInfo.getPresetColors(0);
+        List<ColorItem> presetCalibrations = testInfo.getReferenceColors();
         List<Calibration> oneStepCalibrations = testInfo.getOneStepCalibrations();
 
         graphRed = findViewById(R.id.graphRed);
@@ -136,18 +136,18 @@ public class CalibrationGraphActivity extends BaseActivity {
         DataPoint[] dataPoints = new DataPoint[colorItems.size()];
         int value = 0;
         for (int i = 0; i < colorItems.size(); i++) {
-            if (colorItems.get(i).getRgb() == null) {
+            if (colorItems.get(i).getRgbInt() == 0) {
                 return new DataPoint[0];
             } else {
                 switch (color) {
                     case Color.RED:
-                        value = colorItems.get(i).getRgb().get(0);
+                        value = Color.red(colorItems.get(i).getRgbInt());
                         break;
                     case Color.GREEN:
-                        value = colorItems.get(i).getRgb().get(1);
+                        value = Color.green(colorItems.get(i).getRgbInt());
                         break;
                     case Color.BLUE:
-                        value = colorItems.get(i).getRgb().get(2);
+                        value = Color.blue(colorItems.get(i).getRgbInt());
                         break;
                 }
             }
