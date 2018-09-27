@@ -78,10 +78,11 @@
     <string name="cameraResolutionKey">cameraResolutionKey</string>
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
+    <string name="colif_testIdKey">colif_testId</string>
     <string name="colif_volumeKey">colif_volume</string>
     <string name="colif_brothMediaKey">colif_brothMedia</string>
-    <string name="colif_IntervalMinutesKey">colif_IntervalMinutes</string>
-    <string name="colif_NumberOfSamplesKey">colif_NumberOfSamples</string>
+    <string name="colif_intervalMinutesKey">colif_IntervalMinutes</string>
+    <string name="colif_numberOfSamplesKey">colif_NumberOfSamples</string>
     <string name="colif_emails">colif_emails</string>
     <string name="turbiditySavePathKey">turbiditySavePath</string>
     <string name="coliformResultSafeKey">coliformResultSafe</string>

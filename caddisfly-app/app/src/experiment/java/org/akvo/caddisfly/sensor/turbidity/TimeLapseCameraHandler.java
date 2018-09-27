@@ -128,12 +128,12 @@ class TimeLapseCameraHandler implements Camera.PictureCallback {
 
         if (AppPreferences.isTestMode()) {
             int numberOfSamples = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
-                    "colif_NumberOfSamples", "1"));
+                    R.string.colif_numberOfSamplesKey, "1"));
 
             int imageCount = PreferencesUtil.getInt(mContext, "imageCount", 0);
             String demoFileName = "start.jpg";
             if (!PreferencesUtil.getBoolean(mContext, R.string.coliformResultSafeKey, false)) {
-                if (imageCount <= 1) {
+                if (imageCount <= 2) {
                     demoFileName = "start.jpg";
                 } else if (imageCount >= numberOfSamples) {
                     demoFileName = "end.jpg";

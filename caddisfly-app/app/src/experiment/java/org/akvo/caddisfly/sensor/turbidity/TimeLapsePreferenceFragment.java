@@ -30,6 +30,7 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         String[] keys = {
+                getString(R.string.colif_testIdKey),
                 getString(R.string.colif_brothMediaKey),
                 getString(R.string.colif_volumeKey)};
 
@@ -49,7 +50,7 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.pref_turbidity);
 
         final EditTextPreference sampleIntervalPreference =
-                (EditTextPreference) findPreference(getString(R.string.colif_IntervalMinutesKey));
+                (EditTextPreference) findPreference(getString(R.string.colif_intervalMinutesKey));
         if (sampleIntervalPreference != null) {
 
             sampleIntervalPreference.setSummary(String.format("Every %s minutes", sampleIntervalPreference.getText()));
@@ -74,7 +75,7 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
         }
 
         final EditTextPreference samplesPreference =
-                (EditTextPreference) findPreference(getString(R.string.colif_NumberOfSamplesKey));
+                (EditTextPreference) findPreference(getString(R.string.colif_numberOfSamplesKey));
         if (samplesPreference != null) {
             samplesPreference.setSummary(samplesPreference.getText());
 
@@ -94,6 +95,12 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
                 samplesPreference.setSummary(String.valueOf(newValue));
                 return false;
             });
+        }
+
+        final EditTextPreference testIdPreference =
+                (EditTextPreference) findPreference(getString(R.string.colif_testIdKey));
+        if (testIdPreference != null) {
+            testIdPreference.setSummary(testIdPreference.getText());
         }
 
         final EditTextPreference brothPreference =

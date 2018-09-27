@@ -6,11 +6,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.Menu;
@@ -84,10 +86,10 @@ public class TimeLapseActivity extends BaseActivity {
             File folder = FileHelper.getFilesDir(FileHelper.FileType.TEMP_IMAGE, folderName);
 
             delayMinute = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
-                    "colif_IntervalMinutes", "1"));
+                    R.string.colif_intervalMinutesKey, "1"));
 
             numberOfSamples = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
-                    "colif_NumberOfSamples", "1"));
+                    R.string.colif_numberOfSamplesKey, "1"));
 
             File[] files = folder.listFiles();
             if (files != null) {
@@ -194,8 +196,14 @@ public class TimeLapseActivity extends BaseActivity {
             if (isTurbid) {
                 String emailTemplate;
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
+                String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
 
                 if (emailTemplate != null) {
+
+                    String broth = PreferencesUtil.getString(this, R.string.colif_brothMediaKey, "");
+
+                    emailTemplate = emailTemplate.replace("{testDetails}", "test Id: " + testId + ", " + "Broth: " + broth);
+
                     long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
                     String date = simpleDateFormat.format(new Date(startTime));
@@ -203,13 +211,21 @@ public class TimeLapseActivity extends BaseActivity {
 
                     long duration = Calendar.getInstance().getTimeInMillis() - startTime;
 
-                    durationString = String.format(Locale.US, "%02d:%02d Hours", TimeUnit.MILLISECONDS.toHours(duration),
-                            TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
+                    if (TimeUnit.MILLISECONDS.toHours(duration) > 0) {
+                        durationString = String.format(Locale.US, "%s hours & %s minutes",
+                                TimeUnit.MILLISECONDS.toHours(duration),
+                                TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
+                    } else {
+                        durationString = String.format(Locale.US, "%s minutes",
+                                TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
+                    }
 
                     emailTemplate = emailTemplate.replace("display:block", "display:none");
                     emailTemplate = emailTemplate.replace("{detectionDuration}", durationString);
-                    emailTemplate = emailTemplate.replace("{detectionTime}",
+                    emailTemplate = emailTemplate.replace("{detectionTime}", "at: " +
                             simpleDateFormat.format(Calendar.getInstance().getTime()));
+
+                    PreferencesUtil.setString(this, "turbidDuration", durationString);
                 }
 
                 String notificationEmails = AppPreferences.getNotificationEmails();
@@ -217,18 +233,18 @@ public class TimeLapseActivity extends BaseActivity {
                 String email = PreferencesUtil.getString(this, "username", "");
                 String password = PreferencesUtil.getString(this, "password", "");
                 if (!email.isEmpty() && !password.isEmpty() && !notificationEmails.isEmpty()) {
-                    sendEmail(emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
+                    sendEmail(testId, emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
                 }
             }
         }
     }
 
-    private void sendEmail(String body, File firstImage, File turbidImage,
+    private void sendEmail(String testId, String body, File firstImage, File turbidImage,
                            File lastImage, String from, String to, String password) {
         new Thread(() -> {
             try {
                 GMailSender sender = new GMailSender(from, password);
-                sender.sendMail("Coliform test: " + Calendar.getInstance().getTimeInMillis(),
+                sender.sendMail("Coliform test: " + testId,
                         body, firstImage, turbidImage, lastImage, from, to);
                 PreferencesUtil.setBoolean(this, ConstantKey.TURBID_EMAIL_SENT, true);
             } catch (Exception e) {
@@ -317,7 +333,7 @@ public class TimeLapseActivity extends BaseActivity {
         buttonStart.setOnClickListener(v -> {
 
             numberOfSamples = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
-                    "colif_NumberOfSamples", "1"));
+                    R.string.colif_numberOfSamplesKey, "1"));
 
             if (AppPreferences.useExternalCamera()) {
                 permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -330,6 +346,13 @@ public class TimeLapseActivity extends BaseActivity {
             }
         });
         textCountdown = findViewById(R.id.textCountdown);
+
+        if (AppPreferences.isDiagnosticMode()) {
+            textCountdown.setBackground(new ColorDrawable(
+                    ContextCompat.getColor(this, R.color.diagnostic)));
+            textInterval.setBackground(new ColorDrawable(
+                    ContextCompat.getColor(this, R.color.diagnostic)));
+        }
     }
 
     private void showAuthDialog() {
@@ -407,7 +430,7 @@ public class TimeLapseActivity extends BaseActivity {
         futureDate.add(Calendar.MILLISECOND, INITIAL_DELAY);
 
         interval = Integer.parseInt(PreferencesUtil.getString(CaddisflyApp.getApp(),
-                "colif_IntervalMinutes", "1"));
+                R.string.colif_intervalMinutesKey, "1"));
 
         textInterval.setText(String.format(Locale.getDefault(), "Done: %d of %d", 0, numberOfSamples));
 

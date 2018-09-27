@@ -1,5 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
+        android:dialogMessage="Test Id"
+        android:inputType="number"
+        android:key="@string/colif_testIdKey"
+        android:maxLength="10"
+        android:selectAllOnFocus="true"
+        android:title="Test Id" />
+    <EditTextPreference
         android:dialogMessage="Volume (ml)"
         android:inputType="number"
         android:key="@string/colif_volumeKey"
@@ -7,8 +14,7 @@
         android:selectAllOnFocus="true"
         android:title="Volume (ml)" />
     <EditTextPreference
-        android:capitalize="sentences"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:key="@string/colif_brothMediaKey"
         android:maxLength="25"
         android:selectAllOnFocus="true"
@@ -16,7 +22,7 @@
     <EditTextPreference
         android:defaultValue="5"
         android:dialogMessage="Interval in minutes (max 360)"
-        android:key="@string/colif_IntervalMinutesKey"
+        android:key="@string/colif_intervalMinutesKey"
         android:maxLength="3"
         android:numeric="integer"
         android:selectAllOnFocus="true"
@@ -24,7 +30,7 @@
     <EditTextPreference
         android:defaultValue="12"
         android:dialogMessage="Number of samples (max 100)"
-        android:key="@string/colif_NumberOfSamplesKey"
+        android:key="@string/colif_numberOfSamplesKey"
         android:maxLength="3"
         android:numeric="integer"
         android:selectAllOnFocus="true"

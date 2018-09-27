@@ -145,12 +145,12 @@ public class TimeLapseResultActivity extends BaseActivity {
         }
     }
 
-    private void sendEmail(String body, File firstImage, File turbidImage,
+    private void sendEmail(String testId, String body, File firstImage, File turbidImage,
                            File lastImage, String from, String to, String password) {
         new Thread(() -> {
             try {
                 GMailSender sender = new GMailSender(from, password);
-                sender.sendMail("Coliform test: " + Calendar.getInstance().getTimeInMillis(),
+                sender.sendMail("Coliform test: " + testId,
                         body, firstImage, turbidImage, lastImage, from, to);
             } catch (Exception e) {
                 Timber.e(e);
@@ -186,7 +186,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                         return;
                     }
 
-                    String reportDate = details[1];
+//                    String reportDate = details[1];
 
                     int blurCount = Integer.parseInt(details[3]);
 
@@ -245,19 +245,33 @@ public class TimeLapseResultActivity extends BaseActivity {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
             }
 
+            String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+
             if (emailTemplate != null) {
                 long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
                 String date = simpleDateFormat.format(new Date(startTime));
                 emailTemplate = emailTemplate.replace("{startTime}", date);
 
+                String testDuration;
                 long duration = Calendar.getInstance().getTimeInMillis() - startTime;
+                if (TimeUnit.MILLISECONDS.toHours(duration) > 0) {
+                    testDuration = String.format(Locale.US, "Duration: %s hours & %s minutes",
+                            TimeUnit.MILLISECONDS.toHours(duration),
+                            TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1) + 1);
+                } else {
+                    testDuration = String.format(Locale.US, "Duration: %s minutes",
+                            TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1) + 1);
+                }
 
-                durationString = String.format(Locale.US, "%02d:%02d Hours", TimeUnit.MILLISECONDS.toHours(duration),
-                        TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1));
+                durationString = PreferencesUtil.getString(this, "turbidDuration", "");
 
+                String broth = PreferencesUtil.getString(this, R.string.colif_brothMediaKey, "");
+
+                emailTemplate = emailTemplate.replace("{testDetails}", "test Id: " + testId + ", " + "Broth: " + broth);
                 emailTemplate = emailTemplate.replace("{detectionDuration}", durationString);
-                emailTemplate = emailTemplate.replace("{detectionTime}",
+                emailTemplate = emailTemplate.replace("{testDuration}", testDuration);
+                emailTemplate = emailTemplate.replace("{detectionTime}", "Completed at: " +
                         simpleDateFormat.format(Calendar.getInstance().getTime()));
             }
 
@@ -307,7 +321,7 @@ public class TimeLapseResultActivity extends BaseActivity {
             String email = PreferencesUtil.getString(this, "username", "");
             String password = PreferencesUtil.getString(this, "password", "");
             if (!email.isEmpty() && !password.isEmpty() && !notificationEmails.isEmpty()) {
-                sendEmail(emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
+                sendEmail(testId, emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
             }
         }
     }
