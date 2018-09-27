@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.SparseArray;
 import android.view.MenuItem;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.SensorConstants;
+import org.akvo.caddisfly.helper.TestConfigHelper;
 import org.akvo.caddisfly.model.Result;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.ui.BaseActivity;
+import org.json.JSONObject;
 
 public class TitrationTestActivity extends BaseActivity
         implements TitrationInputFragment.OnSubmitResultListener {
@@ -70,6 +73,7 @@ public class TitrationTestActivity extends BaseActivity
         testInfo.getResults().get(1).setResult(result2, 0, 0);
 
         Intent resultIntent = new Intent();
+        SparseArray<String> results = new SparseArray<>();
 
         for (int i = 0; i < testInfo.getResults().size(); i++) {
             Result result = testInfo.getResults().get(i);
@@ -84,7 +88,12 @@ public class TitrationTestActivity extends BaseActivity
                     result.getName().replace(" ", "_")
                             + "_" + SensorConstants.UNIT + testInfo.getResultSuffix(),
                     testInfo.getResults().get(0).getUnit());
+
+            results.append(result.getId(), result.getResult());
         }
+
+        JSONObject resultJson = TestConfigHelper.getJsonResult(testInfo, results, null, -1, null);
+        resultIntent.putExtra(SensorConstants.RESULT_JSON, resultJson.toString());
 
         setResult(Activity.RESULT_OK, resultIntent);
 
