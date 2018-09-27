@@ -108,15 +108,19 @@ public class ResultFragment extends Fragment {
                 String json = readStringFromResource(Objects.requireNonNull(getActivity()),
                         R.raw.quality_guide_ind);
 
+                b.safeInfoLayout.setVisibility(View.VISIBLE);
+
                 List<Standard> standards = new Gson().fromJson(json, QualityGuide.class).getStandards();
                 for (Standard standard : standards) {
                     if (standard.getUuid() != null && standard.getUuid().equalsIgnoreCase(testInfo.getUuid())) {
                         if (standard.getMax() != null && result.getResultValue() > standard.getMax()) {
-                            b.resultInfoLayout.setVisibility(View.VISIBLE);
+                            b.unsafeInfoLayout.setVisibility(View.VISIBLE);
+                            b.safeInfoLayout.setVisibility(View.GONE);
                         }
 
                         if (standard.getMin() != null && standard.getMin() < result.getResultValue()) {
-                            b.resultInfoLayout.setVisibility(View.VISIBLE);
+                            b.unsafeInfoLayout.setVisibility(View.VISIBLE);
+                            b.safeInfoLayout.setVisibility(View.GONE);
                         }
                         break;
                     }
