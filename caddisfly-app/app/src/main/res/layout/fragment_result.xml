@@ -26,14 +26,12 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:weightSum="100">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="30"
             android:orientation="vertical">
 
             <TextView
@@ -41,9 +39,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingBottom="3dp"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingBottom="3dp"
                 android:textColor="#fff"
                 android:textSize="32sp"
                 app:background="@{``}"
@@ -81,14 +79,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="-20dp"
+                android:layout_marginBottom="20dp"
                 android:textColor="#333"
                 android:textSize="20sp"
                 tools:text="mg/l" />
 
             <LinearLayout
-                android:id="@+id/resultInfoLayout"
+                android:id="@+id/unsafeInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/error_background"
@@ -96,14 +94,14 @@
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="Warning"
+                    android:text="@string/warning"
                     android:textAlignment="center"
                     android:textColor="@color/destructive"
                     android:textSize="16sp"
@@ -114,19 +112,49 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="Contamination is higher than the minimum safe level standard for drinking water."
+                    android:text="@string/water_not_safe_message"
                     android:textAlignment="center"
                     android:textColor="@color/destructive"
                     android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/safeInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="10dp"
+                android:background="#e2ffd6"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/low_risk_safe"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/water_safe_message"
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center_horizontal">
 
                 <Button
@@ -154,33 +182,10 @@
             android:id="@+id/dilutionLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="30"
             android:background="#e9e9e9"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:paddingBottom="5dp"
-                android:paddingTop="10dp"
-                android:text="@string/warning"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textMessage1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:textColor="#ededed"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="@string/highLevelsFound" />
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/textMessage2"
@@ -188,8 +193,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="6dp"
+                android:layout_marginRight="10dp"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="4dp"
                 android:text="@string/highLevelRecommendation"
@@ -201,13 +206,13 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:drawableStart="?backwardArrow"
                 android:onClick="onTestWithDilution"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:text="@string/testWithDilution"
                 android:textAlignment="textStart"
                 android:textColor="?linkTextColor"
