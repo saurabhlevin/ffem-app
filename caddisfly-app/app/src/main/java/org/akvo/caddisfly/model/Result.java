@@ -95,6 +95,8 @@ public class Result implements Parcelable {
     private boolean highLevelsFound;
     private int pivotIndex;
     private List<ColorItem> referenceColors = new ArrayList<>();
+    private String referenceName = "";
+    private Double referenceDistance;
     private Integer dilution;
 
     public Result() {
@@ -131,6 +133,8 @@ public class Result implements Parcelable {
         } else {
             referenceColors = null;
         }
+        referenceName = in.readString();
+        referenceDistance = in.readByte() == 0x00 ? null : in.readDouble();
         dilution = in.readByte() == 0x00 ? null : in.readInt();
     }
 
@@ -294,6 +298,13 @@ public class Result implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(referenceColors);
         }
+        dest.writeString(referenceName);
+        if (referenceDistance == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(referenceDistance);
+        }
         if (dilution == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -380,7 +391,7 @@ public class Result implements Parcelable {
         this.pivotIndex = pivotIndex;
         referenceColors.clear();
         if (references.size() > 0) {
-            double nearestDistance = Integer.MAX_VALUE;
+            referenceDistance = Double.MAX_VALUE;
             int referenceIndex = 0;
             for (int i = 0; i < references.size(); i++) {
                 String reference = references.get(i);
@@ -388,17 +399,21 @@ public class Result implements Parcelable {
                 int color1 = Color.parseColor("#" + colors[pivotIndex]);
                 int color2 = colorItems.get(pivotIndex).getRgbInt();
                 double distance = ColorUtil.getColorDistance(color1, color2);
-                if (distance < nearestDistance) {
-                    nearestDistance = distance;
+                if (distance < referenceDistance) {
+                    referenceDistance = distance;
                     referenceIndex = i;
                 }
             }
 
             String[] colors = references.get(referenceIndex).split(",");
             for (int i = 0; i < colors.length; i++) {
-                ColorItem colorItem = new ColorItem(colorItems.get(i).getValue());
-                colorItem.setRgbInt(Color.parseColor("#" + colors[i]));
-                referenceColors.add(colorItem);
+                if (i == colors.length - 1) {
+                    referenceName = colors[i];
+                } else {
+                    ColorItem colorItem = new ColorItem(colorItems.get(i).getValue());
+                    colorItem.setRgbInt(Color.parseColor("#" + colors[i]));
+                    referenceColors.add(colorItem);
+                }
             }
         }
     }
@@ -409,5 +424,13 @@ public class Result implements Parcelable {
 
     double calculateResult(double value) {
         return applyFormula(value, formula);
+    }
+
+    public String getReferenceName() {
+        return referenceName;
+    }
+
+    public Double getReferenceDistance() {
+        return referenceDistance;
     }
 }

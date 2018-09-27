@@ -109,12 +109,16 @@ public class ConfigTask extends AsyncTask<String, String, String> {
             pd.dismiss();
         }
 
-        File path = FileHelper.getFilesDir(fileType, "");
-        FileUtil.saveToFile(path, "tests.json", result);
+        try {
+            File path = FileHelper.getFilesDir(fileType, "");
+            FileUtil.saveToFile(path, "tests.json", result);
 
-        if (configSyncHandler != null) {
-            configSyncHandler.onDownloadFinished();
+            if (configSyncHandler != null) {
+                configSyncHandler.onDownloadFinished();
+            }
+            Toast.makeText(contextRef.get(), "Experimental tests synced", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(contextRef.get(), "Could not connect. Check data connection", Toast.LENGTH_LONG).show();
         }
-        Toast.makeText(contextRef.get(), "Experimental tests synced", Toast.LENGTH_LONG).show();
     }
 }

@@ -45,6 +45,7 @@ import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static org.akvo.caddisfly.common.ConstantKey.IS_INTERNAL;
 
@@ -66,7 +67,7 @@ public class CalibrationItemFragment extends Fragment {
      * Get instance of CalibrationItemFragment.
      *
      * @param testInfo   the test info
-     * @param isInternal
+     * @param isInternal if internal call
      * @return the fragment
      */
     public static CalibrationItemFragment newInstance(TestInfo testInfo, boolean isInternal) {
@@ -181,6 +182,15 @@ public class CalibrationItemFragment extends Fragment {
                         DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date(calibrationDetail.expiry))));
             } else {
                 binding.textSubtitle2.setText("");
+            }
+
+            String referenceName = testInfo.getResults().get(0).getReferenceName();
+            if (referenceName.isEmpty()) {
+                binding.referenceDetails.setVisibility(View.GONE);
+            } else {
+                binding.referenceDetails.setText(String.format(Locale.US, "%s, d:%.0f",
+                        testInfo.getResults().get(0).getReferenceName(),
+                        testInfo.getResults().get(0).getReferenceDistance()));
             }
         }
     }
