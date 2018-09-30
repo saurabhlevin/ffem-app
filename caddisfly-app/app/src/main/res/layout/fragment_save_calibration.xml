@@ -22,9 +22,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
     android:paddingStart="@dimen/activity_horizontal_margin"
     android:paddingTop="4dp"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
     tools:context=".sensor.chamber.SaveCalibrationDialogFragment">
 
     <EditText
@@ -32,48 +32,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
+        android:layout_marginTop="2dp"
         android:layout_marginRight="4dp"
+        android:layout_marginBottom="2dp"
         android:hint="@string/name"
+        android:importantForAutofill="no"
         android:inputType="textCapWords"
         android:maxLength="20"
-        android:textColor="?android:textColor" />
+        android:textColor="?android:textColor"
+        android:textSize="20sp"
+        tools:targetApi="o" />
 
 
     <!--<RelativeLayout-->
-        <!--android:id="@+id/layoutSpinner"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="20dp"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--android:gravity="top|left">-->
+    <!--android:id="@+id/layoutSpinner"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:gravity="top|left">-->
 
-        <!--<Spinner-->
-            <!--android:id="@+id/spinner"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+    <!--<Spinner-->
+    <!--android:id="@+id/spinner"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
 
-        <!--<android.widget.TextView-->
-            <!--android:id="@+id/textError"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_alignBottom="@+id/spinner"-->
-            <!--android:layout_alignEnd="@+id/spinner"-->
-            <!--android:layout_marginEnd="20dp"-->
-            <!--android:layout_marginTop="0dp"-->
-            <!--android:focusable="true"-->
-            <!--android:focusableInTouchMode="true"-->
-            <!--android:paddingTop="0dp" />-->
+    <!--<android.widget.TextView-->
+    <!--android:id="@+id/textError"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_alignBottom="@+id/spinner"-->
+    <!--android:layout_alignEnd="@+id/spinner"-->
+    <!--android:layout_marginEnd="20dp"-->
+    <!--android:layout_marginTop="0dp"-->
+    <!--android:focusable="true"-->
+    <!--android:focusableInTouchMode="true"-->
+    <!--android:paddingTop="0dp" />-->
     <!--</RelativeLayout>-->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:labelFor="@+id/editExpiryDate"
+        android:layout_marginEnd="4dp"
         android:text="@string/reagentExpiry"
-        android:textColor="#999999"
+        android:textColor="#696969"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -81,12 +85,14 @@
         android:id="@+id/editExpiryDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:focusable="false"
+        android:importantForAutofill="no"
+        android:textColor="?android:textColor"
         android:inputType="date"
-        android:paddingTop="3dp"
-        android:textColor="?android:textColor" />
+        android:textSize="20sp"
+        tools:targetApi="o" />
 
 
     <!--<TextView-->

@@ -29,17 +29,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
-                    <Button
+                    <TextView
                         android:layout_width="24dp"
                         android:layout_height="12dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginEnd="4dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="10dp"
                         android:background="#000"
                         android:clickable="false"
                         android:focusable="false" />
@@ -51,13 +51,13 @@
                         android:layout_marginEnd="5dp"
                         android:text="Reference" />
 
-                    <Button
+                    <TextView
                         android:layout_width="24dp"
                         android:layout_height="12dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginEnd="4dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="10dp"
                         android:background="#ff00ff"
                         android:clickable="false"
                         android:focusable="false" />
@@ -69,13 +69,13 @@
                         android:layout_marginEnd="5dp"
                         android:text="One-step" />
 
-                    <Button
+                    <TextView
                         android:layout_width="24dp"
                         android:layout_height="12dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginEnd="4dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="10dp"
                         android:background="#ff0000"
                         android:clickable="false"
                         android:focusable="false" />

@@ -46,7 +46,7 @@
         <item name="toolbarMargin">@dimen/toolbar_margin</item>
         <item name="progressTint">@color/yellow</item>
         <item name="progressTintInverse">@color/yellow</item>
-        <item name="linkTextColor">@android:color/holo_blue_dark</item>
+        <item name="linkTextColor">@color/link_text</item>
         <item name="forwardArrow">@drawable/ic_play_arrow_black_24dp</item>
         <item name="backwardArrow">@drawable/ic_flipped_play_arrow</item>
     </style>

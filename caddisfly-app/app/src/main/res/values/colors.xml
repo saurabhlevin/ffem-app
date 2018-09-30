@@ -33,6 +33,8 @@
 
     <color name="fab_button_background">#282828</color>
 
+    <color name="link_text">#0077af</color>
+
     <!-- Diagnostic -->
     <color name="diagnostic">#910228</color>
     <color name="diagnostic_status">#830023</color>

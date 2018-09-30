@@ -263,4 +263,7 @@
     <string name="close">Close</string>
     <string name="water_not_safe_message">Contamination is higher than the acceptable safe level standard for drinking water.</string>
     <string name="water_safe_message">Contamination is within the acceptable safe level standard for drinking water.</string>
+    <string name="edit_calibration_details">Edit calibration details</string>
+    <string name="select_reagent_expiry_date">Select reagent expiry date</string>
+    <string name="previous">Previous</string>
 </resources>

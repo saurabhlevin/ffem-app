@@ -35,6 +35,8 @@ import android.widget.EditText;
 
 import org.akvo.caddisfly.R;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -68,7 +70,8 @@ public class EditCustomDilution extends DialogFragment {
         final Activity activity = getActivity();
 
         @SuppressLint("InflateParams")
-        View view = activity.getLayoutInflater().inflate(R.layout.edit_custom_dilution, null);
+        View view = Objects.requireNonNull(activity).getLayoutInflater()
+                .inflate(R.layout.edit_custom_dilution, null);
 
         editDilutionFactor = view.findViewById(R.id.editDilutionFactor);
         editDilutionFactor.requestFocus();

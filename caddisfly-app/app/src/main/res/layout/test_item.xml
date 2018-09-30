@@ -56,11 +56,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:longClickable="false"
-        android:onClick="@{() ->  callback.onClick(testInfo)}">
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/textGroup"
@@ -68,10 +64,11 @@
             android:layout_height="30dp"
             android:background="@color/primary"
             android:clickable="false"
+            android:enabled="false"
             android:focusable="false"
             android:gravity="center_vertical"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@{testInfo.category}"
             android:textAllCaps="true"
             android:textColor="#fff"
@@ -88,9 +85,10 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:gravity="center_vertical"
             android:minHeight="70dp"
+            android:onClick="@{() ->  callback.onClick(testInfo)}"
             android:orientation="vertical"
-            android:paddingBottom="2dp"
             android:paddingTop="5dp"
+            android:paddingBottom="2dp"
             android:visibility="@{testInfo.isGroup ? View.GONE : View.VISIBLE}">
 
             <TextView
@@ -108,7 +106,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="2dp"
                 android:text="@{(testInfo.brand == null ? `` : testInfo.brand + `, `) + (testInfo.minMaxRange.isEmpty() ? `` : testInfo.minMaxRange)}"
-                android:textColor="#797979"
+                android:textColor="#737373"
                 android:textSize="14sp"
                 tools:text="BRAND 23426435" />
 
@@ -118,7 +116,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="7dp"
                 android:text="@{testInfo.uuid}"
-                android:textColor="#797979"
+                android:textColor="#737373"
                 android:textSize="14sp"
                 android:visibility="@{preferences.isDiagnosticMode() ? View.VISIBLE : View.GONE}"
                 tools:text="sdfg2-dfgsdf-hjkjh-dfghfg"
