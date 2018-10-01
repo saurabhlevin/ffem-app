@@ -396,22 +396,34 @@ public class Result implements Parcelable {
             for (int i = 0; i < references.size(); i++) {
                 String reference = references.get(i);
                 String[] colors = reference.split(",");
-                int color1 = Color.parseColor("#" + colors[pivotIndex]);
-                int color2 = colorItems.get(pivotIndex).getRgbInt();
-                double distance = ColorUtil.getColorDistance(color1, color2);
-                if (distance < referenceDistance) {
-                    referenceDistance = distance;
-                    referenceIndex = i;
+                if (colors.length > colorItems.size()) {
+                    try {
+                        int color1 = Color.parseColor("#" + colors[pivotIndex].trim());
+                        int color2 = colorItems.get(pivotIndex).getRgbInt();
+                        double distance = ColorUtil.getColorDistance(color1, color2);
+                        if (distance < referenceDistance) {
+                            referenceDistance = distance;
+                            referenceIndex = i;
+                        }
+                    } catch (Exception e) {
+                        referenceColors.clear();
+                        return;
+                    }
                 }
             }
 
             String[] colors = references.get(referenceIndex).split(",");
             for (int i = 0; i < colors.length; i++) {
                 if (i == colors.length - 1) {
-                    referenceName = colors[i];
+                    referenceName = colors[i].trim();
                 } else {
                     ColorItem colorItem = new ColorItem(colorItems.get(i).getValue());
-                    colorItem.setRgbInt(Color.parseColor("#" + colors[i]));
+                    try {
+                        colorItem.setRgbInt(Color.parseColor("#" + colors[i].trim()));
+                    } catch (Exception e) {
+                        referenceColors.clear();
+                        return;
+                    }
                     referenceColors.add(colorItem);
                 }
             }

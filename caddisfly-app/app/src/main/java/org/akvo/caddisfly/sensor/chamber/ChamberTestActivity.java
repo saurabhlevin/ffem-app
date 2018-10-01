@@ -40,8 +40,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.SparseArray;
 import android.support.v7.view.menu.MenuBuilder;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -234,6 +234,7 @@ public class ChamberTestActivity extends BaseActivity implements
             if (milliseconds <= new Date().getTime()) {
                 showEditCalibrationDetailsDialog(true);
             } else {
+                selectedCalibration = null;
                 (new Handler()).postDelayed(() -> {
                     runTestFragment.setCalibration(item);
                     setTitle(R.string.calibrate);
