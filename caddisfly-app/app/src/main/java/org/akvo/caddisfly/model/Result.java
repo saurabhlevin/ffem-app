@@ -97,7 +97,7 @@ public class Result implements Parcelable {
     private List<ColorItem> referenceColors = new ArrayList<>();
     private String referenceName = "";
     private Double referenceDistance;
-    private Integer dilution;
+    private Integer dilution = 0;
 
     public Result() {
     }

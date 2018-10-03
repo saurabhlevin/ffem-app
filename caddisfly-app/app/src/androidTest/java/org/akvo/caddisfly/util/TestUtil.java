@@ -24,9 +24,11 @@ import android.content.Context;
 import android.os.Build;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.action.GeneralClickAction;
 import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Tap;
+import android.support.test.espresso.util.HumanReadables;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
 import android.support.test.uiautomator.By;
@@ -60,7 +62,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.core.Is.is;
 
 /**
  * Utility functions for automated testing
@@ -343,4 +347,12 @@ public final class TestUtil {
         };
     }
 
+    public static ViewAssertion doesNotExistOrGone() {
+        return (view, noView) -> {
+            if (view != null && view.getVisibility() != View.GONE) {
+                assertThat("View is present in the hierarchy and not GONE: "
+                        + HumanReadables.describe(view), true, is(false));
+            }
+        };
+    }
 }

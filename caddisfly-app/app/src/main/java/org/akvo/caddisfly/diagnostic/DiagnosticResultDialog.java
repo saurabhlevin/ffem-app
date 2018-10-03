@@ -34,7 +34,7 @@ public class DiagnosticResultDialog extends DialogFragment {
      * Instance of dialog.
      *
      * @param testFailed          did test fail
-     * @param retryCount
+     * @param retryCount          count of retries
      * @param resultDetail        the result
      * @param oneStepResultDetail the one step result
      * @param resultDetails       the result details
@@ -115,9 +115,9 @@ public class DiagnosticResultDialog extends DialogFragment {
             } else {
                 getDialog().setTitle(R.string.result);
                 textResult.setText(String.format(Locale.getDefault(),
-                        "%.2f %s", result.getResult(), ""));
+                        "%.2f", result.getResult()));
                 textOneStepResult.setText(String.format(Locale.getDefault(),
-                        "%.2f %s", oneStepResult.getResult(), ""));
+                        "%.2f", oneStepResult.getResult()));
             }
         }
 

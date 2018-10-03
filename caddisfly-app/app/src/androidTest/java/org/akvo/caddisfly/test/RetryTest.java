@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -41,6 +40,8 @@ import static org.akvo.caddisfly.util.TestHelper.loadData;
 import static org.akvo.caddisfly.util.TestHelper.mCurrentLanguage;
 import static org.akvo.caddisfly.util.TestHelper.mDevice;
 import static org.akvo.caddisfly.util.TestHelper.takeScreenshot;
+import static org.akvo.caddisfly.util.TestUtil.clickListViewItem;
+import static org.akvo.caddisfly.util.TestUtil.doesNotExistOrGone;
 import static org.akvo.caddisfly.util.TestUtil.getText;
 import static org.akvo.caddisfly.util.TestUtil.sleep;
 
@@ -76,7 +77,23 @@ public class RetryTest {
 
     @Test
     @RequiresDevice
-    public void testStartRetryTest() {
+    public void testRetry() {
+        testRetryTest(false, false);
+    }
+
+    @Test
+    @RequiresDevice
+    public void testDiagnosticRetry() {
+        testRetryTest(true, false);
+    }
+
+    @Test
+    @RequiresDevice
+    public void testDiagnosticDebugRetry() {
+        testRetryTest(true, true);
+    }
+
+    public void testRetryTest(boolean useDiagnosticMode, boolean showDebugInfo) {
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -92,7 +109,13 @@ public class RetryTest {
 
         onView(withId(R.id.actionSettings)).perform(click());
 
-        leaveDiagnosticMode();
+        if (showDebugInfo) {
+            clickListViewItem("Show debug info");
+        }
+
+        if (!useDiagnosticMode) {
+            leaveDiagnosticMode();
+        }
 
         goToMainScreen();
 
@@ -117,7 +140,7 @@ public class RetryTest {
         sleep(((DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
                 * 1000);
 
-        onView(withText(R.string.retry)).check(doesNotExist());
+        onView(withText(R.string.retry)).check(doesNotExistOrGone());
 
         onView(withText(R.string.ok)).perform(click());
 
@@ -146,18 +169,20 @@ public class RetryTest {
         double result = Double.valueOf(resultString.replace(">", "").trim());
         assertTrue("Result is wrong", result > 3.9);
 
-        onView(withId(R.id.buttonAccept)).perform(click());
+
+        if (showDebugInfo) {
+            onView(withText(R.string.ok)).perform(click());
+        } else {
+            onView(withId(R.id.buttonAccept)).perform(click());
+        }
 
         mDevice.waitForIdle();
 
+        assertNotNull(mDevice.findObject(By.text("Soil Tests 1")));
+
+        assertNotNull(mDevice.findObject(By.text("pH")));
+
         assertNotNull(mDevice.findObject(By.text(resultString)));
 
-        mDevice.pressBack();
-
-        mDevice.pressBack();
-
-        mDevice.pressBack();
-
-        mDevice.pressBack();
     }
 }
