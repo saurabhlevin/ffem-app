@@ -574,13 +574,13 @@ public class ChamberTestActivity extends BaseActivity implements
 
                 fragmentManager.popBackStack();
 
+                if (testInfo.getDilutions().size() > 0) {
+                    fragmentManager.popBackStack();
+                }
+
                 if (AppPreferences.getShowDebugInfo()) {
 
                     SoundUtil.playShortResource(this, R.raw.err);
-
-                    if (testInfo.getDilutions().size() > 0) {
-                        fragmentManager.popBackStack();
-                    }
 
                     showDiagnosticResultDialog(true, resultDetail, oneStepResultDetail,
                             resultDetails, false);
