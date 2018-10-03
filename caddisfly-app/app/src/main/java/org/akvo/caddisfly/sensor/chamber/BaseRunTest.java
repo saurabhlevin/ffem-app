@@ -79,6 +79,7 @@ public class BaseRunTest extends Fragment implements RunTest {
     private TestInfo mTestInfo;
     private Calibration mCalibration;
     private int dilution = 1;
+    private int retryCount = 0;
     private Camera mCamera;
     private OnResultListener mListener;
     private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
@@ -250,7 +251,7 @@ public class BaseRunTest extends Fragment implements RunTest {
         countdown[0] = 0;
 
         // If the test has a time delay config then use that otherwise use standard delay
-        if (mTestInfo.getResults().get(0).getTimeDelay() > 10) {
+        if (mTestInfo.getResults().get(0).getTimeDelay() > 10 && retryCount < 1) {
             timeDelay = (int) Math.max(SHORT_DELAY, mTestInfo.getResults().get(0).getTimeDelay());
 
             binding.timeLayout.setVisibility(View.VISIBLE);
@@ -360,6 +361,11 @@ public class BaseRunTest extends Fragment implements RunTest {
     @Override
     public void setDilution(int dilution) {
         this.dilution = dilution;
+    }
+
+    @Override
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
     }
 
     protected void startRepeatingTask() {

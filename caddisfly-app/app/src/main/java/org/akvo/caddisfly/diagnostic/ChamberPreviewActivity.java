@@ -206,7 +206,7 @@ public class ChamberPreviewActivity extends BaseActivity implements
     private void showDiagnosticResultDialog(boolean testFailed, ResultDetail resultDetail,
                                             ArrayList<ResultDetail> resultDetails, boolean isCalibration) {
         DialogFragment resultFragment = DiagnosticResultDialog.newInstance(
-                testFailed, resultDetail, resultDetail, resultDetails, isCalibration);
+                testFailed, 0, resultDetail, resultDetail, resultDetails, isCalibration);
         final android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("gridDialog");
@@ -254,7 +254,7 @@ public class ChamberPreviewActivity extends BaseActivity implements
     }
 
     @Override
-    public void onDismissed() {
+    public void onDismissed(boolean retry) {
         finish();
     }
 }

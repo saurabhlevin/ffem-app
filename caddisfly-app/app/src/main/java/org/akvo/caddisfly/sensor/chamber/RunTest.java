@@ -26,4 +26,6 @@ public interface RunTest {
     void setCalibration(Calibration item);
 
     void setDilution(int dilution);
+
+    void setRetryCount(int retryCount);
 }
