@@ -53,7 +53,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.fail;
-import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
 import static org.akvo.caddisfly.util.TestHelper.gotoSurveyForm;
@@ -111,7 +110,7 @@ public class SurveyTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -165,7 +164,7 @@ public class SurveyTest {
     @RequiresDevice
     public void testStartASurvey() {
 
-        saveCalibration("TestValid", TestConstants.CUVETTE_TEST_ID_1);
+        saveCalibration("TestValid", TestConstants.IS_TEST_ID);
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -181,7 +180,7 @@ public class SurveyTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -201,7 +200,7 @@ public class SurveyTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
+        clickExternalSourceButton(TestConstants.IS_TEST_ID);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 

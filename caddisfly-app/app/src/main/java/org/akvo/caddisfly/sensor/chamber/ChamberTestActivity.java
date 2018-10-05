@@ -42,6 +42,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.view.menu.MenuBuilder;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -469,6 +470,13 @@ public class ChamberTestActivity extends BaseActivity implements
                                 loadDetails();
                                 PreferencesUtil.setDouble(this, "pivot_" + testInfo.getUuid(), testInfo.getPivotCalibration());
                                 loadDetails();
+
+                                Toast toast = Toast.makeText(this,
+                                        String.format(getString(R.string.calibrationLoaded), fileName),
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.BOTTOM, 0, 200);
+                                toast.show();
+
                             } catch (Exception ex) {
                                 AlertUtil.showError(context, R.string.error, getString(R.string.errorLoadingFile),
                                         null, R.string.ok,
