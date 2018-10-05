@@ -54,6 +54,9 @@
     <string name="stage_one"><b>Stage 1:</b></string>
     <string name="stage_two"><b>Stage 2:</b></string>
     <string name="analyze">Analyse</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="navigate_up">Navigate Up</string>
 
     <!--External-->
     <string name="sensor">Sensor</string>
@@ -105,7 +108,6 @@
 
     <string name="deviceConnected">Device connected</string>
     <string name="go">Go</string>
-    <string name="next">Next</string>
     <string name="saving">Saving</string>
     <string name="sensorDetails">Sensor Details</string>
     <string name="verifySensorDetails">Verify sensor details</string>
@@ -265,5 +267,4 @@
     <string name="water_safe_message">Contamination is within the acceptable safe level standard for drinking water.</string>
     <string name="edit_calibration_details">Edit calibration details</string>
     <string name="select_reagent_expiry_date">Select reagent expiry date</string>
-    <string name="previous">Previous</string>
 </resources>

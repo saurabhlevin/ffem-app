@@ -23,14 +23,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:padding="15dp"
-        android:text="@string/software_notices"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/navigate_up"
+            android:onClick="onHomeClick"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="16dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="16dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/software_notices"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/about_scrollview"
@@ -56,8 +75,8 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/apache_license_2"
                 android:textStyle="bold" />
 
@@ -96,8 +115,8 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/cca_license"
                 android:textStyle="bold" />
 
@@ -116,8 +135,8 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/eclipse_public_license"
                 android:textStyle="bold" />
 
@@ -136,8 +155,8 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/mit_license"
                 android:textStyle="bold" />
 

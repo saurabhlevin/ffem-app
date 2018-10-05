@@ -41,6 +41,8 @@ public class AboutActivity extends BaseActivity {
 
     private int clickCount = 0;
 
+    NoticesDialogFragment dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class AboutActivity extends BaseActivity {
      * Displays legal information.
      */
     public void onSoftwareNoticesClick(View view) {
-        NoticesDialogFragment dialog = NoticesDialogFragment.newInstance();
+        dialog = NoticesDialogFragment.newInstance();
         dialog.show(getFragmentManager(), "NoticesDialog");
     }
 
@@ -127,6 +129,12 @@ public class AboutActivity extends BaseActivity {
             if (findViewById(R.id.layoutDiagnostics).getVisibility() == View.VISIBLE) {
                 findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
             }
+        }
+    }
+
+    public void onHomeClick(View view) {
+        if (dialog != null) {
+            dialog.dismiss();
         }
     }
 }
