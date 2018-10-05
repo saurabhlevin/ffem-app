@@ -110,7 +110,7 @@ public class NavigationTest {
     @RequiresDevice
     public void testNavigateAll() {
 
-        saveCalibration("TestInvalid", TestConstants.CUVETTE_TEST_ID_1);
+        saveCalibration("TestInvalid", TestConstants.IS_TEST_ID);
 
         String path = Environment.getExternalStorageDirectory().getPath()
                 + "/" + BuildConfig.APPLICATION_ID + "/screenshots";
@@ -165,7 +165,7 @@ public class NavigationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -200,7 +200,7 @@ public class NavigationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         //Calibrate Swatches Screen
         takeScreenshot();
@@ -232,7 +232,7 @@ public class NavigationTest {
 
         //onView(withId(R.id.buttonStart)).perform(click());
 
-        saveCalibration("TestValid", TestConstants.CUVETTE_TEST_ID_1);
+        saveCalibration("TestValid", TestConstants.IS_TEST_ID);
 
         goToMainScreen();
 
@@ -254,7 +254,7 @@ public class NavigationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         onView(withId(R.id.menuLoad)).perform(click());
 
@@ -309,7 +309,7 @@ public class NavigationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
+        clickExternalSourceButton(TestConstants.IS_TEST_ID);
 
         onView(withId(R.id.button_prepare)).check(matches(isDisplayed()));
 
@@ -326,7 +326,7 @@ public class NavigationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
+        clickExternalSourceButton(TestConstants.IS_TEST_ID);
 
         onView(withText(R.string.testName)).check(matches(isDisplayed()));
 

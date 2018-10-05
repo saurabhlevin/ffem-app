@@ -119,6 +119,7 @@ public class ChamberTestActivity extends BaseActivity implements
     private AlertDialog alertDialogToBeDestroyed;
     private boolean testStarted;
     private int retryCount = 0;
+    boolean isInternal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +152,7 @@ public class ChamberTestActivity extends BaseActivity implements
                 start();
             } else {
                 setTitle(R.string.calibration);
-                boolean isInternal = getIntent().getBooleanExtra(IS_INTERNAL, true);
+                isInternal = getIntent().getBooleanExtra(IS_INTERNAL, true);
                 calibrationItemFragment = CalibrationItemFragment.newInstance(testInfo, isInternal);
                 goToFragment(calibrationItemFragment);
             }
@@ -747,54 +748,6 @@ public class ChamberTestActivity extends BaseActivity implements
         finish();
     }
 
-    /**
-     * Show an error message dialog.
-     *
-     * @param message the message to be displayed
-     * @param bitmap  any bitmap image to displayed along with error message
-     */
-    private void showError(String message, final Bitmap bitmap) {
-
-        stopScreenPinning();
-
-        SoundUtil.playShortResource(this, R.raw.err);
-
-        releaseResources();
-
-        if (retryCount < 1) {
-            alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
-                    (dialogInterface, i) -> {
-
-                        retryCount++;
-
-                        if (getIntent().getBooleanExtra(ConstantKey.RUN_TEST, false)) {
-                            runTest();
-                        } else {
-                            start();
-                        }
-                    },
-                    (dialogInterface, i) -> {
-                        stopScreenPinning();
-                        dialogInterface.dismiss();
-                        releaseResources();
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }, null
-            );
-        } else {
-            alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.ok,
-                    null,
-                    (dialogInterface, i) -> {
-                        stopScreenPinning();
-                        dialogInterface.dismiss();
-                        releaseResources();
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }, null
-            );
-        }
-    }
-
     private void releaseResources() {
         if (alertDialogToBeDestroyed != null) {
             alertDialogToBeDestroyed.dismiss();
@@ -916,6 +869,52 @@ public class ChamberTestActivity extends BaseActivity implements
         return false;
     }
 
+    /**
+     * Show an error message dialog.
+     *
+     * @param message the message to be displayed
+     * @param bitmap  any bitmap image to displayed along with error message
+     */
+    private void showError(String message, final Bitmap bitmap) {
+
+        stopScreenPinning();
+
+        SoundUtil.playShortResource(this, R.raw.err);
+
+        releaseResources();
+
+        if (retryCount < 1) {
+            alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.retry,
+                    (dialogInterface, i) -> {
+                        retryCount++;
+                        runTest();
+                    },
+                    (dialogInterface, i) -> {
+                        stopScreenPinning();
+                        dialogInterface.dismiss();
+                        releaseResources();
+                        setResult(Activity.RESULT_CANCELED);
+                        if (!isInternal) {
+                            finish();
+                        }
+                    }, null
+            );
+        } else {
+            alertDialogToBeDestroyed = AlertUtil.showError(this, R.string.error, message, bitmap, R.string.ok,
+                    null,
+                    (dialogInterface, i) -> {
+                        stopScreenPinning();
+                        dialogInterface.dismiss();
+                        releaseResources();
+                        setResult(Activity.RESULT_CANCELED);
+                        if (!isInternal) {
+                            finish();
+                        }
+                    }, null
+            );
+        }
+    }
+
     @Override
     public void onDismissed(boolean retry) {
         testStarted = false;
@@ -932,9 +931,10 @@ public class ChamberTestActivity extends BaseActivity implements
                 finish();
             }
         } else {
-            sendResult();
-
-            finish();
+            if (!isInternal) {
+                sendResult();
+                finish();
+            }
         }
     }
 }

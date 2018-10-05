@@ -35,14 +35,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.akvo.caddisfly.common.ChamberTestConfig.DELAY_BETWEEN_SAMPLING;
-import static org.akvo.caddisfly.common.TestConstants.CUVETTE_TEST_ID_1;
-import static org.akvo.caddisfly.common.TestConstants.CUVETTE_TEST_TIME_DELAY;
-import static org.akvo.caddisfly.common.TestConstants.EXPECTED_RESULT;
+import static org.akvo.caddisfly.common.TestConstants.IS_EXPECTED_RESULT;
 import static org.akvo.caddisfly.common.TestConstants.IS_HAS_DILUTION;
+import static org.akvo.caddisfly.common.TestConstants.IS_START_DELAY;
+import static org.akvo.caddisfly.common.TestConstants.IS_TEST_GROUP;
+import static org.akvo.caddisfly.common.TestConstants.IS_TEST_ID;
+import static org.akvo.caddisfly.common.TestConstants.IS_TEST_NAME;
 import static org.akvo.caddisfly.common.TestConstants.IS_TEST_TYPE;
-import static org.akvo.caddisfly.common.TestConstants.TEST_GROUP;
-import static org.akvo.caddisfly.common.TestConstants.TEST_NAME;
-import static org.akvo.caddisfly.common.TestConstants.TEST_START_DELAY;
+import static org.akvo.caddisfly.common.TestConstants.IS_TIME_DELAY;
 import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
@@ -93,35 +93,42 @@ public class RetryTest {
     @Test
     @RequiresDevice
     public void testRetry() {
-        runTest(CUVETTE_TEST_ID_1, EXPECTED_RESULT, false,
+        runTest(IS_TEST_ID, IS_EXPECTED_RESULT, false,
                 false, IS_HAS_DILUTION, true);
     }
 
     @Test
     @RequiresDevice
     public void testDilutionRetry() {
-        runTest(CUVETTE_TEST_ID_1, EXPECTED_RESULT, false,
+        runTest(IS_TEST_ID, IS_EXPECTED_RESULT, false,
                 false, IS_HAS_DILUTION, true);
     }
 
     @Test
     @RequiresDevice
     public void testDiagnosticRetry() {
-        runTest(CUVETTE_TEST_ID_1, EXPECTED_RESULT, true,
+        runTest(IS_TEST_ID, IS_EXPECTED_RESULT, true,
                 false, IS_HAS_DILUTION, true);
     }
 
     @Test
     @RequiresDevice
     public void testDiagnosticDebugRetry() {
-        runTest(CUVETTE_TEST_ID_1, EXPECTED_RESULT, true,
+        runTest(IS_TEST_ID, IS_EXPECTED_RESULT, true,
                 true, IS_HAS_DILUTION, true);
     }
 
     @Test
     @RequiresDevice
     public void testInternalRetry() {
-        runTest(CUVETTE_TEST_ID_1, EXPECTED_RESULT, true,
+        runTest(IS_TEST_ID, IS_EXPECTED_RESULT, true,
+                false, IS_HAS_DILUTION, false);
+    }
+
+    @Test
+    @RequiresDevice
+    public void testInternalDebugRetry() {
+        runTest(IS_TEST_ID, IS_EXPECTED_RESULT, true,
                 true, IS_HAS_DILUTION, false);
     }
 
@@ -154,7 +161,7 @@ public class RetryTest {
 
         goToMainScreen();
 
-        if (!isExternal) {
+        if (isExternal) {
 
             gotoSurveyForm();
 
@@ -182,7 +189,7 @@ public class RetryTest {
                     childAtPosition(
                             withClassName(is("android.widget.LinearLayout")),
                             0))).perform(actionOnItemAtPosition(
-                    TestConstants.TEST_INDEX, click()));
+                    TestConstants.IS_TEST_INDEX, click()));
 
             onView(withId(R.id.buttonRunTest)).perform(click());
         }
@@ -201,7 +208,7 @@ public class RetryTest {
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+        sleep((IS_START_DELAY + IS_TIME_DELAY
                 + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
                 * 1000);
 
@@ -218,12 +225,6 @@ public class RetryTest {
             onView(withId(R.id.button_prepare)).perform(click());
 
         } else {
-
-            onView(allOf(withId(R.id.list_types),
-                    childAtPosition(
-                            withClassName(is("android.widget.LinearLayout")),
-                            0))).perform(actionOnItemAtPosition(
-                    TestConstants.TEST_INDEX, click()));
 
             onView(withId(R.id.buttonRunTest)).perform(click());
         }
@@ -244,7 +245,7 @@ public class RetryTest {
 
         Log.i(TAG, "Test 2");
 
-        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+        sleep((IS_START_DELAY + IS_TIME_DELAY
                 + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
                 * 1000);
 
@@ -252,7 +253,7 @@ public class RetryTest {
 
         Log.i(TAG, "Test 3");
 
-        sleep((TEST_START_DELAY +
+        sleep((IS_START_DELAY +
                 (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
                 * 1000);
 
@@ -273,12 +274,6 @@ public class RetryTest {
             onView(withId(R.id.button_prepare)).perform(click());
 
         } else {
-
-            onView(allOf(withId(R.id.list_types),
-                    childAtPosition(
-                            withClassName(is("android.widget.LinearLayout")),
-                            0))).perform(actionOnItemAtPosition(
-                    TestConstants.TEST_INDEX, click()));
 
             onView(withId(R.id.buttonRunTest)).perform(click());
         }
@@ -305,7 +300,7 @@ public class RetryTest {
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
-        sleep((TEST_START_DELAY + CUVETTE_TEST_TIME_DELAY
+        sleep((IS_START_DELAY + IS_TIME_DELAY
                 + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
                 * 1000);
 
@@ -324,9 +319,9 @@ public class RetryTest {
 
             mDevice.waitForIdle();
 
-            assertNotNull(mDevice.findObject(By.text(TEST_GROUP)));
+            assertNotNull(mDevice.findObject(By.text(IS_TEST_GROUP)));
 
-            assertNotNull(mDevice.findObject(By.text(TEST_NAME)));
+            assertNotNull(mDevice.findObject(By.text(IS_TEST_NAME)));
 
             assertNotNull(mDevice.findObject(By.text(resultString)));
         }

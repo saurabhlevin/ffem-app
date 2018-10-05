@@ -109,7 +109,7 @@ public class CalibrationTest {
     @Ignore
     public void testOutOfSequence() {
 
-        saveCalibration("OutOfSequence", TestConstants.CUVETTE_TEST_ID_1);
+        saveCalibration("OutOfSequence", TestConstants.IS_TEST_ID);
 
         goToMainScreen();
 
@@ -129,7 +129,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -191,7 +191,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         if (TestUtil.isEmulator()) {
 
@@ -217,7 +217,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -262,7 +262,7 @@ public class CalibrationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
+        clickExternalSourceButton(TestConstants.IS_TEST_ID);
 
         sleep(500);
 
@@ -288,7 +288,7 @@ public class CalibrationTest {
                 childAtPosition(
                         withClassName(is("android.widget.LinearLayout")),
                         0))).perform(actionOnItemAtPosition(
-                TestConstants.TEST_INDEX, click()));
+                TestConstants.IS_TEST_INDEX, click()));
 
         onView(withId(R.id.fabEditCalibration)).perform(click());
 
@@ -312,7 +312,7 @@ public class CalibrationTest {
 
         gotoSurveyForm();
 
-        clickExternalSourceButton(TestConstants.CUVETTE_TEST_ID_1);
+        clickExternalSourceButton(TestConstants.IS_TEST_ID);
 
         sleep(500);
 
