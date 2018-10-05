@@ -200,7 +200,7 @@
     <string name="dipEcSensorInSolution">Dip EC Sensor in the fluid and press Go</string>
     <string name="errorCalibrationExpired">Calibration is past its reagent expiry date</string>
     <string name="orderFreshBatch">Please order a fresh batch of reagent and recalibrate</string>
-    <string name="highLevelRecommendation">Note: High level of contamination found, it is recommended to test with dilution</string>
+    <string name="highLevelRecommendation">Retesting with dilution is recommended as level of contamination is high.</string>
     <string name="prepareSolutionsForCalibration">Prepare 6 solutions with these EC values</string>
 
     <!--Bluetooth-->
