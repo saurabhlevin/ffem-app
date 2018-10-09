@@ -49,6 +49,7 @@
         <item name="linkTextColor">@color/link_text</item>
         <item name="forwardArrow">@drawable/ic_play_arrow_black_24dp</item>
         <item name="backwardArrow">@drawable/ic_flipped_play_arrow</item>
+        <item name="categoryTitle">@color/categoryTitle</item>
     </style>
 
     <style name="AppTheme.Green" parent="Theme.AppCompat.Light.NoActionBar">
@@ -76,6 +77,7 @@
         <item name="linkTextColor">@color/link_text_2</item>
         <item name="forwardArrow">@drawable/ic_play_arrow_black_24dp_2</item>
         <item name="backwardArrow">@drawable/ic_flipped_play_arrow_2</item>
+        <item name="categoryTitle">@color/accent</item>
     </style>
 
 </resources>

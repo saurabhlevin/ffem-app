@@ -45,7 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTheme();
-        changeActionBarStyleBasedOnCurrentMode();
     }
 
     private void updateTheme() {

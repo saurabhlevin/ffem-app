@@ -35,6 +35,7 @@
         <attr name="progressTintInverse" format="color" />
         <attr name="forwardArrow" format="color" />
         <attr name="backwardArrow" format="color" />
+        <attr name="categoryTitle" format="color" />
     </declare-styleable>
 
     <declare-styleable name="TimerView">
