@@ -42,10 +42,8 @@ public class SettingsActivity extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ScrollView mScrollView;
-    private int mScrollPosition;
 
     private void removeAllFragments() {
-        findViewById(R.id.layoutGeneral).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnosticsOptions).setVisibility(View.GONE);
         findViewById(R.id.layoutDebugging).setVisibility(View.GONE);
@@ -79,16 +77,11 @@ public class SettingsActivity extends BaseActivity
 
         setContentView(R.layout.activity_settings);
 
-
         getFragmentManager().beginTransaction()
                 .replace(R.id.layoutOther, new OtherPreferenceFragment())
                 .commit();
 
         if (AppPreferences.isDiagnosticMode()) {
-
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.layoutGeneral, new GeneralPreferenceFragment())
-                    .commit();
 
             getFragmentManager().beginTransaction()
                     .add(R.id.layoutDiagnostics, new DiagnosticPreferenceFragment())
@@ -190,14 +183,4 @@ public class SettingsActivity extends BaseActivity
         PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext())
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        mScrollPosition = PreferencesUtil.getInt(this, "settingsScrollPosition", 0);
-
-        mScrollView.post(() -> mScrollView.scrollTo(0, mScrollPosition));
-    }
-
 }

@@ -22,6 +22,7 @@ package org.akvo.caddisfly.preference;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
@@ -64,18 +65,6 @@ public class TestingPreferenceFragment extends PreferenceFragment {
                 return true;
             });
         }
-
-        Preference nextUpdateCheckPreference = findPreference(getString(R.string.nextUpdateCheckKey));
-        if (nextUpdateCheckPreference != null) {
-            if (!ApkHelper.isNonStoreVersion(getActivity())) {
-                long nextUpdateTime = PreferencesUtil.getLong(getActivity(), ConstantKey.NEXT_UPDATE_CHECK);
-                String dateString = DateFormat.format("dd/MMM/yyyy hh:mm", new Date(nextUpdateTime)).toString();
-                nextUpdateCheckPreference.setSummary(dateString);
-            } else {
-                nextUpdateCheckPreference.setSummary("Not installed from Play store");
-            }
-        }
-
         return view;
     }
 
@@ -92,11 +81,18 @@ public class TestingPreferenceFragment extends PreferenceFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         list = view.findViewById(android.R.id.list);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ListViewUtil.setListViewHeightBasedOnChildren(list, 40);
+        (new Handler()).postDelayed(() -> {
+            Preference nextUpdateCheckPreference = findPreference(getString(R.string.nextUpdateCheckKey));
+            if (nextUpdateCheckPreference != null) {
+                if (!ApkHelper.isNonStoreVersion(getActivity())) {
+                    long nextUpdateTime = PreferencesUtil.getLong(getActivity(), ConstantKey.NEXT_UPDATE_CHECK);
+                    String dateString = DateFormat.format("dd/MMM/yyyy hh:mm", new Date(nextUpdateTime)).toString();
+                    nextUpdateCheckPreference.setSummary(dateString);
+                } else {
+                    nextUpdateCheckPreference.setSummary("Not installed from Play store");
+                }
+            }
+            ListViewUtil.setListViewHeightBasedOnChildren(list, 40);
+        }, 200);
     }
 }

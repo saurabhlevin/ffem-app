@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
@@ -64,11 +65,7 @@ public class DebuggingPreferenceFragment extends PreferenceFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         list = view.findViewById(android.R.id.list);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ListViewUtil.setListViewHeightBasedOnChildren(list, 0);
+        (new Handler()).postDelayed(() -> ListViewUtil
+                .setListViewHeightBasedOnChildren(list, 0), 200);
     }
 }

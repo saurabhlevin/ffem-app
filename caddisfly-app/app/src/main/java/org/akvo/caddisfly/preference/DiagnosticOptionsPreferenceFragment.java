@@ -22,6 +22,7 @@ package org.akvo.caddisfly.preference;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -58,11 +59,7 @@ public class DiagnosticOptionsPreferenceFragment extends PreferenceFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         list = view.findViewById(android.R.id.list);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ListViewUtil.setListViewHeightBasedOnChildren(list, 0);
+        (new Handler()).postDelayed(() -> ListViewUtil
+                .setListViewHeightBasedOnChildren(list, 0), 200);
     }
 }

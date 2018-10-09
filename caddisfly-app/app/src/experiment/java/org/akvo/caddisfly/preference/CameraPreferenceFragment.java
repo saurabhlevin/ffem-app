@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -50,14 +51,6 @@ public class CameraPreferenceFragment extends PreferenceFragment {
         permissionsDelegate = new PermissionsDelegate(getActivity());
 
         view.setBackgroundColor(Color.rgb(255, 240, 220));
-
-        setupCameraPreviewPreference();
-
-        setupZoomPreference();
-
-        setupOffsetPreference();
-
-        setupCameraPreference();
 
         return view;
     }
@@ -169,16 +162,21 @@ public class CameraPreferenceFragment extends PreferenceFragment {
                 (ResolutionListPreference) findPreference(getString(R.string.cameraResolutionKey));
 
         if (resolutionListPreference != null) {
+
             String resolution = PreferenceManager.getDefaultSharedPreferences(this.getActivity())
                     .getString(getString(R.string.cameraResolutionKey), "640-480");
 
             resolutionListPreference.setSummary(String.valueOf(resolution));
-
-            resolutionListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                resolutionListPreference.setSummary(String.valueOf(newValue));
-                PreferencesUtil.setString(getActivity(), R.string.cameraResolutionKey, newValue.toString());
-                return false;
-            });
+            if (resolutionListPreference.getEntries() == null) {
+                resolutionListPreference.setShouldDisableView(true);
+                resolutionListPreference.setEnabled(false);
+            } else {
+                resolutionListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                    resolutionListPreference.setSummary(String.valueOf(newValue));
+                    PreferencesUtil.setString(getActivity(), R.string.cameraResolutionKey, newValue.toString());
+                    return false;
+                });
+            }
         }
     }
 
@@ -186,12 +184,19 @@ public class CameraPreferenceFragment extends PreferenceFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         list = view.findViewById(android.R.id.list);
-    }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ListViewUtil.setListViewHeightBasedOnChildren(list, 0);
+        (new Handler()).postDelayed(() -> {
+            setupCameraPreviewPreference();
+
+            setupZoomPreference();
+
+            setupOffsetPreference();
+
+            setupCameraPreference();
+
+            ListViewUtil.setListViewHeightBasedOnChildren(list, 0);
+
+        }, 200);
     }
 
     @Override
