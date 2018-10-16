@@ -135,6 +135,8 @@ public final class TestHelper {
         addString("electricalConductivity", "Water - Electrical Conductivity", res.getString(R.string.electricalConductivity));
         addString("next", "Next", res.getString(R.string.next));
         addString(TestConstant.GO_TO_TEST, "Launch", res.getString(R.string.launch));
+        addString("soilRange", "0 - 125 mg/l (Up to 625+ with dilution)",
+                "0 - 125 mg/l (कमजोर पड़ने के साथ 625+ तक)");
         // Restore device-specific locale
         new Resources(assets, metrics, currentResources.getConfiguration());
 

@@ -135,7 +135,7 @@ public class StriptestInstructions {
                 .check(matches(isDisplayed()));
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button_instructions), withText("Instructions"),
+                allOf(withId(R.id.button_instructions), withText(R.string.instructions),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -161,7 +161,7 @@ public class StriptestInstructions {
                 .perform(swipeLeft());
 
         ViewInteraction appCompatImageButton = onView(
-                allOf(withContentDescription("Navigate up"),
+                allOf(withContentDescription(R.string.navigate_up),
                         withParent(withId(R.id.toolbar)),
                         isDisplayed()));
         appCompatImageButton.perform(click());
@@ -187,7 +187,7 @@ public class StriptestInstructions {
         button1.check(matches(isDisplayed()));
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.button_instructions), withText("Instructions"),
+                allOf(withId(R.id.button_instructions), withText(R.string.instructions),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -218,7 +218,7 @@ public class StriptestInstructions {
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
 
-        onView(allOf(withContentDescription("Navigate up"),
+        onView(allOf(withContentDescription(R.string.navigate_up),
                 withParent(withId(R.id.toolbar)),
                 isDisplayed())).perform(click());
 
