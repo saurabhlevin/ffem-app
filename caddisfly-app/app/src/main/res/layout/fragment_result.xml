@@ -41,9 +41,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingBottom="3dp"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingBottom="3dp"
                 android:textColor="#fff"
                 android:textSize="32sp"
                 app:background="@{``}"
@@ -81,8 +81,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="-20dp"
+                android:layout_marginBottom="20dp"
                 android:textColor="#333"
                 android:textSize="20sp"
                 tools:text="mg/l" />
@@ -90,10 +90,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center_horizontal">
 
                 <Button
@@ -125,38 +125,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:paddingBottom="5dp"
-                android:paddingTop="10dp"
-                android:text="@string/warning"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textMessage1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:textColor="#ededed"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="@string/highLevelsFound" />
-
-            <TextView
                 android:id="@+id/textMessage2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="6dp"
-                android:gravity="center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
                 android:lineSpacingExtra="4dp"
                 android:text="@string/highLevelRecommendation"
                 android:textColor="#444"
@@ -167,13 +141,13 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="16dp"
                 android:drawableStart="@drawable/ic_flipped_play_arrow"
                 android:onClick="onTestWithDilution"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:text="@string/testWithDilution"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_blue_dark"

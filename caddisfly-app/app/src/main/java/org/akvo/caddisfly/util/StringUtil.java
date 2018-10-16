@@ -130,7 +130,7 @@ public final class StringUtil {
                 String finalTopic = topic;
                 ClickableSpan clickableSpan = new ClickableSpan() {
                     @Override
-                    public void onClick(View textView) {
+                    public void onClick(@NonNull View textView) {
                         if (finalTopic.equalsIgnoreCase("sulfide")) {
                             DialogFragment newFragment = new SulfideDialogFragment();
                             newFragment.show(context.getSupportFragmentManager(), "sulfideDialog");
@@ -141,9 +141,10 @@ public final class StringUtil {
                     }
 
                     @Override
-                    public void updateDrawState(TextPaint ds) {
+                    public void updateDrawState(@NonNull TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
+                        ds.setColor(context.getResources().getColor(R.color.links));
                     }
                 };
                 builder.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

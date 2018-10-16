@@ -21,10 +21,12 @@
 
     <string-array name="languages">
         <item>English</item>
+        <item>Hindi</item>
     </string-array>
 
     <string-array name="language_codes">
         <item>en</item>
+        <item>hi</item>
     </string-array>
 
     <string name="saveImages">Save images and data</string>
@@ -36,7 +38,7 @@
     <string name="number_3">3.</string>
     <string name="number_4">4.</string>
     <string name="number_5">5.</string>
-    <string name="number_6">5.</string>
+    <string name="number_6">6.</string>
 
     <!--paths to assets-->
     <string name="striptest_images">images/brand</string>
@@ -130,12 +132,5 @@
     <string name="testing">Testing</string>
     <string name="camera">Camera</string>
     <string name="waterCalibrate">Water - Calibrate</string>
-
-    <string-array name="cuvettes">
-        <item>Cuvette Type</item>
-        <item>Borosil Bottle</item>
-        <item>Old Test Chamber</item>
-        <item>Cuvette Other</item>
-    </string-array>
 
 </resources>

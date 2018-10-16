@@ -34,6 +34,7 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -66,8 +67,8 @@
             android:clickable="false"
             android:focusable="false"
             android:gravity="center_vertical"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@{testInfo.category}"
             android:textAllCaps="true"
             android:textColor="#fff"
@@ -83,8 +84,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:orientation="vertical"
-            android:paddingBottom="2dp"
             android:paddingTop="5dp"
+            android:paddingBottom="2dp"
             android:visibility="@{testInfo.isGroup ? View.GONE : View.VISIBLE}">
 
             <TextView
@@ -101,9 +102,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingBottom="7dp"
-                android:text="@{(testInfo.brand == null ? `` : testInfo.brand + `, `) + (testInfo.minMaxRange.isEmpty() ? `` : testInfo.minMaxRange)}"
                 android:textColor="#797979"
                 android:textSize="14sp"
+                app:testSubtitle="@{testInfo}"
                 tools:text="BRAND 23426435" />
 
         </LinearLayout>

@@ -43,7 +43,7 @@ public class CalibrationResultDialog extends DialogFragment {
 
         final View view = inflater.inflate(R.layout.dialog_calibration_result, container, false);
 
-        getDialog().setTitle("Calibrated");
+        getDialog().setTitle(R.string.calibrated);
 
         Button buttonColorExtract = view.findViewById(R.id.buttonColorExtract);
         TextView textValue = view.findViewById(R.id.textValue);
