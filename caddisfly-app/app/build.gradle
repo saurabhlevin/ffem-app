@@ -8,9 +8,9 @@ android {
         applicationId "io.ffem"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 236
-        versionName "Beta 1.2.1"
-        resConfigs "en", "en_US"
+        versionCode 237
+        versionName "Beta 1.3"
+        resConfigs "en", "en_US", "hi"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -163,10 +163,10 @@ dependencies {
 
     // Firebase (Experiment Flavor)
 //    experimentImplementation 'com.android.support:multidex:1.0.3'
-    experimentImplementation 'com.google.firebase:firebase-core:16.0.3'
-    experimentImplementation 'com.google.firebase:firebase-database:16.0.2'
-    experimentImplementation 'com.google.firebase:firebase-firestore:17.1.0'
-    experimentImplementation 'com.google.firebase:firebase-storage:16.0.2'
-    experimentImplementation 'com.google.firebase:firebase-auth:16.0.3'
+    experimentImplementation 'com.google.firebase:firebase-core:16.0.4'
+    experimentImplementation 'com.google.firebase:firebase-database:16.0.3'
+    experimentImplementation 'com.google.firebase:firebase-firestore:17.1.1'
+    experimentImplementation 'com.google.firebase:firebase-storage:16.0.3'
+    experimentImplementation 'com.google.firebase:firebase-auth:16.0.4'
 }
 //apply plugin: 'com.google.gms.google-services'

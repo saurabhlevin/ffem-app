@@ -59,6 +59,24 @@ public class CaddisflyApp extends BaseApplication {
         }
     };
 
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN quality INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN zoom INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN resWidth INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN resHeight INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE Calibration" + " ADD COLUMN centerOffset INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE CalibrationDetail" + " ADD COLUMN fileName TEXT");
+        }
+    };
+
     private static final String DATABASE_NAME = "calibration";
     private static CalibrationDatabase database;
     private static CaddisflyApp app; // Singleton
@@ -116,7 +134,7 @@ public class CaddisflyApp extends BaseApplication {
         database = Room.databaseBuilder(getApplicationContext(),
                 CalibrationDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries()
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .build();
     }
 
