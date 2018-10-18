@@ -165,4 +165,9 @@
     <string name="versionExpired">Version expired</string>
     <string name="thisVersionHasExpired">This version of the app has expired.</string>
     <string name="uninstallAndInstallFromStore">Please uninstall and then install the latest version from Play Store.</string>
+
+    <string name="customDilution">Custom Dilution</string>
+    <string name="enterDilutionFactor">Enter Dilution Factor</string>
+    <string name="errorLoadingConfiguration">Could not load configuration information</string>
+    <string name="cameraAndLocationPermissions">Camera &amp; location permissions are required</string>
 </resources>

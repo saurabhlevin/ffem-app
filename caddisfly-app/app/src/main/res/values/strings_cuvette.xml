@@ -56,13 +56,7 @@
     <string name="selectDilution">Select amount of dilution</string>
     <string name="noDilution">No Dilution</string>
     <string name="timesDilution" tools:ignore="PluralsCandidate">%1$d Times Dilution</string>
-    <string name="customDilution">Custom Dilution</string>
-    <string name="enterDilutionFactor">Enter Dilution Factor</string>
-
-    <!-- Calibration Screen -->
-    <string name="errorLoadingConfiguration">Could not load configuration information</string>
     <string name="calibrateWithNewReagent">Recalibrate with fresh reagent</string>
-
     <!-- Test Progress Screen -->
     <string name="placeDevice">Place device face down on a flat surface</string>
     <string name="errorTestInterrupted">Test was interrupted.</string>
@@ -78,7 +72,6 @@
     <!-- Permission -->
     <string name="storagePermission">Storage permission is required</string>
     <string name="cameraAndStoragePermissions">Camera &amp; storage permissions are required</string>
-    <string name="cameraAndLocationPermissions">Camera &amp; location permissions are required</string>
     <!-- Alerts -->
     <string name="cannotStartTest">Cannot start test</string>
     <string name="errorTestNotAvailable">Requested test is not available</string>
@@ -103,7 +96,7 @@
     <string name="emailSupport">Email support</string>
     <string name="send_details_to_support">Send details to support for assistance</string>
     <string name="if_you_need_assistance">Send information to our support team to help provide you with assistance in using the app.</string>
-    <string name="select_email_app">Please select your email app in the next step and send the auto generated email.</string>
+    <string name="select_email_app">Please select your email app in the next step and send the generated email.</string>
     <string name="create_support_email">Create Support Email</string>
     <string name="creatingMessage">Creating message</string>
     <!-- Instructions -->
@@ -126,7 +119,7 @@
     <!-- About Screen -->
     <string name="copyrightMessage">Copyright © ffem</string>
     <string name="legalInformation">Legal Information</string>
-    <!--Software notices-->
+    <!-- Software notices -->
     <string name="software_notices">Software Notices</string>
     <string name="software_incorporates_material">This software incorporates material from the projects listed below</string>
     <string name="navigate_up">Navigate up</string>
