@@ -187,17 +187,19 @@ public class TestConfigRepository {
     }
 
     private void localizeTestName(TestInfo testInfo) {
-        String name = testInfo.getName().toLowerCase()
-                .replace(")", "")
-                .replace("(", "")
-                .replace(" ", "_");
-        int nameId = CaddisflyApp.getApp().getResources()
-                .getIdentifier(name, "string",
-                        CaddisflyApp.getApp().getPackageName());
-        if (nameId > 0) {
-            name = CaddisflyApp.getApp().getString(nameId);
-            if (!name.equals(".")) {
-                testInfo.setName(name);
+        if (testInfo.getName() != null) {
+            String name = testInfo.getName().toLowerCase()
+                    .replace(")", "")
+                    .replace("(", "")
+                    .replace(" ", "_");
+            int nameId = CaddisflyApp.getApp().getResources()
+                    .getIdentifier(name, "string",
+                            CaddisflyApp.getApp().getPackageName());
+            if (nameId > 0) {
+                name = CaddisflyApp.getApp().getString(nameId);
+                if (!name.equals(".")) {
+                    testInfo.setName(name);
+                }
             }
         }
     }
