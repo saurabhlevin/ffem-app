@@ -113,7 +113,7 @@
       "image": "ffem",
       "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,10,20,30,40",
+      "ranges": "0,10,20,40",
       "monthsValid": 6,
       "dilutions": [
         1,
