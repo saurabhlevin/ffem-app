@@ -21,7 +21,7 @@
         {
           "id": 1,
           "name": "Available Boron",
-          "unit": "mg/l",
+          "unit": "mg/kg",
           "timeDelay": 600,
           "formula": "(%1$f * 5)"
         }
@@ -47,7 +47,7 @@
         {
           "id": 1,
           "name": "Available Iron",
-          "unit": "mg/l",
+          "unit": "mg/kg",
           "timeDelay": 180,
           "formula": "(%1$f * 5)"
         }
@@ -99,7 +99,7 @@
         {
           "id": 1,
           "name": "Available Phosphorous",
-          "unit": "mg/l",
+          "unit": "mg/kg",
           "timeDelay": 300,
           "formula": "(%1$f * 5)"
         }
@@ -125,7 +125,7 @@
         {
           "id": 1,
           "name": "Available Potassium",
-          "unit": "mg/l",
+          "unit": "mg/kg",
           "timeDelay": 300,
           "formula": "(%1$f * 5)",
           "grayScale": true
