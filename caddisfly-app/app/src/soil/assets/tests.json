@@ -61,7 +61,7 @@
       "image": "ffem",
       "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,1.0,2.5,5,7.5,10,15,20,30,40",
+      "ranges": "0,5,10,20,30,40",
       "monthsValid": 6,
       "dilutions": [
         1,
@@ -73,7 +73,7 @@
         {
           "id": 1,
           "name": "Available Nitrogen",
-          "unit": "mg/l",
+          "unit": "mg/kg",
           "timeDelay": 300,
           "formula": "(%1$f * 5)"
         }
