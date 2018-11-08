@@ -26,5 +26,13 @@
         <CheckBoxPreference
             android:key="@string/useFlashModeKey"
             android:title="Use flash mode" />
+        <ListPreference
+            android:dialogTitle="@string/cameraFocusMode"
+            android:defaultValue="fixed"
+            android:entries="@array/focusModes"
+            android:entryValues="@array/focusModes_codes"
+            android:key="cameraFocusKey"
+            android:summary="%s"
+            android:title="@string/cameraFocusMode" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>

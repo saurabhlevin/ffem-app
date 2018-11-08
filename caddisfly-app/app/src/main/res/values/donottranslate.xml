@@ -36,7 +36,7 @@
     <string name="number_3">3.</string>
     <string name="number_4">4.</string>
     <string name="number_5">5.</string>
-    <string name="number_6">5.</string>
+    <string name="number_6">6.</string>
 
     <!--paths to assets-->
     <string name="striptest_images">images/brand</string>
@@ -76,6 +76,7 @@
     <string name="cameraZoomPercentKey">cameraZoomPercentKey</string>
     <string name="cameraCenterOffsetKey">cameraCenterOffsetKey</string>
     <string name="cameraResolutionKey">cameraResolutionKey</string>
+    <string name="cameraFocusKey">cameraFocusKey</string>
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
     <string name="colif_testIdKey">colif_testId</string>
@@ -136,12 +137,6 @@
     <string name="waterCalibrate">Water - Calibrate</string>
     <string name="openAppFolder">Show app folder</string>
     <string name="showFolderKey">showFolderKey</string>
-
-    <string-array name="cuvettes">
-        <item>Cuvette Type</item>
-        <item>Borosil Bottle</item>
-        <item>Old Test Chamber</item>
-        <item>Cuvette Other</item>
-    </string-array>
+    <string name="cameraFocusMode">Camera Focus Mode</string>
 
 </resources>
