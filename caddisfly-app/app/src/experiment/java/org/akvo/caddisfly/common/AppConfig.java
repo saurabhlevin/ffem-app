@@ -35,7 +35,7 @@ public final class AppConfig {
      */
     public static final boolean APP_EXPIRY = true;
     public static final int APP_EXPIRY_DAY = 30;
-    public static final int APP_EXPIRY_MONTH = 9;
+    public static final int APP_EXPIRY_MONTH = 11;
     public static final int APP_EXPIRY_YEAR = 2018;
 
     /**

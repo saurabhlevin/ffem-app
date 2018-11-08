@@ -118,7 +118,7 @@ public class ConfigDownloader {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, int type, String comment) {
+    public static void sendDataToCloudDatabase(Context context, TestInfo testInfo, String comment) {
 
         ProgressDialog pd;
 
@@ -176,7 +176,7 @@ public class ConfigDownloader {
 
                         isSending = true;
 
-                        sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
+                        sendFile(context, testInfo.getUuid(), comment, pd, finalDeviceId, db, storageReference,
                                 calibration.image, calibration.croppedImage, imagePath, croppedImagePath,
                                 calibration.color, calibration.value, new Date(calibration.date));
                     }
@@ -199,7 +199,7 @@ public class ConfigDownloader {
                 File imagePath = new File(path, result.getImage());
                 File croppedImagePath = new File(path, result.getCroppedImage());
 
-                sendFile(context, testInfo.getUuid(), type, comment, pd, finalDeviceId, db, storageReference,
+                sendFile(context, testInfo.getUuid(), comment, pd, finalDeviceId, db, storageReference,
                         result.getImage(), result.getCroppedImage(), imagePath, croppedImagePath,
                         result.getColor(), result.getResult(), new Date());
 
@@ -215,7 +215,7 @@ public class ConfigDownloader {
         }).start();
     }
 
-    private static void sendFile(Context context, String uuid, int type, String comment, ProgressDialog pd,
+    private static void sendFile(Context context, String uuid, String comment, ProgressDialog pd,
                                  String deviceId, FirebaseFirestore db, StorageReference storageReference,
                                  String imageName, String croppedImageName, File imagePath, File croppedImagePath,
                                  int color, double value, Date date) {
@@ -242,7 +242,6 @@ public class ConfigDownloader {
                                 Map<String, Object> cal = new HashMap<>();
                                 cal.put("deviceId", deviceId);
                                 cal.put("id", uuid);
-                                cal.put("type", type);
                                 cal.put("value", value);
                                 cal.put("color", color);
                                 cal.put("r", Color.red(color));

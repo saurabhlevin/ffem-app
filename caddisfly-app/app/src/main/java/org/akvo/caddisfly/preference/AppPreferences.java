@@ -19,6 +19,7 @@
 
 package org.akvo.caddisfly.preference;
 
+import android.hardware.Camera;
 import android.util.Pair;
 import android.util.Patterns;
 
@@ -26,6 +27,8 @@ import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.common.ChamberTestConfig;
 import org.akvo.caddisfly.util.PreferencesUtil;
+
+import java.util.List;
 
 /**
  * Static functions to get or set values of various preferences.
@@ -180,6 +183,28 @@ public final class AppPreferences {
                     R.string.cameraCenterOffsetKey, 0);
         } else {
             return 0;
+        }
+    }
+
+    public static String getCameraFocusMode(List<String> focusModes) {
+        String focusMode = "";
+        if (isDiagnosticMode()) {
+            focusMode = PreferencesUtil.getString(CaddisflyApp.getApp(),
+                    R.string.cameraFocusKey, Camera.Parameters.FOCUS_MODE_INFINITY);
+        }
+
+        if (focusModes.contains(focusMode)) {
+            return focusMode;
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
+            return Camera.Parameters.FOCUS_MODE_FIXED;
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
+            return Camera.Parameters.FOCUS_MODE_INFINITY;
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            return Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE;
+        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+            return Camera.Parameters.FOCUS_MODE_AUTO;
+        } else {
+            return "";
         }
     }
 }

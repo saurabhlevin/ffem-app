@@ -4,8 +4,8 @@
         android:title="@string/camera">
         <Preference
             android:key="cameraPreview"
-            android:title="@string/cameraPreview"
-            android:summary="Test cuvette centering &amp; image quality"/>
+            android:summary="Test cuvette centering &amp; image quality"
+            android:title="@string/cameraPreview" />
         <org.akvo.caddisfly.preference.SeekBarPreference
             android:defaultValue="0"
             android:key="cameraCenterOffsetKey"
@@ -23,5 +23,13 @@
             android:key="cameraResolutionKey"
             android:summary="640-480"
             android:title="Camera Resolution" />
+        <ListPreference
+            android:dialogTitle="@string/cameraFocusMode"
+            android:defaultValue="fixed"
+            android:entries="@array/focusModes"
+            android:entryValues="@array/focusModes_codes"
+            android:key="cameraFocusKey"
+            android:summary="%s"
+            android:title="@string/cameraFocusMode" />
     </org.akvo.caddisfly.preference.PreferenceCategoryCustom>
 </PreferenceScreen>

@@ -78,6 +78,7 @@
     <string name="cameraZoomPercentKey">cameraZoomPercentKey</string>
     <string name="cameraCenterOffsetKey">cameraCenterOffsetKey</string>
     <string name="cameraResolutionKey">cameraResolutionKey</string>
+    <string name="cameraFocusKey">cameraFocusKey</string>
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
     <string name="colif_volumeKey">colif_volume</string>
@@ -132,5 +133,6 @@
     <string name="testing">Testing</string>
     <string name="camera">Camera</string>
     <string name="waterCalibrate">Water - Calibrate</string>
+    <string name="cameraFocusMode">Camera Focus Mode</string>
 
 </resources>
