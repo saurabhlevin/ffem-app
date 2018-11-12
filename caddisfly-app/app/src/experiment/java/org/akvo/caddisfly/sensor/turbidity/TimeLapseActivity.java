@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -441,6 +442,11 @@ public class TimeLapseActivity extends BaseActivity {
         textInterval.setText(String.format(Locale.getDefault(), "Done: %d of %d", 0, numberOfSamples));
 
         startCountdownTimer();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && AppConfig.USE_SCREEN_PINNING) {
+            startLockTask();
+        }
     }
 
     public void showResult() {
@@ -478,6 +484,11 @@ public class TimeLapseActivity extends BaseActivity {
         handler.removeCallbacks(runnable);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         TurbidityConfig.stopRepeatingAlarm(this, Constants.COLIFORM_ID);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && AppConfig.USE_SCREEN_PINNING) {
+            stopLockTask();
+        }
     }
 
     @Override
