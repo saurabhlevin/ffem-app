@@ -80,6 +80,7 @@
     <string name="nextUpdateCheckKey">nextUpdateCheck</string>
 
     <string name="colif_testIdKey">colif_testId</string>
+    <string name="colif_descriptionKey">colif_description</string>
     <string name="colif_volumeKey">colif_volume</string>
     <string name="colif_brothMediaKey">colif_brothMedia</string>
     <string name="colif_intervalMinutesKey">colif_IntervalMinutes</string>

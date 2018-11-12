@@ -246,6 +246,11 @@ public class TimeLapseResultActivity extends BaseActivity {
             }
 
             String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+            String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+
+            if (!description.isEmpty()){
+                testId  += ", " + description;
+            }
 
             if (emailTemplate != null) {
                 long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);

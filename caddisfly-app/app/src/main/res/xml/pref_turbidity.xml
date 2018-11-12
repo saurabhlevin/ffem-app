@@ -7,6 +7,13 @@
         android:selectAllOnFocus="true"
         android:title="Test Id" />
     <EditTextPreference
+        android:dialogMessage="Description"
+        android:inputType="textCapSentences"
+        android:key="@string/colif_descriptionKey"
+        android:maxLength="100"
+        android:selectAllOnFocus="true"
+        android:title="Description" />
+    <EditTextPreference
         android:dialogMessage="Volume (ml)"
         android:inputType="number"
         android:key="@string/colif_volumeKey"

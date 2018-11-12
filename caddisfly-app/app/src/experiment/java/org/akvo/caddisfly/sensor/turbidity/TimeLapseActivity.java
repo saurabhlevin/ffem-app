@@ -197,12 +197,18 @@ public class TimeLapseActivity extends BaseActivity {
                 String emailTemplate;
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
                 String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+                String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+
+                if (!description.isEmpty()){
+                    testId  += ", " + description;
+                }
 
                 if (emailTemplate != null) {
 
                     String broth = PreferencesUtil.getString(this, R.string.colif_brothMediaKey, "");
 
-                    emailTemplate = emailTemplate.replace("{testDetails}", "test Id: " + testId + ", " + "Broth: " + broth);
+                    emailTemplate = emailTemplate.replace("{testDetails}",
+                            "test: " + testId + ", " + "Broth: " + broth);
 
                     long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
