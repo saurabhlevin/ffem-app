@@ -99,7 +99,7 @@ public class TimeLapseResultActivity extends BaseActivity {
         super.onPostCreate(savedInstanceState);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().hide();
         }
     }
 
@@ -134,6 +134,18 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             TextView textTitle = itemResult.findViewById(R.id.text_title);
             textTitle.setText(title);
+
+            TextView textDetails = itemResult.findViewById(R.id.testDetails);
+            if (textDetails != null) {
+                String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+                String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+
+                if (!description.isEmpty()) {
+                    testId += ", " + description;
+                }
+
+                textDetails.setText(testId);
+            }
 
             if (resultImage != null) {
 //                resultImage = ImageUtil.rotateImage(resultImage, 90);
@@ -243,7 +255,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                 }
             }
 
-            Boolean resultValue = isTurbid;
+            boolean resultValue = isTurbid;
 
             String emailTemplate;
             if (resultValue) {
@@ -301,18 +313,24 @@ public class TimeLapseResultActivity extends BaseActivity {
                         result.setResult(durationString);
                         break;
                     case "First Image":
-                        inflateView(result.getName(), "",
-                                BitmapFactory.decodeFile(firstImage.getAbsolutePath()), 0);
+                        if (firstImage != null) {
+                            inflateView(result.getName(), "",
+                                    BitmapFactory.decodeFile(firstImage.getAbsolutePath()), 0);
+                        }
                         break;
                     case "Turbid Image":
                         if (resultValue) {
-                            inflateView(result.getName(), "",
-                                    BitmapFactory.decodeFile(turbidImage.getAbsolutePath()), 0);
+                            if (turbidImage != null) {
+                                inflateView(result.getName(), "",
+                                        BitmapFactory.decodeFile(turbidImage.getAbsolutePath()), 0);
+                            }
                         }
                         break;
                     case "Last Image":
-                        inflateView(result.getName(), "",
-                                BitmapFactory.decodeFile(lastImage.getAbsolutePath()), 0);
+                        if (lastImage != null) {
+                            inflateView(result.getName(), "",
+                                    BitmapFactory.decodeFile(lastImage.getAbsolutePath()), 0);
+                        }
                         break;
                     default:
                         if (resultValue) {
