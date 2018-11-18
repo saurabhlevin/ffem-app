@@ -27,6 +27,7 @@ android {
         }
         experiment {
             applicationIdSuffix ".experiment"
+            versionCode 243
             versionName "Experiment"
             buildConfigField 'boolean', 'showExperimentalTests', 'true'
         }
@@ -152,7 +153,7 @@ dependencies {
     }
 
     // Robolectric
-    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.robolectric:robolectric:4.0'
     testImplementation "org.robolectric:shadows-support-v4:3.4-rc2"
 
     // UIAutomator
@@ -162,11 +163,11 @@ dependencies {
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
 
     // Firebase (Experiment Flavor)
-//    experimentImplementation 'com.android.support:multidex:1.0.3'
-    experimentImplementation 'com.google.firebase:firebase-core:16.0.4'
-    experimentImplementation 'com.google.firebase:firebase-database:16.0.3'
-    experimentImplementation 'com.google.firebase:firebase-firestore:17.1.1'
-    experimentImplementation 'com.google.firebase:firebase-storage:16.0.3'
-    experimentImplementation 'com.google.firebase:firebase-auth:16.0.4'
+    experimentImplementation 'com.android.support:multidex:1.0.3'
+    experimentImplementation 'com.google.firebase:firebase-core:16.0.5'
+    experimentImplementation 'com.google.firebase:firebase-database:16.0.5'
+    experimentImplementation 'com.google.firebase:firebase-firestore:17.1.3'
+    experimentImplementation 'com.google.firebase:firebase-storage:16.0.5'
+    experimentImplementation 'com.google.firebase:firebase-auth:16.0.5'
 }
 //apply plugin: 'com.google.gms.google-services'

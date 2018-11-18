@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.SensorConstants;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -83,6 +85,11 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             setResult(Activity.RESULT_OK, resultIntent);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                    && AppConfig.USE_SCREEN_PINNING) {
+                stopLockTask();
+            }
+
             finish();
         });
     }
@@ -92,7 +99,7 @@ public class TimeLapseResultActivity extends BaseActivity {
         super.onPostCreate(savedInstanceState);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().hide();
         }
     }
 
@@ -127,6 +134,18 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             TextView textTitle = itemResult.findViewById(R.id.text_title);
             textTitle.setText(title);
+
+            TextView textDetails = itemResult.findViewById(R.id.testDetails);
+            if (textDetails != null) {
+                String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+                String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+
+                if (!description.isEmpty()) {
+                    testId += ", " + description;
+                }
+
+                textDetails.setText(testId);
+            }
 
             if (resultImage != null) {
 //                resultImage = ImageUtil.rotateImage(resultImage, 90);
@@ -236,7 +255,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                 }
             }
 
-            Boolean resultValue = isTurbid;
+            boolean resultValue = isTurbid;
 
             String emailTemplate;
             if (resultValue) {
@@ -246,6 +265,11 @@ public class TimeLapseResultActivity extends BaseActivity {
             }
 
             String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+            String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+
+            if (!description.isEmpty()){
+                testId  += ", " + description;
+            }
 
             if (emailTemplate != null) {
                 long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
@@ -289,18 +313,24 @@ public class TimeLapseResultActivity extends BaseActivity {
                         result.setResult(durationString);
                         break;
                     case "First Image":
-                        inflateView(result.getName(), "",
-                                BitmapFactory.decodeFile(firstImage.getAbsolutePath()), 0);
+                        if (firstImage != null) {
+                            inflateView(result.getName(), "",
+                                    BitmapFactory.decodeFile(firstImage.getAbsolutePath()), 0);
+                        }
                         break;
                     case "Turbid Image":
                         if (resultValue) {
-                            inflateView(result.getName(), "",
-                                    BitmapFactory.decodeFile(turbidImage.getAbsolutePath()), 0);
+                            if (turbidImage != null) {
+                                inflateView(result.getName(), "",
+                                        BitmapFactory.decodeFile(turbidImage.getAbsolutePath()), 0);
+                            }
                         }
                         break;
                     case "Last Image":
-                        inflateView(result.getName(), "",
-                                BitmapFactory.decodeFile(lastImage.getAbsolutePath()), 0);
+                        if (lastImage != null) {
+                            inflateView(result.getName(), "",
+                                    BitmapFactory.decodeFile(lastImage.getAbsolutePath()), 0);
+                        }
                         break;
                     default:
                         if (resultValue) {

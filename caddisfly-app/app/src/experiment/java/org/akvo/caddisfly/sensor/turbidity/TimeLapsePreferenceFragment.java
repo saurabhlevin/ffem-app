@@ -31,6 +31,7 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
 
         String[] keys = {
                 getString(R.string.colif_testIdKey),
+                getString(R.string.colif_descriptionKey),
                 getString(R.string.colif_brothMediaKey),
                 getString(R.string.colif_volumeKey)};
 
@@ -101,6 +102,12 @@ public class TimeLapsePreferenceFragment extends PreferenceFragment
                 (EditTextPreference) findPreference(getString(R.string.colif_testIdKey));
         if (testIdPreference != null) {
             testIdPreference.setSummary(testIdPreference.getText());
+        }
+
+        final EditTextPreference testDescription =
+                (EditTextPreference) findPreference(getString(R.string.colif_descriptionKey));
+        if (testDescription != null) {
+            testDescription.setSummary(testDescription.getText());
         }
 
         final EditTextPreference brothPreference =

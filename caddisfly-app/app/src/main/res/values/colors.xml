@@ -68,4 +68,6 @@
     <color name="button_text_2">#fff</color>
     <color name="link_text_2">#304f74</color>
 
+    <color name="categoryTitle">#2C2A74</color>
+
 </resources>

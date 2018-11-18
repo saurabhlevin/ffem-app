@@ -1,6 +1,7 @@
 package org.akvo.caddisfly.sensor.turbidity;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.app.CaddisflyApp;
+import org.akvo.caddisfly.common.AppConfig;
 import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.helper.FileHelper;
@@ -197,12 +199,18 @@ public class TimeLapseActivity extends BaseActivity {
                 String emailTemplate;
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_unsafe.html");
                 String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+                String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+
+                if (!description.isEmpty()) {
+                    testId += ", " + description;
+                }
 
                 if (emailTemplate != null) {
 
                     String broth = PreferencesUtil.getString(this, R.string.colif_brothMediaKey, "");
 
-                    emailTemplate = emailTemplate.replace("{testDetails}", "test Id: " + testId + ", " + "Broth: " + broth);
+                    emailTemplate = emailTemplate.replace("{testDetails}",
+                            "test: " + testId + ", " + "Broth: " + broth);
 
                     long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
@@ -435,6 +443,11 @@ public class TimeLapseActivity extends BaseActivity {
         textInterval.setText(String.format(Locale.getDefault(), "Done: %d of %d", 0, numberOfSamples));
 
         startCountdownTimer();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && AppConfig.USE_SCREEN_PINNING) {
+            startLockTask();
+        }
     }
 
     public void showResult() {
@@ -460,8 +473,37 @@ public class TimeLapseActivity extends BaseActivity {
         startCountdownTimer();
     }
 
+    public boolean isAppInLockTaskMode() {
+        ActivityManager activityManager;
+
+        activityManager = (ActivityManager)
+                this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // For SDK version 23 and above.
+            return activityManager.getLockTaskModeState()
+                    != ActivityManager.LOCK_TASK_MODE_NONE;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // When SDK version >= 21. This API is deprecated in 23.
+            //noinspection deprecation
+            return activityManager.isInLockTaskMode();
+        }
+
+        return false;
+    }
+
     @Override
     public void onBackPressed() {
+
+        if (isAppInLockTaskMode()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                showLockTaskEscapeMessage();
+            } else {
+                Toast.makeText(this, R.string.screen_pinned, Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
         super.onBackPressed();
 
         if (layoutDetails.getVisibility() == View.VISIBLE) {
