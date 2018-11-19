@@ -31,7 +31,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
+import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.preference.AppPreferences;
+import org.akvo.caddisfly.util.ApiUtil;
+import org.akvo.caddisfly.util.PreferencesUtil;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * The base activity with common functions.
@@ -44,7 +50,54 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        int appThemeResId = -1;
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            try {
+                String theme = bundle.getString("theme");
+                if (theme != null) {
+                    theme = String.valueOf(theme.charAt(0)).toUpperCase() +
+                            theme.substring(1, Math.min(theme.length(), 10)).toLowerCase();
+                    appThemeResId = getThemeResourceId(theme);
+
+                    String packageName = Objects.requireNonNull(getCallingActivity()).getPackageName();
+
+                    PreferencesUtil.setString(this, ConstantKey.APP_THEME, theme);
+                    PreferencesUtil.setString(this, theme, packageName);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (appThemeResId == -1) {
+            String theme = PreferencesUtil.getString(this, ConstantKey.APP_THEME, "");
+            if (!theme.isEmpty()) {
+                String packageName = PreferencesUtil.getString(this, theme, "");
+                if (!packageName.isEmpty() && ApiUtil.isAppInstalled(this, packageName)) {
+                    appThemeResId = getThemeResourceId(theme);
+                }
+            }
+        }
+
+        if (appThemeResId != -1) {
+            appTheme = appThemeResId;
+        }
+
         updateTheme();
+    }
+
+    private int getThemeResourceId(String theme) {
+        int resourceId = -1;
+        try {
+            Class res = R.style.class;
+            Field field = res.getField("AppTheme_" + theme);
+            resourceId = field.getInt(null);
+
+        } catch (Exception ignored) {
+        }
+
+        return resourceId;
     }
 
     private void updateTheme() {

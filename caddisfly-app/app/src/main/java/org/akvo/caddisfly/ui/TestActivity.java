@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -74,6 +75,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -149,7 +151,7 @@ public class TestActivity extends BaseActivity {
 
             if (testInfo != null && intent.getExtras() != null) {
                 for (int i = 0; i < intent.getExtras().keySet().size(); i++) {
-                    String code = intent.getExtras().keySet().toArray()[i].toString();
+                    String code = Objects.requireNonNull(intent.getExtras().keySet().toArray())[i].toString();
                     if (!code.equals(SensorConstants.TEST_ID)) {
                         Pattern pattern = Pattern.compile("_(\\d*?)$");
                         Matcher matcher = pattern.matcher(code);
@@ -264,7 +266,11 @@ public class TestActivity extends BaseActivity {
             Result result = testInfo.getResults().get(i);
             Random random = new Random();
 
-            double maxValue = result.getColors().get(result.getColors().size() - 1).getValue();
+            double maxValue = 100;
+            if (result.getColors().size() > 0) {
+                maxValue = result.getColors().get(result.getColors().size() - 1).getValue();
+            }
+
             result.setResult(random.nextDouble() * maxValue,
                     random.nextInt(9) + 1, testInfo.getMaxDilution());
 
@@ -434,7 +440,7 @@ public class TestActivity extends BaseActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TEST && resultCode == Activity.RESULT_OK) {
             //return the test result to the external app

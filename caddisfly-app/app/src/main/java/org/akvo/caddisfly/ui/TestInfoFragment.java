@@ -37,7 +37,10 @@ package org.akvo.caddisfly.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -47,11 +50,15 @@ import android.view.ViewGroup;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.ConstantKey;
+import org.akvo.caddisfly.common.Constants;
 import org.akvo.caddisfly.databinding.FragmentTestDetailBinding;
 import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.model.TestType;
 import org.akvo.caddisfly.preference.AppPreferences;
+import org.akvo.caddisfly.sensor.striptest.utils.BitmapUtils;
 import org.akvo.caddisfly.viewmodel.TestInfoViewModel;
+
+import java.util.Objects;
 
 public class TestInfoFragment extends Fragment {
 
@@ -103,6 +110,19 @@ public class TestInfoFragment extends Fragment {
                     b.buttonInstructions.setVisibility(View.GONE);
                 }
 
+                byte[] byteArray = Objects.requireNonNull(getActivity()).getIntent().getByteArrayExtra("image");
+                if (byteArray == null) {
+                    if (testInfo.getImage() == null) {
+                        BitmapUtils.setImage(b.imageBrand, Constants.BRAND_IMAGE_PATH + testInfo.getBrand() + ".webp");
+                    } else {
+                        BitmapUtils.setImage(b.imageBrand, Constants.BRAND_IMAGE_PATH + testInfo.getImage() + ".webp");
+                    }
+                } else {
+                    (new Handler()).postDelayed(() -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                        b.imageBrand.setImageBitmap(bitmap);
+                    }, 10);
+                }
             }
         }
 

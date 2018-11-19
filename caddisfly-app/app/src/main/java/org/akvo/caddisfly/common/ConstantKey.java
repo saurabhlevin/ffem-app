@@ -4,6 +4,8 @@ package org.akvo.caddisfly.common;
 public class ConstantKey {
     private static final String NAMESPACE_PREFIX = "org.akvo.caddisfly.";
 
+    public static final String APP_THEME = NAMESPACE_PREFIX + "app_theme";
+
     public static final String TOP_LEFT = NAMESPACE_PREFIX + "top_left";
     public static final String TOP_RIGHT = NAMESPACE_PREFIX + "top_right";
     public static final String BOTTOM_LEFT = NAMESPACE_PREFIX + "bottom_left";

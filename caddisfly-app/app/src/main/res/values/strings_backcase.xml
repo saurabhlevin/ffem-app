@@ -17,7 +17,71 @@
   ~ along with Akvo Caddisfly. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="start">Start</string>
+    <string name="error">Error</string>
+    <string name="general">General</string>
+    <string name="other">Other</string>
+    <string name="calibrate">Calibrate</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="result">Result</string>
+    <string name="pleaseWait">Please wait…</string>
+    <string name="language">Language</string>
+    <string name="notSupported">Not Supported</string>
+    <string name="cameraBusy">Camera Busy</string>
+    <string name="analyze">Analyse</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!--Calibration Screen-->
+    <string name="calibrationIsInvalid">Invalid calibration</string>
+    <string name="tryRecalibrating">Try recalibrating</string>
+    <string name="reagentExpiry">Reagent expiry</string>
+    <string name="expired">Expired</string>
+    <string name="couldNotCalibrate">Could not calibrate</string>
+
+    <!--Dilution Selection Dialog-->
+    <string name="dilution">Dilution</string>
+    <string name="selectDilution">Select amount of dilution</string>
+    <plurals name="dilutions">
+        <item quantity="one">No Dilution</item>
+        <item quantity="many">%1$d Times Dilution</item>
+        <item quantity="other">%1$d Times Dilution</item>
+    </plurals>
+    <string name="noDilution">No Dilution</string>
+    <string name="timesDilution" tools:ignore="PluralsCandidate">%1$d Times Dilution</string>
+    <string name="customDilution">Custom Dilution</string>
+    <string name="enterDilutionFactor">Enter Dilution Factor</string>
+    <string name="testWithDilution">Test with Dilution</string>
+
+    <!--Test Progress Screen-->
+    <string name="placeDevice">Place device face down on a flat surface</string>
+    <string name="errorTestInterrupted">Test was interrupted.</string>
+    <string name="doNotMoveDeviceDuringTest">Do not move the phone during the test</string>
+    <string name="errorTestFailed">Colour does not match any calibrated colours.</string>
+    <string name="chamberNotFound">Could not complete test.</string>
+    <string name="checkChamberPlacement">Check that the chamber has been placed correctly.</string>
+
+    <!--Result Screen-->
+    <string name="acceptResult">Accept Result</string>
+    <string name="highLevelsFound">High level of contamination</string>
+    <string name="tryWithDilutedSample" tools:ignore="PluralsCandidate">Try again with %1$d times dilution</string>
+
+    <!--Alerts-->
+    <string name="cannotStartTest">Cannot start test</string>
+    <string name="errorTestNotAvailable">Requested test is not available</string>
+    <string name="pleaseContactSupport">Please contact technical support</string>
+
+    <!--Permission-->
+    <string name="storagePermission">Storage permission is required</string>
+    <string name="cameraAndStoragePermissions">Camera &amp; storage permissions are required</string>
+    <string name="cameraAndLocationPermissions">Camera &amp; location permissions are required</string>
 
     <string name="bc_frc_1">Fill the special mixing chamber with 10 ml of the water sample and add one sachet reagent. Close the mixing chamber with the lid and shake to mix the contents.</string>
     <string name="bc_frc_2">Fill the testing chamber (with the mixed solution of reagent and sample) to the brim.</string>
@@ -38,5 +102,30 @@
     <string name="bc_dilution_4">Some excess water will spill into the overflow space. Hold tightly as shown and throw out the excess water.</string>
     <string name="bc_dilution_5">Next remove the cap and pour the deionised water into the mixing chamber. For <b>two times dilution</b> add one measure of deionised water and one measure of your sample. For <b>five times dilution</b> add four measures of deionised water and one measure of your sample.</string>
     <string name="bc_dilution_6">Shake the mixing chamber so the deionised water and sample mix thoroughly. Pour the mixture into the Test Chamber. Use this mixture for your measurement.</string>
+
+    <!--About Screen-->
+    <string name="copyrightMessage">Copyright © ffem</string>
+    <string name="legalInformation">Legal Information</string>
+
+    <!--Messages-->
+    <string name="phoneDoesNotSupport">This feature is not supported by this device</string>
+    <string name="cannotUseCamera">Can\'t use camera. Make sure flashlight is off and close any apps that may be using the camera</string>
+    <string name="cameraNotAvailable">Camera not available</string>
+    <string name="cameraRequired">A back facing camera is required for colorimetric analysis</string>
+    <string name="tryRestarting">If the problem continues, restart this device</string>
+    <string name="cannotCalibrate">Cannot calibrate</string>
+    <string name="errorCameraFlashRequired">A camera flash was not found on this device</string>
+    <string name="errorCalibrationIncomplete">Calibration for %1$s is incomplete</string>
+    <string name="doYouWantToCalibrate">Do you want to calibrate now?</string>
+
+    <!--Support-->
+    <string name="emailSupport">Email support</string>
+
+    <!--Update-->
+    <string name="update">Update</string>
+    <string name="updateAvailable">New version available. Update to get the most out of your app</string>
+    <string name="remindLater">Remind later</string>
+    <string name="continue_send">Continue</string>
+    <string name="creatingMessage">Creating message</string>
 
 </resources>

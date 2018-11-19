@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import org.akvo.caddisfly.app.CaddisflyApp;
 import org.akvo.caddisfly.model.ColorItem;
@@ -17,6 +19,8 @@ import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.sensor.striptest.models.PatchResult;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -472,5 +476,18 @@ public class BitmapUtils {
                 outputFile.delete();
         }
         return null;
+    }
+
+    public static void setImage(ImageView imageView, String theName) {
+        if (theName != null) {
+            Context context = imageView.getContext();
+            try {
+                String name = theName.replace(" ", "-");
+                InputStream ims = context.getAssets().open(name);
+                imageView.setImageDrawable(Drawable.createFromStream(ims, null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

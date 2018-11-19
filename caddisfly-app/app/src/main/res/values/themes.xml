@@ -36,6 +36,7 @@
         <item name="cardBackgroundColor">@color/window_background</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="primaryButtonStyle">@style/AppTheme.Button.Cyan</item>
+        <item name="listButtonStyle">@style/AppTheme.Button.Gray</item>
         <item name="primaryButtonColor">@color/button_green</item>
         <item name="fabButtonColor">@color/fab_button_background</item>
         <item name="secondaryButtonStyle">@style/AppTheme.Button.Cyan</item>
@@ -64,6 +65,7 @@
         <item name="cardBackgroundColor">@color/window_background</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="primaryButtonStyle">@style/AppTheme.Button.Gray</item>
+        <item name="listButtonStyle">@style/AppTheme.Button.DarkGray</item>
         <item name="primaryButtonColor">@color/button_green</item>
         <item name="fabButtonColor">@color/fab_button_background</item>
         <item name="secondaryButtonStyle">@style/AppTheme.Button.Cyan</item>

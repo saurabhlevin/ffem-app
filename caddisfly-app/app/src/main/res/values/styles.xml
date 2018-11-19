@@ -84,6 +84,13 @@
         <item name="android:textColor">@color/button_text_2</item>
     </style>
 
+    <style name="AppTheme.Button.DarkGray">
+        <item name="colorButtonNormal">@color/button_2</item>
+        <item name="colorAccent">@color/button_2</item>
+        <item name="colorControlHighlight">@color/button_selected_2</item>
+        <item name="android:textColor">@color/button_text_2</item>
+    </style>
+
     <style name="AppTheme.Button.Blue">
         <item name="colorButtonNormal">@color/button_main</item>
         <item name="colorControlHighlight">@color/button_main_highlight</item>

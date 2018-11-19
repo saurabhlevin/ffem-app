@@ -44,6 +44,7 @@ public class SettingsActivity extends BaseActivity
     private ScrollView mScrollView;
 
     private void removeAllFragments() {
+        findViewById(R.id.layoutGeneral).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnostics).setVisibility(View.GONE);
         findViewById(R.id.layoutDiagnosticsOptions).setVisibility(View.GONE);
         findViewById(R.id.layoutDebugging).setVisibility(View.GONE);
@@ -82,6 +83,10 @@ public class SettingsActivity extends BaseActivity
                 .commit();
 
         if (AppPreferences.isDiagnosticMode()) {
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.layoutGeneral, new GeneralPreferenceFragment())
+                    .commit();
 
             getFragmentManager().beginTransaction()
                     .add(R.id.layoutDiagnostics, new DiagnosticPreferenceFragment())

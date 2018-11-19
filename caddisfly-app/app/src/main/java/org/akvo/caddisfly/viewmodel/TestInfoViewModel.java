@@ -251,24 +251,6 @@ public class TestInfoViewModel extends AndroidViewModel {
         }
     }
 
-    @BindingAdapter("imageUrl")
-    public static void setImageUrl(ImageView imageView, String name) {
-        setImage(imageView, Constants.BRAND_IMAGE_PATH + name + ".webp");
-    }
-
-    private static void setImage(ImageView imageView, String theName) {
-        if (theName != null) {
-            Context context = imageView.getContext();
-            try {
-                String name = theName.replace(" ", "-");
-                InputStream ims = context.getAssets().open(name);
-                imageView.setImageDrawable(Drawable.createFromStream(ims, null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void setTest(TestInfo testInfo) {
         this.test.set(testInfo);
         TestInfoViewModel.testInfo = testInfo;
