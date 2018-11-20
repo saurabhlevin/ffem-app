@@ -147,15 +147,9 @@ public class ChamberCameraPreview extends SurfaceView implements SurfaceHolder.C
 
         List<String> focusModes = parameters.getSupportedFocusModes();
 
-        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
-        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
-            // Attempt to set focus to infinity if supported
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
-        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        String focusMode = AppPreferences.getCameraFocusMode(focusModes);
+        if (!focusMode.isEmpty()){
+            parameters.setFocusMode(focusMode);
         }
 
         if (parameters.getMaxNumMeteringAreas() > 0) {

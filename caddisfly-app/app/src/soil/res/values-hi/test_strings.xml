@@ -2,6 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="UnusedResources,MissingTranslation">
 
-    <string name="testName">Fluoride</string>
+    <string name="testName">Available Iron</string>
 
 </resources>

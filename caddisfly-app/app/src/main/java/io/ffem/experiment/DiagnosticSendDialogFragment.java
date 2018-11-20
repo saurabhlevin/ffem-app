@@ -10,17 +10,20 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import org.akvo.caddisfly.R;
+
+import java.util.Objects;
+
+import timber.log.Timber;
 
 public class DiagnosticSendDialogFragment extends DialogFragment {
 
     private OnDetailsSavedListener mListener;
+    private EditText editComment;
 
     public DiagnosticSendDialogFragment() {
         // Required empty public constructor
@@ -43,21 +46,12 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         final Activity activity = getActivity();
-        LayoutInflater i = activity.getLayoutInflater();
+        LayoutInflater i = Objects.requireNonNull(activity).getLayoutInflater();
 
         @SuppressLint("InflateParams")
         View view = i.inflate(R.layout.fragment_diagnostic_send_dialog, null);
 
-        TextView textError = view.findViewById(R.id.textError);
-
-        Spinner spinner = view.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
-                R.array.cuvettes, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-
-        EditText comment = view.findViewById(R.id.comment);
+        editComment = view.findViewById(R.id.comment);
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -67,22 +61,17 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
                 .create();
 
         dialog.setOnShowListener(dialogInterface -> {
-
             Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener(view1 -> {
-
-                textError.setError(null);
-                if (spinner.getSelectedItemPosition() > 0) {
-                    mListener.onDetailsSaved(spinner.getSelectedItemPosition(), comment.getText().toString());
-                    dismiss();
-                } else {
-                    textError.requestFocus();
-                    textError.setError("Select cuvette type");
-
-                }
+                closeKeyboard(getActivity(), editComment);
+                mListener.onDetailsSaved(editComment.getText().toString());
+                dismiss();
             });
         });
         dialog.show();
+
+        editComment.requestFocus();
+        showKeyboard(activity);
 
         return dialog;
     }
@@ -105,7 +94,37 @@ public class DiagnosticSendDialogFragment extends DialogFragment {
     }
 
     public interface OnDetailsSavedListener {
-        void onDetailsSaved(int i, String s);
+        void onDetailsSaved(String s);
     }
 
+    private void showKeyboard(Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+    }
+
+    /**
+     * Hides the keyboard.
+     *
+     * @param input the EditText for which the keyboard is open
+     */
+    private void closeKeyboard(Context context, EditText input) {
+        try {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                if (getActivity() != null) {
+                    View view = getActivity().getCurrentFocus();
+                    if (view != null) {
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
 }

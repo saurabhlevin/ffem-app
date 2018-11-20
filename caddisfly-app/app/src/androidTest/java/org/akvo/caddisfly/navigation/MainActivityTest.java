@@ -24,6 +24,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 
+import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.ui.MainActivity;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -56,7 +57,7 @@ public class MainActivityTest {
 
     @Test
     public void testMainActivityButtons() {
-        onView(withText("Calibrate")).perform(click());
+        onView(withText(R.string.calibrate)).perform(click());
 
         pressBack();
 

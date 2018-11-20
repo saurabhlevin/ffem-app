@@ -96,7 +96,7 @@ public class ManualTest {
 
         clickExternalSourceButton(0, TestConstant.GO_TO_TEST);
 
-        onView(withText("Next")).perform(click());
+        onView(withText(R.string.next)).perform(click());
 
         onView(withId(R.id.editTitration1)).check(matches(isDisplayed()))
                 .perform(replaceText("123"), closeSoftKeyboard());

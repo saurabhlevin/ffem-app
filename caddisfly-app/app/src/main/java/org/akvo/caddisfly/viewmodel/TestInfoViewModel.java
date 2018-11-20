@@ -37,6 +37,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.akvo.caddisfly.BuildConfig;
 import org.akvo.caddisfly.R;
@@ -116,6 +117,10 @@ public class TestInfoViewModel extends AndroidViewModel {
                     }
                     rowView.append(StringUtil.toInstruction((AppCompatActivity) context,
                             testInfo, sentences[j].trim()));
+
+                    if (StringUtil.getStringResourceByName(context, sentences[j]).toString().contains("[/a]")) {
+                        rowView.enableLinks(true);
+                    }
                 }
 
                 // set an id for the view to be able to find it for unit testing
@@ -131,6 +136,22 @@ public class TestInfoViewModel extends AndroidViewModel {
                 replaceReagentTags(linearLayout, context, builder);
             }
         }
+    }
+
+    @BindingAdapter("testSubtitle")
+    public static void setSubtitle(TextView view, TestInfo testInfo) {
+        String subTitle = testInfo.getMinMaxRange();
+//        if (testInfo.getBrand() != null) {
+//            subTitle = testInfo.getBrand() + ", ";
+//        }
+        if (!testInfo.getMinMaxRange().isEmpty()) {
+            Matcher matcher = Pattern.compile("<dilutionRange>(.*?)</dilutionRange>").matcher(subTitle);
+            if (matcher.find()) {
+                subTitle = matcher.replaceAll(String.format(view.getResources()
+                        .getString(R.string.up_to_with_dilution), matcher.group(1)));
+            }
+        }
+        view.setText(subTitle);
     }
 
     private static void replaceReagentTags(LinearLayout linearLayout, Context context, SpannableStringBuilder builder) {

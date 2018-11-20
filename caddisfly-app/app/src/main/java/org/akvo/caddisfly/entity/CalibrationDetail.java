@@ -50,6 +50,8 @@ public class CalibrationDetail implements Parcelable {
     public String batchNumber;
     @ColumnInfo(name = "cuvetteType")
     public String cuvetteType;
+    @ColumnInfo(name = "fileName")
+    public String fileName;
 
     public CalibrationDetail() {
     }
@@ -60,6 +62,7 @@ public class CalibrationDetail implements Parcelable {
         expiry = in.readLong();
         batchNumber = in.readString();
         cuvetteType = in.readString();
+        fileName = in.readString();
     }
 
     @Override
@@ -74,5 +77,6 @@ public class CalibrationDetail implements Parcelable {
         dest.writeLong(expiry);
         dest.writeString(batchNumber);
         dest.writeString(cuvetteType);
+        dest.writeString(fileName);
     }
 }

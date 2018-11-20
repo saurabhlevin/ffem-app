@@ -89,19 +89,19 @@ public class StriptestTest {
 
         sleep(8000);
 
-        onView(withText("Start")).perform(click());
+        onView(withText(R.string.start)).perform(click());
 
         sleep(5000);
 
-        onView(withText("Result")).check(matches(isDisplayed()));
+        onView(withText(R.string.result)).check(matches(isDisplayed()));
         onView(withText("Arsenic")).check(matches(isDisplayed()));
-        onView(withText("No Result")).check(matches(isDisplayed()));
+        onView(withText(R.string.no_result)).check(matches(isDisplayed()));
 
         onView(withId(R.id.image_result)).check(matches(isDisplayed()));
 
-        onView(withText("Save")).check(matches(isDisplayed()));
+        onView(withText(R.string.save)).check(matches(isDisplayed()));
 
-        onView(withText("Save")).perform(click());
+        onView(withText(R.string.save)).perform(click());
 
 //        assertNotNull(mDevice.findObject(By.text("Result: ")));
 //        assertNotNull(mDevice.findObject(By.text("20")));
@@ -127,15 +127,15 @@ public class StriptestTest {
 
         sleep(5000);
 
-        onView(withText("Result")).check(matches(isDisplayed()));
+        onView(withText(R.string.result)).check(matches(isDisplayed()));
         onView(withText("Arsenic")).check(matches(isDisplayed()));
         onView(withText("No Result")).check(matches(isDisplayed()));
 
         onView(withId(R.id.image_result)).check(matches(isDisplayed()));
 
-        onView(withText("Save")).check(matches(isDisplayed()));
+        onView(withText(R.string.save)).check(matches(isDisplayed()));
 
-        onView(withText("Save")).perform(click());
+        onView(withText(R.string.save)).perform(click());
 
         assertNotNull(mDevice.findObject(By.text("Unit: ")));
         assertNotNull(mDevice.findObject(By.text("ug/l")));
