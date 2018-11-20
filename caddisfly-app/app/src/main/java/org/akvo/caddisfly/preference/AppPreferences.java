@@ -46,6 +46,7 @@ public final class AppPreferences {
     public static void disableDiagnosticMode() {
         PreferencesUtil.setBoolean(CaddisflyApp.getApp(), R.string.diagnosticModeKey, false);
         PreferencesUtil.setBoolean(CaddisflyApp.getApp(), R.string.testModeOnKey, false);
+        PreferencesUtil.setBoolean(CaddisflyApp.getApp(), R.string.dummyResultKey, false);
     }
 
     /**
@@ -111,6 +112,11 @@ public final class AppPreferences {
     public static boolean isTestMode() {
         return isDiagnosticMode()
                 && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.testModeOnKey, false);
+    }
+
+    public static boolean returnDummyResults() {
+        return isDiagnosticMode()
+                && PreferencesUtil.getBoolean(CaddisflyApp.getApp(), R.string.dummyResultKey, false);
     }
 
     public static boolean useExternalCamera() {

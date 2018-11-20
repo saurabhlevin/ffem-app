@@ -212,7 +212,8 @@ public class TestActivity extends BaseActivity {
     public void onStartTestClick(View view) {
 
         // if app was launched in debug mode then send dummy results without running test
-        if (getIntent().getBooleanExtra(SensorConstants.DEBUG_MODE, false)) {
+        if (AppPreferences.returnDummyResults() ||
+                getIntent().getBooleanExtra(SensorConstants.DEBUG_MODE, false)) {
             sendDummyResultForDebugging();
             return;
         }
@@ -261,8 +262,22 @@ public class TestActivity extends BaseActivity {
                 maxValue = result.getColors().get(result.getColors().size() - 1).getValue();
             }
 
+            int dilution = random.nextInt(testInfo.getMaxDilution()) + 1;
+
             result.setResult(random.nextDouble() * maxValue,
-                    random.nextInt(9) + 1, testInfo.getMaxDilution());
+                    dilution, testInfo.getMaxDilution());
+
+            resultIntent.putExtra(result.getName().replace(" ", "_")
+                    + testInfo.getResultSuffix(), result.getResult());
+
+            resultIntent.putExtra(result.getName().replace(" ", "_")
+                    + "_" + SensorConstants.DILUTION
+                    + testInfo.getResultSuffix(), dilution);
+
+            resultIntent.putExtra(
+                    result.getName().replace(" ", "_")
+                            + "_" + SensorConstants.UNIT + testInfo.getResultSuffix(),
+                    testInfo.getResults().get(0).getUnit());
 
             if (i == 0) {
                 resultIntent.putExtra(SensorConstants.VALUE, result.getResult());

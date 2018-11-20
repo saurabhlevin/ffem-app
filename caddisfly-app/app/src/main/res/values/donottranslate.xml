@@ -63,6 +63,7 @@
     <string name="totalFailedTestsKey">totalFailedTests</string>
     <string name="refreshKey">refresh</string>
     <string name="testModeOnKey">testModeOn</string>
+    <string name="dummyResultKey">dummyResults</string>
     <string name="deviceIdKey">deviceId</string>
 
     <string name="ledRgbKey">ledRgb</string>
