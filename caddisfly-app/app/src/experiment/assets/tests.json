@@ -578,7 +578,14 @@
         {
           "id": 1,
           "name": "Free Chlorine",
-          "unit": "mg/l"
+          "unit": "mg/l",
+          "references": [
+            "5d5b56,7f2c39,8f0016,93001e,a50027,a20c18,961527,20181119_MSF_ME4+",
+            "6f772c,ab5a57,b5454b,b13e43,be3d41,b42924,ae373b,20181119_MSF_K9",
+            "828b4e,ba4b61,b8234b,af1d3f,cf2551,b21025,b61a3e,20181119_MSF_AL3",
+            "af9f6b,e16589,f15290,f358a0,f34e99,f1458a,f14b90,20181119_MSF_MGP",
+            "665a4c,982a45,c12042,cf2144,d52041,e61c30,c71a38,20181119_MSF_AZC"
+          ]
         }
       ]
     },
