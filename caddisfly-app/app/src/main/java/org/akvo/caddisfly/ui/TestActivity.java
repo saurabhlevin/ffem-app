@@ -253,6 +253,10 @@ public class TestActivity extends BaseActivity {
         Intent resultIntent = new Intent();
         SparseArray<String> results = new SparseArray<>();
 
+        int maxDilution = testInfo.getMaxDilution();
+        if (maxDilution == -1) {
+            maxDilution = 15;
+        }
         for (int i = 0; i < testInfo.getResults().size(); i++) {
             Result result = testInfo.getResults().get(i);
             Random random = new Random();
@@ -262,20 +266,24 @@ public class TestActivity extends BaseActivity {
                 maxValue = result.getColors().get(result.getColors().size() - 1).getValue();
             }
 
-            int dilution = random.nextInt(testInfo.getMaxDilution()) + 1;
+            int dilution = random.nextInt(maxDilution) + 1;
 
             result.setResult(random.nextDouble() * maxValue,
-                    dilution, testInfo.getMaxDilution());
+                    dilution, maxDilution);
 
-            resultIntent.putExtra(result.getName().replace(" ", "_")
+            String testName = result.getName().replace(" ", "_");
+            if (testInfo.getNameSuffix() != null && !testInfo.getNameSuffix().isEmpty()) {
+                testName += "_" + testInfo.getNameSuffix().replace(" ", "_");
+            }
+
+            resultIntent.putExtra(testName
                     + testInfo.getResultSuffix(), result.getResult());
 
-            resultIntent.putExtra(result.getName().replace(" ", "_")
+            resultIntent.putExtra(testName
                     + "_" + SensorConstants.DILUTION
                     + testInfo.getResultSuffix(), dilution);
 
-            resultIntent.putExtra(
-                    result.getName().replace(" ", "_")
+            resultIntent.putExtra(testName
                             + "_" + SensorConstants.UNIT + testInfo.getResultSuffix(),
                     testInfo.getResults().get(0).getUnit());
 

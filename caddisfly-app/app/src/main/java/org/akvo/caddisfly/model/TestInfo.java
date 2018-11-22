@@ -62,6 +62,9 @@ public class TestInfo implements Parcelable {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("nameSuffix")
+    @Expose
+    private String nameSuffix;
     @SerializedName("description")
     @Expose
     private String description;
@@ -176,6 +179,7 @@ public class TestInfo implements Parcelable {
         isCategory = in.readByte() != 0;
         category = in.readString();
         name = in.readString();
+        nameSuffix = in.readString();
         subtype = TestType.valueOf(in.readString());
         sampleType = TestSampleType.valueOf(in.readString());
         description = in.readString();
@@ -276,6 +280,10 @@ public class TestInfo implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNameSuffix() {
+        return nameSuffix;
     }
 
     public TestType getSubtype() {
@@ -442,6 +450,7 @@ public class TestInfo implements Parcelable {
         parcel.writeByte((byte) (isCategory ? 1 : 0));
         parcel.writeString(category);
         parcel.writeString(name);
+        parcel.writeString(nameSuffix);
         parcel.writeString(subtype.name());
         parcel.writeString(sampleType.name());
         parcel.writeString(description);
