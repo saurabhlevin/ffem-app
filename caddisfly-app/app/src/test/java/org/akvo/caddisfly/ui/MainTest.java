@@ -69,7 +69,7 @@ public class MainTest {
 
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
         ShadowActivity shadowActivity = shadowOf(activity);
-        shadowActivity.onCreateOptionsMenu(toolbar.getMenu());
+//        shadowActivity.onCreateOptionsMenu(toolbar.getMenu());
         assertTrue(shadowActivity.getOptionsMenu().hasVisibleItems());
         assertEquals(shadowActivity.getOptionsMenu().findItem(R.id.actionSettings).isVisible(), true);
     }

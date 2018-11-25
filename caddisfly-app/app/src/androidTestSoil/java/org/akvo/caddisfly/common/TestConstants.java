@@ -15,12 +15,27 @@ public final class TestConstants {
 
     // Soil - pH
     public static final TestSampleType IS_TEST_TYPE = TestSampleType.SOIL;
-    public static final String IS_TEST_GROUP = "Soil Tests 1";
-    public static final String IS_TEST_NAME = "pH";
-    public static final String IS_TEST_ID = TestConstant.SOIL_PH_ID;
+    public static final String IS_TEST_GROUP = "Soil Tests 2";
+    public static final String IS_TEST_HIGH_CALIBRATION = "HighLevelTest";
+    public static final int IS_TEST_CALIBRATION_INDEX = 4;
+    public static final String IS_TEST_NAME = "Available Iron";
+    public static final String IS_TEST_ID = TestConstant.SOIL_IRON_ID;
     public static final int IS_START_DELAY = 0;
-    public static final int IS_TEST_INDEX = 5;
-    public static final int IS_TIME_DELAY = 30;
+    public static final int IS_TEST_INDEX = 1;
+    public static final int IS_TIME_DELAY = 180;
     public static final double IS_EXPECTED_RESULT = 3.9;
-    public static final boolean IS_HAS_DILUTION = false;
+    public static final boolean IS_HAS_DILUTION = true;
+
+    //    public static final String IS_TEST_GROUP = "Soil Tests 1";
+    public static final String IS_TEST_VALID_CALIBRATION = "pH_Valid";
+//    public static final int IS_TEST_CALIBRATION_INDEX = 0;
+//    public static final String IS_TEST_NAME = "pH";
+//    public static final String IS_TEST_ID = TestConstant.SOIL_PH_ID;
+//    public static final int IS_START_DELAY = 0;
+//    public static final int IS_TEST_INDEX = 5;
+//    public static final int IS_TIME_DELAY = 30;
+//    public static final double IS_EXPECTED_RESULT = 3.9;
+//    public static final boolean IS_HAS_DILUTION = false;
+
+
 }

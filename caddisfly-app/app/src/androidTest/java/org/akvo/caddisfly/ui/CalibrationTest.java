@@ -229,7 +229,7 @@ public class CalibrationTest {
 
 //        onView(withText(R.string.save)).perform(click());
 
-        onView(withId(R.id.fabEditCalibration)).perform(click());
+//        onView(withId(R.id.fabEditCalibration)).perform(click());
 
         onView(withId(R.id.editExpiryDate)).perform(click());
 

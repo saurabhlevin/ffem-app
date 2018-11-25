@@ -54,6 +54,7 @@ import timber.log.Timber;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -160,11 +161,21 @@ public class MiscTest {
             return;
         }
 
-        onView(withId(R.id.actionSwatches)).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        ViewInteraction appCompatTextView13 = onView(
+                allOf(withId(R.id.title), withText("Swatches"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.content),
+                                        1),
+                                0),
+                        isDisplayed()));
+        appCompatTextView13.perform(click());
 
         Espresso.pressBack();
 
-        onView(withId(R.id.actionSwatches)).check(matches(isDisplayed()));
+        onView(withId(R.id.menuGraph)).check(matches(isDisplayed()));
 
         Espresso.pressBack();
     }

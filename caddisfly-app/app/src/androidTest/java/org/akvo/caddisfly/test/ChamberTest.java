@@ -41,6 +41,7 @@ import org.akvo.caddisfly.util.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,7 @@ import static org.hamcrest.Matchers.startsWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
+@Ignore
 public class ChamberTest {
 
     @Rule
@@ -128,7 +130,7 @@ public class ChamberTest {
     @RequiresDevice
     public void testStartHighLevelTest() {
 
-        saveCalibration("HighLevelTest", TestConstants.IS_TEST_ID);
+        saveCalibration(TestConstants.IS_TEST_HIGH_CALIBRATION, TestConstants.IS_TEST_ID);
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -166,7 +168,7 @@ public class ChamberTest {
 
         sleep(1000);
 
-        clickListViewItem("HighLevelTest");
+        clickListViewItem(TestConstants.IS_TEST_HIGH_CALIBRATION);
 
         sleep(1000);
 
@@ -211,7 +213,7 @@ public class ChamberTest {
                         childAtPosition(
                                 withClassName(is("android.widget.RelativeLayout")),
                                 0)));
-        recyclerView2.perform(actionOnItemAtPosition(4, click()));
+        recyclerView2.perform(actionOnItemAtPosition(TestConstants.IS_TEST_CALIBRATION_INDEX, click()));
 
         onView(withId(R.id.layoutWait)).check(matches(isDisplayed()));
 
@@ -233,12 +235,12 @@ public class ChamberTest {
 
         onView(withId(R.id.button_prepare)).perform(click());
 
-        onView(withId(R.id.buttonNoDilution)).check(matches(isDisplayed()));
+        if (TestConstants.IS_HAS_DILUTION) {
 
-        onView(withId(R.id.buttonNoDilution)).perform(click());
+            onView(withId(R.id.buttonNoDilution)).check(matches(isDisplayed()));
 
-        onView(allOf(withId(R.id.textDilution), withText(R.string.noDilution)))
-                .check(matches(isCompletelyDisplayed()));
+            onView(withId(R.id.buttonNoDilution)).perform(click());
+        }
 
         onView(allOf(withId(R.id.textDilution), withText(R.string.noDilution)))
                 .check(matches(isCompletelyDisplayed()));
@@ -257,13 +259,16 @@ public class ChamberTest {
 
         onView(withId(R.id.button_prepare)).perform(click());
 
-        onView(withId(R.id.buttonDilution1)).check(matches(isDisplayed()));
+        if (TestConstants.IS_HAS_DILUTION) {
 
-        onView(withId(R.id.buttonDilution1)).perform(click());
+            onView(withId(R.id.buttonDilution1)).check(matches(isDisplayed()));
 
-        onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
-                .getString(R.string.timesDilution), 2))))
-                .check(matches(isCompletelyDisplayed()));
+            onView(withId(R.id.buttonDilution1)).perform(click());
+
+            onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
+                    .getString(R.string.timesDilution), 2))))
+                    .check(matches(isCompletelyDisplayed()));
+        }
 
         //Test Start Screen
         takeScreenshot();
@@ -274,8 +279,11 @@ public class ChamberTest {
                 + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
                 * 1000);
 
-        onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
-                .check(matches(isDisplayed()));
+        if (TestConstants.IS_HAS_DILUTION) {
+
+            onView(withText(mActivityRule.getActivity().getString(R.string.testWithDilution)))
+                    .check(matches(isDisplayed()));
+        }
 
         //High levels found dialog
         takeScreenshot();
@@ -288,12 +296,15 @@ public class ChamberTest {
 
         onView(withId(R.id.button_prepare)).perform(click());
 
-        onView(withId(R.id.buttonDilution2)).check(matches(isDisplayed()));
+        if (TestConstants.IS_HAS_DILUTION) {
 
-        onView(withId(R.id.buttonDilution2)).perform(click());
+            onView(withId(R.id.buttonDilution2)).check(matches(isDisplayed()));
 
-        onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
-                .getString(R.string.timesDilution), 5)))).check(matches(isCompletelyDisplayed()));
+            onView(withId(R.id.buttonDilution2)).perform(click());
+
+            onView(allOf(withId(R.id.textDilution), withText(String.format(mActivityRule.getActivity()
+                    .getString(R.string.timesDilution), 5)))).check(matches(isCompletelyDisplayed()));
+        }
 
         //Test Progress Screen
         takeScreenshot();
@@ -338,7 +349,7 @@ public class ChamberTest {
     @RequiresDevice
     public void testStartNoDilutionTest() {
 
-        saveCalibration("TestValid", TestConstants.IS_TEST_ID);
+        saveCalibration(TestConstants.IS_TEST_VALID_CALIBRATION, TestConstants.IS_TEST_ID);
 
         onView(withId(R.id.actionSettings)).perform(click());
 
@@ -376,7 +387,7 @@ public class ChamberTest {
 
         sleep(1000);
 
-        onData(hasToString(startsWith("TestValid"))).perform(click());
+        onData(hasToString(startsWith(TestConstants.IS_TEST_VALID_CALIBRATION))).perform(click());
 
         goToMainScreen();
 
@@ -419,7 +430,7 @@ public class ChamberTest {
                         childAtPosition(
                                 withClassName(is("android.widget.RelativeLayout")),
                                 0)));
-        recyclerView2.perform(actionOnItemAtPosition(2, click()));
+        recyclerView2.perform(actionOnItemAtPosition(TestConstants.IS_TEST_CALIBRATION_INDEX, click()));
 
         sleep((IS_START_DELAY + IS_TIME_DELAY
                 + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))
@@ -441,9 +452,12 @@ public class ChamberTest {
 
         onView(withId(R.id.button_prepare)).perform(click());
 
-        onView(withId(R.id.buttonNoDilution)).check(matches(isDisplayed()));
+        if (TestConstants.IS_HAS_DILUTION) {
 
-        onView(withId(R.id.buttonNoDilution)).perform(click());
+            onView(withId(R.id.buttonNoDilution)).check(matches(isDisplayed()));
+
+            onView(withId(R.id.buttonNoDilution)).perform(click());
+        }
 
         sleep((IS_START_DELAY + IS_TIME_DELAY
                 + (DELAY_BETWEEN_SAMPLING * ChamberTestConfig.SAMPLING_COUNT_DEFAULT))

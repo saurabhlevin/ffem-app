@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
@@ -129,7 +130,17 @@ public class DiagnosticTest {
             return;
         }
 
-        onView(withId(R.id.actionSwatches)).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        ViewInteraction appCompatTextView13 = onView(
+                allOf(withId(R.id.title), withText("Swatches"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.content),
+                                        1),
+                                0),
+                        isDisplayed()));
+        appCompatTextView13.perform(click());
 
     }
 }

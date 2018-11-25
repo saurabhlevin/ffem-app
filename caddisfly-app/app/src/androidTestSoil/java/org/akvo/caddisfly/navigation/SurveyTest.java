@@ -53,6 +53,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.fail;
+import static org.akvo.caddisfly.util.TestHelper.clickExternalSourceButton;
 import static org.akvo.caddisfly.util.TestHelper.enterDiagnosticMode;
 import static org.akvo.caddisfly.util.TestHelper.goToMainScreen;
 import static org.akvo.caddisfly.util.TestHelper.gotoSurveyForm;
@@ -139,7 +140,7 @@ public class SurveyTest {
 
 //        onView(withText(currentHashMap.get("chlorine"))).perform(click());
 
-        onView(withText("0 - 25 mg/l (Upto 125.0 with dilution)")).perform(click());
+        onView(withText("0 - 125 mg/l (More than 625.0 with dilution)")).perform(click());
 
         onView(withText("15")).check(matches(isDisplayed()));
 
