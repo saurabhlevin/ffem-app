@@ -146,7 +146,7 @@ public class SurveyTest {
         onView(withText("15")).check(matches(isDisplayed()));
 
         try {
-            onView(withText("mg/l")).check(matches(isDisplayed()));
+            onView(withText("mg/kg")).check(matches(isDisplayed()));
             fail("Multiple matches not found");
         } catch (AmbiguousViewMatcherException e) {
             // multiple matches found
