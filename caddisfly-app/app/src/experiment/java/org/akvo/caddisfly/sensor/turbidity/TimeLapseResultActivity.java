@@ -56,6 +56,8 @@ public class TimeLapseResultActivity extends BaseActivity {
     private Button buttonSave;
     private LinearLayout rootLayout;
     private TestInfo testInfo;
+    String startDate;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,19 +134,28 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             itemResult = (LinearLayout) inflater.inflate(layout, null, false);
 
-            TextView textTitle = itemResult.findViewById(R.id.text_title);
-            textTitle.setText(title);
-
             TextView textDetails = itemResult.findViewById(R.id.testDetails);
             if (textDetails != null) {
                 String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
                 String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+                String broth = PreferencesUtil.getString(this, R.string.colif_brothMediaKey, "");
 
                 if (!description.isEmpty()) {
-                    testId += ", " + description;
+                    testId += ", " + description + ", " + broth;
                 }
 
                 textDetails.setText(testId);
+            }
+
+            TextView textStartTime = itemResult.findViewById(R.id.startTime);
+            if (textStartTime != null) {
+                textStartTime.setText(startDate);
+            }
+
+            TextView textDetectTime = itemResult.findViewById(R.id.detectTime);
+            if (textDetectTime != null) {
+                textDetectTime.setText("Completed at: " +
+                        simpleDateFormat.format(Calendar.getInstance().getTime()));
             }
 
             if (resultImage != null) {
@@ -267,28 +278,28 @@ public class TimeLapseResultActivity extends BaseActivity {
             String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
             String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
 
-            if (!description.isEmpty()){
-                testId  += ", " + description;
+            if (!description.isEmpty()) {
+                testId += ", " + description;
             }
 
+            long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
+            startDate = simpleDateFormat.format(new Date(startTime));
+
+            String testDuration;
+            long duration = Calendar.getInstance().getTimeInMillis() - startTime;
+            if (TimeUnit.MILLISECONDS.toHours(duration) > 0) {
+                testDuration = String.format(Locale.US, "Duration: %s hours & %s minutes",
+                        TimeUnit.MILLISECONDS.toHours(duration),
+                        TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1) + 1);
+            } else {
+                testDuration = String.format(Locale.US, "Duration: %s minutes",
+                        TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1) + 1);
+            }
+
+            durationString = PreferencesUtil.getString(this, "turbidDuration", "");
+
             if (emailTemplate != null) {
-                long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
-                String date = simpleDateFormat.format(new Date(startTime));
-                emailTemplate = emailTemplate.replace("{startTime}", date);
-
-                String testDuration;
-                long duration = Calendar.getInstance().getTimeInMillis() - startTime;
-                if (TimeUnit.MILLISECONDS.toHours(duration) > 0) {
-                    testDuration = String.format(Locale.US, "Duration: %s hours & %s minutes",
-                            TimeUnit.MILLISECONDS.toHours(duration),
-                            TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1) + 1);
-                } else {
-                    testDuration = String.format(Locale.US, "Duration: %s minutes",
-                            TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1) + 1);
-                }
-
-                durationString = PreferencesUtil.getString(this, "turbidDuration", "");
+                emailTemplate = emailTemplate.replace("{startTime}", startDate);
 
                 String broth = PreferencesUtil.getString(this, R.string.colif_brothMediaKey, "");
 
@@ -334,7 +345,7 @@ public class TimeLapseResultActivity extends BaseActivity {
                         break;
                     default:
                         if (resultValue) {
-                            result.setResult("High Risk - Contaminated");
+                            result.setResult(getString(R.string.high_risk_unsafe));
                             inflateView(result.getName(), result.getResult(), null,
                                     R.layout.item_warning_result);
                         } else {
