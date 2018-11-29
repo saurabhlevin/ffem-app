@@ -424,8 +424,10 @@ public class TimeLapseActivity extends BaseActivity {
 //            FileUtil.deleteRecursive(folder);
 //        }
 
+        String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
+
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,
-                testInfo.getName() + File.separator + "_"
+                testInfo.getName() + File.separator + testId + "_"
                         + new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(startDate.getTime()) + details);
 
         TurbidityConfig.setRepeatingAlarm(this, INITIAL_DELAY, testInfo.getUuid());

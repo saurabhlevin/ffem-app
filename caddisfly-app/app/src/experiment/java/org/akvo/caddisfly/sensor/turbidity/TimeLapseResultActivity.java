@@ -26,6 +26,7 @@ import org.akvo.caddisfly.model.TestInfo;
 import org.akvo.caddisfly.preference.AppPreferences;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AssetsManager;
+import org.akvo.caddisfly.util.FileUtil;
 import org.akvo.caddisfly.util.GMailSender;
 import org.akvo.caddisfly.util.PreferencesUtil;
 
@@ -363,6 +364,13 @@ public class TimeLapseResultActivity extends BaseActivity {
             String password = PreferencesUtil.getString(this, "password", "");
             if (!email.isEmpty() && !password.isEmpty() && !notificationEmails.isEmpty()) {
                 sendEmail(testId, emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
+            }
+
+            if (emailTemplate != null && lastImage != null && firstImage != null && turbidImage != null) {
+                emailTemplate = emailTemplate.replaceAll("cid:firstImage", firstImage.getName());
+                emailTemplate = emailTemplate.replaceAll("cid:turbidImage", turbidImage.getName());
+                emailTemplate = emailTemplate.replaceAll("cid:lastImage", lastImage.getName());
+                FileUtil.saveToFile(folder, "result.html", emailTemplate);
             }
         }
     }
