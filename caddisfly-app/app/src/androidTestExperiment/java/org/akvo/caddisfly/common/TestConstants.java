@@ -20,7 +20,6 @@
 package org.akvo.caddisfly.common;
 
 import org.akvo.caddisfly.model.TestSampleType;
-import org.akvo.caddisfly.util.TestConstant;
 
 public final class TestConstants {
 
@@ -43,6 +42,10 @@ public final class TestConstants {
 //    public static final int IS_TIME_DELAY = 30;
 //    public static final double IS_EXPECTED_RESULT = 3.9;
 //    public static final boolean IS_HAS_DILUTION = false;
+
+    public static final String IS_TEST_HIGH_CALIBRATION = "HighLevelTest";
+    public static final int IS_TEST_CALIBRATION_INDEX = 4;
+    public static final String IS_TEST_VALID_CALIBRATION = "pH_Valid";
 
     // Water - Fluoride
     public static final TestSampleType IS_TEST_TYPE = TestSampleType.WATER;

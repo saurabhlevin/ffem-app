@@ -427,8 +427,9 @@ public class TimeLapseActivity extends BaseActivity {
         String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
 
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,
-                testInfo.getName() + File.separator + testId + "_"
-                        + new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(startDate.getTime()) + details);
+                testInfo.getName() + File.separator
+                        + new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(startDate.getTime())
+                        + details + "_" + testId);
 
         TurbidityConfig.setRepeatingAlarm(this, INITIAL_DELAY, testInfo.getUuid());
 
@@ -562,5 +563,9 @@ public class TimeLapseActivity extends BaseActivity {
 
     public void onUserDetailsClick(MenuItem item) {
         showAuthDialog();
+    }
+
+    public void onResultHistoryClick(MenuItem item) {
+        startActivity(new Intent(this, ResultInfoListActivity.class));
     }
 }

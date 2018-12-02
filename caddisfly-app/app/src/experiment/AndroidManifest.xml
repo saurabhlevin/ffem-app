@@ -56,7 +56,22 @@
         <activity
             android:name=".sensor.cuvette.ui.CuvetteResultActivity"
             android:screenOrientation="nosensor" />
-
+        <activity
+            android:name=".sensor.turbidity.ResultInfoListActivity"
+            android:parentActivityName=".ui.TestActivity"
+            android:theme="@style/AppTheme.Main">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.akvo.caddisfly.ui.TestActivity" />
+        </activity>
+        <activity
+            android:name=".sensor.turbidity.ResultInfoDetailActivity"
+            android:parentActivityName=".sensor.turbidity.ResultInfoListActivity"
+            android:theme="@style/AppTheme.Main">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.akvo.caddisfly.sensor.turbidity.ResultInfoListActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -54,11 +54,11 @@ public class TimeLapseResultActivity extends BaseActivity {
     File folder;
     boolean isTurbid;
     String durationString;
+    String startDate;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
     private Button buttonSave;
     private LinearLayout rootLayout;
     private TestInfo testInfo;
-    String startDate;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm, dd MMM yyyy", Locale.US);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,7 +123,7 @@ public class TimeLapseResultActivity extends BaseActivity {
     }
 
     @SuppressLint("InflateParams")
-    private void inflateView(String title, String valueString, Bitmap resultImage, int layout) {
+    private void inflateView(String valueString, Bitmap resultImage, int layout) {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout itemResult;
@@ -155,8 +155,8 @@ public class TimeLapseResultActivity extends BaseActivity {
 
             TextView textDetectTime = itemResult.findViewById(R.id.detectTime);
             if (textDetectTime != null) {
-                textDetectTime.setText("Completed at: " +
-                        simpleDateFormat.format(Calendar.getInstance().getTime()));
+                textDetectTime.setText(String.format("Completed at: %s",
+                        simpleDateFormat.format(Calendar.getInstance().getTime())));
             }
 
             if (resultImage != null) {
@@ -326,32 +326,32 @@ public class TimeLapseResultActivity extends BaseActivity {
                         break;
                     case "First Image":
                         if (firstImage != null) {
-                            inflateView(result.getName(), "",
+                            inflateView("",
                                     BitmapFactory.decodeFile(firstImage.getAbsolutePath()), 0);
                         }
                         break;
                     case "Turbid Image":
                         if (resultValue) {
                             if (turbidImage != null) {
-                                inflateView(result.getName(), "",
+                                inflateView("",
                                         BitmapFactory.decodeFile(turbidImage.getAbsolutePath()), 0);
                             }
                         }
                         break;
                     case "Last Image":
                         if (lastImage != null) {
-                            inflateView(result.getName(), "",
+                            inflateView("",
                                     BitmapFactory.decodeFile(lastImage.getAbsolutePath()), 0);
                         }
                         break;
                     default:
                         if (resultValue) {
                             result.setResult(getString(R.string.high_risk_unsafe));
-                            inflateView(result.getName(), result.getResult(), null,
+                            inflateView(result.getResult(), null,
                                     R.layout.item_warning_result);
                         } else {
                             result.setResult("Low Risk - Possibly Safe");
-                            inflateView(result.getName(), result.getResult(), null,
+                            inflateView(result.getResult(), null,
                                     R.layout.item_safe_result);
                         }
                         break;
@@ -366,11 +366,21 @@ public class TimeLapseResultActivity extends BaseActivity {
                 sendEmail(testId, emailTemplate, firstImage, turbidImage, lastImage, email, notificationEmails, password);
             }
 
-            if (emailTemplate != null && lastImage != null && firstImage != null && turbidImage != null) {
+            if (emailTemplate != null && lastImage != null && firstImage != null) {
                 emailTemplate = emailTemplate.replaceAll("cid:firstImage", firstImage.getName());
-                emailTemplate = emailTemplate.replaceAll("cid:turbidImage", turbidImage.getName());
                 emailTemplate = emailTemplate.replaceAll("cid:lastImage", lastImage.getName());
+                if (turbidImage != null) {
+                    emailTemplate = emailTemplate.replaceAll("cid:turbidImage", turbidImage.getName());
+                }
+
+                if (isTurbid) {
+                    FileUtil.saveToFile(folder, "positive", "");
+                }
+
+                emailTemplate = emailTemplate.replace("margin:20px auto;", "");
+
                 FileUtil.saveToFile(folder, "result.html", emailTemplate);
+
             }
         }
     }
