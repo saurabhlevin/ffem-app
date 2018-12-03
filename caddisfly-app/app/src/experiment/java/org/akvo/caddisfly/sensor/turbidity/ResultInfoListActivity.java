@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.akvo.caddisfly.R;
-import org.akvo.caddisfly.common.ConstantKey;
 import org.akvo.caddisfly.helper.FileHelper;
 import org.akvo.caddisfly.ui.BaseActivity;
 import org.akvo.caddisfly.util.AssetsManager;
@@ -94,22 +93,26 @@ public class ResultInfoListActivity extends BaseActivity {
             for (File f : files) {
                 String id = "0";
                 if (f.isDirectory()) {
-                    String[] details = f.getName().split("_");
-                    if (details.length > 3) {
-                        id = details[3];
-                    }
-                    ResultInfo resultInfo = new ResultInfo(id);
-                    resultInfo.setDate(details[1] + details[2]);
-                    resultInfo.folder = f.getAbsolutePath();
-                    File file = new File(resultInfo.folder + "/positive");
-                    if (file.exists()) {
-                        resultInfo.result = "Positive";
-                        tests.add(resultInfo);
-                    } else {
-                        file = new File(resultInfo.folder + "/negative");
+                    if (f.getName().startsWith("_")) {
+                        String[] details = f.getName().split("_");
+                        if (details.length > 3) {
+                            id = details[3];
+                        }
+                        ResultInfo resultInfo = new ResultInfo(id);
+                        resultInfo.setDate(details[1] + details[2]);
+                        resultInfo.folder = f.getAbsolutePath();
+                        File file = new File(resultInfo.folder + "/positive");
                         if (file.exists()) {
-                            resultInfo.result = "Negative";
+                            resultInfo.description = FileUtil.readText(file);
+                            resultInfo.result = "Positive";
                             tests.add(resultInfo);
+                        } else {
+                            file = new File(resultInfo.folder + "/negative");
+                            if (file.exists()) {
+                                resultInfo.description = FileUtil.readText(file);
+                                resultInfo.result = "Negative";
+                                tests.add(resultInfo);
+                            }
                         }
                     }
                 }
@@ -215,14 +218,12 @@ public class ResultInfoListActivity extends BaseActivity {
                 emailTemplate = AssetsManager.getInstance().loadJsonFromAsset("templates/email_template_safe.html");
             }
 
-            String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
-            String description = PreferencesUtil.getString(this, R.string.colif_descriptionKey, "");
+            String testId = "0";
 
-            if (!description.isEmpty()) {
-                testId += ", " + description;
-            }
+            ResultInfo resultInfo = new ResultInfo(testId);
+            resultInfo.setDate(folder.getName().split("_")[1] + folder.getName().split("_")[2]);
 
-            long startTime = PreferencesUtil.getLong(this, ConstantKey.TEST_START_TIME);
+            long startTime = resultInfo.getTestDate().getTime();
             String startDate = simpleDateFormat.format(new Date(startTime));
 
             String testDuration;

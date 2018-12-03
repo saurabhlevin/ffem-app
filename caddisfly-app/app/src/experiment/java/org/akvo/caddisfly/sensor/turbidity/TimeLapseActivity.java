@@ -64,6 +64,8 @@ public class TimeLapseActivity extends BaseActivity {
     TextView textInterval;
     int interval = 0;
     int numberOfSamples;
+    boolean isTurbid;
+    String durationString;
     private View layoutWait;
     private LinearLayout layoutDetails;
     private TextView textCountdown;
@@ -72,10 +74,6 @@ public class TimeLapseActivity extends BaseActivity {
     private Handler handler;
     private TestInfo testInfo;
     private String folderName;
-
-    boolean isTurbid;
-    String durationString;
-
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -117,6 +115,8 @@ public class TimeLapseActivity extends BaseActivity {
             }
         }
     };
+    private boolean showTimer = true;
+    private Menu menu;
 
     private void analyseLatestFile(File folder) {
         File firstImage = null;
@@ -260,9 +260,6 @@ public class TimeLapseActivity extends BaseActivity {
             }
         }).start();
     }
-
-    private boolean showTimer = true;
-    private Menu menu;
 
     private void startCountdownTimer() {
         showTimer = true;
@@ -427,7 +424,7 @@ public class TimeLapseActivity extends BaseActivity {
         String testId = PreferencesUtil.getString(this, R.string.colif_testIdKey, "");
 
         PreferencesUtil.setString(this, R.string.turbiditySavePathKey,
-                testInfo.getName() + File.separator
+                testInfo.getName() + File.separator + "_"
                         + new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(startDate.getTime())
                         + details + "_" + testId);
 

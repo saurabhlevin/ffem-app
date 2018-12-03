@@ -440,4 +440,25 @@ public final class FileUtil {
         //noinspection ResultOfMethodCallIgnored
         file.delete();
     }
+
+    public static String readText(File file) {
+        String line = "";
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            fileInputStream.close();
+            line = stringBuilder.toString();
+
+            bufferedReader.close();
+        } catch (IOException ignored) {
+        }
+        return line;
+    }
 }

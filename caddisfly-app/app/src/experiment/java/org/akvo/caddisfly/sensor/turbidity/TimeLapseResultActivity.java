@@ -374,7 +374,9 @@ public class TimeLapseResultActivity extends BaseActivity {
                 }
 
                 if (isTurbid) {
-                    FileUtil.saveToFile(folder, "positive", "");
+                    FileUtil.saveToFile(folder, "positive", description);
+                } else {
+                    FileUtil.saveToFile(folder, "negative", description);
                 }
 
                 emailTemplate = emailTemplate.replace("margin:20px auto;", "");

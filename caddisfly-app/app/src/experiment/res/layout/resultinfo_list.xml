@@ -8,4 +8,4 @@
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
     tools:context="org.akvo.caddisfly.sensor.turbidity.ResultInfoListActivity"
-    tools:listitem="@layout/resultinfo_list_content" />
+    tools:listitem="@layout/result_item" />

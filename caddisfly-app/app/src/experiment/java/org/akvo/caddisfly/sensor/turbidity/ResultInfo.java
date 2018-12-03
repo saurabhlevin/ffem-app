@@ -9,42 +9,39 @@ import java.util.Locale;
 
 public class ResultInfo implements Serializable {
     public final String id;
-    public int testNumber;
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("dd, MMM yyyy, HH:mm");
+    private final SimpleDateFormat dateFormatWithYear
+            = new SimpleDateFormat("dd, MMM yyyy, HH:mm", Locale.US);
+    private final SimpleDateFormat dateFormat
+            = new SimpleDateFormat("dd, MMM, HH:mm", Locale.US);
+    private final SimpleDateFormat sourceDateFormat
+            = new SimpleDateFormat("yyyyMMddHHmm", Locale.US);
+    public String description;
     public String date;
-    public String media;
-    public String testType;
-    public String volume;
-    public String startImage;
-    public String turbidImage;
-    public String endImage;
-    public String turbidTime;
-    public String totalTime;
     public String result;
-    public Date testDate;
     public int version;
-    public boolean resultBoolean;
     public String folder;
-    SimpleDateFormat sourceDateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.US);
+    private Date testDate;
 
-    public ResultInfo(String id) {
+    ResultInfo(String id) {
         this.id = id;
     }
 
     public void setDate(String value) {
-
         Calendar calendar = Calendar.getInstance();
-
         try {
             testDate = sourceDateFormat.parse(value);
             calendar.setTime(testDate);
-            date = dateFormat.format(calendar.getTime());
+            if (calendar.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
+                date = dateFormat.format(calendar.getTime());
+            } else {
+                date = dateFormatWithYear.format(calendar.getTime());
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public Date getTestDate() {
+    Date getTestDate() {
         return testDate;
     }
 }

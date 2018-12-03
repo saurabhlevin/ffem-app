@@ -80,22 +80,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="2dp"
-                android:text="@{resultInfo.id}"
+                android:text="@{resultInfo.result}"
                 android:textColor="#737373"
                 android:textSize="18sp"
-                tools:text="BRAND 23426435" />
+                tools:text="Positive" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="7dp"
-                android:text="@{resultInfo.result}"
+                android:layout_marginBottom="2dp"
+                android:text="@{resultInfo.id + `, ` + resultInfo.description}"
                 android:textColor="#737373"
-                android:textSize="14sp"
-                tools:text="sdfg2-dfgsdf-hjkjh-dfghfg"
-                tools:visibility="gone" />
+                android:textSize="15sp"
+                tools:text="1, Description of the test" />
 
         </LinearLayout>
 
