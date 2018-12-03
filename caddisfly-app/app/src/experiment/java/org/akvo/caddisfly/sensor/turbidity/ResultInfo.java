@@ -10,9 +10,9 @@ import java.util.Locale;
 public class ResultInfo implements Serializable {
     public final String id;
     private final SimpleDateFormat dateFormatWithYear
-            = new SimpleDateFormat("dd, MMM yyyy, HH:mm", Locale.US);
+            = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.US);
     private final SimpleDateFormat dateFormat
-            = new SimpleDateFormat("dd, MMM, HH:mm", Locale.US);
+            = new SimpleDateFormat("dd MMM, HH:mm", Locale.US);
     private final SimpleDateFormat sourceDateFormat
             = new SimpleDateFormat("yyyyMMddHHmm", Locale.US);
     public String description;

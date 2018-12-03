@@ -20,12 +20,14 @@
 package org.akvo.caddisfly.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -143,5 +145,24 @@ public final class ApiUtil {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    public static boolean isAppInLockTaskMode(Context context) {
+        ActivityManager activityManager;
+
+        activityManager = (ActivityManager)
+                context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // For SDK version 23 and above.
+            return activityManager.getLockTaskModeState()
+                    != ActivityManager.LOCK_TASK_MODE_NONE;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // When SDK version >= 21. This API is deprecated in 23.
+            //noinspection deprecation
+            return activityManager.isInLockTaskMode();
+        }
+
+        return false;
     }
 }

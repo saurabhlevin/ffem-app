@@ -1,7 +1,6 @@
 package org.akvo.caddisfly.sensor.turbidity;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -54,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 import timber.log.Timber;
 
 import static org.akvo.caddisfly.sensor.turbidity.TimeLapseResultActivity.imageFilter;
+import static org.akvo.caddisfly.util.ApiUtil.isAppInLockTaskMode;
 
 public class TimeLapseActivity extends BaseActivity {
 
@@ -473,29 +473,10 @@ public class TimeLapseActivity extends BaseActivity {
         startCountdownTimer();
     }
 
-    public boolean isAppInLockTaskMode() {
-        ActivityManager activityManager;
-
-        activityManager = (ActivityManager)
-                this.getSystemService(Context.ACTIVITY_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // For SDK version 23 and above.
-            return activityManager.getLockTaskModeState()
-                    != ActivityManager.LOCK_TASK_MODE_NONE;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // When SDK version >= 21. This API is deprecated in 23.
-            //noinspection deprecation
-            return activityManager.isInLockTaskMode();
-        }
-
-        return false;
-    }
-
     @Override
     public void onBackPressed() {
 
-        if (isAppInLockTaskMode()) {
+        if (isAppInLockTaskMode(this)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 showLockTaskEscapeMessage();
             } else {

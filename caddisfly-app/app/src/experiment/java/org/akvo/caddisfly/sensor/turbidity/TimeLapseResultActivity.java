@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.akvo.caddisfly.R;
 import org.akvo.caddisfly.common.AppConfig;
@@ -42,6 +43,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
+
+import static org.akvo.caddisfly.util.ApiUtil.isAppInLockTaskMode;
 
 /**
  * Activity that displays the results.
@@ -104,6 +107,19 @@ public class TimeLapseResultActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isAppInLockTaskMode(this)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                showLockTaskEscapeMessage();
+            } else {
+                Toast.makeText(this, R.string.screen_pinned, Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override

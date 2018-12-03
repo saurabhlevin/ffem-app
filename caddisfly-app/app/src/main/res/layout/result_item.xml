@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{resultInfo.date}"
-                android:textColor="#737373"
+                android:textColor="#4d4c4c"
                 android:textIsSelectable="false"
                 android:textSize="14sp"
                 tools:text="Contaminant" />
@@ -80,20 +80,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@{resultInfo.result}"
-                android:textColor="#737373"
+                android:text="@{resultInfo.id + `, ` + resultInfo.result}"
+                android:textColor="#383838"
                 android:textSize="18sp"
-                tools:text="Positive" />
+                tools:text="2, Positive" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="2dp"
-                android:text="@{resultInfo.id + `, ` + resultInfo.description}"
+                android:text="@{resultInfo.description}"
                 android:textColor="#737373"
                 android:textSize="15sp"
-                tools:text="1, Description of the test" />
+                tools:text="Description of the test" />
 
         </LinearLayout>
 
