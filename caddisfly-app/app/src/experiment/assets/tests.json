@@ -378,7 +378,7 @@
       "image": "ffem",
       "imageScale": "centerCrop",
       "calibrate": true,
-      "ranges": "0,8",
+      "ranges": "0,7",
       "monthsValid": 12,
       "results": [
         {
@@ -403,6 +403,44 @@
           "id": 1,
           "name": "Dissolved Oxygen",
           "unit": "mg/l"
+        }
+      ]
+    },
+     {
+      "name": "Blood Sugar",
+      "subtype": "cuvette",
+      "uuid": "15614fa9-d7e3-4532-9a35-072290fd5f22 ",
+      "brand": "FFEM",
+      "calibrate": true,
+      "ranges": "100,400",
+      "dilutions": [1,2,5],
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Blood sugar",
+          "id": 1,
+          "unit": "mg/dl",
+          "timeDelay": 0
+        }
+      ]
+    },
+     {
+      "name": "Blood Sugar",
+      "subtype": "cuvette",
+      "uuid": "15614fa9-d7e3-4532-9a35-072290fd5f22 ",
+      "brand": "FFEM",
+      "calibrate": true,
+      "ranges": "100,400",
+      "dilutions": [1,2,5],
+      "monthsValid": 12,
+      "hasImage": true,
+      "results": [
+        {
+          "name": "Blood sugar",
+          "id": 1,
+          "unit": "mg/dl",
+          "timeDelay": 0
         }
       ]
     },
